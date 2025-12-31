@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Ajouter une Norme - SAFE SCORING{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold text-white mb-8">📋 Ajouter une Norme</h1>
+    
+    {% if error %}
+    <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-6">
+        {{ error }}
+    </div>
+    {% endif %}
+    
+    <form method="POST" class="bg-gray-800 rounded-xl p-6 space-y-6">
+        <div class="grid grid-cols-2 gap-4">
+            <!-- Code -->
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Code *
+                </label>
+                <input type="text" name="code" required maxlength="5"
+                       class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 font-mono uppercase"
+                       placeholder="Ex: S42">
+                <p class="text-gray-500 text-xs mt-1">Format: S01, A15, F03, E12...</p>
+            </div>
+            
+            <!-- Pilier -->
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">
+                    Pilier *
+                </label>
+                <select name="pillar" required
+                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500">
+                    <option value="S">🔒 S - Security</option>
+                    <option value="A">🌐 A - Accessibility</option>
+                    <option value="F">⚙️ F - Functionality</option>
+                    <option value="E">✨ E - Experience</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Titre -->
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+                Titre *
+            </label>
+            <input type="text" name="title" required
+                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+                   placeholder="Ex: Authentification multi-facteurs">
+        </div>
+        
+        <!-- Description -->
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+                Description
+            </label>
+            <textarea name="description" rows="3"
+                      class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+                      placeholder="Description détaillée de la norme..."></textarea>
+        </div>
+        
+        <!-- Options -->
+        <div class="grid grid-cols-3 gap-4">
+            <!-- Essential -->
+            <label class="flex items-center gap-3 bg-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-650">
+                <input type="checkbox" name="is_essential" class="w-5 h-5 rounded text-yellow-500">
+                <div>
+                    <div class="text-white font-medium">⭐ Essentielle</div>
+                    <div class="text-gray-400 text-xs">Norme critique</div>
+                </div>
+            </label>
+            
+            <!-- Consumer -->
+            <label class="flex items-center gap-3 bg-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-650">
+                <input type="checkbox" name="consumer" class="w-5 h-5 rounded text-emerald-500">
+                <div>
+                    <div class="text-white font-medium">👤 Consumer</div>
+                    <div class="text-gray-400 text-xs">Pour particuliers</div>
+                </div>
+            </label>
+            
+            <!-- Accès -->
+            <div class="bg-gray-700 rounded-lg p-4">
+                <div class="text-white font-medium mb-2">💰 Accès</div>
+                <select name="access_type" class="w-full bg-gray-600 border-0 rounded px-3 py-2 text-white text-sm">
+                    <option value="G">Gratuit</option>
+                    <option value="R">Payant</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Lien officiel -->
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+                Lien officiel
+            </label>
+            <input type="url" name="official_link"
+                   class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+                   placeholder="https://...">
+        </div>
+        
+        <!-- Types applicables -->
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+                Types de produits applicables
+            </label>
+            <div class="grid grid-cols-3 gap-2 bg-gray-700 rounded-lg p-4 max-h-48 overflow-y-auto">
+                {% for type in types %}
+                <label class="flex items-center gap-2 text-sm cursor-pointer hover:text-white text-gray-300">
+                    <input type="checkbox" name="applicable_types" value="{{ type.id }}" class="rounded text-blue-500">
+                    {{ type.code }}
+                </label>
+                {% endfor %}
+            </div>
+            <p class="text-gray-500 text-xs mt-1">Sélectionnez les types de produits auxquels cette norme s'applique</p>
+        </div>
+        
+        <!-- Boutons -->
+        <div class="flex gap-4 pt-4">
+            <button type="submit"
+                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+                ✅ Créer la norme
+            </button>
+            <a href="/norms"
+               class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors">
+                Annuler
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

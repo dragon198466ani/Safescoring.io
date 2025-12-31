@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}SAFE SCORING - Admin{% endblock %}
+
+{% block content %}
+<div class="text-center py-12">
+    <h1 class="text-4xl font-bold text-emerald-400 mb-4">🔐 SAFE SCORING</h1>
+    <p class="text-xl text-gray-400 mb-8">Interface d'administration</p>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <!-- Produits -->
+        <a href="/products" class="bg-gray-800 rounded-xl p-8 hover:bg-gray-750 border border-gray-700 hover:border-emerald-500 transition-all">
+            <div class="text-5xl mb-4">📦</div>
+            <h2 class="text-2xl font-semibold text-white mb-2">Produits</h2>
+            <p class="text-gray-400">Gérer les produits crypto et leurs évaluations</p>
+            <div class="mt-4">
+                <span class="inline-block bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    + Ajouter un produit
+                </span>
+            </div>
+        </a>
+        
+        <!-- Normes -->
+        <a href="/norms" class="bg-gray-800 rounded-xl p-8 hover:bg-gray-750 border border-gray-700 hover:border-blue-500 transition-all">
+            <div class="text-5xl mb-4">📋</div>
+            <h2 class="text-2xl font-semibold text-white mb-2">Normes</h2>
+            <p class="text-gray-400">Gérer les normes de sécurité SAFE</p>
+            <div class="mt-4">
+                <span class="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    + Ajouter une norme
+                </span>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Stats rapides -->
+    <div class="mt-12 grid grid-cols-4 gap-4 max-w-4xl mx-auto">
+        <div class="bg-gray-800 rounded-lg p-4">
+            <div class="text-3xl font-bold text-emerald-400" id="stat-products">-</div>
+            <div class="text-gray-400 text-sm">Produits</div>
+        </div>
+        <div class="bg-gray-800 rounded-lg p-4">
+            <div class="text-3xl font-bold text-blue-400" id="stat-norms">-</div>
+            <div class="text-gray-400 text-sm">Normes</div>
+        </div>
+        <div class="bg-gray-800 rounded-lg p-4">
+            <div class="text-3xl font-bold text-yellow-400" id="stat-types">-</div>
+            <div class="text-gray-400 text-sm">Types</div>
+        </div>
+        <div class="bg-gray-800 rounded-lg p-4">
+            <div class="text-3xl font-bold text-purple-400" id="stat-brands">-</div>
+            <div class="text-gray-400 text-sm">Marques</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Charger les stats
+    fetch('/api/products').then(r => r.json()).then(data => {
+        document.getElementById('stat-products').textContent = data.length;
+    });
+    fetch('/api/norms').then(r => r.json()).then(data => {
+        document.getElementById('stat-norms').textContent = data.length;
+    });
+</script>
+{% endblock %}

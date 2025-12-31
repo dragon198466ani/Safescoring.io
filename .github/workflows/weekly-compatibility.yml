@@ -1,0 +1,45 @@
+name: Weekly Compatibility Analysis
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'  # Dimanche à 3h UTC
+  workflow_dispatch:  # Lancement manuel possible
+
+jobs:
+  compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          playwright install chromium  # Pour le scraping
+
+      - name: Run compatibility analysis (with retry)
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 60
+          max_attempts: 3
+          retry_wait_seconds: 180
+          command: python scripts/compatibility_analyzer.py --batch 50
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+
+      - name: Log completion
+        if: always()
+        run: |
+          echo "Compatibility analysis finished at $(date)"
+          echo "Status: ${{ job.status }}"

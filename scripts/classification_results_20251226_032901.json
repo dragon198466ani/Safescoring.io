@@ -1,0 +1,184 @@
+{
+  "timestamp": "2025-12-26T03:29:01.687437",
+  "corrections": [
+    {
+      "product_id": 117,
+      "product_name": "1inch",
+      "current": [],
+      "recommended": [
+        "Aggregator",
+        "DEX"
+      ],
+      "primary_type": "DEX",
+      "to_add": [
+        "Aggregator",
+        "DEX"
+      ],
+      "to_remove": [],
+      "analysis": "1inch is a decentralized exchange aggregator that connects users to multiple DEXs and provides a seamless experience for trading. It acts as an intermediary between the user's wallet and the DEX, allowing for easy switching between different protocols.",
+      "confidence": "high",
+      "change_reason": "Based on its functionality and purpose, 1inch is best classified as a DEX aggregator.",
+      "category": "Exchange"
+    },
+    {
+      "product_id": 118,
+      "product_name": "1inch Card",
+      "current": [],
+      "recommended": [
+        "Card",
+        "CEX"
+      ],
+      "primary_type": "Card",
+      "to_add": [
+        "Card",
+        "CEX"
+      ],
+      "to_remove": [],
+      "analysis": "The 1inch Card is a payment card issued by a centralized provider, allowing users to spend cryptocurrency at traditional merchants. It provides fiat-to-crypto conversion and has a mobile app for management.",
+      "confidence": "high",
+      "change_reason": "The product's primary function of facilitating fiat-to-crypto conversion aligns with the CEX type.",
+      "category": "Payment"
+    },
+    {
+      "product_id": 120,
+      "product_name": "Aave",
+      "current": [],
+      "recommended": [
+        "Lending",
+        "DeFi"
+      ],
+      "primary_type": "Lending",
+      "to_add": [
+        "Lending",
+        "DeFi"
+      ],
+      "to_remove": [],
+      "analysis": "Aave is a decentralized lending protocol that allows users to lend and borrow cryptocurrencies. It operates on the Ethereum blockchain and provides interest-bearing deposits, loans, and other DeFi services.",
+      "confidence": "high",
+      "change_reason": "Aave's primary function is lending, but it also offers staking and DeFi services.",
+      "category": "Lending"
+    },
+    {
+      "product_id": 70,
+      "product_name": "Abracadabra",
+      "current": [],
+      "recommended": [
+        "DEX",
+        "CEX"
+      ],
+      "primary_type": "CEX",
+      "to_add": [
+        "DEX",
+        "CEX"
+      ],
+      "to_remove": [],
+      "analysis": "Abracadabra is a platform that enables users to buy, sell, and trade cryptocurrencies. It has a user-friendly interface and supports multiple payment methods.",
+      "confidence": "medium",
+      "change_reason": "Based on its functionality and features, Abracadabra can be classified as both a CEX and a DEX.",
+      "category": "Exchange"
+    },
+    {
+      "product_id": 121,
+      "product_name": "Across Protocol",
+      "current": [],
+      "recommended": [
+        "Bridge",
+        "Cross-Chain Aggregator"
+      ],
+      "primary_type": "Bridge",
+      "to_add": [
+        "Bridge",
+        "Cross-Chain Aggregator"
+      ],
+      "to_remove": [],
+      "analysis": "The Across Protocol enables cross-chain swaps and asset transfers between different blockchain networks. It uses a bridge-like architecture to facilitate the transfer of assets between chains.",
+      "confidence": "high",
+      "change_reason": "Based on its functionality, the product is primarily a Bridge.",
+      "category": "Interoperability"
+    },
+    {
+      "product_id": 42,
+      "product_name": "Aerodrome",
+      "current": [],
+      "recommended": [
+        "DEX",
+        "CEX"
+      ],
+      "primary_type": "DEX",
+      "to_add": [
+        "DEX",
+        "CEX"
+      ],
+      "to_remove": [],
+      "analysis": "Aerodrome appears to be a decentralized exchange (DEX) platform, allowing users to trade cryptocurrencies in a trustless and permissionless manner. The platform's focus on liquidity provision, order book execution, and trading fees aligns with the characteristics of a DEX.",
+      "confidence": "high",
+      "change_reason": "Aerodrome's primary function is as a DEX, but it also offers centralized exchange (CEX) features through its integration with other platforms.",
+      "category": "Exchange"
+    },
+    {
+      "product_id": 68,
+      "product_name": "Alchemix",
+      "current": [],
+      "recommended": [
+        "DEX",
+        "CEX"
+      ],
+      "primary_type": "DEX",
+      "to_add": [
+        "DEX",
+        "CEX"
+      ],
+      "to_remove": [],
+      "analysis": "Alchemix is a decentralized exchange (DEX) platform that enables users to trade cryptocurrencies in a trustless and permissionless manner. It uses an automated market maker (AMM) protocol to facilitate trades.",
+      "confidence": "high",
+      "change_reason": "Alchemix also offers a centralized exchange (CEX) feature, allowing users to buy and sell cryptocurrencies directly with other users.",
+      "category": "EXCHANGE"
+    },
+    {
+      "product_id": 119,
+      "product_name": "AMINA Bank",
+      "current": [],
+      "recommended": [
+        "Card - Crypto Card (Custodial)",
+        "CEX"
+      ],
+      "primary_type": "CEX",
+      "to_add": [
+        "Card - Crypto Card (Custodial)",
+        "CEX"
+      ],
+      "to_remove": [],
+      "analysis": "AMINA Bank is a centralized exchange platform that enables users to buy, sell, and trade various cryptocurrencies. It also offers a crypto card service that allows users to spend their cryptocurrency balances at traditional merchants.",
+      "confidence": "high",
+      "change_reason": "Based on the product's features and functionality, it matches the CEX and Card types.",
+      "category": "Financial"
+    },
+    {
+      "product_id": 122,
+      "product_name": "Anchorage Digital",
+      "current": [],
+      "recommended": [
+        "Prime",
+        "Custody"
+      ],
+      "primary_type": "Custody",
+      "to_add": [
+        "Prime",
+        "Custody"
+      ],
+      "to_remove": [],
+      "analysis": "Anchorage Digital provides institutional-grade custody services for cryptocurrencies, including multi-sig wallets and secure storage solutions. It also offers prime brokerage services with credit facilities and unified account management.",
+      "confidence": "high",
+      "change_reason": "Primary type is Custody due to its focus on institutional-grade security and storage, but Prime is added as a secondary recommendation due to its additional features.",
+      "category": "Custody"
+    }
+  ],
+  "verified": [],
+  "errors": [],
+  "summary": {
+    "total_evaluated": 9,
+    "corrections_needed": 9,
+    "verified_ok": 0,
+    "errors": 0
+  }
+}

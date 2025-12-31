@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Produits - SAFE SCORING{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-8">
+    <h1 class="text-3xl font-bold text-white">📦 Produits</h1>
+    <a href="/products/add" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium">
+        + Ajouter un produit
+    </a>
+</div>
+
+<!-- Tableau des produits -->
+<div class="bg-gray-800 rounded-xl overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-700">
+            <tr>
+                <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Produit</th>
+                <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Type</th>
+                <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Marque</th>
+                <th class="px-6 py-4 text-center text-sm font-medium text-gray-300">Score SAFE</th>
+                <th class="px-6 py-4 text-right text-sm font-medium text-gray-300">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-700">
+            {% for product in products %}
+            <tr class="hover:bg-gray-750">
+                <td class="px-6 py-4">
+                    <a href="/products/{{ product.id }}" class="text-white font-medium hover:text-emerald-400">
+                        {{ product.name }}
+                    </a>
+                </td>
+                <td class="px-6 py-4 text-gray-400">
+                    {{ product.product_types.name if product.product_types else '-' }}
+                </td>
+                <td class="px-6 py-4 text-gray-400">
+                    {{ product.brands.name if product.brands else '-' }}
+                </td>
+                <td class="px-6 py-4 text-center">
+                    <span class="score-badge inline-block px-3 py-1 rounded-full text-sm font-bold" data-product-id="{{ product.id }}">
+                        --
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <a href="/products/{{ product.id }}/evaluate" 
+                       class="text-emerald-400 hover:text-emerald-300 text-sm font-medium">
+                        📝 Évaluer
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<p class="text-gray-500 text-sm mt-4 text-center">
+    {{ products|length }} produits
+</p>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Charger les scores pour chaque produit
+    document.querySelectorAll('.score-badge').forEach(async badge => {
+        const productId = badge.dataset.productId;
+        try {
+            const response = await fetch(`/api/calculate-score/${productId}`);
+            const data = await response.json();
+            
+            if (data && data.global_score !== null) {
+                badge.textContent = data.global_score + '%';
+                
+                // Couleur selon le score
+                if (data.global_score >= 70) {
+                    badge.classList.add('bg-emerald-600', 'text-white');
+                } else if (data.global_score >= 50) {
+                    badge.classList.add('bg-yellow-600', 'text-white');
+                } else {
+                    badge.classList.add('bg-red-600', 'text-white');
+                }
+            } else {
+                badge.textContent = 'N/A';
+                badge.classList.add('bg-gray-600', 'text-gray-300');
+            }
+        } catch (e) {
+            badge.textContent = '-';
+            badge.classList.add('bg-gray-600', 'text-gray-300');
+        }
+    });
+</script>
+{% endblock %}

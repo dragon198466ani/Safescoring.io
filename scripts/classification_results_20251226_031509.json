@@ -1,0 +1,70 @@
+{
+  "timestamp": "2025-12-26T03:15:09.130101",
+  "corrections": [
+    {
+      "product_id": 117,
+      "product_name": "1inch",
+      "current": [],
+      "recommended": [
+        "DEX",
+        "CEX"
+      ],
+      "primary_type": "DEX",
+      "to_add": [
+        "DEX",
+        "CEX"
+      ],
+      "to_remove": [],
+      "analysis": "1inch is a decentralized exchange aggregator that allows users to find and compare prices across multiple DEXs. It provides a user-friendly interface for traders to access various DEXs and execute trades.",
+      "confidence": "high",
+      "change_reason": "1inch's primary function is as a DEX aggregator, but it also offers CEX functionality through its API.",
+      "category": "DEX"
+    },
+    {
+      "product_id": 118,
+      "product_name": "1inch Card",
+      "current": [],
+      "recommended": [
+        "CEX",
+        "Card"
+      ],
+      "primary_type": "Card",
+      "to_add": [
+        "CEX",
+        "Card"
+      ],
+      "to_remove": [],
+      "analysis": "The 1inch Card is a payment card issued by a centralized provider, allowing users to spend cryptocurrency at traditional merchants. It provides fiat-to-crypto conversion and has a mobile management app.",
+      "confidence": "high",
+      "change_reason": "Based on the product's functionality and description",
+      "category": "Payment"
+    },
+    {
+      "product_id": 120,
+      "product_name": "Aave",
+      "current": [],
+      "recommended": [
+        "Lending",
+        "DeFi Tools"
+      ],
+      "primary_type": "Lending",
+      "to_add": [
+        "Lending",
+        "DeFi Tools"
+      ],
+      "to_remove": [],
+      "analysis": "Aave is a decentralized lending protocol that allows users to lend and borrow cryptocurrencies. It provides a platform for institutional investors to access the DeFi market.",
+      "confidence": "high",
+      "change_reason": "Based on its functionality and features, Aave is best classified as a Lending protocol.",
+      "category": "Lending"
+    }
+  ],
+  "verified": [],
+  "errors": [],
+  "summary": {
+    "total_evaluated": 3,
+    "corrections_needed": 3,
+    "verified_ok": 0,
+    "errors": 0
+  }
+}

@@ -1,0 +1,85 @@
+# SafeScoring Dual License
+
+Copyright (c) 2024-2025 SafeScoring
+
+## Open Source License (AGPL-3.0)
+
+This software is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+
+You are free to:
+- Use, copy, and distribute the software
+- Modify the source code
+- Run the software for any purpose
+
+Under the following conditions:
+- **Disclose Source**: You must make your source code available when you distribute the software
+- **Network Use**: If you run a modified version on a server and let users interact with it, you must make your source code available to them
+- **Same License**: Modifications must be released under the same license
+- **State Changes**: You must document changes made to the code
+
+Full AGPL-3.0 license text: https://www.gnu.org/licenses/agpl-3.0.en.html
+
+---
+
+## Commercial License
+
+For commercial use without AGPL-3.0 requirements (e.g., proprietary modifications, SaaS without source disclosure), a commercial license is available.
+
+### What requires a Commercial License?
+
+- Running SafeScoring as a commercial SaaS without sharing your modifications
+- Integrating SafeScoring into proprietary software
+- Removing SafeScoring branding/attribution
+- Using the SAFE methodology database for commercial purposes without attribution
+
+### Commercial License Benefits
+
+- No copyleft requirements
+- Priority support
+- Access to premium features
+- Custom integrations
+- SLA guarantees
+
+### Pricing
+
+Contact us for commercial licensing:
+- Email: license@safescoring.com
+- Website: https://safescoring.com/enterprise
+
+---
+
+## Attribution Requirements (All Licenses)
+
+When using SafeScoring, you must:
+
+1. Keep the "Powered by SafeScoring" attribution visible
+2. Link back to https://safescoring.com
+3. Not misrepresent SafeScoring scores or methodology
+
+---
+
+## SAFE Methodology
+
+The SAFE scoring methodology (Security, Adversity, Fidelity, Efficiency) and the 916 norms database are part of this project and covered by the same dual license.
+
+---
+
+## Third-Party Components
+
+This project includes third-party open source components with their own licenses:
+- Next.js (MIT)
+- React (MIT)
+- Flask (BSD-3-Clause)
+- Supabase (Apache-2.0)
+- TailwindCSS (MIT)
+- DaisyUI (MIT)
+
+See package.json and requirements.txt for complete dependency lists.
+
+---
+
+## Questions?
+
+If you're unsure which license applies to your use case, please contact us at license@safescoring.com.
+
+We want SafeScoring to be accessible while ensuring sustainability. Most open source and non-commercial uses are covered by AGPL-3.0.

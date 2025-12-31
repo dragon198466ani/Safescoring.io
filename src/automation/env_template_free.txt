@@ -1,0 +1,81 @@
+# ============================================
+# SAFESCORING.IO - Configuration (100% GRATUIT)
+# ============================================
+# Copier ce fichier en .env et remplir les valeurs
+# cp .env.template .env
+
+# ============================================
+# 🇫🇷 MISTRAL AI (GRATUIT - Français!)
+# ============================================
+# Obtenir gratuitement sur: https://console.mistral.ai
+# Limites: 1 requête/sec, 500K tokens/mois
+# Modèles: Mistral Small, Mistral Large
+MISTRAL_API_KEY=1UrlJxV2G7O0kngOXMDI1dMT2xT39rLD
+
+# ============================================
+# 🔮 GOOGLE GEMINI API (GRATUIT - 1.5M tokens/jour!)
+# ============================================
+# Obtenir gratuitement sur: https://aistudio.google.com
+# Limites: 15 requetes/min, 1500 requetes/jour par cle
+# Modele: Gemini 2.0 Flash / 1.5 Flash
+# ROTATION: Ajoutez plusieurs cles pour multiplier les limites!
+GOOGLE_API_KEY=AIzaSyC1ECSugM6TX4U-nQ644t5yOWoi8SZwHkE
+GOOGLE_API_KEY_1=AIzaSyAZF5k_sBtZHp4z3UftK57hZa9CQekHx9o
+GOOGLE_API_KEY_2=AIzaSyDsttjk6AGe0mciBCjV6gB5Qhi8cpYhtl0
+GOOGLE_API_KEY_3=AIzaSyBD75pQrfWjQ4Vcq7DQUB6q5Q2clyxFWNA
+GOOGLE_API_KEY_4=AIzaSyBrLWEV7Gl0N9BwD3XkSjrGv9aHflcjKrM
+GOOGLE_API_KEY_5=AIzaSyDQTPbUwbBsfthkQ41fIymCzwvxOJMlq3M
+
+#CLAUDE
+ANTHROPIC_API_KEY=sk-ant-api03-xxxxxxxxxxxxx
+# ============================================
+# 🗄️ SUPABASE (GRATUIT - Tier Free)
+# ============================================
+# Créer projet sur: https://supabase.com
+# Dashboard > Settings > API
+# Limites free: 500MB DB, 1GB storage, 2GB bandwidth
+NEXT_PUBLIC_SUPABASE_URL=https://ajdncttomdqojlozxjxu.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqZG5jdHRvbWRxb2psb3p4anh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0MjMwNzUsImV4cCI6MjA3OTk5OTA3NX0.tTgqj-ALcl0oIdxFHuFQkB19apiz9CSyvV2X1TMWjEk
+
+# ============================================
+# 🔒 NVD API - CVE (GRATUIT - Optionnel)
+# ============================================
+# Obtenir sur: https://nvd.nist.gov/developers/request-an-api-key
+# Sans clé: 5 requêtes/30sec (suffisant)
+# Avec clé: 50 requêtes/30sec
+NVD_API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+# ============================================
+# 📱 TELEGRAM (GRATUIT - Optionnel)
+# ============================================
+# Pour recevoir les rapports automatiques
+# 1. Créer bot via @BotFather sur Telegram
+# 2. /start le bot pour activer
+# 3. Obtenir chat_id via @userinfobot ou API
+TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
+TELEGRAM_ADMIN_CHAT_ID=123456789
+
+# ============================================
+# 🖥️ OLLAMA (GRATUIT - Local, Optionnel)
+# ============================================
+# Installation: curl -fsSL https://ollama.com/install.sh | sh
+# Télécharger modèle: ollama pull llama3.2
+# Pas besoin de clé API - 100% local et illimité!
+# Le script détecte automatiquement si Ollama est disponible
+
+# ============================================
+# ⚙️ CONFIGURATION AVANCÉE (Optionnel)
+# ============================================
+# Délais entre requêtes (secondes)
+# SCRAPE_DELAY_MIN=2.0
+# SCRAPE_DELAY_MAX=5.0
+# MISTRAL_DELAY=1.5
+# GEMINI_DELAY=1.2
+
+# Taille des batches
+# BATCH_SIZE_NORMS=35
+
+# Modèles (override si besoin)
+# MISTRAL_MODEL=mistral-small-latest
+# GEMINI_MODEL=gemini-1.5-flash
+# OLLAMA_MODEL=llama3.2

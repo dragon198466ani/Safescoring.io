@@ -1,0 +1,59 @@
+import { NextResponse } from "next/server";
+import { auth } from "@/libs/auth";
+import { createCustomerPortal } from "@/libs/stripe";
+import { supabaseAdmin } from "@/libs/supabase";
+
+export async function POST(req) {
+  const session = await auth();
+
+  if (session) {
+    try {
+      const body = await req.json();
+
+      const { id } = session.user;
+
+      if (!supabaseAdmin) {
+        return NextResponse.json(
+          { error: "Database not configured" },
+          { status: 500 }
+        );
+      }
+
+      const { data: user } = await supabaseAdmin
+        .from("users")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (!user?.customer_id) {
+        return NextResponse.json(
+          {
+            error:
+              "You don't have a billing account yet. Make a purchase first.",
+          },
+          { status: 400 }
+        );
+      } else if (!body.returnUrl) {
+        return NextResponse.json(
+          { error: "Return URL is required" },
+          { status: 400 }
+        );
+      }
+
+      const stripePortalUrl = await createCustomerPortal({
+        customerId: user.customer_id,
+        returnUrl: body.returnUrl,
+      });
+
+      return NextResponse.json({
+        url: stripePortalUrl,
+      });
+    } catch (e) {
+      console.error(e);
+      return NextResponse.json({ error: e?.message }, { status: 500 });
+    }
+  } else {
+    // Not Signed in
+    return NextResponse.json({ error: "Not signed in" }, { status: 401 });
+  }
+}

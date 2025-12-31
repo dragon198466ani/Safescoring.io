@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - SAFE SCORING{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="bg-gray-800 rounded-xl p-6 mb-6">
+        <div class="flex items-start justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-white">{{ product.name }}</h1>
+                <p class="text-gray-400 mt-1">
+                    {{ product.product_types.name if product.product_types else 'Type non défini' }}
+                    {% if product.brands %} • {{ product.brands.name }}{% endif %}
+                </p>
+                {% if product.url %}
+                <a href="{{ product.url }}" target="_blank" class="text-emerald-400 hover:underline text-sm mt-2 inline-block">
+                    🔗 {{ product.url }}
+                </a>
+                {% endif %}
+            </div>
+            <a href="/products/{{ product.id }}/evaluate" 
+               class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium">
+                📝 Modifier l'évaluation
+            </a>
+        </div>
+    </div>
+    
+    <!-- Score Global -->
+    {% if score %}
+    <div class="grid grid-cols-5 gap-4 mb-6">
+        <!-- Score SAFE -->
+        <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-xl p-6 text-center">
+            <div class="text-5xl font-bold text-white">
+                {{ score.global_score if score.global_score else '--' }}{% if score.global_score %}%{% endif %}
+            </div>
+            <div class="text-emerald-200 mt-2">Score SAFE</div>
+        </div>
+        
+        <!-- Security -->
+        <div class="bg-gray-800 rounded-xl p-4 text-center border-2 border-blue-500/30">
+            <div class="text-3xl font-bold text-blue-400">
+                {{ score.security_score if score.security_score else '--' }}{% if score.security_score %}%{% endif %}
+            </div>
+            <div class="text-gray-400 text-sm mt-1">🔒 Security</div>
+            <div class="text-xs text-gray-500 mt-1">
+                {{ score.stats.S.yes }}/{{ score.stats.S.yes + score.stats.S.no }} normes
+            </div>
+        </div>
+        
+        <!-- Accessibility -->
+        <div class="bg-gray-800 rounded-xl p-4 text-center border-2 border-green-500/30">
+            <div class="text-3xl font-bold text-green-400">
+                {{ score.accessibility_score if score.accessibility_score else '--' }}{% if score.accessibility_score %}%{% endif %}
+            </div>
+            <div class="text-gray-400 text-sm mt-1">🌐 Accessibility</div>
+            <div class="text-xs text-gray-500 mt-1">
+                {{ score.stats.A.yes }}/{{ score.stats.A.yes + score.stats.A.no }} normes
+            </div>
+        </div>
+        
+        <!-- Functionality -->
+        <div class="bg-gray-800 rounded-xl p-4 text-center border-2 border-yellow-500/30">
+            <div class="text-3xl font-bold text-yellow-400">
+                {{ score.functionality_score if score.functionality_score else '--' }}{% if score.functionality_score %}%{% endif %}
+            </div>
+            <div class="text-gray-400 text-sm mt-1">⚙️ Functionality</div>
+            <div class="text-xs text-gray-500 mt-1">
+                {{ score.stats.F.yes }}/{{ score.stats.F.yes + score.stats.F.no }} normes
+            </div>
+        </div>
+        
+        <!-- Experience -->
+        <div class="bg-gray-800 rounded-xl p-4 text-center border-2 border-purple-500/30">
+            <div class="text-3xl font-bold text-purple-400">
+                {{ score.experience_score if score.experience_score else '--' }}{% if score.experience_score %}%{% endif %}
+            </div>
+            <div class="text-gray-400 text-sm mt-1">✨ Experience</div>
+            <div class="text-xs text-gray-500 mt-1">
+                {{ score.stats.E.yes }}/{{ score.stats.E.yes + score.stats.E.no }} normes
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Résumé des évaluations -->
+    <div class="bg-gray-800 rounded-xl p-6">
+        <h2 class="text-xl font-semibold text-white mb-4">📊 Résumé des évaluations</h2>
+        
+        {% if evaluations %}
+        <div class="grid grid-cols-3 gap-4 text-center">
+            <div class="bg-emerald-900/30 rounded-lg p-4">
+                <div class="text-3xl font-bold text-emerald-400">
+                    {{ evaluations.values()|selectattr('__eq__', 'YES')|list|length if evaluations else 0 }}
+                </div>
+                <div class="text-gray-400">✅ YES</div>
+            </div>
+            <div class="bg-red-900/30 rounded-lg p-4">
+                <div class="text-3xl font-bold text-red-400">
+                    {{ evaluations.values()|selectattr('__eq__', 'NO')|list|length if evaluations else 0 }}
+                </div>
+                <div class="text-gray-400">❌ NO</div>
+            </div>
+            <div class="bg-gray-700/30 rounded-lg p-4">
+                <div class="text-3xl font-bold text-gray-400">
+                    {{ evaluations|length - (evaluations.values()|selectattr('__eq__', 'YES')|list|length + evaluations.values()|selectattr('__eq__', 'NO')|list|length) if evaluations else 0 }}
+                </div>
+                <div class="text-gray-400">➖ N/A</div>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-gray-400 text-center py-8">
+            Aucune évaluation pour ce produit.
+            <a href="/products/{{ product.id }}/evaluate" class="text-emerald-400 hover:underline">Commencer l'évaluation</a>
+        </p>
+        {% endif %}
+    </div>
+    
+    <!-- Retour -->
+    <div class="mt-6 text-center">
+        <a href="/products" class="text-gray-400 hover:text-white">
+            ← Retour à la liste des produits
+        </a>
+    </div>
+</div>
+{% endblock %}
