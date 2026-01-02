@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo, useMemo } from "react";
 import Link from "next/link";
 
 const levelColors = {
@@ -23,7 +23,7 @@ const levelBadges = {
  * Leaderboard - Top contributors for future token airdrop
  * Creates FOMO and engagement anticipation
  */
-export default function Leaderboard({ limit = 10, showTitle = true }) {
+function Leaderboard({ limit = 10, showTitle = true }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -208,3 +208,6 @@ export default function Leaderboard({ limit = 10, showTitle = true }) {
     </div>
   );
 }
+
+// Memoize to prevent re-renders when parent updates
+export default memo(Leaderboard);

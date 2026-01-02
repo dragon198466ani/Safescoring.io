@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo, useCallback, useMemo } from "react";
 
 /**
  * CommunityStats - Product Links & Data
@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
  * - Technical data (GitHub, DefiLlama for DeFi)
  * - Community reviews (Trustpilot, Reddit)
  */
-export default function CommunityStats({ productName, productSlug }) {
+function CommunityStats({ productName, productSlug }) {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,24 +31,30 @@ export default function CommunityStats({ productName, productSlug }) {
     fetchStats();
   }, [productSlug]);
 
-  const formatNumber = (num) => {
+  const formatNumber = useCallback((num) => {
     if (!num) return "0";
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
     if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
     return num.toString();
-  };
+  }, []);
 
-  const getChangeColor = (change) => {
+  const getChangeColor = useCallback((change) => {
     if (!change) return "text-base-content/50";
     const num = parseFloat(change);
     if (num > 0) return "text-green-400";
     if (num < 0) return "text-red-400";
     return "text-base-content/50";
-  };
+  }, []);
 
-  // Generate search URLs
-  const trustpilotUrl = `https://www.trustpilot.com/search?query=${encodeURIComponent(productName)}`;
-  const redditUrl = `https://www.reddit.com/search/?q=${encodeURIComponent(productName)}&type=link&sort=new`;
+  // Generate search URLs - memoized
+  const trustpilotUrl = useMemo(() =>
+    `https://www.trustpilot.com/search?query=${encodeURIComponent(productName)}`,
+    [productName]
+  );
+  const redditUrl = useMemo(() =>
+    `https://www.reddit.com/search/?q=${encodeURIComponent(productName)}&type=link&sort=new`,
+    [productName]
+  );
 
   // Check if we have any official links
   const hasOfficialLinks = stats?.links?.website || stats?.links?.discord ||
@@ -326,3 +332,6 @@ export default function CommunityStats({ productName, productSlug }) {
     </div>
   );
 }
+
+// Memoize component to prevent unnecessary re-renders
+export default memo(CommunityStats);

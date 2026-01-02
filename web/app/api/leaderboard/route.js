@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 
+// Cache leaderboard for 5 minutes (changes infrequently)
+export const revalidate = 300;
+
 /**
  * GET /api/leaderboard
  * Get top contributors leaderboard for future token airdrop
@@ -121,19 +124,26 @@ export async function GET(request) {
     );
     const totalContributors = globalStats?.length || 0;
 
-    return NextResponse.json({
-      leaderboard: formattedLeaderboard,
-      global: {
-        totalContributors,
-        totalPointsDistributed: totalPoints,
-        averagePoints: totalContributors > 0 ? Math.round(totalPoints / totalContributors) : 0,
+    return NextResponse.json(
+      {
+        leaderboard: formattedLeaderboard,
+        global: {
+          totalContributors,
+          totalPointsDistributed: totalPoints,
+          averagePoints: totalContributors > 0 ? Math.round(totalPoints / totalContributors) : 0,
+        },
+        airdropInfo: {
+          message: "Early contributors will be rewarded. Points accumulated now will count towards the future $SAFE token airdrop.",
+          formula: "Airdrop = Base Points × Level Multiplier × Seniority Multiplier",
+          snapshotDate: "TBA",
+        },
       },
-      airdropInfo: {
-        message: "Early contributors will be rewarded. Points accumulated now will count towards the future $SAFE token airdrop.",
-        formula: "Airdrop = Base Points × Level Multiplier × Seniority Multiplier",
-        snapshotDate: "TBA",
-      },
-    });
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        },
+      }
+    );
 
   } catch (error) {
     console.error("Leaderboard error:", error);

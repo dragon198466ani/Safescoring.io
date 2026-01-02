@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 /**
@@ -492,7 +492,7 @@ export default function AdminDashboard() {
 // Composants utilitaires
 // ============================================
 
-function StatCard({ label, value, color, icon }) {
+const StatCard = memo(function StatCard({ label, value, color, icon }) {
   const colorClasses = {
     warning: 'bg-warning/20 text-warning',
     info: 'bg-info/20 text-info',
@@ -511,9 +511,9 @@ function StatCard({ label, value, color, icon }) {
       </div>
     </div>
   );
-}
+});
 
-function StatusBadge({ status }) {
+const StatusBadge = memo(function StatusBadge({ status }) {
   const styles = {
     pending: 'badge-warning',
     processing: 'badge-info',
@@ -526,9 +526,9 @@ function StatusBadge({ status }) {
       {status}
     </span>
   );
-}
+});
 
-function ClaimStatusBadge({ status, dnsVerified, domainMatch }) {
+const ClaimStatusBadge = memo(function ClaimStatusBadge({ status, dnsVerified, domainMatch }) {
   const statusConfig = {
     pending: { class: 'badge-warning', label: 'En attente' },
     dns_verified: { class: 'badge-info', label: 'DNS vérifié' },
@@ -553,7 +553,7 @@ function ClaimStatusBadge({ status, dnsVerified, domainMatch }) {
       </div>
     </div>
   );
-}
+});
 
 function AddProductForm({ supabase, onAdd, showMessage }) {
   const [name, setName] = useState('');
