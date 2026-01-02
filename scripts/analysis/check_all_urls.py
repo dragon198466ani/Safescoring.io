@@ -19,7 +19,7 @@ def check_url_content(url):
         if r.status_code == 200:
             return len(r.text)
         return 0
-    except:
+    except (requests.exceptions.RequestException, Exception):
         return -1  # Error
 
 def main():

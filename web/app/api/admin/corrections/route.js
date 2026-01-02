@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/libs/auth";
+import { auth } from "@/libs/auth";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 
 /**
@@ -9,7 +8,7 @@ import { supabase, isSupabaseConfigured } from "@/libs/supabase";
  */
 export async function GET(request) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
 
     // Check admin access (you may want to add proper admin check)
     if (!session?.user?.id) {
@@ -100,7 +99,7 @@ export async function GET(request) {
  */
 export async function PATCH(request) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
 
     if (!session?.user?.id) {
       return NextResponse.json(

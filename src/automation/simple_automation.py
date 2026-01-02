@@ -52,7 +52,7 @@ class SimpleAutomation:
         try:
             response = requests.get(f"{SUPABASE_URL}/rest/v1/", headers=self.headers, timeout=10)
             return response.status_code == 200
-        except:
+        except (requests.exceptions.RequestException, Exception):
             return False
     
     def call_mistral(self, prompt: str) -> dict:

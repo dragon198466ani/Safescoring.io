@@ -175,9 +175,11 @@ Description: {product_type.get('description', 'Pas de description')}
             )
 
             try:
-                response = self.ai_provider.call(
-                    system_prompt="Tu es un expert en classification de normes de sécurité crypto.",
-                    user_prompt=prompt,
+                # Use strategic applicability method for quality
+                full_prompt = "Tu es un expert en classification de normes de sécurité crypto.\n\n" + prompt
+                response = self.ai_provider.call_for_applicability(
+                    type_code=type_data.get('code', 'DEFAULT'),
+                    prompt=full_prompt,
                     max_tokens=4000
                 )
 

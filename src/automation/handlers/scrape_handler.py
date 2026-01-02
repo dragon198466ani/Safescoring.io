@@ -124,7 +124,7 @@ def get_cache(supabase, url: str) -> str:
             .single() \
             .execute()
         return result.data['content'] if result.data else None
-    except:
+    except Exception:
         return None
 
 

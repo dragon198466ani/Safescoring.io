@@ -16,6 +16,7 @@ from datetime import datetime
 # Import from common modules
 from .config import SUPABASE_URL, get_supabase_headers
 from .api_provider import AIProvider
+from .ai_strategy import get_compatibility_strategy, AIModel
 
 
 # Compatibility context examples for AI
@@ -105,6 +106,7 @@ class TypeCompatibilityGenerator:
     def analyze_type_compatibility(self, type_a, type_b):
         """
         Analyze compatibility between two product types using AI.
+        Uses STRATEGIC MODEL SELECTION based on type pair complexity.
         Returns dict with compatibility info or None on error.
         """
         # Same type = always native compatible
@@ -115,6 +117,14 @@ class TypeCompatibilityGenerator:
                 'base_method': 'Same product type',
                 'description': 'Products of the same type are natively compatible with each other.'
             }
+
+        # Get type codes for strategy selection
+        code_a = type_a.get('code', 'DEFAULT')
+        code_b = type_b.get('code', 'DEFAULT')
+
+        # Get strategic model for this type pair
+        strategy = get_compatibility_strategy(code_a, code_b)
+        criteria = strategy.get('criteria', [])
 
         context_examples = self.build_context_examples()
 
@@ -134,6 +144,8 @@ COMPATIBILITY LEVELS:
 - via_bridge: Requires intermediary tool/service to connect
 - incompatible: Cannot work together (fundamentally different purposes)
 
+KEY CRITERIA TO EVALUATE: {', '.join(criteria) if criteria else 'general compatibility'}
+
 REFERENCE EXAMPLES:
 {context_examples}
 
@@ -144,7 +156,8 @@ Consider: technical protocols, user workflows, data/asset flows, common integrat
 Respond ONLY in valid JSON:
 {{"compatible": true/false, "level": "native|partial|via_bridge|incompatible", "method": "typical connection method (max 100 chars)", "description": "explanation of compatibility (max 200 chars)"}}"""
 
-        result = self.ai_provider.call(prompt, max_tokens=500, temperature=0.2)
+        # Use strategic model selection for this type pair
+        result = self.ai_provider.call_for_compatibility(code_a, code_b, prompt, max_tokens=500, temperature=0.2)
 
         if result:
             try:

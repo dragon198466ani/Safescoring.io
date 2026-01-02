@@ -19,28 +19,26 @@ VERIFIED_TYPES = {
     # ============================================================
     # HARDWARE WALLETS - Vérifiés via web search
     # ============================================================
+    # NOTE: Anti-coercion features (duress PIN, brick me, passphrase) are now
+    # evaluated via the Adversity (A) pillar, not as separate product types
 
-    # Avec AC Phys confirmé (duress PIN, brick me, passphrase avancée)
-    "Coldcard Mk4": ["HW Cold", "AC Phys"],  # Duress PIN, Brick Me PIN
-    "Coldcard Q": ["HW Cold", "AC Phys"],  # Duress PIN, Brick Me PIN
-    "Trezor Model One": ["HW Cold", "AC Phys"],  # Passphrase
-    "Trezor Model T": ["HW Cold", "AC Phys"],  # Passphrase
-    "Trezor Safe 3": ["HW Cold", "AC Phys"],  # Passphrase
-    "Trezor Safe 5": ["HW Cold", "AC Phys"],  # Passphrase
-    "Trezor Safe 7": ["HW Cold", "AC Phys"],  # Passphrase
-    "BitBox02": ["HW Cold", "AC Phys"],  # Passphrase, optional duress
-    "NGRAVE ZERO": ["HW Cold", "AC Phys"],  # Passphrase
-    "Foundation Passport": ["HW Cold", "AC Phys"],  # Passphrase, duress
-    "Specter DIY": ["HW Cold", "AC Phys"],  # Passphrase
-    "Keystone 3 Pro": ["HW Cold", "AC Phys"],  # Dummy wallet, countdown brick
-    "Keystone Pro": ["HW Cold", "AC Phys"],  # Dummy wallet
-
-    # Nouveaux avec AC Phys (découverts via web search)
-    "Jade": ["HW Cold", "AC Phys"],  # Duress PIN + passphrase
-    "OneKey Pro": ["HW Cold", "AC Phys"],  # Hidden wallet + passphrase
-    "OneKey Classic": ["HW Cold", "AC Phys"],  # Hidden wallet + passphrase
-
-    # Sans AC Phys (passphrase basique uniquement, pas de duress dédié)
+    # All hardware wallets get HW Cold only
+    "Coldcard Mk4": ["HW Cold"],
+    "Coldcard Q": ["HW Cold"],
+    "Trezor Model One": ["HW Cold"],
+    "Trezor Model T": ["HW Cold"],
+    "Trezor Safe 3": ["HW Cold"],
+    "Trezor Safe 5": ["HW Cold"],
+    "Trezor Safe 7": ["HW Cold"],
+    "BitBox02": ["HW Cold"],
+    "NGRAVE ZERO": ["HW Cold"],
+    "Foundation Passport": ["HW Cold"],
+    "Specter DIY": ["HW Cold"],
+    "Keystone 3 Pro": ["HW Cold"],
+    "Keystone Pro": ["HW Cold"],
+    "Jade": ["HW Cold"],
+    "OneKey Pro": ["HW Cold"],
+    "OneKey Classic": ["HW Cold"],
     "Ledger Nano S": ["HW Cold"],  # Passphrase only, no dedicated duress
     "Ledger Nano S Plus": ["HW Cold"],  # Passphrase only
     "Ledger Nano X": ["HW Cold"],  # Passphrase only
@@ -56,11 +54,12 @@ VERIFIED_TYPES = {
     "Satochip": ["HW Cold"],
     "Keystone Essential": ["HW Cold"],  # Basic model, no duress
 
-    # HW Hot / NFC Signers
-    "Coinkite SATSCARD": ["HW Hot"],
-    "YubiKey 5": ["HW Hot"],
+    # NFC Signers / Cards
+    # NOTE: HW Hot removed - not standard terminology. SATSCARD is a bearer NFC card.
+    "Coinkite SATSCARD": ["HW NFC Signer"],  # Bearer NFC Bitcoin card
     "Coinkite TAPSIGNER": ["HW NFC Signer"],
     "Status Keycard": ["HW NFC Signer"],
+    # YubiKey removed - it's 2FA security key, not a crypto wallet
 
     # ============================================================
     # SOFTWARE WALLETS - Vérifiés
@@ -93,13 +92,13 @@ VERIFIED_TYPES = {
     "Keystone Nexus": ["SW Mobile"],
     "Ledger Live": ["SW Mobile"],
 
-    # Privacy wallets (AC Digit)
-    "Wasabi Wallet": ["SW Browser", "AC Digit"],
-    "Samourai Wallet": ["SW Mobile", "AC Digit"],
+    # Privacy wallets (privacy features evaluated via Adversity pillar)
+    "Wasabi Wallet": ["SW Browser"],
+    "Samourai Wallet": ["SW Mobile"],
 
     # MultiSig wallets
-    "Casa": ["Wallet MultiSig"],  # No AC Digit, just multisig
-    "Nunchuk": ["Wallet MultiSig"],  # No AC Digit, just multisig
+    "Casa": ["Wallet MultiSig"],
+    "Nunchuk": ["Wallet MultiSig"],
     "Safe Wallet": ["Wallet MultiSig"],
 
     # Inheritance
@@ -303,7 +302,7 @@ VERIFIED_TYPES = {
     # ============================================================
     "Glacier Protocol": ["Protocol"],
     "Copper ClearLoop": ["Settlement"],
-    "Hermit (Unchained)": ["Airgap Signer", "AC Digit"],
+    "Hermit (Unchained)": ["Airgap Signer"],
     "Vault12 Guard": ["Inheritance", "Seed Splitter"],
     "SeedXOR": ["Seed Splitter"],
     "Trezor Shamir Backup": ["Seed Splitter"],

@@ -67,7 +67,7 @@ def get_trustpilot_data(product_name: str, product_url: str) -> dict:
             parts = hostname.split(".")
             if len(parts) > 2:
                 domains.append(".".join(parts[-2:]))
-        except:
+        except (requests.exceptions.RequestException, Exception):
             pass
 
     # From product name

@@ -60,42 +60,11 @@ INSERT INTO product_types (code, name, name_fr, category, definition, includes, 
     TRUE,
     FALSE,
     TRUE
-),
-(
-    'HW Hot',
-    'Hardware Wallet Hot',
-    'Hardware Wallet Hot',
-    'Hardware',
-    'Physical device with Secure Element designed for regular connected use via USB or Bluetooth. Combines hardware security with hot wallet convenience. Keys remain on device but it is regularly connected for transactions.',
-    ARRAY[
-        'Secure Element chip',
-        'USB/Bluetooth connectivity',
-        'Regular connection for transactions',
-        'Real-time portfolio management',
-        'DApps and DeFi compatibility',
-        'Physical transaction confirmation',
-        'Integrated companion app',
-        'Touchscreen (some models)'
-    ],
-    ARRAY[
-        'Pure air-gapped operation',
-        'Strict cold storage',
-        'Custodial services'
-    ],
-    ARRAY[
-        'Internet exposure during use',
-        'Bluetooth vulnerabilities',
-        'USB attack vectors',
-        'Firmware update attacks',
-        'Companion app compromise',
-        'Physical theft while connected'
-    ],
-    ARRAY['Ledger Nano X (connected mode)', 'Ledger Stax', 'Ledger Flex', 'Trezor Safe 5', 'GridPlus Lattice1'],
-    ARRAY['hardware wallet', 'hot wallet', 'connected', 'USB', 'bluetooth', 'ledger live', 'secure element', 'NFC'],
-    TRUE,
-    FALSE,
-    TRUE
 );
+-- NOTE: "HW Hot" removed - Not standard industry terminology
+-- Hardware wallets are by definition "cold storage" (offline)
+-- Hot wallets are software-based (always connected to internet)
+-- Products previously typed as "HW Hot" should use "HW Cold" instead
 
 -- ============================================================
 -- CATEGORY: SOFTWARE (6 types)
@@ -3184,10 +3153,10 @@ FROM product_types
 ORDER BY id;
 
 -- ============================================================
--- RESULT: 79 types logically organized by category
+-- RESULT: 78 types logically organized by category (HW Hot removed)
 -- ============================================================
 --
--- HARDWARE (2)         : HW Cold, HW Hot                              [SAFE: ALL]
+-- HARDWARE (1)         : HW Cold                                       [SAFE: ALL]  (HW Hot removed - not standard)
 -- SOFTWARE (6)         : SW Browser, SW Mobile, SW Desktop, MPC, MultiSig, Smart Wallet  [SAFE: ALL]
 -- BACKUP (2)           : Bkp Digital, Bkp Physical                    [SAFE: ALL]
 -- EXCHANGE (6)         : CEX, DEX, DEX Agg, OTC, NFT Market, Atomic Swap [SAFE: ALL]

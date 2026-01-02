@@ -1,18 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import ButtonSignin from "./ButtonSignin";
 import config from "@/config";
 
+// Throttle function for scroll performance
+const useThrottle = (callback, delay) => {
+  const lastCall = useRef(0);
+  return useCallback((...args) => {
+    const now = Date.now();
+    if (now - lastCall.current >= delay) {
+      lastCall.current = now;
+      callback(...args);
+    }
+  }, [callback, delay]);
+};
+
 const links = [
   { href: "/dashboard/setups", label: "My Stack", highlight: true },
   { href: "/products", label: "Products" },
-  { href: "/#why-audits", label: "Why SafeScoring" },
-  { href: "/#pillars", label: "Methodology" },
+  { href: "/transparency", label: "Scores" },
+  { href: "/methodology", label: "Methodology" },
   { href: "/#pricing", label: "Pricing" },
-  { href: "/about", label: "About" },
 ];
 
 const Header = () => {
@@ -24,13 +35,15 @@ const Header = () => {
     setIsOpen(false);
   }, [pathname]);
 
+  // Throttled scroll handler for better performance (16ms = ~60fps)
+  const handleScroll = useThrottle(() => {
+    setScrolled(window.scrollY > 20);
+  }, 16);
+
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [handleScroll]);
 
   return (
     <header

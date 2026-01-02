@@ -1,27 +1,33 @@
 import Header from "@/components/Header";
 import HeroSafe from "@/components/HeroSafe";
+import Footer from "@/components/Footer";
+// Above the fold - loaded immediately
 import Stats from "@/components/Stats";
 import WhyNotAudits from "@/components/WhyNotAudits";
 import Pillars from "@/components/Pillars";
-import ProductsPreview from "@/components/ProductsPreview";
-import Pricing from "@/components/Pricing";
-import FAQ from "@/components/FAQ";
-import CTA from "@/components/CTA";
-import Footer from "@/components/Footer";
+// Below the fold - lazy loaded for faster initial paint
+import {
+  LazyProductsPreview,
+  LazyPricing,
+  LazyFAQ,
+  LazyCTA,
+} from "@/libs/lazy-components";
 
 export default function Page() {
   return (
     <>
       <Header />
       <main className="hero-bg">
+        {/* Above the fold - critical for FCP */}
         <HeroSafe />
         <Stats />
         <WhyNotAudits />
         <Pillars />
-        <ProductsPreview />
-        <Pricing />
-        <FAQ />
-        <CTA />
+        {/* Below the fold - lazy loaded */}
+        <LazyProductsPreview />
+        <LazyPricing />
+        <LazyFAQ />
+        <LazyCTA />
       </main>
       <Footer />
     </>

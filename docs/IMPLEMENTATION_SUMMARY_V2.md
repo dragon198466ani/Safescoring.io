@@ -95,9 +95,9 @@
 - DeFi Tools (type_id=46)
 - +11 types mixed (default=software)
 
-#### HARDWARE (F200-F204 = N/A) - 3 types
+#### HARDWARE (F200-F204 = N/A) - 2 types
 - HW Cold (type_id=29)
-- HW Hot (type_id=30)
+- ~~HW Hot (type_id=30)~~ **REMOVED** - Not standard industry terminology
 - Bkp Physical (type_id=34)
 
 **Résultat pour DEX**:

@@ -89,12 +89,54 @@ export async function GET(request, { params }) {
       );
     }
 
-    // Fetch incidents from product_incidents table
-    const { data: incidentsData, error: incidentsError } = await supabase
-      .from("product_incidents")
-      .select("*")
-      .eq("product_id", product.id)
-      .order("date", { ascending: false });
+    // Fetch incidents from security_incidents via incident_product_impact junction table
+    // UNIFIED: Utiliser la même source de données que /api/incidents
+    const { data: impactData, error: impactError } = await supabase
+      .from("incident_product_impact")
+      .select(`
+        incident_id,
+        impact_level,
+        funds_lost_usd,
+        users_affected,
+        security_incidents (
+          id,
+          incident_id,
+          title,
+          description,
+          incident_type,
+          severity,
+          incident_date,
+          funds_lost_usd,
+          status,
+          response_quality,
+          source_urls,
+          date_is_estimated,
+          is_published
+        )
+      `)
+      .eq("product_id", product.id);
+
+    // Filter only published incidents and transform
+    const incidentsData = (impactData || [])
+      .filter(item => item.security_incidents?.is_published)
+      .map(item => ({
+        id: item.security_incidents.id,
+        title: item.security_incidents.title,
+        description: item.security_incidents.description,
+        type: item.security_incidents.incident_type,
+        severity: item.security_incidents.severity,
+        date: item.security_incidents.incident_date,
+        date_is_estimated: item.security_incidents.date_is_estimated || false,
+        funds_lost: item.funds_lost_usd || item.security_incidents.funds_lost_usd || 0,
+        funds_recovered: 0, // Not tracked in security_incidents
+        status: item.security_incidents.status,
+        response_quality: item.security_incidents.response_quality,
+        source_url: item.security_incidents.source_urls?.[0] || null,
+        impact_level: item.impact_level,
+      }))
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    const incidentsError = impactError;
 
     // Transform incidents data
     const incidents = (incidentsData || []).map((incident) => {
@@ -138,12 +180,14 @@ export async function GET(request, { params }) {
         type: incident.type,
         severity: incident.severity,
         date: incident.date,
+        dateIsEstimated: incident.date_is_estimated || false, // Flag pour dates inconnues
         fundsLost,
         fundsRecovered,
         status: incident.status,
         responseQuality,
         resolutionDetails,
         sourceUrl: incident.source_url,
+        impactLevel: incident.impact_level || "direct",
       };
     });
 

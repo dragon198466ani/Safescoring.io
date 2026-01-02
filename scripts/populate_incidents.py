@@ -368,7 +368,7 @@ def fetch_rekt_scrape():
             try:
                 date_obj = datetime.strptime(date_str, '%m/%d/%Y')
                 date = date_obj.strftime('%Y-%m-%d')
-            except:
+            except Exception:
                 date = '2023-01-01'
 
             # Clean name from slug (bybit-rekt -> Bybit)

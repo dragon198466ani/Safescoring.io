@@ -31,8 +31,8 @@ class SmartTypeVerifier:
 ## TYPES DISPONIBLES ET DÉFINITIONS
 
 ### HARDWARE (Wallets physiques)
-- **HW Cold**: Hardware wallet air-gapped (Ledger, Trezor, Coldcard). Stockage offline des clés.
-- **HW Hot**: Hardware 2FA/bearer card connecté (YubiKey, SATSCARD). Pas un wallet complet.
+- **HW Cold**: Hardware wallet (Ledger, Trezor, Coldcard). Stockage offline des clés.
+  Note: ALL hardware wallets are "cold" by industry definition - they keep keys offline.
 - **HW NFC Signer**: Carte NFC de signature uniquement (TAPSIGNER, Status Keycard).
 
 ### SOFTWARE (Wallets logiciels)
@@ -61,19 +61,8 @@ class SmartTypeVerifier:
 - **Bkp Digital**: Backup digital/cloud (Ledger Recover).
 - **Seed Splitter**: Shamir Secret Sharing backup (SeedXOR, Trezor Shamir).
 
-### SÉCURITÉ ANTI-COERCION
-- **AC Phys**: Anti-coercion PHYSIQUE/HARDWARE. CRITÈRES STRICTS:
-  * Duress PIN dédié (PIN qui ouvre un wallet leurre)
-  * Brick Me PIN (PIN qui détruit le device)
-  * Hidden wallet HARDWARE (passphrase liée à un 2e PIN)
-  * Countdown to brick
-  * PAS juste passphrase basique!
-
-- **AC Digit**: Anti-coercion DIGITAL/SOFTWARE. CRITÈRES:
-  * CoinJoin natif (Wasabi, Samourai)
-  * Privacy features avancées (Tor intégré, etc.)
-
 ### CUSTODY
+# NOTE: Anti-coercion features (duress PIN, etc.) are evaluated via Adversity (A) pillar, not as separate types
 - **Custody MPC**: Multi-Party Computation custody (Fireblocks).
 - **Custody MultiSig**: Multi-Signature custody (BitGo).
 - **Enterprise Custody**: Custody enterprise-grade.
@@ -95,12 +84,7 @@ class SmartTypeVerifier:
 
 1. **Maximum 3 types** par produit (sauf exceptions justifiées)
 
-2. **AC Phys - TRÈS RESTRICTIF**:
-   - SEULEMENT si le produit a un Duress PIN OU Brick Me PIN OU Hidden Wallet HARDWARE dédié
-   - Passphrase seule NE SUFFIT PAS (tous les wallets ont passphrase)
-   - Exemples valides: Coldcard (duress+brick), Trezor (passphrase avec PIN dédié), Keystone (dummy wallet+brick)
-
-3. **Wallet MultiPlatform vs SW Browser/Mobile**:
+2. **Wallet MultiPlatform vs SW Browser/Mobile**:
    - Si disponible sur browser ET mobile → Wallet MultiPlatform (pas les deux)
    - SW Browser = UNIQUEMENT browser
    - SW Mobile = UNIQUEMENT mobile
@@ -122,8 +106,6 @@ Réponds UNIQUEMENT avec un JSON valide:
     "product": "Nom du produit",
     "analysis": "Analyse factuelle basée sur le contenu web",
     "recommended_types": ["Type1", "Type2"],
-    "ac_phys_eligible": false,
-    "ac_phys_reason": "Raison si true/false",
     "confidence": "high/medium/low"
 }}
 ```
@@ -223,7 +205,6 @@ Réponds UNIQUEMENT avec un JSON valide:
         context += """
 ### QUESTION:
 Analyse ce produit et détermine ses types corrects selon les définitions.
-Sois particulièrement attentif aux critères AC Phys (duress PIN, brick me, etc.).
 """
 
         # Call AI
@@ -269,8 +250,6 @@ Sois particulièrement attentif aux critères AC Phys (duress PIN, brick me, etc
                 'to_add': list(to_add),
                 'to_remove': list(to_remove),
                 'analysis': ai_result.get('analysis', ''),
-                'ac_phys_eligible': ai_result.get('ac_phys_eligible', False),
-                'ac_phys_reason': ai_result.get('ac_phys_reason', ''),
                 'confidence': ai_result.get('confidence', 'medium')
             }
         return None
@@ -388,8 +367,6 @@ Sois particulièrement attentif aux critères AC Phys (duress PIN, brick me, etc
             for c in corrections:
                 print(f"\n  {c['product_name']}:")
                 print(f"    {' + '.join(c['current'])} → {' + '.join(c['recommended'])}")
-                if c.get('ac_phys_reason'):
-                    print(f"    AC Phys: {c['ac_phys_reason']}")
 
         # Apply if requested
         if apply and corrections:

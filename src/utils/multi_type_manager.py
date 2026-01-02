@@ -193,9 +193,8 @@ class MultiTypeManager:
         print("SUGGESTED MULTI-TYPE PRODUCTS")
         print("=" * 60)
 
+        # NOTE: AC Phys/AC Digit removed - anti-coercion evaluated via Adversity (A) pillar
         suggestions = {
-            # Hardware wallets with anti-coercion
-            'HW Cold': ['AC Phys'],
             # Software wallets often available on multiple platforms
             'SW Browser': ['SW Mobile'],
             'SW Mobile': ['SW Browser'],

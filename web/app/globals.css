@@ -89,6 +89,29 @@ progress::-webkit-progress-value {
   background: rgba(99, 102, 241, 0.7);
 }
 
+/* Skeleton shimmer animation for loading states */
+.skeleton-shimmer {
+  animation: skeleton-shimmer 2s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Gradient button */
 .btn-gradient {
   background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7) !important;

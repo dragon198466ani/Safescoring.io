@@ -272,7 +272,6 @@ Actions recommandées:
 
    Exemple pour Ledger Nano X:
    - HW Cold (principal)
-   - AC Phys (si Duress PIN disponible)
    - Bkp Physical (si support Shamir/SLIP39)
 """)
 

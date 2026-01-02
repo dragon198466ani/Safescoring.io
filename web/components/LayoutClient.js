@@ -9,6 +9,7 @@ import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "react-hot-toast";
 import { Tooltip } from "react-tooltip";
 import config from "@/config";
+// import Web3Provider from "@/components/Web3Provider"; // Disabled - wagmi not installed
 
 // Crisp customer chat support:
 // This component is separated from ClientLayout because it needs to be wrapped with <SessionProvider> to use useSession() hook
@@ -51,6 +52,7 @@ const CrispChat = () => {
 // 3. Toaster: Show Success/Error messages anywhere from the app with toast()
 // 4. Tooltip: Show tooltips if any JSX elements has these 2 attributes: data-tooltip-id="tooltip" data-tooltip-content=""
 // 5. CrispChat: Set Crisp customer chat support (see above)
+// 6. Web3Provider: Enable wallet connection and Web3 features (RainbowKit + Wagmi)
 const ClientLayout = ({ children }) => {
   return (
     <>

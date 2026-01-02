@@ -524,9 +524,9 @@ INTERDIT: "Hardware", "Software", "DeFi", "Wallet", "Exchange" - ces mots ne son
 ## 🔐 HARDWARE (appareils physiques)
 | Code | Description | Exemples |
 |------|-------------|----------|
-| HW Cold | Hardware wallet OFFLINE avec écran, boutons, secure element | Ledger Nano X/S, Trezor T/One, Coldcard, Keystone, BitBox02, Jade, D'CENT, SafePal S1, Tangem, SeedSigner, Specter DIY |
-| HW Hot | Hardware connecté en permanence | Rare |
+| HW Cold | Hardware wallet avec écran, boutons, secure element | Ledger Nano X/S, Trezor T/One, Coldcard, Keystone, BitBox02, Jade, D'CENT, SafePal S1, Tangem, SeedSigner, Specter DIY |
 
+⚠️ NOTE: ALL hardware wallets are "cold" by industry definition - they keep keys offline.
 ⚠️ PIÈGE: Un hardware wallet avec app companion reste "HW Cold" (pas SW Desktop!)
 
 ## 💻 SOFTWARE

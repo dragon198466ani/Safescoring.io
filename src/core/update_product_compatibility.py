@@ -206,8 +206,9 @@ class ProductCompatibilityUpdater:
             other_codes = codes_b if is_backup_a else codes_a
 
             # Wallet types that generate seed phrases
-            wallet_types = {'HW Cold', 'HW Hot', 'SW Desktop', 'SW Mobile', 'SW Web',
-                          'Smart Wallet', 'MPC Wallet', 'MultiSig', 'Paper Wallet'}
+            # NOTE: HW Hot, SW Web, Paper Wallet removed - not standard/orphan types
+            wallet_types = {'HW Cold', 'SW Desktop', 'SW Mobile', 'SW Browser',
+                          'Smart Wallet', 'MPC Wallet', 'MultiSig'}
 
             # DeFi/Protocol types (indirect compatibility - need wallet first)
             defi_types = {'DEX', 'DEX Agg', 'AMM', 'Lending', 'Yield', 'Derivatives',
@@ -344,7 +345,8 @@ IMPORTANT WRITING STYLE:
 Respond ONLY in valid JSON format:
 {{"compatible": true/false, "confidence": 0.0-1.0, "confidence_factors": "+official_docs +same_network -closed_ecosystem (list factors found)", "method": "connection method (max 100 chars)", "steps": "1. Step one 2. Step two (max 300 chars)", "limitations": "any limitations or null", "justification": "MANDATORY: explain WHY in 2nd person - e.g. 'You can connect your Ledger to MetaMask...' (max 300 chars)"}}"""
 
-        result = self.ai_provider.call(prompt)
+        # Use strategic product compatibility analysis (quality + web context understanding)
+        result = self.ai_provider.call_for_product_compatibility(prompt)
 
         if result:
             try:

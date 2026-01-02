@@ -7,8 +7,8 @@ Script pour nettoyer et optimiser les assignations de types dans la base de donn
 Règles appliquées:
 1. Produits de backup métal/physique -> UNIQUEMENT Bkp Physical (max 1 type)
 2. Produits de backup numérique -> UNIQUEMENT Bkp Digital (max 1 type)
-3. Hardware Wallets -> HW Cold + AC Phys si fonctionnalités anti-coercition réelles (max 2 types)
-4. Software Wallets -> Type principal + AC Digit si privacy features (max 2-3 types)
+3. Hardware Wallets -> HW Cold uniquement (anti-coercion features evaluated via Adversity pillar)
+4. Software Wallets -> Type principal (max 2-3 types)
 5. DeFi Lending -> Lending + Yield (max 2 types)
 6. DEX -> DEX + Derivatives/Yield si vraiment applicable (max 2-3 types)
 7. Bridges -> Bridges uniquement (max 1 type)
@@ -91,9 +91,9 @@ BACKUP_DIGITAL_ONLY = [
 ]
 
 # Types à SUPPRIMER pour les produits de backup (ne devraient jamais les avoir)
+# NOTE: HW Hot removed - not standard terminology
 TYPES_TO_REMOVE_FROM_BACKUPS = [
     "HW Cold",
-    "HW Hot",
     "SW Browser",
     "SW Mobile",
     "DEX",
@@ -109,9 +109,6 @@ TYPES_TO_REMOVE_FROM_BACKUPS = [
     "DeFi Tools",
     "RWA",
     "Stablecoin",
-    "AC Phys",      # Les plaques n'ont pas de fonctions AC
-    "AC Digit",     # Les plaques n'ont pas de fonctions AC
-    "AC Phygi",     # Les plaques n'ont pas de fonctions AC
     "Bkp Digital",  # Pour backup physique seulement
     "Bkp Physical", # Pour backup digital seulement (inversé)
 ]
@@ -257,8 +254,9 @@ LIQUID_STAKING_CONFIG = {
 }
 
 # Hardware Wallets - configuration
-# HW Cold + AC Phys pour ceux avec vraies fonctions anti-coercition (duress PIN, etc.)
-HW_WITH_AC = [
+# NOTE: Anti-coercion features (duress PIN, brick me, etc.) are now evaluated via
+# the Adversity (A) pillar, not as separate product types
+HW_COLD_ONLY = [
     "Coldcard Mk4",
     "Coldcard Q",
     "Trezor Safe 3",
@@ -267,9 +265,6 @@ HW_WITH_AC = [
     "Foundation Passport",
     "BitBox02",
     "NGRAVE ZERO",
-]
-
-HW_WITHOUT_AC = [
     "Ledger Nano S",
     "Ledger Nano S Plus",
     "Ledger Nano X",
@@ -310,15 +305,15 @@ SW_CONFIG = {
     "Breez Wallet": ["SW Mobile"],
     "Safe Wallet": ["SW Mobile"],
 
-    # Privacy wallets (avec AC Digit)
-    "Wasabi Wallet": ["SW Browser", "AC Digit"],
-    "Sparrow Wallet": ["SW Browser", "AC Digit"],
-    "Samourai Wallet": ["SW Mobile", "AC Digit"],
+    # Privacy wallets (privacy features evaluated via Adversity pillar)
+    "Wasabi Wallet": ["SW Browser"],
+    "Sparrow Wallet": ["SW Browser"],
+    "Samourai Wallet": ["SW Mobile"],
 
     # Wallets avec héritage/timelock
-    "Liana Wallet": ["SW Browser", "AC Digit"],
-    "Casa": ["Wallet MultiSig", "AC Digit"],
-    "Nunchuk": ["Wallet MultiSig", "AC Digit"],
+    "Liana Wallet": ["SW Browser", "Inheritance"],
+    "Casa": ["Wallet MultiSig"],
+    "Nunchuk": ["Wallet MultiSig"],
 }
 
 
@@ -554,20 +549,9 @@ def generate_corrections(products_by_name, mappings, types_by_code, types_by_id)
                 'reason': f'Liquid Staking - max {len(types)} types'
             })
 
-    # 12. Hardware Wallets avec AC
-    for name in HW_WITH_AC:
-        if name in products_by_name:
-            pid = products_by_name[name]['id']
-            corrections.append({
-                'product_id': pid,
-                'product_name': name,
-                'action': 'set_types',
-                'target_types': ['HW Cold', 'AC Phys'],
-                'reason': 'HW avec fonctions anti-coercition réelles'
-            })
-
-    # 13. Hardware Wallets sans AC
-    for name in HW_WITHOUT_AC:
+    # 12. Hardware Wallets - All get HW Cold only
+    # NOTE: Anti-coercion features are evaluated via Adversity (A) pillar
+    for name in HW_COLD_ONLY:
         if name in products_by_name:
             pid = products_by_name[name]['id']
             corrections.append({
@@ -575,7 +559,7 @@ def generate_corrections(products_by_name, mappings, types_by_code, types_by_id)
                 'product_name': name,
                 'action': 'set_single_type',
                 'target_type': 'HW Cold',
-                'reason': 'HW standard - uniquement HW Cold'
+                'reason': 'Hardware wallet - HW Cold only'
             })
 
     return corrections

@@ -1,0 +1,68 @@
+# ============================================
+# Web3 Integration Environment Variables
+# Add these to your .env file
+# ============================================
+
+# ----- WalletConnect -----
+# Get your project ID from: https://cloud.walletconnect.com/
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_walletconnect_project_id
+
+# ----- Smart Contract Addresses -----
+# These are populated after running: cd contracts && npm run deploy:mainnet
+
+# Polygon Mainnet
+NEXT_PUBLIC_SAFEPASS_NFT_ADDRESS=0x...
+NEXT_PUBLIC_SCORE_REGISTRY_ADDRESS=0x...
+
+# Polygon Amoy Testnet (for development)
+NEXT_PUBLIC_SAFEPASS_NFT_ADDRESS_TESTNET=0x...
+NEXT_PUBLIC_SCORE_REGISTRY_ADDRESS_TESTNET=0x...
+
+# ----- Blockchain RPC -----
+# Public RPCs (for frontend, rate limited)
+NEXT_PUBLIC_POLYGON_RPC_URL=https://polygon-rpc.com
+
+# Private RPCs (for backend, higher limits)
+# Get from: Alchemy, Infura, or QuickNode
+POLYGON_RPC_URL=https://polygon-mainnet.g.alchemy.com/v2/YOUR_API_KEY
+POLYGON_AMOY_RPC_URL=https://polygon-amoy.g.alchemy.com/v2/YOUR_API_KEY
+
+# ----- Deployer/Publisher Wallet -----
+# Private key for deploying contracts and publishing scores on-chain
+# WARNING: Keep this secret! Never commit to git!
+DEPLOYER_PRIVATE_KEY=0x...
+
+# ----- Polygonscan -----
+# For contract verification: https://polygonscan.com/myapikey
+POLYGONSCAN_API_KEY=your_polygonscan_api_key
+
+# ----- NFT Metadata -----
+# Base URI for NFT metadata (token images, descriptions)
+NFT_METADATA_BASE_URI=https://safescoring.io/api/nft/
+
+# ============================================
+# SETUP INSTRUCTIONS
+# ============================================
+#
+# 1. Get WalletConnect Project ID:
+#    - Go to https://cloud.walletconnect.com/
+#    - Create a new project
+#    - Copy the Project ID
+#
+# 2. Deploy Smart Contracts:
+#    cd contracts
+#    npm install
+#    npm run deploy:testnet  # Test on Amoy first
+#    npm run deploy:mainnet  # Then deploy to Polygon
+#
+# 3. Update contract addresses in this file
+#
+# 4. Install frontend dependencies:
+#    cd web
+#    npm install wagmi viem @tanstack/react-query @rainbow-me/rainbowkit
+#
+# 5. Run the database migration:
+#    - Go to Supabase Dashboard > SQL Editor
+#    - Run config/web3_migration.sql
+#
+# ============================================

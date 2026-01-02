@@ -230,7 +230,7 @@ def check_url(url):
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
         r = requests.get(url, timeout=10, headers=headers)
         return r.status_code == 200 and len(r.text) > 500
-    except:
+    except (requests.exceptions.RequestException, Exception):
         return False
 
 def main():

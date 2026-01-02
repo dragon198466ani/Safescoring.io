@@ -116,27 +116,9 @@ Tu dois déterminer les types corrects pour chaque produit en te basant sur les 
 ### Règle 1: Maximum 3 types par produit
 Sauf cas exceptionnels justifiés (ex: CEX avec card + staking)
 
-### Règle 2: AC Phys - CRITÈRES STRICTS
-Un produit a AC Phys SEULEMENT si:
-- Duress PIN dédié (PIN qui ouvre un wallet leurre différent)
-- Brick Me PIN (PIN qui détruit/reset le device)
-- Hidden wallet HARDWARE avec PIN dédié
-- Countdown to brick/reset
+# NOTE: Anti-coercion features (duress PIN, brick me, etc.) are evaluated via the Adversity (A) pillar, not as separate types
 
-ATTENTION: Une simple passphrase (25e mot) NE SUFFIT PAS pour AC Phys!
-Presque tous les hardware wallets supportent passphrase, c'est standard.
-
-Exemples VALIDES pour AC Phys:
-- Coldcard: Duress PIN + Brick Me PIN ✓
-- Trezor: Passphrase avec PIN alternatif dédié ✓
-- Keystone: Dummy wallet + Countdown to brick ✓
-- Jade (Blockstream): Duress PIN ✓
-
-Exemples NON VALIDES:
-- Ledger: Passphrase seulement, pas de duress PIN hardware dédié ✗
-- SeedSigner: Passphrase seulement ✗
-
-### Règle 3: Wallet MultiPlatform vs SW Browser/Mobile
+### Règle 2: Wallet MultiPlatform vs SW Browser/Mobile
 - Si disponible sur browser ET mobile → Wallet MultiPlatform (PAS les deux séparément)
 - SW Browser = navigateur UNIQUEMENT
 - SW Mobile = mobile UNIQUEMENT
@@ -167,11 +149,6 @@ Réponds UNIQUEMENT avec un JSON valide (pas de texte avant ou après):
         "add": ["types à ajouter"],
         "remove": ["types à supprimer"],
         "reason": "Raison des changements"
-    }},
-    "ac_phys_analysis": {{
-        "eligible": true/false,
-        "features_found": ["duress PIN", "brick me", etc.],
-        "reason": "Explication"
     }},
     "confidence": "high/medium/low"
 }}
@@ -221,17 +198,18 @@ Réponds UNIQUEMENT avec un JSON valide (pas de texte avant ou après):
         user_prompt += """## TÂCHE
 
 Analyse ce produit et détermine ses types corrects selon les définitions officielles.
-Sois particulièrement vigilant sur les critères AC Phys (duress PIN, brick me, etc.).
 """
 
-        # Call AI
+        # Call AI with strategic classification model
         system_prompt = self.get_system_prompt()
+        full_prompt = f"{system_prompt}\n\n{user_prompt}"
 
         try:
-            response = self.ai_provider.call(
-                system_prompt=system_prompt,
-                user_prompt=user_prompt,
-                max_tokens=1500
+            # Use call_for_classification for quality type detection
+            response = self.ai_provider.call_for_classification(
+                prompt=full_prompt,
+                max_tokens=1500,
+                temperature=0.3
             )
 
             if response:
@@ -271,7 +249,6 @@ Sois particulièrement vigilant sur les critères AC Phys (duress PIN, brick me,
             'to_add': list(to_add),
             'to_remove': list(to_remove),
             'analysis': result.get('analysis', ''),
-            'ac_phys_analysis': result.get('ac_phys_analysis', {}),
             'confidence': result.get('confidence', 'medium'),
             'change_reason': result.get('changes', {}).get('reason', '')
         }
@@ -433,8 +410,6 @@ Sois particulièrement vigilant sur les critères AC Phys (duress PIN, brick me,
                 print(f"\n  📦 {c['product_name']}")
                 print(f"     Actuel:     {' + '.join(c['current'])}")
                 print(f"     Recommandé: {' + '.join(c['recommended'])}")
-                if c.get('ac_phys_analysis', {}).get('reason'):
-                    print(f"     AC Phys: {c['ac_phys_analysis']['reason']}")
 
         # Apply if requested
         if apply and corrections:

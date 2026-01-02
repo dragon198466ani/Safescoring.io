@@ -16,10 +16,13 @@ MISTRAL_API_KEY=1UrlJxV2G7O0kngOXMDI1dMT2xT39rLD
 # 🔮 GOOGLE GEMINI API (GRATUIT - 1.5M tokens/jour!)
 # ============================================
 # Obtenir gratuitement sur: https://aistudio.google.com
-# Limites: 60 requêtes/min, 1.5M tokens/jour
+# Limites: 60 requêtes/min, 1500 requêtes/jour par clé
 # Modèle: Gemini 1.5 Flash (contexte énorme)
+# ROTATION: Ajoutez plusieurs clés séparées par des virgules
 GOOGLE_API_KEY=AIzaSyC1ECSugM6TX4U-nQ644t5yOWoi8SZwHkE
 GOOGLE_GEMINI_API_KEY=AIzaSyC1ECSugM6TX4U-nQ644t5yOWoi8SZwHkE
+# Clés multiples pour rotation (séparer par virgule):
+GEMINI_API_KEYS=CLE1,CLE2,CLE3,CLE4,CLE5,CLE6
 
 # ============================================
 # 🤖 ANTHROPIC CLAUDE (PAYANT - Meilleure qualité)
@@ -67,9 +70,16 @@ TELEGRAM_ADMIN_CHAT_ID=123456789
 # 🖥️ OLLAMA (GRATUIT - Local, Optionnel)
 # ============================================
 # Installation: curl -fsSL https://ollama.com/install.sh | sh
-# Télécharger modèle: ollama pull llama3.2
+# Télécharger modèles:
+#   ollama pull llama3.2              (rapide, 2GB)
+#   ollama pull qwen2.5:14b           (qualité, 8GB)
+#   ollama pull deepseek-r1:8b        (raisonnement, 5GB)
 # Pas besoin de clé API - 100% local et illimité!
 # Le script détecte automatiquement si Ollama est disponible
+OLLAMA_URL=http://localhost:11434
+OLLAMA_MODEL=qwen2.5:14b
+OLLAMA_MODEL_FAST=llama3.2
+OLLAMA_MODEL_DEEPSEEK=deepseek-r1:8b
 
 # ============================================
 # ⚙️ CONFIGURATION AVANCÉE (Optionnel)
@@ -86,4 +96,6 @@ TELEGRAM_ADMIN_CHAT_ID=123456789
 # Modèles (override si besoin)
 # MISTRAL_MODEL=mistral-small-latest
 # GEMINI_MODEL=gemini-1.5-flash
-# OLLAMA_MODEL=llama3.2
+# OLLAMA_MODEL=qwen2.5:14b
+# OLLAMA_MODEL_FAST=llama3.2
+# OLLAMA_MODEL_DEEPSEEK=deepseek-r1:8b

@@ -534,7 +534,7 @@ JSON uniquement: {{"CODE1": "YES", ...}}"""
             if '```' in text:
                 text = text.split('```')[1].replace('json', '').strip()
             return json.loads(text)
-        except:
+        except (json.JSONDecodeError, Exception):
             return {}
 
 
@@ -604,7 +604,7 @@ JSON: {{"price_eur":null,"chip":null,"bluetooth":false,"secure_element":false}}"
             if '```' in text:
                 text = text.split('```')[1].replace('json', '').strip()
             return json.loads(text)
-        except:
+        except (json.JSONDecodeError, Exception):
             return {}
 
 
@@ -644,7 +644,7 @@ class HybridAIClient:
             self.ollama = OllamaClient()
             if self.ollama.ollama:
                 log.success("Ollama client initialisé (backup local)")
-        except:
+        except Exception:
             pass
         
         # Compteurs pour rate limiting
@@ -1013,7 +1013,7 @@ class SupabaseClient:
                 'duration_sec': stats.get('duration', 0),
                 'errors': stats.get('errors', [])
             }).execute()
-        except:
+        except Exception:
             pass  # Table peut ne pas exister
 
 
@@ -1036,7 +1036,7 @@ def send_telegram(message: str, config: Config):
             },
             timeout=10
         )
-    except:
+    except (requests.exceptions.RequestException, Exception):
         pass
 
 
@@ -1166,7 +1166,7 @@ def run_automation(mode: str = 'test'):
             type_id = product.get('type_id', 1)
             try:
                 norms = db.get_norms_for_type(type_id)
-            except:
+            except Exception:
                 norms = db.get_all_norms()[:100]  # Fallback
             
             if norms and specs:
@@ -1218,7 +1218,7 @@ def run_automation(mode: str = 'test'):
     # Log dans Supabase
     try:
         db.log_automation(stats)
-    except:
+    except Exception:
         pass
     
     # Notification Telegram

@@ -112,7 +112,7 @@ class SupabaseClient:
         try:
             response = requests.get(f"{self.url}/rest/v1/", headers=self.headers, timeout=10)
             return response.status_code == 200
-        except:
+        except (requests.exceptions.RequestException, Exception):
             return False
     
     def get(self, table: str, select: str = "*", filters: Dict = None) -> List[Dict]:
@@ -329,7 +329,7 @@ Return ONLY the JSON, no other text."""
                 return self._evaluate_with_gemini(specs, product_name)
             else:
                 return self._fallback_security(product_name)
-        except:
+        except Exception:
             return self._fallback_security(product_name)
     
     def _evaluate_with_mistral(self, specs: Dict, product_name: str) -> Dict:

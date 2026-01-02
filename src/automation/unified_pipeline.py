@@ -135,8 +135,8 @@ class TypeDeterminator:
 ## TYPES DE PRODUITS DISPONIBLES
 
 ### HARDWARE WALLETS
-- **HW Cold**: Hardware wallet air-gapped (Ledger, Trezor, Coldcard). Stockage offline.
-- **HW Hot**: Hardware 2FA/bearer card connecté (YubiKey). Pas un wallet complet.
+- **HW Cold**: Hardware wallet (Ledger, Trezor, Coldcard). Stockage offline.
+  Note: ALL hardware wallets are "cold" by industry definition - they keep keys offline.
 - **HW NFC Signer**: Carte NFC de signature (TAPSIGNER, Status Keycard).
 
 ### SOFTWARE WALLETS
@@ -165,13 +165,7 @@ class TypeDeterminator:
 - **Bkp Digital**: Backup digital/cloud (Ledger Recover).
 - **Seed Splitter**: Shamir Secret Sharing backup (SeedXOR).
 
-### SÉCURITÉ ANTI-COERCION
-- **AC Phys**: Anti-coercion PHYSIQUE. CRITÈRES STRICTS:
-  * Duress PIN dédié (PIN qui ouvre wallet leurre)
-  * Brick Me PIN (PIN qui détruit le device)
-  * Hidden wallet HARDWARE avec PIN dédié
-  * PAS juste passphrase basique!
-- **AC Digit**: Anti-coercion DIGITAL (CoinJoin natif, Tor intégré).
+# NOTE: Anti-coercion features (duress PIN, etc.) are evaluated via Adversity (A) pillar, not as types
 
 ### CUSTODY
 - **Custody MPC**: Multi-Party Computation custody (Fireblocks).
@@ -192,15 +186,10 @@ Tu dois déterminer les types corrects pour chaque produit.
 
 1. **Maximum 3 types** par produit (sauf exceptions justifiées)
 
-2. **AC Phys - TRÈS RESTRICTIF**:
-   - SEULEMENT si Duress PIN OU Brick Me PIN OU Hidden Wallet HARDWARE dédié
-   - Passphrase seule NE SUFFIT PAS (tous les wallets ont passphrase)
-   - Exemples valides: Coldcard (duress+brick), Trezor (PIN alternatif), Keystone (dummy wallet)
-
-3. **Wallet MultiPlatform vs SW Browser/Mobile**:
+2. **Wallet MultiPlatform vs SW Browser/Mobile**:
    - Si disponible sur browser ET mobile → Wallet MultiPlatform (pas les deux séparément)
 
-4. **Card vs Card Non-Cust**:
+3. **Card vs Card Non-Cust**:
    - Card = custodial (exchange garde les fonds)
    - Card Non-Cust = self-custody (user garde ses clés)
 
@@ -302,10 +291,12 @@ Réponds UNIQUEMENT avec un JSON valide:
         system_prompt = self.SYSTEM_PROMPT.format(type_definitions=self.TYPE_DEFINITIONS)
 
         try:
-            response = self.ai_provider.call(
-                system_prompt=system_prompt,
-                user_prompt=user_prompt,
-                max_tokens=PipelineConfig.MAX_TOKENS_TYPES
+            # Use strategic classification method for quality
+            full_prompt = system_prompt + "\n\n" + user_prompt
+            response = self.ai_provider.call_for_classification(
+                prompt=full_prompt,
+                max_tokens=PipelineConfig.MAX_TOKENS_TYPES,
+                temperature=0.3
             )
 
             if response:
@@ -531,9 +522,12 @@ Réponds avec une liste JSON:
 """
 
         try:
-            response = self.ai_provider.call(
-                system_prompt="Tu génères des règles d'applicabilité pour l'évaluation de produits crypto.",
-                user_prompt=prompt,
+            # Use strategic applicability method for quality
+            type_code = product_type.get('code', 'DEFAULT')
+            full_prompt = "Tu génères des règles d'applicabilité pour l'évaluation de produits crypto.\n\n" + prompt
+            response = self.ai_provider.call_for_applicability(
+                type_code=type_code,
+                prompt=full_prompt,
                 max_tokens=PipelineConfig.MAX_TOKENS_APPLICABILITY
             )
 
@@ -764,9 +758,15 @@ S003: YESp
 """
 
         try:
-            response = self.ai_provider.call(
-                system_prompt=self.SYSTEM_PROMPT,
-                user_prompt=prompt,
+            # Use strategic norm evaluation method for quality
+            # Extract norm codes to determine pillar-specific strategy
+            norm_codes = [n['code'] for n in norms]
+            first_norm = norm_codes[0] if norm_codes else 'S001'
+
+            full_prompt = self.SYSTEM_PROMPT + "\n\n" + prompt
+            response = self.ai_provider.call_for_norm(
+                norm_code=first_norm,
+                prompt=full_prompt,
                 max_tokens=PipelineConfig.MAX_TOKENS_EVALUATION
             )
 

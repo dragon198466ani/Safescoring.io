@@ -181,7 +181,7 @@ def interactive_mode():
                 skip = int(discord.split()[1])
                 i += skip
                 continue
-            except:
+            except Exception:
                 i += 1
                 continue
         elif discord.lower().startswith('search'):

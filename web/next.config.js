@@ -60,9 +60,6 @@ const nextConfig = {
   // Enable gzip/brotli compression
   compress: true,
 
-  // Optimize production builds
-  swcMinify: true,
-
   // Generate ETags for caching
   generateEtags: true,
 

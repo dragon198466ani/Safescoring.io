@@ -75,7 +75,7 @@ class MonthlyCron:
                 },
                 timeout=10
             )
-        except:
+        except Exception:
             pass
     
     def get_products_to_update(self, limit=None):

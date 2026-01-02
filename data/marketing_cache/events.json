@@ -1,0 +1,352 @@
+[
+  {
+    "id": "0755bfaae7969569eed08aca171672da",
+    "source": "theblock",
+    "title": "From Bybit to GMX: The 10 biggest crypto hacks of 2025",
+    "summary": "Crypto thefts topped $2.2 billion in 2025, on par with last year’s total, as attackers exploited a range of blockchain vulnerabilities.",
+    "link": "https://www.theblock.co/post/380992/biggest-crypto-hacks-2025?utm_source=rss&utm_medium=rss",
+    "published": "Thu, 01 Jan 2026 13:01:02 -0500",
+    "relevance_score": 100,
+    "category": "HACK",
+    "fetched_at": "2026-01-02T07:04:46.093541"
+  },
+  {
+    "id": "5ab8951b74d22c8ac432d4dc2cb4c01b",
+    "source": "decrypt",
+    "title": "From Bybit to Coinbase: 2025's Biggest Crypto Hacks and Breaches",
+    "summary": "Crypto firms faced a record $2.72 billion in theft this year as attackers expanded their reach across major exchanges and DeFi platforms.",
+    "link": "https://decrypt.co/351001/bybit-coinbase-2025-biggest-crypto-hacks-breaches",
+    "published": "Wed, 31 Dec 2025 20:01:02 +0000",
+    "relevance_score": 85,
+    "category": "HACK",
+    "fetched_at": "2026-01-02T07:04:45.705400"
+  },
+  {
+    "id": "ee3575a0548d5301456679ff7c8a557e",
+    "source": "cointelegraph",
+    "title": "Trust Wallet browser extension knocked offline by Chrome Store 'bug,' CEO says",
+    "summary": "The Trust Wallet update includes a feature to help victims of the $7 million Christmas hack submit reimbursement claims for lost funds.",
+    "link": "https://cointelegraph.com/news/trust-wallet-ceo-google-chrome-browser-extension-delayed?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Thu, 01 Jan 2026 16:57:03 +0000",
+    "relevance_score": 75,
+    "category": "HACK",
+    "fetched_at": "2026-01-02T07:04:45.893699"
+  },
+  {
+    "id": "6f3634c2f9e8e5174752194d46dfe014",
+    "source": "cointelegraph",
+    "title": "Losses from crypto hacks down 60% in December: PeckShield",
+    "summary": "Although monetary losses declined, users still lost tens of millions of dollars to common cybersecurity exploits like address poisoning scams.",
+    "link": "https://cointelegraph.com/news/losses-crypto-hacks-down-60-december?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Thu, 01 Jan 2026 22:02:07 +0000",
+    "relevance_score": 70,
+    "category": "HACK",
+    "fetched_at": "2026-01-02T07:04:45.893437"
+  },
+  {
+    "id": "defillama_Unleash Protocol",
+    "source": "defillama",
+    "title": "Unleash Protocol hacked for $3,900,000",
+    "summary": "Technique: Multisig Governance Hack. Chain: ['Story']",
+    "link": "",
+    "published": "2025-12-30T01:00:00",
+    "relevance_score": 69.5,
+    "category": "HACK",
+    "amount_usd": 3900000,
+    "technique": "Multisig Governance Hack",
+    "chain": [
+      "Story"
+    ],
+    "fetched_at": "2026-01-02T07:04:46.581517"
+  },
+  {
+    "id": "defillama_Flow",
+    "source": "defillama",
+    "title": "Flow hacked for $3,900,000",
+    "summary": "Technique: mint-and-dump Hack. Chain: ['Flow']",
+    "link": "",
+    "published": "2025-12-27T01:00:00",
+    "relevance_score": 69.5,
+    "category": "HACK",
+    "amount_usd": 3900000,
+    "technique": "mint-and-dump Hack",
+    "chain": [
+      "Flow"
+    ],
+    "fetched_at": "2026-01-02T07:04:46.581964"
+  },
+  {
+    "id": "56c13305447587999812653cb74d6abc",
+    "source": "decrypt",
+    "title": "2026 Crypto Predictions! Tom Lee still buying ETH! Rekt tease WorldStar collab!",
+    "summary": "Btc: 87k (0%) | btc.D: 59.0% (0%). Eth: 2975 (1%) | bnb: 855 (+1%) | sol: 124 (0%). Tom Lee bought another $130M in ETH for Christmas, and still holds $1B in cash heading into the new year. REKT drinks and WorldStarHipHop tease collab. BlackRock’s BUIDL hits $100M million in dividends and passes $2 billion in assets. Metaplanet buys 4,279 bitcoin, lifts total holdings to 35,102 BTC. Unleash Protocol hit by $3.9 million exploit with funds routed through Tornado Cash. Onchain Perpetuals Top $1T Mo",
+    "link": "https://decrypt.co/videos/interviews/dBDZqp65/2026-crypto-predictions-tom-lee-still-buying-eth-rekt-tease-worldstar-collab",
+    "published": "Tue, 30 Dec 2025 16:29:12 +0000",
+    "relevance_score": 55,
+    "category": "HACK",
+    "fetched_at": "2026-01-02T07:04:45.705583"
+  },
+  {
+    "id": "defillama_MSCST",
+    "source": "defillama",
+    "title": "MSCST hacked for $129,900",
+    "summary": "Technique: Atomic Sandwich Attack. Chain: ['BSC']",
+    "link": "",
+    "published": "2025-12-28T01:00:00",
+    "relevance_score": 50.6495,
+    "category": "HACK",
+    "amount_usd": 129900,
+    "technique": "Atomic Sandwich Attack",
+    "chain": [
+      "BSC"
+    ],
+    "fetched_at": "2026-01-02T07:04:46.581863"
+  },
+  {
+    "id": "defillama_PRXVT",
+    "source": "defillama",
+    "title": "PRXVT hacked for $97,000",
+    "summary": "Technique: Sybil Attack with CREATE2 Addresses. Chain: ['Base']",
+    "link": "",
+    "published": "2026-01-01T01:00:00",
+    "relevance_score": 50.485,
+    "category": "HACK",
+    "amount_usd": 97000,
+    "technique": "Sybil Attack with CREATE2 Addresses",
+    "chain": [
+      "Base"
+    ],
+    "fetched_at": "2026-01-02T07:04:46.581701"
+  },
+  {
+    "id": "09671c36b5d0ee08f2602591d3611562",
+    "source": "coindesk",
+    "title": "Korbit fined $1.9 million for anti money-laundering, customer verification breaches",
+    "summary": "",
+    "link": "https://www.coindesk.com/policy/2025/12/31/korbit-fined-usd1-9-million-for-anti-money-laundering-customer-verification-breaches",
+    "published": "Wed, 31 Dec 2025 12:47:03 +0000",
+    "relevance_score": 45,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:45.500002"
+  },
+  {
+    "id": "10da8653f741340e76f724645f48bb2b",
+    "source": "cointelegraph",
+    "title": "Flow advances recovery plan, raises exchange concerns after $3.9M exploit",
+    "summary": "The plan to address a multimillion-dollar exploit continued with \"phase two progress\" on EVM after it scrapped a plan to roll back the blockchain.",
+    "link": "https://cointelegraph.com/news/flow-recovery-plan-exchange-exploit?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Thu, 01 Jan 2026 21:38:49 +0000",
+    "relevance_score": 45,
+    "category": "HACK",
+    "fetched_at": "2026-01-02T07:04:45.893488"
+  },
+  {
+    "id": "0410ad3dda5dc1af9981589012be96ba",
+    "source": "theblock",
+    "title": "Crypto exploit triage group SEAL sees uptick in tickets in 2025",
+    "summary": "In addition to a rising number of “private key/seed leaks,\" pcaversaccio pointed to \"a concerning increase in physical attacks\" in 2025.",
+    "link": "https://www.theblock.co/post/384079/crypto-exploit-triage-group-seal-sees-uptick-tickets-2025?utm_source=rss&utm_medium=rss",
+    "published": "Wed, 31 Dec 2025 13:03:47 -0500",
+    "relevance_score": 45,
+    "category": "HACK",
+    "fetched_at": "2026-01-02T07:04:46.093677"
+  },
+  {
+    "id": "3d2a3437c3077c47ad2b97dc72970f4c",
+    "source": "coindesk",
+    "title": "Tether adds nearly $800 million in bitcoin, bringing holdings above 96,000 BTC",
+    "summary": "",
+    "link": "https://www.coindesk.com/markets/2026/01/02/tether-adds-nearly-usd800-million-in-bitcoin-bringing-holdings-above-96-000-btc",
+    "published": "Fri, 02 Jan 2026 03:36:16 +0000",
+    "relevance_score": 30,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:45.499620"
+  },
+  {
+    "id": "e655ea13806bad21def9b54f689be4fa",
+    "source": "coindesk",
+    "title": "Lighter trading platform sees $250 million withdrawn 24 hours after airdrop",
+    "summary": "",
+    "link": "https://www.coindesk.com/markets/2025/12/31/lighter-trading-platform-sees-usd250-million-withdrawn-24-hours-after-tge",
+    "published": "Wed, 31 Dec 2025 15:29:13 +0000",
+    "relevance_score": 30,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:45.499915"
+  },
+  {
+    "id": "05a4cf76d18a62eef4a35cf113c8313e",
+    "source": "decrypt",
+    "title": "Emerge’s Top 10 WTF AI Moments of 2025",
+    "summary": "From Grok’s “MechaHitler” meltdown to North Korea’s “vibe-hacking” ransomware, 2025 was the year AI stopped pretending to be smart and started acting unhinged.",
+    "link": "https://decrypt.co/348763/emerge-top-10-wtf-ai-moments-of-2025",
+    "published": "Wed, 31 Dec 2025 14:01:03 +0000",
+    "relevance_score": 30,
+    "category": "HACK",
+    "fetched_at": "2026-01-02T07:04:45.705461"
+  },
+  {
+    "id": "8abf4866c39fec8ca71e3010f202b74e",
+    "source": "decrypt",
+    "title": "The Year in Stablecoins 2025: Record Growth as GENIUS Act Opens the Floodgates",
+    "summary": "Stablecoins exploded in 2025 with new regulations, banking charters, and a $306 billion market cap—but not all issuers had smooth sailing.",
+    "link": "https://decrypt.co/352552/year-stablecoins-2025-record-growth-genius-act-floodgates",
+    "published": "Tue, 30 Dec 2025 14:01:02 +0000",
+    "relevance_score": 30,
+    "category": "REGULATION",
+    "fetched_at": "2026-01-02T07:04:45.705634"
+  },
+  {
+    "id": "caf49556bec49c13d5f3dda2f925f157",
+    "source": "decrypt",
+    "title": "Year in Prediction Markets: From Regulatory 'Sinkhole' to Multi-Billion Dollar Business",
+    "summary": "Prediction markets hit $2B in weekly volume as regulatory hostility faded and mainstream players from CNN to the NHL jumped on the trend.",
+    "link": "https://decrypt.co/353137/year-in-prediction-markets-2025",
+    "published": "Mon, 29 Dec 2025 14:01:03 +0000",
+    "relevance_score": 30,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:45.705785"
+  },
+  {
+    "id": "725c559ef9f8405f37ba18bff4880ddd",
+    "source": "cointelegraph",
+    "title": "Base’s creator coin experiment meets resistance after Nick Shirley launch",
+    "summary": "Base’s push into creator coins is facing mounting criticism from traders and builders after Nick Shirley’s token on Zora spiked to about a $9 million valuation and then prom",
+    "link": "https://cointelegraph.com/news/base-creator-coin-experiment-meets-resistance?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Thu, 01 Jan 2026 14:06:19 +0000",
+    "relevance_score": 30,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:45.893845"
+  },
+  {
+    "id": "57367de33801881a1ddaf0e7221012cf",
+    "source": "cointelegraph",
+    "title": "Bithumb flags $200M in dormant crypto assets across 2.6M inactive accounts",
+    "summary": "Millions of long-inactive users still hold crypto at Bithumb, highlighting how early retail capital can remain untouched for years.",
+    "link": "https://cointelegraph.com/news/bithumb-dormant-crypto-assets-200m-inactive-accounts?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Thu, 01 Jan 2026 13:25:27 +0000",
+    "relevance_score": 30,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:45.893974"
+  },
+  {
+    "id": "dbd29501b75570d7443aeb767330ede1",
+    "source": "theblock",
+    "title": "‘A record year for wrench attacks’: How crypto holders can maintain physical security amid rising risks",
+    "summary": "Crypto security experts recommend that high-risk and visible holders split up their funds, maintain a low profile, and come up with a game plan.",
+    "link": "https://www.theblock.co/post/384018/record-year-wrench-attacks-how-crypto-holders-maintain-physical-security-rising-risks?utm_source=rss&utm_medium=rss",
+    "published": "Thu, 01 Jan 2026 17:01:02 -0500",
+    "relevance_score": 30,
+    "category": "HACK",
+    "fetched_at": "2026-01-02T07:04:46.093457"
+  },
+  {
+    "id": "004492538166bed5a4dd6942d44c630e",
+    "source": "theblock",
+    "title": "BTC, SOL and HYPE treasury execs forecast M&A, diversification and more institutional adoption in 2026",
+    "summary": "More than 200 new DATs are estimated to have launched in 2025, pushing the value of crypto held by companies beyond $100 billion.",
+    "link": "https://www.theblock.co/post/383989/btc-sol-hype-treasury-execs-forecast-ma-diversification-more-institutional-adoption-2026?utm_source=rss&utm_medium=rss",
+    "published": "Thu, 01 Jan 2026 15:01:02 -0500",
+    "relevance_score": 30,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:46.093502"
+  },
+  {
+    "id": "69f2b3169de7e048726a233efb038a67",
+    "source": "theblock",
+    "title": "Spot bitcoin ETFs record $355 million net inflows, ending 7-day negative streak",
+    "summary": "One analyst said the inflows during the year-end holiday period point to resilient demand from institutional investors.",
+    "link": "https://www.theblock.co/post/384037/spot-bitcoin-etf-355-million-net-inflows?utm_source=rss&utm_medium=rss",
+    "published": "Wed, 31 Dec 2025 03:26:12 -0500",
+    "relevance_score": 30,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:46.093772"
+  },
+  {
+    "id": "f6f7e385494126dc51946d8be7311b2e",
+    "source": "theblock",
+    "title": "David Beckham-backed supplements firm quits Bitcoin buying strategy after raising $48 million",
+    "summary": "Bitcoin was changing hands at about $114,000 at the time of the announcement, but has since fallen to about $88,000.",
+    "link": "https://www.theblock.co/post/384011/david-beckham-backed-supplements-firm-quits-bitcoin-buying-strategy-after-raising-48-million?utm_source=rss&utm_medium=rss",
+    "published": "Tue, 30 Dec 2025 15:55:02 -0500",
+    "relevance_score": 30,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:46.093834"
+  },
+  {
+    "id": "82f4ae676f6b31a37f1275a3727f7ca4",
+    "source": "coindesk",
+    "title": "XRP bounces, but $2 remains the hurdle as exchange supply hits 8-year low",
+    "summary": "",
+    "link": "https://www.coindesk.com/markets/2026/01/02/xrp-bounces-but-usd2-remains-the-hurdle-as-exchange-supply-hits-8-year-low",
+    "published": "Fri, 02 Jan 2026 03:14:31 +0000",
+    "relevance_score": 20,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:45.499684"
+  },
+  {
+    "id": "2ab9a46a95675a40b14529161eaefd86",
+    "source": "decrypt",
+    "title": "Crypto Crystal Ball 2026: Are We Headed for Bitcoin and Crypto Winter?",
+    "summary": "Bitcoin at $200,000? Massive volatility? Experts predict where the markets are headed—and it's probably not another winter.",
+    "link": "https://decrypt.co/352209/crypto-crystal-ball-2026-headed-bitcoin-winter",
+    "published": "Thu, 01 Jan 2026 17:01:03 +0000",
+    "relevance_score": 20,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:45.705337"
+  },
+  {
+    "id": "a8a6ce1955609d74f3d4eafb786933cf",
+    "source": "decrypt",
+    "title": "The White Whale up 10x in a week! Lighter TGE! Saylor buys $109M BTC!",
+    "summary": "Btc: 87k (-1%) | btc.D: 59.0% (0%). Eth: 2953 (-3%) | bnb: 853 (-1%) | sol: 124 (-3%). The White Whale goes almost 15x in a week, from $5m to $71m mcap. Lighter TGE rumours stirring. YouTuber Nick Shirley reveals mass fraud in Minnesota daycare system. Gold & Silver prices see huge dump",
+    "link": "https://decrypt.co/videos/interviews/50vopyFa/the-white-whale-up-10x-in-a-week-lighter-tge-saylor-buys-109m-btc",
+    "published": "Mon, 29 Dec 2025 16:10:19 +0000",
+    "relevance_score": 20,
+    "category": "SCAM",
+    "fetched_at": "2026-01-02T07:04:45.705723"
+  },
+  {
+    "id": "d07864fe306d7f5eb6b3a03dd432b21c",
+    "source": "cointelegraph",
+    "title": "Crypto sentiment shifts off extreme fear, but ‘mixed emotions’ persist",
+    "summary": "The crypto sentiment indicator finally moved out of the “extreme fear” territory despite Bitcoin still treading below $90,000.",
+    "link": "https://cointelegraph.com/news/crypto-sentiment-index-fear-market-emotions-bitcoin-price?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Fri, 02 Jan 2026 04:54:56 +0000",
+    "relevance_score": 20,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:45.893109"
+  },
+  {
+    "id": "7dfad6b0993bd2f594b20f97871460bd",
+    "source": "cointelegraph",
+    "title": "Metric suggests Bitcoin has been in a bear market for 2 months",
+    "summary": "Based on Bitcoin's realized price and past performance, CryptoQuant’s Julio Moreno predicts that Bitcoin will bottom around $56,000 to $60,000 in 2026.",
+    "link": "https://cointelegraph.com/news/crypto-bear-market-began-november-cryptoquant?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Fri, 02 Jan 2026 03:38:47 +0000",
+    "relevance_score": 20,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:45.893261"
+  },
+  {
+    "id": "fbb5950fb88aa335d5c3b385e798113c",
+    "source": "cointelegraph",
+    "title": "Polymarket traders see just 21% chance of Bitcoin hitting $150K this year",
+    "summary": "Polymarket traders are holding back their optimism back for Bitcoin this year, despite many analysts tipping the price to hit $150,000 and above.",
+    "link": "https://cointelegraph.com/news/polymarket-traders-21-chance-bitcoin-hitting-150k-2026?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Fri, 02 Jan 2026 02:07:20 +0000",
+    "relevance_score": 20,
+    "category": "GENERAL",
+    "fetched_at": "2026-01-02T07:04:45.893327"
+  },
+  {
+    "id": "806a9eca81487ce2fccdc3e0a948f302",
+    "source": "cointelegraph",
+    "title": "The XRP Army got everything except $5 price: Will 2026 deliver?",
+    "summary": "XRP scored every major win in 2025 with the SEC case resolved and spot ETFs launched, yet the price crashed 50%, with the $5 target remaining elusive.",
+    "link": "https://cointelegraph.com/news/xrp-army-got-everything-asked-for-except-5-xrp-will-2026-deliver?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "published": "Thu, 01 Jan 2026 14:15:00 +0000",
+    "relevance_score": 20,
+    "category": "REGULATION",
+    "fetched_at": "2026-01-02T07:04:45.893759"
+  }
+]

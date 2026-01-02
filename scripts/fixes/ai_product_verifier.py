@@ -18,66 +18,155 @@ from core.config import SUPABASE_URL, SUPABASE_HEADERS
 MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
-# Types disponibles dans SafeScoring
+# Types disponibles dans SafeScoring - synchronisé avec ai_strategy.py
+# NOTE: HW Hot removed - not standard terminology (HW = cold by definition)
 AVAILABLE_TYPES = [
-    "HW Cold", "HW Hot", "HW NFC Signer",
-    "SW Browser", "SW Mobile", "Wallet MultiPlatform", "Wallet MultiSig",
-    "DEX", "CEX", "Bridges",
-    "Lending", "Yield", "Liq Staking", "Derivatives",
-    "Card", "Card Non-Cust", "Neobank", "Crypto Bank",
+    # HARDWARE
+    "HW Cold", "HW NFC Signer",
+    # SOFTWARE WALLETS
+    "SW Browser", "SW Mobile", "SW Desktop", "Wallet MultiPlatform",
+    "Smart Wallet", "MPC Wallet", "MultiSig",
+    # EXCHANGES
+    "CEX", "DEX", "DEX Agg", "AMM", "Atomic Swap", "OTC", "NFT Market",
+    # DEFI PROTOCOLS
+    "Lending", "CeFi Lending", "Yield", "Liq Staking", "Restaking",
+    "Derivatives", "Options", "Perps", "Synthetics",
+    "Bridges", "CrossAgg", "Index", "Insurance", "Intent",
+    "Launchpad", "Locker", "Prediction", "Prime", "Streaming", "Vesting", "Wrapped",
+    # FINANCE
+    "Card", "Card Non-Cust", "Neobank", "Crypto Bank", "Fiat Gateway", "Payment", "Treasury",
+    # BACKUP
     "Bkp Physical", "Bkp Digital", "Seed Splitter",
-    "AC Phys", "AC Digit",
-    "Custody MPC", "Custody MultiSig", "Enterprise Custody",
-    "DeFi Tools", "RWA", "Inheritance", "Protocol", "Settlement", "Airgap Signer"
+    # CUSTODY
+    "Custody", "Custody MPC", "Custody MultiSig", "Enterprise Custody",
+    # PRIVACY
+    "Privacy", "Private DeFi",
+    # INFRASTRUCTURE
+    "AA", "Interop", "L2", "Validator",
+    # CONSUMER
+    "Fan Token", "GameFi", "Metaverse", "NFT Tools",
+    # OTHER
+    "DeFi Tools", "RWA", "Stablecoin", "Inheritance", "Protocol", "Settlement", "Airgap Signer",
+    # WEB3 INFRASTRUCTURE & SERVICES
+    "AI Agent", "Attestation", "Compute", "DAO", "Data Indexer", "Dev Tools", "Explorer",
+    "Identity", "MEV", "Messaging", "Mining", "Node RPC", "Oracle", "Quest", "Research",
+    "Security", "SocialFi", "Storage", "Tax", "dVPN"
 ]
 
 TYPE_DEFINITIONS = """
-Types disponibles et leurs définitions:
+Types disponibles et leurs définitions (synchronisé avec ai_strategy.py):
 
 HARDWARE:
-- HW Cold: Hardware wallet air-gapped (Ledger, Trezor, Coldcard)
-- HW Hot: Hardware 2FA/bearer card (YubiKey, SATSCARD)
+- HW Cold: Hardware wallet (Ledger, Trezor, Coldcard) - ALL HW are cold by definition
 - HW NFC Signer: Carte NFC de signature (TAPSIGNER, Status Keycard)
 
-SOFTWARE:
-- SW Browser: Extension navigateur uniquement
-- SW Mobile: App mobile uniquement
-- Wallet MultiPlatform: Wallet disponible sur plusieurs plateformes (browser + mobile)
-- Wallet MultiSig: Wallet avec fonctionnalité multi-signature
+SOFTWARE WALLETS:
+- SW Browser: Extension navigateur uniquement (Rabby browser-only)
+- SW Mobile: App mobile uniquement (Phoenix, Breez)
+- SW Desktop: Application desktop uniquement
+- Wallet MultiPlatform: Wallet multi-plateformes (MetaMask, Trust Wallet)
+- Smart Wallet: Account abstraction wallets (Argent, Sequence)
+- MPC Wallet: Multi-Party Computation wallets (Zengo, Coinbase)
+- MultiSig: Multi-signature wallets (Safe, Casa, Nunchuk)
 
-DEFI:
-- DEX: Decentralized exchange
-- Lending: Protocole de prêt (Aave, Compound)
-- Yield: Yield aggregator/optimizer
+EXCHANGES:
+- CEX: Centralized exchange (Binance, Coinbase, Kraken)
+- DEX: Decentralized exchange (Uniswap, SushiSwap)
+- DEX Agg: DEX aggregators (1inch, Paraswap)
+- AMM: Automated Market Makers (Curve, Balancer)
+- Atomic Swap: Cross-chain atomic swaps (THORChain)
+- OTC: Over-the-counter/P2P trading
+- NFT Market: NFT marketplaces (OpenSea, Blur)
+
+DEFI PROTOCOLS:
+- Lending: DeFi lending (Aave, Compound)
+- CeFi Lending: Centralized lending (Nexo, BlockFi - regulatory focus)
+- Yield: Yield aggregator/optimizer (Yearn, Beefy)
 - Liq Staking: Liquid staking (Lido, Rocket Pool)
-- Derivatives: Options, perpetuals, futures
-- DeFi Tools: Dashboards, portfolio trackers
+- Restaking: Restaking protocols (EigenLayer)
+- Derivatives: General derivatives
+- Options: Options protocols (Lyra, Dopex)
+- Perps: Perpetual futures (dYdX, GMX)
+- Synthetics: Synthetic assets (Synthetix)
+- Bridges: Cross-chain bridges (Wormhole, LayerZero)
+- CrossAgg: Cross-chain aggregators (Li.Fi)
+- Index: Index tokens (Index Coop)
+- Insurance: DeFi insurance (Nexus Mutual)
+- Intent: Intent-based protocols (CoW Protocol)
+- Launchpad: Token launchpads
+- Locker: Token lockers (Team.finance)
+- Prediction: Prediction markets (Polymarket)
+- Prime: Prime brokerage
+- Streaming: Payment streaming (Superfluid)
+- Vesting: Token vesting
+- Wrapped: Wrapped tokens (WBTC, WETH)
+- DeFi Tools: Dashboards, portfolio trackers (DeBank, Zapper)
 
 FINANCE:
-- CEX: Centralized exchange
-- Card: Carte crypto CUSTODIALE
-- Card Non-Cust: Carte crypto NON-CUSTODIALE (self-custody)
-- Neobank: Banque fintech
-- Crypto Bank: Banque crypto régulée
+- Card: Carte crypto CUSTODIALE (Binance Card)
+- Card Non-Cust: Carte crypto NON-CUSTODIALE (Gnosis Pay)
+- Neobank: Banque fintech (N26, Revolut)
+- Crypto Bank: Banque crypto régulée (Seba, Sygnum)
+- Fiat Gateway: Fiat on/off ramps (MoonPay, Ramp)
+- Payment: Payment services (BitPay)
+- Treasury: Treasury management (Parcel, Coinshift)
 
 BACKUP:
-- Bkp Physical: Backup physique métal/steel
-- Bkp Digital: Backup digital/cloud
-- Seed Splitter: Shamir/SSS backup
-
-SECURITY:
-- AC Phys: Anti-coercion physique (duress PIN, brick me PIN, hidden wallet hardware)
-- AC Digit: Anti-coercion digital (coinjoin, privacy features software)
+- Bkp Physical: Backup physique métal/steel (Cryptosteel, Billfodl)
+- Bkp Digital: Backup digital/cloud (Ledger Recover)
+- Seed Splitter: Shamir/SSS backup (SeedXOR, Cypherock)
 
 CUSTODY:
-- Custody MPC: Multi-Party Computation
-- Custody MultiSig: Multi-Signature custody
+- Custody: Generic custody service
+- Custody MPC: MPC custody (Fireblocks, BitGo)
+- Custody MultiSig: MultiSig custody (Unchained)
 - Enterprise Custody: Enterprise-grade custody
 
+PRIVACY:
+- Privacy: Privacy protocols (Tornado Cash, Railgun)
+- Private DeFi: Private DeFi (Aztec)
+
+INFRASTRUCTURE:
+- AA: Account Abstraction infrastructure
+- Interop: Interoperability protocols
+- L2: Layer 2 solutions (Arbitrum, Optimism)
+- Validator: Validator services
+
+CONSUMER:
+- Fan Token: Fan tokens (Chiliz, Socios)
+- GameFi: Gaming/play-to-earn (Axie Infinity)
+- Metaverse: Metaverse platforms (Decentraland)
+- NFT Tools: NFT analytics tools
+
 OTHER:
-- Bridges: Cross-chain bridges
 - RWA: Real World Assets tokenization
-- Inheritance: Inheritance/timelock features
+- Stablecoin: Stablecoin issuers (Circle, Tether)
+- Inheritance: Inheritance/timelock features (Liana)
+- Protocol: Base protocols
+- Settlement: Settlement infrastructure
+- Airgap Signer: Airgapped signing tools
+
+WEB3 INFRASTRUCTURE & SERVICES:
+- AI Agent: AI agents for crypto trading/management
+- Attestation: Attestation services for identity/credentials
+- Compute: Decentralized compute networks (Akash, Render)
+- DAO: DAO tooling and governance platforms
+- Data Indexer: Blockchain data indexing (The Graph, Dune)
+- Dev Tools: Developer tooling and SDKs
+- Explorer: Blockchain explorers (Etherscan, Blockscout)
+- Identity: Decentralized identity (ENS, Lens, Worldcoin)
+- MEV: MEV protection/extraction services
+- Messaging: Web3 messaging (XMTP, Push Protocol)
+- Mining: Mining pools and services
+- Node RPC: RPC node providers (Alchemy, Infura)
+- Oracle: Oracle networks (Chainlink, Pyth)
+- Quest: Quest/airdrop platforms (Galxe, Layer3)
+- Research: Research and analytics platforms
+- Security: Security audit and monitoring services
+- SocialFi: Social finance (friend.tech, Farcaster)
+- Storage: Decentralized storage (IPFS, Arweave, Filecoin)
+- Tax: Crypto tax calculation services
+- dVPN: Decentralized VPN services (Orchid, Mysterium)
 """
 
 
@@ -135,8 +224,6 @@ Types actuels assignés: {', '.join(current_types) if current_types else 'Aucun'
 INSTRUCTIONS:
 1. Recherche ce que fait réellement "{product_name}"
 2. Détermine les types appropriés (max 3)
-3. Pour AC Phys: SEULEMENT si le produit a un duress PIN, brick me PIN, ou hidden wallet HARDWARE dédié
-4. Pour AC Digit: SEULEMENT si le produit a des fonctionnalités de privacy (coinjoin, etc.)
 
 Réponds UNIQUEMENT avec un JSON valide:
 {{

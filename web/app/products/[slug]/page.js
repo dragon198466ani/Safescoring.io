@@ -4,20 +4,42 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import config from "@/config";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import { auth } from "@/libs/auth";
+// Critical components - loaded immediately
 import ScoreSecurityPanel from "@/components/ScoreSecurityPanel";
-import SecurityIncidents from "@/components/SecurityIncidents";
 import CommunityStats from "@/components/CommunityStats";
 import ProductLogo from "@/components/ProductLogo";
-import ProductMedia from "@/components/ProductMedia";
-import PillarIllustrations from "@/components/PillarIllustrations";
-import LockedContent from "@/components/LockedContent";
 import PricingDisplay from "@/components/PricingDisplay";
-import CorrectionSection from "@/components/CorrectionSection";
+// Heavy components - lazy loaded
+import {
+  LazySecurityIncidents,
+  LazyCorrectionSection,
+  LazyProductHeroGallery,
+} from "@/libs/lazy-components";
 
-// Disable cache for product pages
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+// Enable ISR caching for better SEO and Google crawl efficiency
+// Product scores don't change frequently, so 1 hour cache is reasonable
+export const revalidate = 3600; // 1 hour
+
+// Pre-render all product pages at build time for better SEO
+export async function generateStaticParams() {
+  if (!isSupabaseConfigured()) {
+    return [];
+  }
+
+  try {
+    const { data: products } = await supabase
+      .from("products")
+      .select("slug")
+      .not("slug", "is", null);
+
+    return (products || []).map((product) => ({
+      slug: product.slug,
+    }));
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    return [];
+  }
+}
 
 // SEO: Generate metadata for each product page
 export async function generateMetadata({ params }) {
@@ -62,15 +84,6 @@ export async function generateMetadata({ params }) {
   const title = `${product.name} Security Score${scoreText} | SafeScoring`;
   const description = product.short_description ||
     `${product.name} ${typeName} security evaluation. See the full SAFE score breakdown across Security, Adversity, Fidelity & Efficiency. 916 norms evaluated.`;
-
-  // Get logo for OG image
-  let logoUrl = null;
-  if (product.url) {
-    try {
-      const domain = new URL(product.url).hostname.replace('www.', '');
-      logoUrl = `https://logo.clearbit.com/${domain}`;
-    } catch {}
-  }
 
   return {
     title,
@@ -303,7 +316,15 @@ async function getProduct(slug) {
       f: Math.round(safeScoring?.score_f || 0),
       e: Math.round(safeScoring?.score_e || 0),
     },
-    verified: true,
+    verified: safeScoring?.note_finale != null,
+    // DATES CLAIRES - Chaque produit a des dates uniques et spécifiques
+    dates: {
+      scoreCalculatedAt: safeScoring?.calculated_at || null,      // Quand le score SAFE a été calculé
+      lastEvaluatedAt: safeScoring?.last_evaluation_date || null, // Dernière évaluation des normes
+      lastMonthlyUpdate: product.last_monthly_update || null,     // Dernière mise à jour mensuelle
+      productUpdatedAt: product.updated_at || null,               // Dernière modification produit
+    },
+    // Compatibilité: utiliser calculated_at en priorité
     lastUpdate: safeScoring?.calculated_at || product.last_monthly_update || product.updated_at,
     evaluationDetails: evaluationStats,
     pillarEvaluations: pillarEvaluations,
@@ -313,197 +334,6 @@ async function getProduct(slug) {
     return null;
   }
 }
-
-// Generate crypto security action-oriented advice for each pillar based on product type and specific failed evaluations
-const getPillarAdvice = (pillarCode, score, evaluations = [], productTypes = []) => {
-  // Get failed evaluations with their titles
-  const failedEvals = evaluations.filter(e => e.result === "NO");
-  const failedCount = failedEvals.length;
-  const failedTitles = failedEvals.slice(0, 2).map(e => e.title).filter(Boolean);
-
-  const riskLevel = score >= 80 ? "low" : score >= 60 ? "moderate" : "high";
-
-  // Identify product category from types
-  const typeNames = productTypes.map(t => t.name?.toLowerCase() || '').join(' ');
-  const isHardwareWallet = typeNames.includes('hardware') || typeNames.includes('signing device');
-  const isSoftwareWallet = typeNames.includes('software') || typeNames.includes('mobile') || typeNames.includes('browser') || typeNames.includes('desktop');
-  const isExchange = typeNames.includes('exchange') || typeNames.includes('cex');
-  const isDeFi = typeNames.includes('defi') || typeNames.includes('dex') || typeNames.includes('lending') || typeNames.includes('protocol');
-  const isCard = typeNames.includes('card');
-
-  // Build specific issue text from failed evaluations
-  const getIssueText = () => {
-    if (failedCount === 0) return '';
-    if (failedTitles.length === 0) return `${failedCount} area${failedCount > 1 ? 's' : ''} flagged. `;
-    if (failedTitles.length === 1) return `Issue identified: ${failedTitles[0]}. `;
-    return `Key concerns: ${failedTitles[0]} and ${failedTitles[1]}${failedCount > 2 ? ` (+${failedCount - 2} more)` : ''}. `;
-  };
-
-  const issueText = getIssueText();
-
-  // Generate advice based on product type, pillar, risk level, and specific issues
-  const generateAdvice = () => {
-    // HIGH RISK - Critical issues found
-    if (riskLevel === "high") {
-      if (isHardwareWallet) {
-        const hwHighAdvice = {
-          S: `${issueText}Critical for hardware security: verify secure element certification (CC EAL5+), ensure firmware signature verification, and check for supply chain protections.`,
-          A: `${issueText}Recovery vulnerabilities detected. Implement metal seed backup with geographic distribution, test recovery procedures, and consider Shamir secret sharing.`,
-          F: `${issueText}Vendor trust concerns identified. Research security disclosure history, verify company jurisdiction, and monitor independent security audits.`,
-          E: `${issueText}Usability gaps may introduce security risks. Ensure all transaction details display on-device, verify no blind signing is required, and check address verification accuracy.`
-        };
-        return hwHighAdvice[pillarCode];
-      }
-      if (isSoftwareWallet) {
-        const swHighAdvice = {
-          S: `${issueText}Elevated security risk. Consider hardware wallet for high-value assets, revoke unnecessary dApp permissions, and enable transaction simulation before signing.`,
-          A: `${issueText}Backup vulnerabilities detected. Store seed phrase offline immediately, avoid cloud backups for private keys, and test recovery on a separate device.`,
-          F: `${issueText}Trust verification needed. Check audit reports, verify update authenticity through multiple sources, and monitor community security discussions.`,
-          E: `${issueText}Interface risks identified. Use transaction simulation for every interaction, verify contract addresses via block explorers, and bookmark official URLs only.`
-        };
-        return swHighAdvice[pillarCode];
-      }
-      if (isExchange) {
-        const exHighAdvice = {
-          S: `${issueText}Platform security gaps detected. Minimize funds on platform, enable all 2FA options including hardware keys, and set strict withdrawal whitelists.`,
-          A: `${issueText}Fund protection concerns. Verify proof-of-reserves status, understand insurance coverage, and maintain asset distribution across multiple platforms.`,
-          F: `${issueText}Compliance or transparency issues. Monitor regulatory news, understand jurisdiction risks, and have contingency plans for potential restrictions.`,
-          E: `${issueText}Fee or interface concerns. Scrutinize all fee structures including hidden costs, verify execution quality, and document all transactions.`
-        };
-        return exHighAdvice[pillarCode];
-      }
-      if (isDeFi) {
-        const defiHighAdvice = {
-          S: `${issueText}Smart contract risks identified. Use dedicated DeFi wallet, limit approvals to exact amounts, revoke permissions after use, and verify contracts via multiple sources.`,
-          A: `${issueText}Protocol resilience concerns. Set conservative position parameters, monitor oracle health actively, prepare exit transactions, and maintain liquidation buffers.`,
-          F: `${issueText}Governance or team concerns. Review admin key controls, monitor for suspicious governance proposals, and understand centralization and upgrade risks.`,
-          E: `${issueText}Interface vulnerabilities detected. Mandatory transaction simulation, verify all parameters manually, check slippage settings, and be alert to frontend attacks.`
-        };
-        return defiHighAdvice[pillarCode];
-      }
-      if (isCard) {
-        const cardHighAdvice = {
-          S: `${issueText}Card security gaps identified. Enable real-time transaction alerts, set conservative spending limits, and monitor all transactions closely.`,
-          A: `${issueText}Fund protection concerns. Maintain minimal card balance, understand liability policies, and verify dispute resolution procedures before significant use.`,
-          F: `${issueText}Issuer or compliance concerns. Monitor regulatory status, understand banking partner relationship, and have alternative payment methods ready.`,
-          E: `${issueText}Fee transparency issues. Scrutinize all fees including FX spreads, verify conversion rates, and reconcile app transactions with statements.`
-        };
-        return cardHighAdvice[pillarCode];
-      }
-      // Generic high risk
-      return `${issueText}Elevated risk level. Review security practices, minimize exposure, implement additional protective measures, and monitor actively.`;
-    }
-
-    // MODERATE RISK - Some concerns
-    if (riskLevel === "moderate") {
-      if (isHardwareWallet) {
-        const hwModAdvice = {
-          S: `${issueText}Verify secure element specs, check for open-source firmware options, and ensure anti-tampering mechanisms are present.`,
-          A: `${issueText}Review passphrase and multi-sig support, maintain tested backup procedures, and consider redundant seed storage.`,
-          F: `${issueText}Research manufacturer's security track record, verify jurisdiction, and follow official channels for firmware updates.`,
-          E: `${issueText}Review companion app permissions, verify transaction display completeness, and ensure address verification is clear.`
-        };
-        return hwModAdvice[pillarCode];
-      }
-      if (isSoftwareWallet) {
-        const swModAdvice = {
-          S: `${issueText}Review key storage method, consider hardware wallet integration, and audit connected dApps regularly.`,
-          A: `${issueText}Verify backup encryption, maintain offline seed copy, and test recovery procedure periodically.`,
-          F: `${issueText}Verify updates through official channels, check security audit history, and monitor community feedback.`,
-          E: `${issueText}Enable transaction simulation, verify contract interactions via explorer, and use bookmarked official URLs.`
-        };
-        return swModAdvice[pillarCode];
-      }
-      if (isExchange) {
-        const exModAdvice = {
-          S: `${issueText}Enable hardware 2FA, set withdrawal delays, and review API permissions and active sessions regularly.`,
-          A: `${issueText}Verify proof-of-reserves, understand withdrawal policies, and consider distributing assets across platforms.`,
-          F: `${issueText}Monitor regulatory compliance updates, understand jurisdiction implications, and stay informed via official channels.`,
-          E: `${issueText}Review fee schedules carefully, understand margin mechanics if applicable, and verify order execution quality.`
-        };
-        return exModAdvice[pillarCode];
-      }
-      if (isDeFi) {
-        const defiModAdvice = {
-          S: `${issueText}Limit token approvals to needed amounts, use revoke tools regularly, and verify contract upgradability status.`,
-          A: `${issueText}Set up position monitoring alerts, understand oracle dependencies, and maintain liquidation safety buffers.`,
-          F: `${issueText}Monitor governance proposals affecting security, verify admin key controls, and follow official announcements.`,
-          E: `${issueText}Use transaction simulation before execution, verify slippage settings, and double-check addresses for complex operations.`
-        };
-        return defiModAdvice[pillarCode];
-      }
-      if (isCard) {
-        const cardModAdvice = {
-          S: `${issueText}Enable real-time alerts, review provider security practices, and understand the conversion process.`,
-          A: `${issueText}Review chargeback policies, understand price lock mechanisms, and verify unauthorized use coverage.`,
-          F: `${issueText}Monitor card program regulatory status, understand banking partnerships, and review terms updates.`,
-          E: `${issueText}Verify fee transparency, understand conversion rates at transaction time, and reconcile regularly.`
-        };
-        return cardModAdvice[pillarCode];
-      }
-      // Generic moderate
-      return `${issueText}Review security configurations, enable available protections, and maintain regular monitoring practices.`;
-    }
-
-    // LOW RISK - Good but can still improve
-    if (isHardwareWallet) {
-      const hwLowAdvice = {
-        S: `${issueText}Good foundation. To improve: consider multi-sig setup, verify secure element is CC EAL6+ certified, and enable all available anti-tampering features.`,
-        A: `${issueText}Solid recovery setup. To strengthen: implement Shamir backup (2-of-3), add passphrase protection, and practice recovery drills quarterly.`,
-        F: `${issueText}Reliable vendor. To maximize: subscribe to security bulletins, verify firmware hashes independently, and consider backup device from different manufacturer.`,
-        E: `${issueText}Good usability. To enhance: enable all verification prompts, use dedicated signing device for high-value transactions, and verify addresses on external display.`
-      };
-      return hwLowAdvice[pillarCode];
-    }
-    if (isSoftwareWallet) {
-      const swLowAdvice = {
-        S: `${issueText}Solid security. To improve: pair with hardware wallet for high-value assets, audit connected dApps monthly, and enable all available security features.`,
-        A: `${issueText}Good backup system. To strengthen: create encrypted offline backup, test recovery on separate device, and implement time-delayed transactions for large amounts.`,
-        F: `${issueText}Active development. To maximize: enable auto-updates, follow security researchers covering this wallet, and periodically review permissions granted.`,
-        E: `${issueText}Clear interface. To enhance: always use transaction simulation, bookmark official URLs only, and verify contract interactions via multiple sources.`
-      };
-      return swLowAdvice[pillarCode];
-    }
-    if (isExchange) {
-      const exLowAdvice = {
-        S: `${issueText}Good platform security. To improve: enable hardware security keys (YubiKey), set strict withdrawal whitelists with 24h delay, and review API permissions.`,
-        A: `${issueText}Solid fund protection. To strengthen: diversify across 2-3 platforms, verify proof-of-reserves monthly, and understand exact insurance coverage limits.`,
-        F: `${issueText}Compliant platform. To maximize: monitor regulatory news in your jurisdiction, understand withdrawal limits during market stress, and document all transactions.`,
-        E: `${issueText}Transparent fees. To optimize: compare maker/taker fees, understand hidden spread costs, and use limit orders to control execution quality.`
-      };
-      return exLowAdvice[pillarCode];
-    }
-    if (isDeFi) {
-      const defiLowAdvice = {
-        S: `${issueText}Audited contracts. To improve: limit approvals to exact amounts needed, use revoke.cash regularly, and verify contracts via multiple block explorers.`,
-        A: `${issueText}Resilient protocol. To strengthen: set conservative collateral ratios (150%+ buffer), monitor oracle feeds, and prepare exit transactions in advance.`,
-        F: `${issueText}Solid governance. To maximize: participate in votes, monitor admin key movements, and follow security researchers covering this protocol.`,
-        E: `${issueText}Good documentation. To enhance: always simulate transactions first, double-check slippage settings, and verify MEV protection is enabled.`
-      };
-      return defiLowAdvice[pillarCode];
-    }
-    if (isCard) {
-      const cardLowAdvice = {
-        S: `${issueText}Good card security. To improve: set conservative daily limits, enable instant notifications, and review connected accounts monthly.`,
-        A: `${issueText}Solid protection. To strengthen: understand exact liability limits, document dispute procedures, and maintain minimal card balance.`,
-        F: `${issueText}Compliant issuer. To maximize: monitor terms changes, understand banking partner stability, and have backup payment method ready.`,
-        E: `${issueText}Clear fee structure. To optimize: verify FX rates at transaction time, compare to alternatives for large purchases, and reconcile weekly.`
-      };
-      return cardLowAdvice[pillarCode];
-    }
-
-    // Generic low risk - still with improvements
-    const genericLow = {
-      S: `${issueText}Good security base. To improve: enable all available security features, review configurations quarterly, and stay updated on best practices.`,
-      A: `${issueText}Solid resilience. To strengthen: implement redundant backups, test recovery procedures, and maintain contingency plans.`,
-      F: `${issueText}Reliable product. To maximize: follow official security channels, verify updates independently, and monitor community discussions.`,
-      E: `${issueText}Good usability. To enhance: verify all transaction details, use available simulation tools, and document important operations.`
-    };
-    return genericLow[pillarCode];
-  };
-
-  return generateAdvice() || "Apply standard crypto security best practices.";
-};
 
 const getScoreColor = (score) => {
   if (score >= 80) return "text-green-400";
@@ -568,15 +398,72 @@ const ScoreCircle = ({ score, size = 140, strokeWidth = 10, lastUpdate }) => {
 export default async function ProductPage({ params }) {
   const { slug } = await params;
   const product = await getProduct(slug);
-  const session = await auth();
-  const isAuthenticated = !!session?.user;
 
   if (!product) {
     notFound();
   }
 
+  // Schema.org JSON-LD for rich snippets in Google
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    url: `https://safescoring.io/products/${slug}`,
+    image: product.logoUrl || `https://safescoring.io/api/og-image?product=${slug}`,
+    brand: {
+      "@type": "Brand",
+      name: product.brand || product.name,
+    },
+    category: product.type,
+    aggregateRating: product.verified ? {
+      "@type": "AggregateRating",
+      ratingValue: (product.scores.total / 20).toFixed(1), // Convert 0-100 to 0-5
+      bestRating: "5",
+      worstRating: "0",
+      ratingCount: product.evaluationDetails.totalNorms,
+      reviewCount: 1,
+    } : undefined,
+    review: product.verified ? {
+      "@type": "Review",
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: (product.scores.total / 20).toFixed(1),
+        bestRating: "5",
+        worstRating: "0",
+      },
+      author: {
+        "@type": "Organization",
+        name: "SafeScoring",
+        url: "https://safescoring.io",
+      },
+      reviewBody: `Security evaluation based on ${product.evaluationDetails.totalNorms} norms. SAFE Score: ${product.scores.total}% (S:${product.scores.s}%, A:${product.scores.a}%, F:${product.scores.f}%, E:${product.scores.e}%)`,
+      datePublished: product.lastUpdate,
+    } : undefined,
+  };
+
+  // Breadcrumb schema
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://safescoring.io" },
+      { "@type": "ListItem", position: 2, name: "Products", item: "https://safescoring.io/products" },
+      { "@type": "ListItem", position: 3, name: product.name, item: `https://safescoring.io/products/${slug}` },
+    ],
+  };
+
   return (
     <>
+      {/* JSON-LD Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <Header />
       <main className="min-h-screen pt-24 pb-16 px-6 hero-bg">
         <div className="max-w-5xl mx-auto">
@@ -653,280 +540,156 @@ export default async function ProductPage({ params }) {
               </div>
             </div>
 
-            {/* Right: Score circle */}
-            <div className="flex flex-col items-center lg:items-end shrink-0">
+            {/* Right: SAFE Score Circle only */}
+            <div className="shrink-0">
               <ScoreCircle score={product.scores.total} lastUpdate={product.lastUpdate} />
             </div>
           </div>
 
-          {/* Product Photos & Videos */}
-          {product.media && product.media.length > 0 && (
-            <ProductMedia media={product.media} productName={product.name} />
-          )}
-
-          {/* SAFE Pillar scores */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-            {config.safe.pillars.map((pillar) => {
-              const score = product.scores[pillar.code.toLowerCase()];
-              const IllustrationComponent = PillarIllustrations[pillar.code];
-              return (
-                <div
-                  key={pillar.code}
-                  className="p-6 rounded-xl bg-base-200 border border-base-300 relative"
-                >
-                  {/* Info icon with tooltip */}
-                  <Link
-                    href={`/methodology#${pillar.code.toLowerCase()}`}
-                    className="absolute top-3 right-3 group"
-                    title={pillar.description}
-                  >
-                    <div className="w-5 h-5 rounded-full bg-base-content/10 hover:bg-base-content/20 flex items-center justify-center transition-colors cursor-pointer">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-base-content/50 group-hover:text-base-content/80">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    {/* Tooltip */}
-                    <div className="absolute right-0 top-full mt-2 w-48 p-2 bg-base-300 rounded-lg shadow-lg text-xs text-base-content/80 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10 pointer-events-none">
-                      {pillar.description}
-                      <span className="text-primary block mt-1">Click for details</span>
-                    </div>
-                  </Link>
-                  {/* Illustration */}
-                  <div className="flex justify-center mb-4">
-                    {IllustrationComponent && (
-                      <IllustrationComponent size={60} color={pillar.color} />
-                    )}
-                  </div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div
-                      className="text-2xl font-black"
-                      style={{ color: pillar.color }}
-                    >
-                      {pillar.code}
-                    </div>
-                    <div className={`text-2xl font-bold ${getScoreColor(score)}`}>
-                      {score}
-                    </div>
-                  </div>
-                  <div className="font-medium text-sm mb-1">{pillar.name}</div>
-                  <div className="w-full h-2 bg-base-300 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{
-                        width: `${score}%`,
-                        backgroundColor: pillar.color,
-                      }}
-                    />
+          {/* Hero Section: Gallery + Pillar Scores côte à côte */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+            {/* Left: Gallery (2/3 on desktop) */}
+            <div className="lg:col-span-2">
+              {product.media && product.media.length > 0 ? (
+                <LazyProductHeroGallery media={product.media} productName={product.name} />
+              ) : (
+                <div className="aspect-[16/9] rounded-2xl bg-base-200/50 border border-base-content/10 flex items-center justify-center">
+                  <div className="text-center text-base-content/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-16 h-16 mx-auto mb-2 opacity-50">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    </svg>
+                    <span className="text-sm">No photos available</span>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-
-          {/* Priority Pillars Analysis */}
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            {/* Top Strength - VISIBLE TO ALL (teaser) */}
-            <div className="rounded-xl bg-base-200 border border-base-300 p-6">
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-green-400">
-                  <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                </svg>
-                Top Strength
-              </h2>
-              {(() => {
-                const pillarScores = config.safe.pillars.map(pillar => ({
-                  ...pillar,
-                  score: product.scores[pillar.code.toLowerCase()]
-                })).sort((a, b) => b.score - a.score);
-                const topPillar = pillarScores[0];
-                return (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-4 p-4 rounded-lg bg-base-300/50">
-                      <div
-                        className="text-3xl font-black"
-                        style={{ color: topPillar.color }}
-                      >
-                        {topPillar.code}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold">{topPillar.name}</div>
-                        <div className="text-sm text-base-content/60">{topPillar.description}</div>
-                      </div>
-                      <div className={`text-2xl font-bold ${getScoreColor(topPillar.score)}`}>
-                        {topPillar.score}
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2 px-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clipRule="evenodd" />
-                      </svg>
-                      <p className="text-sm text-base-content/70 italic">{getPillarAdvice(topPillar.code, topPillar.score, product.pillarEvaluations[topPillar.code], product.types)}</p>
-                    </div>
-                  </div>
-                );
-              })()}
+              )}
             </div>
 
-            {/* Priority Areas - LOCKED FOR NON-AUTHENTICATED */}
-            {isAuthenticated ? (
-              <div className="rounded-xl bg-base-200 border border-base-300 p-6">
-                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-amber-400">
-                    <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                  </svg>
-                  Priority Areas
-                </h2>
-                <ul className="space-y-4">
-                  {(() => {
-                    const pillarScores = config.safe.pillars.map(pillar => ({
-                      ...pillar,
-                      score: product.scores[pillar.code.toLowerCase()]
-                    })).sort((a, b) => a.score - b.score);
-                    return pillarScores.slice(0, 3).map((pillar, i) => (
-                      <li key={pillar.code} className="rounded-lg bg-base-300/50 overflow-hidden">
-                        <div className="flex items-center gap-3 p-3">
-                          <span className="text-lg font-bold text-base-content/40 w-6">{i + 1}</span>
+            {/* Right: Pillar Scores S,A,F,E + Stats (1/3 on desktop) */}
+            <div className="lg:col-span-1 flex flex-col gap-3">
+              {/* Pillar scores */}
+              <div className="grid grid-cols-2 lg:grid-cols-1 gap-3">
+                {config.safe.pillars.map((pillar) => {
+                  const score = product.scores[pillar.code.toLowerCase()];
+                  return (
+                    <Link
+                      key={pillar.code}
+                      href={`/methodology#${pillar.code.toLowerCase()}`}
+                      className="p-3 rounded-xl bg-base-200 border border-base-300 hover:border-primary/50 transition-all group"
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-2">
                           <div
-                            className="text-xl font-black"
+                            className="text-lg font-black"
                             style={{ color: pillar.color }}
                           >
                             {pillar.code}
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm">{pillar.name}</div>
-                          </div>
-                          <div className={`text-lg font-bold ${getScoreColor(pillar.score)}`}>
-                            {pillar.score}
+                          <div className="text-xs text-base-content/60 group-hover:text-base-content/80 transition-colors">
+                            {pillar.name}
                           </div>
                         </div>
-                        <div className="px-3 pb-3 pt-0">
-                          <p className="text-xs text-base-content/60 italic pl-9">{getPillarAdvice(pillar.code, pillar.score, product.pillarEvaluations[pillar.code], product.types)}</p>
+                        <div className={`text-lg font-bold ${getScoreColor(score)}`}>
+                          {score}
                         </div>
-                      </li>
-                    ));
-                  })()}
-                </ul>
+                      </div>
+                      <div className="w-full h-1.5 bg-base-300 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{
+                            width: `${score}%`,
+                            backgroundColor: pillar.color,
+                          }}
+                        />
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
-            ) : (
-              <LockedContent title="Priority Areas">
-                <div className="rounded-xl bg-base-200 border border-base-300 p-6">
-                  <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-amber-400">
-                      <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                    </svg>
-                    Priority Areas
-                  </h2>
-                  <ul className="space-y-4">
-                    {(() => {
-                      const pillarScores = config.safe.pillars.map(pillar => ({
-                        ...pillar,
-                        score: product.scores[pillar.code.toLowerCase()]
-                      })).sort((a, b) => a.score - b.score);
-                      // Show first item visible, rest blurred with real data structure
-                      return pillarScores.slice(0, 3).map((pillar, i) => (
-                        <li key={pillar.code} className="rounded-lg bg-base-300/50 overflow-hidden">
-                          <div className="flex items-center gap-3 p-3">
-                            <span className="text-lg font-bold text-base-content/40 w-6">{i + 1}</span>
-                            <div
-                              className="text-xl font-black"
-                              style={{ color: pillar.color }}
-                            >
-                              {pillar.code}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="font-medium text-sm">{pillar.name}</div>
-                            </div>
-                            <div className={`text-lg font-bold ${getScoreColor(pillar.score)}`}>
-                              {pillar.score}
-                            </div>
-                          </div>
-                          <div className="px-3 pb-3 pt-0">
-                            <p className="text-xs text-base-content/60 italic pl-9">Create an account to see detailed recommendations.</p>
-                          </div>
-                        </li>
-                      ));
-                    })()}
-                  </ul>
-                </div>
-              </LockedContent>
-            )}
-          </div>
 
-          {/* Evaluation stats */}
-          <div className="rounded-xl bg-base-200 border border-base-300 p-6 mb-12">
-            <h2 className="text-lg font-semibold mb-6">Evaluation Statistics</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-              <div>
-                <div className="text-3xl font-bold text-base-content">
-                  {product.evaluationDetails.totalNorms}
+              {/* Evaluation stats compact */}
+              <div className="rounded-xl bg-base-200/50 border border-base-content/10 p-3">
+                <div className="grid grid-cols-4 gap-2 text-center">
+                  <div>
+                    <div className="text-lg font-bold text-base-content">{product.evaluationDetails.totalNorms}</div>
+                    <div className="text-[10px] text-base-content/50 uppercase">Norms</div>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-green-400">{product.evaluationDetails.yes}</div>
+                    <div className="text-[10px] text-base-content/50 uppercase">Yes</div>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-red-400">{product.evaluationDetails.no}</div>
+                    <div className="text-[10px] text-base-content/50 uppercase">No</div>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-base-content/50">{product.evaluationDetails.na}</div>
+                    <div className="text-[10px] text-base-content/50 uppercase">N/A</div>
+                  </div>
                 </div>
-                <div className="text-sm text-base-content/60">Norms Evaluated</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-green-400">
-                  {product.evaluationDetails.yes}
-                </div>
-                <div className="text-sm text-base-content/60">Compliant (YES)</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-red-400">
-                  {product.evaluationDetails.no}
-                </div>
-                <div className="text-sm text-base-content/60">Non-Compliant (NO)</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-base-content/50">
-                  {product.evaluationDetails.na}
-                </div>
-                <div className="text-sm text-base-content/60">Not Applicable</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-amber-400">
-                  {product.evaluationDetails.tbd}
-                </div>
-                <div className="text-sm text-base-content/60">To Be Determined</div>
               </div>
             </div>
-            {product.evaluationDetails.totalNorms > 0 && (
-              <div className="mt-6">
-                <div className="w-full h-4 bg-base-300 rounded-full overflow-hidden flex">
-                  <div
-                    className="h-full bg-green-500"
-                    style={{
-                      width: `${(product.evaluationDetails.yes / product.evaluationDetails.totalNorms) * 100}%`,
-                    }}
-                  />
-                  <div
-                    className="h-full bg-red-500"
-                    style={{
-                      width: `${(product.evaluationDetails.no / product.evaluationDetails.totalNorms) * 100}%`,
-                    }}
-                  />
-                  <div
-                    className="h-full bg-amber-500"
-                    style={{
-                      width: `${(product.evaluationDetails.tbd / product.evaluationDetails.totalNorms) * 100}%`,
-                    }}
-                  />
-                  <div
-                    className="h-full bg-base-content/30"
-                    style={{
-                      width: `${(product.evaluationDetails.na / product.evaluationDetails.totalNorms) * 100}%`,
-                    }}
-                  />
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* Score & Security Panel - Unified view */}
-          <div className="mb-8">
+          {/* Security Insights - Strategic advice based on scores */}
+          <div className="grid md:grid-cols-2 gap-6 mb-12">
+            {/* Top Strength */}
+            {(() => {
+              const pillarScores = config.safe.pillars.map(pillar => ({
+                ...pillar,
+                score: product.scores[pillar.code.toLowerCase()]
+              })).sort((a, b) => b.score - a.score);
+              const topPillar = pillarScores[0];
+              const weakPillar = pillarScores[pillarScores.length - 1];
+
+              return (
+                <>
+                  <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-emerald-400">
+                        <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                      </svg>
+                      <span className="font-semibold text-emerald-400">Top Strength</span>
+                      <span className="ml-auto text-2xl font-black" style={{ color: topPillar.color }}>{topPillar.code}</span>
+                      <span className={`text-lg font-bold ${getScoreColor(topPillar.score)}`}>{topPillar.score}</span>
+                    </div>
+                    <p className="text-sm text-base-content/70">
+                      {topPillar.score >= 80
+                        ? `Excellent ${topPillar.name.toLowerCase()} rating. This product demonstrates strong practices in this area.`
+                        : topPillar.score >= 60
+                        ? `Good ${topPillar.name.toLowerCase()} fundamentals with room for improvement.`
+                        : `${topPillar.name} is the strongest pillar but still needs attention.`}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-amber-400">
+                        <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                      </svg>
+                      <span className="font-semibold text-amber-400">Priority Focus</span>
+                      <span className="ml-auto text-2xl font-black" style={{ color: weakPillar.color }}>{weakPillar.code}</span>
+                      <span className={`text-lg font-bold ${getScoreColor(weakPillar.score)}`}>{weakPillar.score}</span>
+                    </div>
+                    <p className="text-sm text-base-content/70">
+                      {weakPillar.score < 60
+                        ? `${weakPillar.name} requires attention. Review security practices and consider additional protective measures.`
+                        : weakPillar.score < 80
+                        ? `${weakPillar.name} is adequate but could be strengthened. Monitor for improvements.`
+                        : `All pillars are strong. Continue maintaining good security practices.`}
+                    </p>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+
+          {/* Score & Security + Security History - Side by side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+            {/* Score & Security Panel */}
             <ScoreSecurityPanel slug={product.slug} productName={product.name} />
-          </div>
 
-          {/* Security Incidents - Full history */}
-          <div className="mb-12">
-            <SecurityIncidents slug={product.slug} />
+            {/* Security Incidents */}
+            <LazySecurityIncidents slug={product.slug} />
           </div>
 
           {/* Community & External Data */}
@@ -936,7 +699,7 @@ export default async function ProductPage({ params }) {
 
           {/* Help Improve - User Corrections (Closed-Loop Data) */}
           <div className="mb-12">
-            <CorrectionSection
+            <LazyCorrectionSection
               productId={product.id}
               productSlug={product.slug}
               productName={product.name}

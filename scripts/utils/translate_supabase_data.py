@@ -47,12 +47,7 @@ PRODUCT_TYPES_TRANSLATIONS = {
         'advantages': 'Maximum security, Complete offline isolation, Secure Element chip protection, Physical button confirmation',
         'disadvantages': 'Higher cost, Less convenient for frequent transactions, Risk of physical loss or damage'
     },
-    'HW Hot': {
-        'description': 'A Hardware Wallet Connected (HW Hot) is a secure physical device combining the benefits of hardware wallets (offline key storage) with connectivity features for convenient transactions.',
-        'examples': 'Keystone 4, Ledger Nano X, Trezor Mode, GridPlus Lattice1',
-        'advantages': 'Direct connection to dApps, Good balance of security and convenience, Bluetooth/USB connectivity',
-        'disadvantages': 'Exposure potential via connection, Higher attack surface than cold storage'
-    },
+    # NOTE: 'HW Hot' removed - not standard terminology. Hardware wallets are by definition "cold".
     'SW Browser': {
         'description': 'A Software Wallet Browser Extension (SW Browser) is a software extension integrated into a web browser, allowing users to manage encrypted private keys and interact with Web3 applications.',
         'examples': 'MetaMask, Trust Wallet (extension), Rabby Wallet, Rainbow',
@@ -89,24 +84,7 @@ PRODUCT_TYPES_TRANSLATIONS = {
         'advantages': 'Self-custody maintained, No third-party control, Direct spending from wallet',
         'disadvantages': 'Limited availability, May have higher fees, Fewer reward options'
     },
-    'AC Phys': {
-        'description': 'Anti-Coercion Physical (AC Phys) products are hardware devices designed to protect cryptographic assets against physical attacks and coercion threats like robbery or extortion.',
-        'examples': 'Ledger Nano X (with plausible deniability), Trezor (hidden wallet feature)',
-        'advantages': 'Physical coercion protection, Decoy wallet functionality, Duress PIN options',
-        'disadvantages': 'Complex setup required, Risk of forgetting hidden wallet access, Learning curve'
-    },
-    'AC Digit': {
-        'description': 'An Anti-Coercion Digital (AC Digit) is a digital protection system designed to secure cryptographic assets against coercion and digital pressure through features like duress PINs and decoy wallets.',
-        'examples': 'Unchained Capital (multisig + time-locks), Casa Keymaster (multisig + time-locks)',
-        'advantages': 'Resistance to digital coercion, Time-locked transactions, Multi-signature protection',
-        'disadvantages': 'Complex implementation, May delay legitimate transactions, Higher costs'
-    },
-    'AC Phygi': {
-        'description': 'An Anti-Coercion Phygital (AC Phygi) is a hybrid crypto product combining physical elements (hardware) and digital elements (smart contracts) for comprehensive coercion protection.',
-        'examples': 'Casa Keymaster (multisig + time-locks), Unchained Capital',
-        'advantages': 'Combined physical and digital protection, Comprehensive coercion resistance, Multiple recovery options',
-        'disadvantages': 'Complex setup, Higher costs, Requires understanding of both physical and digital security'
-    },
+    # NOTE: AC Phys, AC Digit, AC Phygi removed - anti-coercion features are evaluated via Adversity (A) pillar
     'CEX': {
         'description': 'Centralized trading platform where the exchange holds custody of user funds. Offers high liquidity and fiat on-ramps but introduces custodial risk.',
         'examples': 'Binance, Coinbase, Kraken, Bybit, OKX, Kucoin',

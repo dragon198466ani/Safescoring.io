@@ -137,9 +137,18 @@ export async function GET(request, { params }) {
     }
 
     // Fetch safe_scoring_results for detailed pillar scores
+    // Sélectionner explicitement les champs de date pour clarté
     const { data: safeScoring } = await supabase
       .from("safe_scoring_results")
-      .select("*")
+      .select(`
+        note_finale,
+        score_s, score_a, score_f, score_e,
+        note_consumer, s_consumer, a_consumer, f_consumer, e_consumer,
+        note_essential, s_essential, a_essential, f_essential, e_essential,
+        calculated_at,
+        last_evaluation_date,
+        updated_at
+      `)
       .eq("product_id", product.id)
       .order("calculated_at", { ascending: false })
       .limit(1)
@@ -154,6 +163,7 @@ export async function GET(request, { params }) {
     };
 
     // Transform data for frontend
+    // IMPORTANT: Dates claires et distinctes pour chaque usage
     const transformedProduct = {
       id: product.id,
       name: product.name,
@@ -190,8 +200,17 @@ export async function GET(request, { params }) {
         },
       },
       evaluationDetails: evaluationStats,
-      verified: true,
-      lastUpdate: product.last_monthly_update || product.updated_at,
+      verified: safeScoring?.note_finale != null,
+      // DATES CLAIRES - chaque date a une signification spécifique
+      dates: {
+        scoreCalculatedAt: safeScoring?.calculated_at || null,    // Quand le score SAFE a été calculé
+        lastEvaluatedAt: safeScoring?.last_evaluation_date || null, // Dernière évaluation des normes
+        lastMonthlyUpdate: product.last_monthly_update || null,   // Dernière mise à jour mensuelle des données
+        productUpdatedAt: product.updated_at || null,             // Dernière modification du produit
+        productCreatedAt: product.created_at || null,             // Date de création du produit
+      },
+      // Maintenir compatibilité avec ancien format
+      lastUpdate: safeScoring?.calculated_at || product.last_monthly_update || product.updated_at,
       createdAt: product.created_at,
     };
 

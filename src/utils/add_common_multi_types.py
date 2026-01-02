@@ -13,21 +13,8 @@ from core.config import SUPABASE_URL, SUPABASE_HEADERS
 
 
 # Common multi-type mappings for well-known products
+# NOTE: AC Phys/AC Digit removed - anti-coercion evaluated via Adversity (A) pillar
 KNOWN_MULTI_TYPES = {
-    # Hardware wallets with anti-coercion features
-    "Coldcard": ["AC Phys"],  # Duress PIN, brick me PIN
-    "Trezor Safe 3": ["AC Phys"],  # Passphrase support
-    "Trezor Model T": ["AC Phys"],
-    "Trezor Safe 5": ["AC Phys"],
-    "Ledger Nano X": ["AC Phys"],  # Hidden wallets via passphrase
-    "Ledger Nano S Plus": ["AC Phys"],
-    "Ledger Stax": ["AC Phys"],
-    "BitBox02": ["AC Phys"],
-    "Keystone Pro": ["AC Phys"],
-    "Keystone 3 Pro": ["AC Phys"],
-    "NGRAVE ZERO": ["AC Phys"],
-    "Foundation Passport": ["AC Phys"],
-
     # Software wallets available on both browser and mobile
     "MetaMask": ["SW Mobile"],
     "Trust Wallet": ["SW Browser"],
@@ -67,11 +54,6 @@ KNOWN_MULTI_TYPES = {
     "Lido Finance": ["Yield"],
     "Rocket Pool": ["Yield"],
     "Frax Finance": ["Stablecoin", "Yield"],
-
-    # Privacy wallets with anti-coercion
-    "Wasabi Wallet": ["AC Digit"],
-    "Sparrow Wallet": ["AC Digit"],
-    "Samourai Wallet": ["AC Digit"],
 
     # Multi-function DeFi
     "dYdX": ["Lending"],

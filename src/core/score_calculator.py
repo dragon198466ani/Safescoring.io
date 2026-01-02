@@ -362,7 +362,7 @@ class ScoreCalculator:
             if isinstance(scores, str):
                 try:
                     scores = json.loads(scores)
-                except:
+                except (json.JSONDecodeError, Exception):
                     continue
             if scores and isinstance(scores, dict) and scores.get('full'):
                 safe = scores['full'].get('SAFE')
@@ -389,7 +389,7 @@ class ScoreCalculator:
             if isinstance(scores, str):
                 try:
                     scores = json.loads(scores)
-                except:
+                except (json.JSONDecodeError, Exception):
                     continue
             if scores and isinstance(scores, dict) and scores.get('full') and scores['full'].get('SAFE') is not None:
                 scored_products.append((p['name'], scores['full']['SAFE']))

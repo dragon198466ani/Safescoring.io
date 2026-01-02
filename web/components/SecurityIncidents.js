@@ -186,13 +186,24 @@ export default function SecurityIncidents({ slug }) {
                     </span>
                   </div>
 
-                  {/* Date */}
-                  <div className="text-sm text-base-content/50 mt-1">
-                    {new Date(incident.date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
+                  {/* Date - avec indication si estimée */}
+                  <div className="text-sm text-base-content/50 mt-1 flex items-center gap-1">
+                    {incident.dateIsEstimated ? (
+                      <>
+                        <span className="text-amber-400/70">Date inconnue</span>
+                        <span className="text-base-content/30" title="La date exacte de cet incident n'a pas pu être déterminée">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5">
+                            <path fillRule="evenodd" d="M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0ZM9 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM6.75 8a.75.75 0 0 0 0 1.5h.75v1.75a.75.75 0 0 0 1.5 0v-2.5A.75.75 0 0 0 8.25 8h-1.5Z" clipRule="evenodd" />
+                          </svg>
+                        </span>
+                      </>
+                    ) : (
+                      new Date(incident.date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })
+                    )}
                   </div>
 
                   {/* Description */}

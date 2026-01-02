@@ -4,15 +4,15 @@ import config from "@/config";
 const footerLinks = {
   product: [
     { label: "Products", href: "/products" },
-    { label: "Methodology", href: "/#pillars" },
-    { label: "Pricing", href: "/#pricing" },
+    { label: "Score Transparency", href: "/transparency" },
+    { label: "Methodology", href: "/methodology" },
     { label: "API", href: "/api-docs" },
   ],
   company: [
     { label: "About", href: "/about" },
     { label: "Blog", href: "/blog" },
-    { label: "Careers", href: "/careers" },
-    { label: "Contact", href: "/contact" },
+    { label: "Press Kit", href: "/press" },
+    { label: "Partners", href: "/partners" },
   ],
   legal: [
     { label: "Legal Notice", href: "/legal" },

@@ -213,7 +213,7 @@ def call_mistral(prompt, max_tokens=500):
         elif r.status_code == 429:
             time.sleep(2)
             return call_mistral(prompt, max_tokens)
-    except:
+    except Exception:
         pass
     return None
 
