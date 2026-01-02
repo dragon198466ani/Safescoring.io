@@ -74,11 +74,11 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  // Experimental optimizations
-  experimental: {
-    optimizeCss: true,
-    scrollRestoration: true,
-  },
+  // Experimental optimizations (disabled - requires additional packages)
+  // experimental: {
+  //   optimizeCss: true,  // requires 'critters' package
+  //   scrollRestoration: true,
+  // },
 
   // Add security headers to all routes
   async headers() {
