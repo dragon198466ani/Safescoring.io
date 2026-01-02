@@ -1,17 +1,20 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+// Lazy initialization to avoid build-time errors
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+}
 
 export const revalidate = 3600; // Cache 1 hour
 
 export async function GET() {
   try {
     // Get all products with scores
-    const { data: products, error } = await supabase
+    const { data: products, error } = await getSupabase()
       .from("products")
       .select("id, name, slug, type_id, product_types(name)")
       .order("name");
@@ -19,7 +22,7 @@ export async function GET() {
     if (error) throw error;
 
     // Get scores from safe_scoring_results
-    const { data: scores, error: scoresError } = await supabase
+    const { data: scores, error: scoresError } = await getSupabase()
       .from("safe_scoring_results")
       .select("product_id, note_finale, score_s, score_a, score_f, score_e, total_yes, total_no, total_na");
 

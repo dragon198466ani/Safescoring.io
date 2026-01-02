@@ -9,10 +9,13 @@ import { auth } from "@/libs/auth";
  * POST /api/admin/queue - Ajouter une tâche
  */
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+// Lazy initialization to avoid build-time errors
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+}
 
 // Admin authentication check
 async function requireAdmin() {
@@ -34,11 +37,11 @@ export async function GET(request) {
 
     if (action === "stats") {
       // Récupérer stats agrégées
-      const { data, error } = await supabase.rpc("get_queue_stats");
+      const { data, error } = await getSupabase().rpc("get_queue_stats");
 
       if (error) {
         // Fallback si la fonction n'existe pas
-        const { data: tasks } = await supabase
+        const { data: tasks } = await getSupabase()
           .from("task_queue")
           .select("status");
 
@@ -54,7 +57,7 @@ export async function GET(request) {
     }
 
     // Par défaut: liste des tâches récentes
-    const { data: tasks, error } = await supabase
+    const { data: tasks, error } = await getSupabase()
       .from("task_queue")
       .select("*")
       .order("created_at", { ascending: false })
@@ -87,7 +90,7 @@ export async function POST(request) {
     if (action) {
       switch (action) {
         case "evaluate_all": {
-          const { data: products } = await supabase
+          const { data: products } = await getSupabase()
             .from("products")
             .select("id")
             .eq("is_active", true);
@@ -100,7 +103,7 @@ export async function POST(request) {
           })) || [];
 
           if (tasks.length > 0) {
-            await supabase.from("task_queue").insert(tasks);
+            await getSupabase().from("task_queue").insert(tasks);
           }
 
           return NextResponse.json({
@@ -110,7 +113,7 @@ export async function POST(request) {
         }
 
         case "recalculate_all": {
-          const { data: products } = await supabase
+          const { data: products } = await getSupabase()
             .from("products")
             .select("id")
             .eq("is_active", true);
@@ -123,7 +126,7 @@ export async function POST(request) {
           })) || [];
 
           if (tasks.length > 0) {
-            await supabase.from("task_queue").insert(tasks);
+            await getSupabase().from("task_queue").insert(tasks);
           }
 
           return NextResponse.json({
@@ -133,7 +136,7 @@ export async function POST(request) {
         }
 
         case "retry_failed": {
-          await supabase
+          await getSupabase()
             .from("task_queue")
             .update({ status: "pending", retries: 0, error: null })
             .eq("status", "failed");
@@ -145,7 +148,7 @@ export async function POST(request) {
         }
 
         case "clear_completed": {
-          await supabase.from("task_queue").delete().eq("status", "completed");
+          await getSupabase().from("task_queue").delete().eq("status", "completed");
 
           return NextResponse.json({
             success: true,
@@ -163,7 +166,7 @@ export async function POST(request) {
 
     // Ajout d'une tâche individuelle
     if (task_type && target_id) {
-      const { error } = await supabase.from("task_queue").insert({
+      const { error } = await getSupabase().from("task_queue").insert({
         task_type,
         target_id,
         target_type: target_type || "product",
