@@ -271,15 +271,6 @@ export const LazyAdminDashboard = dynamic(
   }
 );
 
-// Compare page - heavy with multiple products
-export const LazyProductCompare = dynamic(
-  () => import("@/components/ProductCompare"),
-  {
-    loading: () => <LoadingGrid />,
-    ssr: true,
-  }
-);
-
 // Newsletter popup - loaded after interaction
 export const LazyNewsletterPopup = dynamic(
   () => import("@/components/NewsletterPopup"),
