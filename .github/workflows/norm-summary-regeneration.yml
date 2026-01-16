@@ -1,0 +1,73 @@
+name: Norm Summary Regeneration (Quality)
+
+on:
+  # Run every 6 hours
+  schedule:
+    - cron: '0 */6 * * *'
+  # Manual trigger
+  workflow_dispatch:
+    inputs:
+      batch_size:
+        description: 'Number of norms to process per run'
+        required: false
+        default: '50'
+      force_all:
+        description: 'Force regenerate all (true/false)'
+        required: false
+        default: 'false'
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  regenerate-summaries:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55  # Stay under GitHub's 60min limit
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install requests beautifulsoup4 PyMuPDF pdfplumber
+
+      - name: Create config directory
+        run: mkdir -p config
+
+      - name: Run Quality Regeneration
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_API_KEYS: ${{ secrets.GROQ_API_KEYS }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          CEREBRAS_API_KEYS: ${{ secrets.CEREBRAS_API_KEYS }}
+          SAMBANOVA_API_KEY: ${{ secrets.SAMBANOVA_API_KEY }}
+          SAMBANOVA_API_KEYS: ${{ secrets.SAMBANOVA_API_KEYS }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEYS: ${{ secrets.GEMINI_API_KEYS }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size || '50' }}
+          FORCE_ALL: ${{ github.event.inputs.force_all || 'false' }}
+        run: |
+          python scripts/regen_cloud.py
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regeneration-logs-${{ github.run_number }}
+          path: |
+            regen_*.log
+            config/*.json
+          retention-days: 7
