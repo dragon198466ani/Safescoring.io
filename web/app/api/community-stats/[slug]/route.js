@@ -212,6 +212,10 @@ async function fetchGitHubStats(githubUrl) {
     const owner = match[1];
     const repo = match[2];
 
+    // Validate owner/repo to prevent path traversal
+    const safePattern = /^[a-zA-Z0-9\-_.]+$/;
+    if (!safePattern.test(owner) || (repo && !safePattern.test(repo))) return null;
+
     let repoData = null;
 
     if (repo) {
