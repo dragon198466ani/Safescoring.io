@@ -1,20 +1,29 @@
 import sys
+import os
 import requests
 import re
 import time
 from collections import defaultdict
 
+# Add src to path for config import
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+
+# Load configuration from central config
+from src.core.config import SUPABASE_URL, SUPABASE_KEY, MISTRAL_API_KEY, get_supabase_headers
+
+# Verify required config
+if not all([SUPABASE_URL, SUPABASE_KEY, MISTRAL_API_KEY]):
+    print("[ERROR] Missing required configuration in config/.env")
+    print("Required: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, MISTRAL_API_KEY")
+    sys.exit(1)
 
 WORKER_ID = int(sys.argv[1])
 START_IDX = int(sys.argv[2])
 END_IDX = int(sys.argv[3])
 
-SUPABASE_URL = 'https://ajdncttomdqojlozxjxu.supabase.co'
-SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqZG5jdHRvbWRxb2psb3p4anh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0MjMwNzUsImV4cCI6MjA3OTk5OTA3NX0.tTgqj-ALcl0oIdxFHuFQkB19apiz9CSyvV2X1TMWjEk'
-MISTRAL_API_KEY = '1UrlJxV2G7O0kngOXMDI1dMT2xT39rLD'
-
-headers = {'apikey': SUPABASE_KEY, 'Authorization': f'Bearer {SUPABASE_KEY}', 'Content-Type': 'application/json'}
+headers = get_supabase_headers('return=representation')
 
 print(f'[W{WORKER_ID}] Starting products {START_IDX}-{END_IDX}')
 
@@ -52,7 +61,7 @@ NORMS: {norms}
 FORMAT: CODE: YES/YESp/NO/TBD
 Evaluate:"""
 
-def call_mistral(prompt):
+def call_mistral(prompt, _retries=0, _max_retries=5):
     try:
         r = requests.post('https://api.mistral.ai/v1/chat/completions',
             headers={'Authorization': f'Bearer {MISTRAL_API_KEY}', 'Content-Type': 'application/json'},
@@ -61,10 +70,19 @@ def call_mistral(prompt):
         if r.status_code == 200:
             return r.json()['choices'][0]['message']['content']
         elif r.status_code == 429:
-            time.sleep(3 + WORKER_ID)
-            return call_mistral(prompt)
-    except:
-        pass
+            if _retries >= _max_retries:
+                print(f'[W{WORKER_ID}] Rate limit: max retries ({_max_retries}) reached, skipping')
+                return None
+            wait_time = (3 + WORKER_ID) * (2 ** _retries)
+            print(f'[W{WORKER_ID}] Rate limited, retry {_retries + 1}/{_max_retries} in {wait_time}s')
+            time.sleep(wait_time)
+            return call_mistral(prompt, _retries=_retries + 1, _max_retries=_max_retries)
+        else:
+            print(f'[W{WORKER_ID}] Mistral API HTTP {r.status_code}: {r.text[:200]}')
+    except requests.RequestException as e:
+        print(f'[W{WORKER_ID}] Mistral API error: {e}')
+    except (KeyError, IndexError) as e:
+        print(f'[W{WORKER_ID}] Response parsing error: {e}')
     return None
 
 for idx, product in enumerate(products):

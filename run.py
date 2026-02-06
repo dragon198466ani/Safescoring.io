@@ -34,14 +34,17 @@ Examples:
     if command == 'admin':
         os.chdir(os.path.join(os.path.dirname(__file__), 'src', 'web'))
         from web.admin_app import app
-        print("🚀 Starting admin interface...")
+        print("Starting admin interface...")
         print("   URL: http://localhost:5000")
-        app.run(debug=True, port=5000)
+        is_debug = os.environ.get('FLASK_ENV', 'development') != 'production'
+        app.run(debug=is_debug, port=5000)
 
     elif command == 'score':
         os.chdir(os.path.dirname(__file__))
-        # Copy config if needed
         ensure_config()
+        from core.config import validate_config
+        if not validate_config(require_ai=False):
+            sys.exit(1)
         from core.score_calculator import ScoreCalculator
         calculator = ScoreCalculator()
         calculator.run()
@@ -70,6 +73,9 @@ Examples:
     elif command == 'evaluate':
         os.chdir(os.path.dirname(__file__))
         ensure_config()
+        from core.config import validate_config
+        if not validate_config(require_ai=True):
+            sys.exit(1)
         from core.smart_evaluator import SmartEvaluator
         evaluator = SmartEvaluator()
         evaluator.load_data()

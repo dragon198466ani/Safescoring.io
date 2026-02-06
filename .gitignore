@@ -180,9 +180,37 @@ data/*.csv
 
 # -----------------------------------------------------------------------------
 # Sensitive files specific to SafeScoring
+# CRITICAL: These files contain real API keys - NEVER commit them
 # -----------------------------------------------------------------------------
-# Worker with hardcoded keys (should be cleaned)
-# worker.py  # Note: Clean this file before committing
+API_CONFIG_SECRET.json
+GITHUB_SECRETS.txt
+config/.env.txt
+config/.env
+web/.env
+web/.env.local
+web/.env.production
+web/.env.staging
+
+# Claude Code settings (may contain MCP tokens)
+.claude/settings.local.json
+
+# Any file with "secret" or "credential" in the name
+*SECRET*
+*secret*
+*credential*
+*CREDENTIAL*
+
+# Private keys
+*.pem
+*.key
+*.p12
+*.pfx
+0x*.txt
+
+# Backup files that may contain secrets
+evaluations_*_backup.json
+norm_documents_backup_*.zip
+paywall_norm_ids.json
 
 # Supabase local
 supabase/.branches

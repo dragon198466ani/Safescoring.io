@@ -4,29 +4,105 @@ SAFESCORING.IO - Admin Interface
 Web interface for adding products/norms with automatic calculation
 """
 
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, g
+from functools import wraps
 import requests
 import os
+import hashlib
+import secrets
 from datetime import datetime
 
 # Configuration
 def load_config():
     config = {}
-    config_path = os.path.join(os.path.dirname(__file__), 'env_template_free.txt')
-    with open(config_path, 'r', encoding='utf-8') as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith('#') and '=' in line:
-                key, value = line.split('=', 1)
-                config[key.strip()] = value.strip()
+    # Try multiple config file locations
+    config_paths = [
+        os.path.join(os.path.dirname(__file__), 'env_template_free.txt'),
+        os.path.join(os.path.dirname(__file__), '..', '..', 'config', '.env'),
+        os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'env_template_free.txt'),
+    ]
+    for config_path in config_paths:
+        if os.path.exists(config_path):
+            with open(config_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#') and '=' in line:
+                        key, value = line.split('=', 1)
+                        config[key.strip()] = value.strip()
     return config
 
 CONFIG = load_config()
 SUPABASE_URL = CONFIG.get('NEXT_PUBLIC_SUPABASE_URL', '')
 SUPABASE_KEY = CONFIG.get('NEXT_PUBLIC_SUPABASE_ANON_KEY', '')
 
+# Validate required configuration
+if not SUPABASE_URL or not SUPABASE_KEY:
+    print("[ERROR] Missing SUPABASE_URL or SUPABASE_KEY in config. Admin panel cannot start.")
+
 app = Flask(__name__)
-app.secret_key = 'safescoring_admin_2025'
+# SECURITY: Use environment variable for secret key, with a random fallback
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(32))
+
+# SECURITY: Session cookie settings
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+)
+if os.environ.get('FLASK_ENV') == 'production':
+    app.config['SESSION_COOKIE_SECURE'] = True
+
+# =============================================================================
+# ADMIN AUTHENTICATION
+# =============================================================================
+# Admin credentials - MUST be set via environment variables
+ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
+ADMIN_PASSWORD_HASH = os.environ.get('ADMIN_PASSWORD_HASH', '')
+
+# If no password hash is set, generate a temporary one and print it
+if not ADMIN_PASSWORD_HASH:
+    _temp_password = secrets.token_urlsafe(16)
+    ADMIN_PASSWORD_HASH = hashlib.sha256(_temp_password.encode()).hexdigest()
+    print(f"[SECURITY] No ADMIN_PASSWORD_HASH set. Temporary password: {_temp_password}")
+    print(f"[SECURITY] Set ADMIN_PASSWORD_HASH={ADMIN_PASSWORD_HASH} in your environment")
+
+
+def check_password(password):
+    """Verify password against stored hash (timing-safe comparison)"""
+    password_hash = hashlib.sha256(password.encode()).hexdigest()
+    return secrets.compare_digest(password_hash, ADMIN_PASSWORD_HASH)
+
+
+def login_required(f):
+    """Decorator to require authentication on admin routes"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('admin_authenticated'):
+            return redirect(url_for('login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Admin login page"""
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username', '')
+        password = request.form.get('password', '')
+        if username == ADMIN_USERNAME and check_password(password):
+            session['admin_authenticated'] = True
+            session.permanent = True
+            next_url = request.args.get('next', url_for('index'))
+            return redirect(next_url)
+        error = "Invalid credentials"
+    return render_template('login.html', error=error)
+
+
+@app.route('/logout')
+def logout():
+    """Admin logout"""
+    session.clear()
+    return redirect(url_for('login'))
 
 # Headers Supabase
 def get_headers():
@@ -41,12 +117,14 @@ def get_headers():
 # ============== PAGES ==============
 
 @app.route('/')
+@login_required
 def index():
     """Home page"""
     return render_template('index.html')
 
 
 @app.route('/products')
+@login_required
 def products_list():
     """Product list"""
     r = requests.get(
@@ -58,6 +136,7 @@ def products_list():
 
 
 @app.route('/products/add', methods=['GET', 'POST'])
+@login_required
 def add_product():
     """Add product form"""
     if request.method == 'POST':
@@ -89,6 +168,7 @@ def add_product():
 
 
 @app.route('/products/<int:product_id>/evaluate', methods=['GET', 'POST'])
+@login_required
 def evaluate_product(product_id):
     """Product evaluation form"""
     if request.method == 'POST':
@@ -136,6 +216,7 @@ def evaluate_product(product_id):
 
 
 @app.route('/products/<int:product_id>')
+@login_required
 def product_detail(product_id):
     """Product detail with score"""
     product = get_product(product_id)
@@ -149,6 +230,7 @@ def product_detail(product_id):
 
 
 @app.route('/norms')
+@login_required
 def norms_list():
     """Norms list"""
     r = requests.get(
@@ -160,6 +242,7 @@ def norms_list():
 
 
 @app.route('/norms/add', methods=['GET', 'POST'])
+@login_required
 def add_norm():
     """Add norm form"""
     if request.method == 'POST':
@@ -198,6 +281,7 @@ def add_norm():
 # ============== API ENDPOINTS ==============
 
 @app.route('/api/calculate-score/<int:product_id>')
+@login_required
 def api_calculate_score(product_id):
     """API: Calculates and returns product score"""
     score = calculate_product_score(product_id)
@@ -414,10 +498,15 @@ def calculate_product_score(product_id):
 if __name__ == '__main__':
     # Create templates folder if it doesn't exist
     os.makedirs('templates', exist_ok=True)
-    
-    print("🚀 SAFE SCORING Admin Interface")
+
+    # SECURITY: Only enable debug in development
+    is_debug = os.environ.get('FLASK_ENV', 'development') != 'production'
+
+    print("SAFE SCORING Admin Interface")
     print("=" * 50)
-    print("   URL: http://localhost:5000")
+    print(f"   URL: http://localhost:5000")
+    print(f"   Mode: {'DEBUG' if is_debug else 'PRODUCTION'}")
+    print(f"   Auth: ENABLED (login required)")
     print("=" * 50)
-    
-    app.run(debug=True, port=5000)
+
+    app.run(debug=is_debug, port=5000)
