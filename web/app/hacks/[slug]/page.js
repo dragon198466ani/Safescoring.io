@@ -464,11 +464,18 @@ export default async function HackPage({ params }) {
   );
 }
 
-// Simple markdown parser
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+  return text.replace(/[&<>"']/g, (c) => map[c]);
+}
+
+// Simple markdown parser (with XSS protection)
 function parseMarkdown(md) {
   if (!md) return "";
 
-  return md
+  // Escape HTML first to prevent injection, then apply markdown formatting
+  return escapeHtml(md)
     .replace(/^## (.+)$/gm, '<h2 class="text-2xl font-bold mt-8 mb-4">$1</h2>')
     .replace(/^### (.+)$/gm, '<h3 class="text-xl font-semibold mt-6 mb-3">$1</h3>')
     .replace(/^\- \*\*(.+?)\*\* - (.+)$/gm, '<li class="mb-2"><strong>$1</strong> - $2</li>')

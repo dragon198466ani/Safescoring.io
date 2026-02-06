@@ -18,6 +18,7 @@
     </div>
     
     <form method="POST" id="eval-form" class="space-y-4">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
         <!-- Filtres -->
         <div class="bg-gray-800 rounded-lg p-4 mb-6 flex gap-4 items-center">
             <span class="text-gray-400">Filtrer:</span>

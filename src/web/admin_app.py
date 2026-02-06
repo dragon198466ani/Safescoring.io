@@ -6,11 +6,12 @@ Web interface for adding products/norms with automatic calculation
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, g
 from functools import wraps
+from urllib.parse import urlparse
 import requests
 import os
 import hashlib
 import secrets
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Configuration
 def load_config():
@@ -46,7 +47,8 @@ app.secret_key = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(32))
 # SECURITY: Session cookie settings
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE='Lax',
+    SESSION_COOKIE_SAMESITE='Strict',
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=8),
 )
 if os.environ.get('FLASK_ENV') == 'production':
     app.config['SESSION_COOKIE_SECURE'] = True
@@ -72,12 +74,41 @@ def check_password(password):
     return secrets.compare_digest(password_hash, ADMIN_PASSWORD_HASH)
 
 
+def is_safe_redirect_url(target):
+    """Validate that redirect URL is safe (same-origin only)"""
+    if not target:
+        return False
+    parsed = urlparse(target)
+    # Only allow relative URLs (no scheme/host) or same-origin
+    return parsed.scheme == '' and parsed.netloc == ''
+
+
+def generate_csrf_token():
+    """Generate or retrieve CSRF token for the current session"""
+    if '_csrf_token' not in session:
+        session['_csrf_token'] = secrets.token_hex(32)
+    return session['_csrf_token']
+
+
+def validate_csrf_token():
+    """Validate CSRF token from form submission"""
+    token = request.form.get('_csrf_token', '')
+    session_token = session.get('_csrf_token', '')
+    if not token or not session_token:
+        return False
+    return secrets.compare_digest(token, session_token)
+
+
+# Make csrf_token available in all templates
+app.jinja_env.globals['csrf_token'] = generate_csrf_token
+
+
 def login_required(f):
     """Decorator to require authentication on admin routes"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('admin_authenticated'):
-            return redirect(url_for('login', next=request.url))
+            return redirect(url_for('login', next=request.path))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -92,7 +123,9 @@ def login():
         if username == ADMIN_USERNAME and check_password(password):
             session['admin_authenticated'] = True
             session.permanent = True
-            next_url = request.args.get('next', url_for('index'))
+            next_url = request.args.get('next', '')
+            if not is_safe_redirect_url(next_url):
+                next_url = url_for('index')
             return redirect(next_url)
         error = "Invalid credentials"
     return render_template('login.html', error=error)
@@ -140,6 +173,8 @@ def products_list():
 def add_product():
     """Add product form"""
     if request.method == 'POST':
+        if not validate_csrf_token():
+            return render_template('add_product.html', error="Invalid CSRF token", types=get_types(), brands=get_brands()), 403
         data = {
             'name': request.form['name'],
             'slug': request.form['name'].lower().replace(' ', '-'),
@@ -172,6 +207,8 @@ def add_product():
 def evaluate_product(product_id):
     """Product evaluation form"""
     if request.method == 'POST':
+        if not validate_csrf_token():
+            return redirect(url_for('evaluate_product', product_id=product_id))
         # Save evaluations
         evaluations = []
         for key, value in request.form.items():
@@ -246,6 +283,8 @@ def norms_list():
 def add_norm():
     """Add norm form"""
     if request.method == 'POST':
+        if not validate_csrf_token():
+            return render_template('add_norm.html', error="Invalid CSRF token", types=get_types()), 403
         data = {
             'code': request.form['code'].upper(),
             'pillar': request.form['pillar'].upper(),
@@ -289,6 +328,7 @@ def api_calculate_score(product_id):
 
 
 @app.route('/api/products')
+@login_required
 def api_products():
     """API: Product list with scores"""
     r = requests.get(
@@ -306,6 +346,7 @@ def api_products():
 
 
 @app.route('/api/norms')
+@login_required
 def api_norms():
     """API: Norms list"""
     r = requests.get(
