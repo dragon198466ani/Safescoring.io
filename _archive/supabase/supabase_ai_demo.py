@@ -11,8 +11,8 @@ from datetime import datetime
 
 # Configuration directe (remplacer par vos vraies clés)
 SUPABASE_URL = "https://ajdncttomdqojlozxjxu.supabase.co"
-SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqZG5jdHRvbWRxb2psb3p4anh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0MjMwNzUsImV4cCI6MjA3OTk5OTA3NX0.tTgqj-ALcl0oIdxFHuFQkB19apiz9CSyvV2X1TMWjEk"
-GOOGLE_API_KEY = "AIzaSyC1ECSugM6TX4U-nQ644t5yOWoi8SZwHkE"
+SUPABASE_SERVICE_KEY = "REVOKED_ROTATE_ON_DASHBOARD"
+GOOGLE_API_KEY = "REVOKED_ROTATE_ON_DASHBOARD"
 
 class SimpleSupabaseClient:
     """Client Supabase utilisant requests directement"""

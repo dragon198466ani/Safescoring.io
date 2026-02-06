@@ -18,7 +18,7 @@ MISTRAL_API_KEY=1UrlJxV2G7O0kngOXMDI1dMT2xT39rLD
 # Obtenir gratuitement sur: https://aistudio.google.com
 # Limites: 60 requêtes/min, 1.5M tokens/jour
 # Modèle: Gemini 1.5 Flash (contexte énorme)
-GOOGLE_API_KEY=AIzaSyC1ECSugM6TX4U-nQ644t5yOWoi8SZwHkE
+GOOGLE_API_KEY=REVOKED_ROTATE_ON_DASHBOARD
 
 # ============================================
 # 🗄️ SUPABASE (GRATUIT - Tier Free)
@@ -27,7 +27,7 @@ GOOGLE_API_KEY=AIzaSyC1ECSugM6TX4U-nQ644t5yOWoi8SZwHkE
 # Dashboard > Settings > API
 # Limites free: 500MB DB, 1GB storage, 2GB bandwidth
 NEXT_PUBLIC_SUPABASE_URL=https://ajdncttomdqojlozxjxu.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqZG5jdHRvbWRxb2psb3p4anh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0MjMwNzUsImV4cCI6MjA3OTk5OTA3NX0.tTgqj-ALcl0oIdxFHuFQkB19apiz9CSyvV2X1TMWjEk
+NEXT_PUBLIC_SUPABASE_ANON_KEY=REVOKED_ROTATE_ON_DASHBOARD
 
 # ============================================
 # 🔒 NVD API - CVE (GRATUIT - Optionnel)

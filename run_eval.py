@@ -4,7 +4,7 @@ import os
 import sys
 
 # Force Groq API key
-os.environ['GROQ_API_KEY'] = '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'
+os.environ['GROQ_API_KEY'] = os.environ.get('GROQ_API_KEY', '')  # Set via environment or config/.env
 
 sys.path.insert(0, '.')
 

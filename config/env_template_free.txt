@@ -19,8 +19,8 @@ MISTRAL_API_KEY=1UrlJxV2G7O0kngOXMDI1dMT2xT39rLD
 # Limites: 60 requêtes/min, 1500 requêtes/jour par clé
 # Modèle: Gemini 1.5 Flash (contexte énorme)
 # ROTATION: Ajoutez plusieurs clés séparées par des virgules
-GOOGLE_API_KEY=AIzaSyC1ECSugM6TX4U-nQ644t5yOWoi8SZwHkE
-GOOGLE_GEMINI_API_KEY=AIzaSyC1ECSugM6TX4U-nQ644t5yOWoi8SZwHkE
+GOOGLE_API_KEY=REVOKED_ROTATE_ON_DASHBOARD
+GOOGLE_GEMINI_API_KEY=REVOKED_ROTATE_ON_DASHBOARD
 # Clés multiples pour rotation (séparer par virgule):
 GEMINI_API_KEYS=CLE1,CLE2,CLE3,CLE4,CLE5,CLE6
 
@@ -46,7 +46,7 @@ DEEPSEEK_API_KEY=sk-d0ca3572623d433b817a5e8c7c2596a0
 # Dashboard > Settings > API
 # Limites free: 500MB DB, 1GB storage, 2GB bandwidth
 NEXT_PUBLIC_SUPABASE_URL=https://ajdncttomdqojlozxjxu.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqZG5jdHRvbWRxb2psb3p4anh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0MjMwNzUsImV4cCI6MjA3OTk5OTA3NX0.tTgqj-ALcl0oIdxFHuFQkB19apiz9CSyvV2X1TMWjEk
+NEXT_PUBLIC_SUPABASE_ANON_KEY=REVOKED_ROTATE_ON_DASHBOARD
 
 # ============================================
 # 🔒 NVD API - CVE (GRATUIT - Optionnel)
