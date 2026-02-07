@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import config from "@/config";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import ProductLogo from "@/components/ProductLogo";
+import ShareButtons from "@/components/ShareButtons";
 
 // SEO: Revalidate every hour for fresh data
 export const revalidate = 3600;
@@ -205,6 +206,13 @@ export default async function ComparePage({ params }) {
             <p className="text-base-content/60 max-w-2xl mx-auto">
               Security comparison based on 916 criteria across Security, Adversity, Fidelity & Efficiency pillars.
             </p>
+            <div className="flex justify-center mt-4">
+              <ShareButtons
+                url={`/compare/${slugA}/${slugB}`}
+                title={`${productA.name} vs ${productB.name} — Security Comparison`}
+                type="compare"
+              />
+            </div>
           </div>
 
           {/* Main comparison grid */}

@@ -53,7 +53,7 @@ export async function generateMetadata({ params }) {
       type: "article",
       images: [
         {
-          url: `/api/og-image?hack=${slug}`,
+          url: `/api/og/hacks/${slug}`,
           width: 1200,
           height: 630,
           alt: `${hack.title} Analysis`,

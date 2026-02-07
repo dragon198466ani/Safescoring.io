@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import ProductLogo from "@/components/ProductLogo";
 import SetupQuiz from "@/components/SetupQuiz";
 import SetupAssistant from "@/components/SetupAssistant";
+import ShareButtons from "@/components/ShareButtons";
 
 /**
  * Setups Dashboard - Split view with catalog + setup builder
@@ -587,13 +588,22 @@ export default function SetupsPage() {
                   ))}
                 </div>
 
-                {/* Live indicator */}
-                <div className="flex items-center justify-center gap-2 mt-3 text-xs text-base-content/40">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                  </span>
-                  Live calculation
+                {/* Live indicator + Share */}
+                <div className="flex items-center justify-between mt-3">
+                  <div className="flex items-center gap-2 text-xs text-base-content/40">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    Live calculation
+                  </div>
+                  <ShareButtons
+                    url="/dashboard/setups"
+                    title={setupName}
+                    type="setup"
+                    score={combinedScore.total}
+                    compact
+                  />
                 </div>
               </div>
             ) : (

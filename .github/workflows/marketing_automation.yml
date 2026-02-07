@@ -257,12 +257,49 @@ jobs:
           "
 
   # ============================================
+  # SCORE CHANGE ALERTS (Twitter)
+  # Runs after monthly evaluations
+  # ============================================
+  score-alerts:
+    if: github.event.schedule == '0 8,18 * * *' || github.event.inputs.task == 'content' || github.event.inputs.task == 'all'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate score alert tweets
+        run: |
+          python -c "
+          from src.marketing.twitter_score_alerts import TwitterScoreAlerts
+
+          alerts = TwitterScoreAlerts()
+          drafts = alerts.run(mode='all')
+          print(f'Generated {len(drafts)} score alert drafts')
+          "
+
+      - name: Commit drafts
+        run: |
+          git config --local user.email "bot@safescoring.io"
+          git config --local user.name "SafeScoring Bot"
+          git add data/marketing_content/ || true
+          git diff --staged --quiet || git commit -m "bot: score alert drafts"
+          git push || true
+
+  # ============================================
   # SOCIAL MEDIA AUTO-POSTING
   # Posts approved drafts
   # ============================================
   auto-posting:
     if: github.event.inputs.task == 'all'
-    needs: content-cycle
+    needs: [content-cycle, score-alerts]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
