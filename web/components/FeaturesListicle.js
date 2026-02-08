@@ -441,10 +441,9 @@ const FeaturesListicle = () => {
             Supercharge your app instantly, launch faster, make $
           </h2>
           <div className="text-base-content/80 leading-relaxed mb-8 lg:text-lg">
-            {/* 💡 COPY TIP: Explain how your product delivers what you promise in the headline. */}
-            Login users, process payments and send emails at lightspeed. Spend
-            your time building your startup, not integrating APIs. ShipFast
-            provides you with the boilerplate code you need to launch, FAST.
+            One score to evaluate any crypto product. 916 security norms across
+            4 pillars — Security, Adversity, Fidelity, Efficiency. No opinions,
+            no bias. Just data-driven ratings you can trust.
           </div>
         </div>
       </div>

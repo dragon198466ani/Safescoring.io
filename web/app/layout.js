@@ -43,6 +43,8 @@ export default function RootLayout({ children }) {
 				{/* DNS prefetch for external services */}
 				<link rel="dns-prefetch" href="https://supabase.co" />
 				<link rel="dns-prefetch" href="https://api.stripe.com" />
+				{/* RSS Feed */}
+				<link rel="alternate" type="application/rss+xml" title="SafeScoring Blog" href="/blog/rss.xml" />
 			</head>
 			<body>
 				{/* ClientLayout contains all the client wrappers (Crisp chat support, toast messages, tooltips, etc.) */}
