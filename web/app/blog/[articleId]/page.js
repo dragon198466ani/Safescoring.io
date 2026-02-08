@@ -19,13 +19,15 @@ export async function generateMetadata({ params }) {
         title: article.title,
         description: article.description,
         url: `/blog/${article.slug}`,
-        images: [
-          {
-            url: article.image.urlRelative,
-            width: 1200,
-            height: 660,
-          },
-        ],
+        images: article.image?.urlRelative
+          ? [
+              {
+                url: article.image.urlRelative,
+                width: 1200,
+                height: 660,
+              },
+            ]
+          : [],
         locale: "en_US",
         type: "website",
       },
@@ -65,7 +67,7 @@ export default async function Article({ params }) {
             name: article.title,
             headline: article.title,
             description: article.description,
-            image: `https://${config.domainName}${article.image.urlRelative}`,
+            image: article.image?.urlRelative ? `https://${config.domainName}${article.image.urlRelative}` : undefined,
             datePublished: article.publishedAt,
             dateModified: article.publishedAt,
             author: article.author ? {

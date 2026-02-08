@@ -14,7 +14,7 @@ const CardArticle = ({
 
   return (
     <article className="card bg-base-200 rounded-box overflow-hidden">
-      {article.image?.src && (
+      {article.image?.src ? (
         <Link
           href={`/blog/${article.slug}`}
           className="link link-hover hover:link-primary"
@@ -33,7 +33,25 @@ const CardArticle = ({
             />
           </figure>
         </Link>
-      )}
+      ) : article.image?.urlRelative ? (
+        <Link
+          href={`/blog/${article.slug}`}
+          className="link link-hover hover:link-primary"
+          title={article.title}
+          rel="bookmark"
+        >
+          <figure>
+            <Image
+              src={article.image.urlRelative}
+              alt={article.image.alt || article.title}
+              width={600}
+              height={338}
+              priority={isImagePriority}
+              className="aspect-video object-center object-cover hover:scale-[1.03] duration-200 ease-in-out"
+            />
+          </figure>
+        </Link>
+      ) : null}
       <div className="card-body">
         {/* CATEGORIES */}
         {showCategory && article.categories?.length > 0 && (

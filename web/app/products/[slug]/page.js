@@ -17,6 +17,7 @@ import CommunityStats from "@/components/CommunityStats";
 import ProductLogo from "@/components/ProductLogo";
 import PricingDisplay from "@/components/PricingDisplay";
 import ShareButtons from "@/components/ShareButtons";
+import NewsletterInline from "@/components/NewsletterInline";
 // Heavy components - lazy loaded
 import {
   LazySecurityIncidents,
@@ -779,6 +780,11 @@ export default async function ProductPage({ params }) {
               productSlug={product.slug}
               productName={product.name}
             />
+          </div>
+
+          {/* Newsletter CTA */}
+          <div className="mb-8">
+            <NewsletterInline context="product" productName={product.name} />
           </div>
 
           {/* CTA for full report */}

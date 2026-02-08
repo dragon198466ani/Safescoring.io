@@ -12,6 +12,18 @@ const Avatar = ({ article }) => {
     );
   }
 
+  // Brand author without avatar image (e.g., SafeScoring)
+  if (!article.author.avatar) {
+    return (
+      <span className="inline-flex items-center gap-2 group" itemProp="author">
+        <span className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
+          {article.author.name.charAt(0)}
+        </span>
+        <span className="text-base-content/80">{article.author.name}</span>
+      </span>
+    );
+  }
+
   return (
     <Link
       href={`/blog/author/${article.author.slug}`}

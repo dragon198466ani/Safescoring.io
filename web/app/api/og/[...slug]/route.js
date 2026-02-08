@@ -54,6 +54,10 @@ export async function GET(request, { params }) {
       return await generateScoreCard(slugParts[1]);
     }
 
+    if (type === 'blog' && slugParts[1]) {
+      return await generateBlogOG(slugParts[1]);
+    }
+
     // Default OG image
     return generateDefaultOG();
   } catch (error) {
@@ -566,6 +570,105 @@ async function generateScoreCard(slug) {
       </div>
     ),
     { width: 800, height: 800 }
+  );
+}
+
+async function generateBlogOG(slug) {
+  // Map slug to article title for known articles
+  const titles = {
+    'what-is-safe-score': 'What Is a SAFE Score?',
+    'crypto-security-checklist-2025': 'Crypto Security Checklist 2025',
+    'why-audits-are-not-enough': 'Why Audits Are Not Enough',
+    'how-to-compare-crypto-wallets': 'How to Compare Crypto Wallets',
+  };
+
+  const title = titles[slug] || slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: WIDTH,
+          height: HEIGHT,
+          background: `linear-gradient(135deg, ${COLORS.bg} 0%, #1a1a3e 50%, #0f2027 100%)`,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 60,
+          justifyContent: 'space-between',
+        }}
+      >
+        {/* Top: Category badge */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              background: `${COLORS.primary}20`,
+              border: `1px solid ${COLORS.primary}40`,
+              borderRadius: 8,
+              padding: '8px 16px',
+              fontSize: 18,
+              color: COLORS.primary,
+              fontWeight: 600,
+            }}
+          >
+            SafeScoring Blog
+          </div>
+        </div>
+
+        {/* Middle: Title */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 16,
+            flex: 1,
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            style={{
+              fontSize: 52,
+              fontWeight: 800,
+              color: COLORS.text,
+              lineHeight: 1.2,
+              maxWidth: '90%',
+            }}
+          >
+            {title}
+          </div>
+        </div>
+
+        {/* Bottom: Branding */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div
+              style={{
+                fontSize: 28,
+                fontWeight: 700,
+                color: COLORS.text,
+              }}
+            >
+              <span style={{ color: COLORS.primary }}>Safe</span>Scoring
+            </div>
+          </div>
+          <div style={{ fontSize: 18, color: COLORS.muted }}>
+            safescoring.io
+          </div>
+        </div>
+      </div>
+    ),
+    { width: WIDTH, height: HEIGHT }
   );
 }
 
