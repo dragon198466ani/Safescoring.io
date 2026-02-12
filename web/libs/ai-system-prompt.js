@@ -62,10 +62,51 @@ function buildPlanContext(planType) {
   return { currentDesc, upgradeDesc, nudgeTriggers };
 }
 
-export function buildSystemPrompt(userSetups = [], topProducts = [], userName = "User", planType = "free") {
+/**
+ * Build data access rules — tells the AI what's gated by plan
+ * so it can naturally reference limits and nudge upgrades.
+ */
+function buildDataAccessRules(planType, limits, productCount, setupCount, viewsUsed) {
+  const rules = [];
+
+  if (planType === "free") {
+    rules.push("⚠️ FREE PLAN DATA RESTRICTIONS (respect these strictly):");
+    rules.push(`- You see ${productCount} products with OVERALL scores only (no S/A/F/E pillar breakdown).`);
+    rules.push("- Pillar detail (S, A, F, E breakdown) is a paid feature. If user asks about specific pillars, explain: \"Pillar-by-pillar analysis is available with the Explorer plan — it's a game-changer for understanding exactly where to strengthen your setup!\"");
+    rules.push(`- User can view up to ${limits.monthlyProductViews || 5} products/month. They've viewed ${viewsUsed} so far.`);
+    rules.push(`- User can create up to ${limits.maxSetups || 1} setup with up to ${limits.maxProductsPerSetup || 3} products.`);
+    rules.push("- No PDF export, no alerts, no API access on Free plan.");
+    rules.push("- When user hits a limit, celebrate their engagement and frame the upgrade as unlocking their next level.");
+  } else {
+    rules.push(`✅ PAID PLAN (${planType.toUpperCase()}) — full data access:`);
+    rules.push(`- You see ${productCount} products with FULL pillar breakdown (S, A, F, E).`);
+    rules.push("- Use pillar scores extensively in your analysis — this is what they're paying for!");
+    const maxSetups = limits.maxSetups === -1 ? "unlimited" : limits.maxSetups;
+    const maxPerSetup = limits.maxProductsPerSetup === -1 ? "unlimited" : limits.maxProductsPerSetup;
+    rules.push(`- User can create up to ${maxSetups} setups with ${maxPerSetup} products each.`);
+    if (limits.apiAccess) rules.push("- API access available — mention if user seems technical.");
+    if (limits.exportPDF) rules.push("- PDF export available — mention for professional use cases.");
+    if (limits.alerts) rules.push("- Score alerts available — mention for monitoring.");
+    if (limits.whiteLabel) rules.push("- White-label reports available — mention for business/client use.");
+  }
+
+  return rules.join("\n");
+}
+
+export function buildSystemPrompt(userSetups = [], topProducts = [], userName = "User", planType = "free", usage = {}) {
+  const isPaid = planType !== "free";
+  const { productViewsUsed = 0, planLimits = {} } = usage;
+
+  // Product list — detail level depends on plan
+  // Free: name + overall score only (no pillar breakdown)
+  // Paid: full S, A, F, E pillar detail
   const productList = topProducts
-    .slice(0, 20)
-    .map((p) => `- ${p.name} (${p.slug}): SAFE=${p.score}, S=${p.s}, A=${p.a}, F=${p.f}, E=${p.e}`)
+    .map((p) => {
+      if (isPaid && p.s !== undefined) {
+        return `- ${p.name} (${p.slug}): SAFE=${p.score}, S=${p.s}, A=${p.a}, F=${p.f}, E=${p.e}`;
+      }
+      return `- ${p.name} (${p.slug}): SAFE=${p.score}`;
+    })
     .join("\n");
 
   const setupInfo = userSetups.length > 0
@@ -80,6 +121,9 @@ export function buildSystemPrompt(userSetups = [], topProducts = [], userName = 
 
   // Dynamic plan context from config.js
   const plan = buildPlanContext(planType);
+
+  // Build data access context — tells the AI what's gated
+  const dataAccessRules = buildDataAccessRules(planType, planLimits, topProducts.length, userSetups.length, productViewsUsed);
 
   return `You are the SAFE Security Advisor — the AI assistant of SafeScoring.io, the world's first unified crypto security scoring platform.
 
@@ -114,6 +158,9 @@ ${setupInfo}
 
 ## Available Products
 ${productList}
+
+## Data Access (based on user's plan)
+${dataAccessRules}
 
 ## MARKETING STRATEGY (follow this in every response)
 
