@@ -326,3 +326,49 @@ export function monthlyReportEmail({ userName, monthData }) {
     `Your ${month} crypto security report - Score: ${Math.round(overallScore)}/100`
   );
 }
+
+/**
+ * Streak Reminder Email
+ * Sent to users at risk of breaking their streak
+ */
+export function streakReminderEmail({ userName, currentStreak, streakPoints }) {
+  const fireEmoji = currentStreak >= 30 ? "🔥🔥🔥" : currentStreak >= 7 ? "🔥🔥" : "🔥";
+
+  return layout(
+    `
+    <div style="text-align:center;padding:20px 0;">
+      <div style="font-size:48px;margin-bottom:16px;">${fireEmoji}</div>
+      <h2 style="font-size:22px;color:${BRAND.colors.text};margin:0 0 8px;">
+        Don't break your ${currentStreak}-day streak!
+      </h2>
+      <p style="color:${BRAND.colors.muted};font-size:14px;margin:0 0 24px;">
+        Hey ${userName}, you've been on a roll! Don't let your streak slip away.
+      </p>
+    </div>
+
+    <div style="background:${BRAND.colors.card};border-radius:12px;padding:20px;border:1px solid ${BRAND.colors.border};margin-bottom:20px;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr>
+          <td style="padding:8px 0;color:${BRAND.colors.muted};font-size:13px;">Current streak</td>
+          <td style="padding:8px 0;text-align:right;font-size:20px;font-weight:700;color:${BRAND.colors.amber};">${currentStreak} days</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;color:${BRAND.colors.muted};font-size:13px;">Points earned</td>
+          <td style="padding:8px 0;text-align:right;font-size:20px;font-weight:700;color:${BRAND.colors.primary};">${streakPoints} pts</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="background:${BRAND.colors.bg};border-radius:12px;padding:16px;border:1px solid ${BRAND.colors.border};margin-bottom:24px;">
+      <p style="margin:0;font-size:13px;color:${BRAND.colors.muted};text-align:center;">
+        ⚡ Visit your dashboard today to keep your streak alive and earn ${Math.min(currentStreak * 10, 100)} bonus points!
+      </p>
+    </div>
+
+    <div style="text-align:center;">
+      ${btn("Keep My Streak Alive 🔥", `${BRAND.url}/dashboard`)}
+    </div>
+  `,
+    `Your ${currentStreak}-day streak is at risk!`
+  );
+}

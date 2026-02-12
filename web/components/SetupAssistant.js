@@ -4,98 +4,20 @@ import { useState, useRef, useEffect } from "react";
 
 /**
  * SetupAssistant - AI-powered chat assistant for building crypto stacks
+ * Uses real OpenAI LLM via /api/ai/chat endpoint
  */
 
 const INITIAL_MESSAGE = {
   role: "assistant",
-  content: "Hi! 👋 I'm your crypto security assistant. I can help you build a secure setup based on your needs. Tell me about your crypto usage, and I'll recommend the best products for you.\n\nFor example, you can ask:\n• \"I'm new to crypto, what do I need?\"\n• \"What's the best hardware wallet for Bitcoin?\"\n• \"I have $50k, how should I secure it?\"\n• \"Compare Ledger vs Trezor\"",
+  content: "Hi! 👋 I'm your SAFE Security Advisor, powered by AI. I can help you build a secure crypto setup based on your needs.\n\nFor example, you can ask:\n• \"I'm new to crypto, what do I need?\"\n• \"What's the best hardware wallet for Bitcoin?\"\n• \"I have $50k, how should I secure it?\"\n• \"Compare Ledger vs Trezor\"",
 };
-
-// Pre-defined responses based on keywords (local AI simulation)
-function getAIResponse(message, products) {
-  const lowerMsg = message.toLowerCase();
-
-  // Beginner questions
-  if (lowerMsg.includes("beginner") || lowerMsg.includes("new to crypto") || lowerMsg.includes("getting started")) {
-    const softwareWallets = products.filter(p => p.type_code?.includes("software")).slice(0, 2);
-    return {
-      text: "Welcome to crypto! 🎉 For beginners, I recommend starting with:\n\n1. **A software wallet** for small amounts and learning\n2. **A hardware wallet** once you have more than $500\n\nHere are some beginner-friendly options:",
-      recommendations: softwareWallets,
-    };
-  }
-
-  // Hardware wallet questions
-  if (lowerMsg.includes("hardware wallet") || lowerMsg.includes("cold storage") || lowerMsg.includes("ledger") || lowerMsg.includes("trezor")) {
-    const hardwareWallets = products.filter(p => p.type_code?.includes("hardware")).slice(0, 3);
-    return {
-      text: "Hardware wallets are the gold standard for securing crypto! 🔐 They keep your private keys offline, protecting you from hackers.\n\nTop hardware wallets by SAFE score:",
-      recommendations: hardwareWallets,
-    };
-  }
-
-  // Amount-based recommendations
-  if (lowerMsg.includes("$") || lowerMsg.includes("secure") || lowerMsg.includes("protect")) {
-    const amount = parseInt(lowerMsg.match(/\d+/)?.[0] || "0");
-    if (amount >= 10000) {
-      const hardware = products.filter(p => p.type_code?.includes("hardware") && p.score >= 80).slice(0, 2);
-      return {
-        text: `With significant holdings, security is critical! 💎 I recommend:\n\n1. **Hardware wallet** for cold storage (90% of funds)\n2. **Software wallet** for active use (10%)\n3. Consider a **multisig setup** for extra security\n\nTop secure options:`,
-        recommendations: hardware,
-      };
-    }
-  }
-
-  // DeFi questions
-  if (lowerMsg.includes("defi") || lowerMsg.includes("yield") || lowerMsg.includes("staking")) {
-    const defiProducts = products.filter(p => p.type_code === "defi" || p.name?.toLowerCase().includes("metamask")).slice(0, 3);
-    return {
-      text: "DeFi is exciting but requires extra security awareness! 🌾\n\nFor DeFi users, I recommend:\n1. **Hardware wallet** connected to MetaMask for signing\n2. Use **separate wallets** for different protocols\n3. **Never** approve unlimited token spending\n\nPopular DeFi-compatible options:",
-      recommendations: defiProducts,
-    };
-  }
-
-  // Bitcoin-specific
-  if (lowerMsg.includes("bitcoin") || lowerMsg.includes("btc")) {
-    const btcWallets = products.filter(p =>
-      p.name?.toLowerCase().includes("bitcoin") ||
-      p.name?.toLowerCase().includes("coldcard") ||
-      p.type_code?.includes("hardware")
-    ).slice(0, 3);
-    return {
-      text: "Bitcoin-only? Great choice for security! ₿\n\nBitcoin-focused wallets often have stronger security because they do one thing well. Look for:\n• Open-source firmware\n• Air-gapped signing\n• PSBT support\n\nTop Bitcoin wallets:",
-      recommendations: btcWallets,
-    };
-  }
-
-  // Exchange questions
-  if (lowerMsg.includes("exchange") || lowerMsg.includes("trading") || lowerMsg.includes("buy")) {
-    const exchanges = products.filter(p => p.type_code === "exchange").slice(0, 3);
-    return {
-      text: "For trading, you'll need an exchange, but remember: \"Not your keys, not your coins!\" 🔑\n\nTips:\n• Only keep trading amounts on exchanges\n• Enable 2FA and withdrawal whitelists\n• Move long-term holdings to self-custody\n\nSafest exchanges by SAFE score:",
-      recommendations: exchanges,
-    };
-  }
-
-  // Compare products
-  if (lowerMsg.includes("compare") || lowerMsg.includes("vs") || lowerMsg.includes("versus")) {
-    return {
-      text: "I can help you compare products! 📊 Add the products you're considering to your stack on the right, and you'll see their combined SAFE scores.\n\nOr tell me specifically which products you want to compare, like:\n• \"Compare Ledger Nano X vs Trezor Model T\"\n• \"What's better for beginners, Exodus or Trust Wallet?\"",
-      recommendations: [],
-    };
-  }
-
-  // Default response
-  const topProducts = products.filter(p => p.score >= 80).slice(0, 3);
-  return {
-    text: "I can help with that! 🤔 Based on our SAFE methodology, here are some top-rated products. Feel free to ask more specific questions about your needs!\n\nPopular secure options:",
-    recommendations: topProducts,
-  };
-}
 
 export default function SetupAssistant({ products, onAddProduct, isOpen, onToggle }) {
   const [messages, setMessages] = useState([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [usage, setUsage] = useState(null);
+  const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -107,24 +29,62 @@ export default function SetupAssistant({ products, onAddProduct, isOpen, onToggl
   }, [messages]);
 
   const handleSend = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isTyping) return;
 
     const userMessage = { role: "user", content: input };
-    setMessages(prev => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput("");
     setIsTyping(true);
+    setError(null);
 
-    // Simulate AI thinking
-    setTimeout(() => {
-      const response = getAIResponse(input, products);
+    try {
+      // Send to real AI API
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: updatedMessages.filter((m) => m.role !== "system"),
+        }),
+      });
+
+      if (res.status === 429) {
+        const data = await res.json();
+        setUsage(data.usage);
+        setError("daily_limit");
+        setIsTyping(false);
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error("AI service unavailable");
+      }
+
+      const data = await res.json();
+
       const assistantMessage = {
         role: "assistant",
-        content: response.text,
-        recommendations: response.recommendations,
+        content: data.content,
+        recommendations: data.recommendations || [],
       };
-      setMessages(prev => [...prev, assistantMessage]);
+
+      setMessages((prev) => [...prev, assistantMessage]);
+      setUsage(data.usage);
+    } catch (err) {
+      console.error("AI chat error:", err);
+      // Fallback: use local response
+      const fallbackResponse = getFallbackResponse(input, products);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: fallbackResponse.text,
+          recommendations: fallbackResponse.recommendations,
+        },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 800);
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -158,15 +118,23 @@ export default function SetupAssistant({ products, onAddProduct, isOpen, onToggl
             </svg>
           </div>
           <div>
-            <h3 className="font-semibold">SAFE Assistant</h3>
-            <p className="text-xs text-green-400">Online</p>
+            <h3 className="font-semibold">SAFE AI Advisor</h3>
+            <p className="text-xs text-green-400 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block animate-pulse" />
+              Powered by AI
+            </p>
           </div>
         </div>
-        <button onClick={onToggle} className="btn btn-ghost btn-sm btn-circle">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        <div className="flex items-center gap-2">
+          {usage && (
+            <span className="text-xs text-base-content/40">{usage.used}/{usage.limit}</span>
+          )}
+          <button onClick={onToggle} className="btn btn-ghost btn-sm btn-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Messages */}
@@ -189,7 +157,7 @@ export default function SetupAssistant({ products, onAddProduct, isOpen, onToggl
                 <div className="mt-2 space-y-2">
                   {msg.recommendations.map(product => (
                     <button
-                      key={product.id}
+                      key={product.id || product.slug}
                       onClick={() => onAddProduct(product)}
                       className="w-full flex items-center gap-2 p-2 rounded-lg bg-base-300 hover:bg-primary/20 transition-all text-left"
                     >
@@ -217,6 +185,17 @@ export default function SetupAssistant({ products, onAddProduct, isOpen, onToggl
           </div>
         ))}
 
+        {/* Rate limit error */}
+        {error === "daily_limit" && (
+          <div className="text-center p-3 rounded-xl bg-amber-500/10 border border-amber-500/30">
+            <p className="text-sm text-amber-400 font-medium">Daily message limit reached</p>
+            <p className="text-xs text-base-content/50 mt-1">
+              {usage?.used || 0}/{usage?.limit || 5} messages used today
+            </p>
+            <a href="/pricing" className="btn btn-primary btn-xs mt-2">Upgrade for more</a>
+          </div>
+        )}
+
         {isTyping && (
           <div className="flex justify-start">
             <div className="bg-base-300 p-3 rounded-2xl rounded-bl-md">
@@ -242,10 +221,11 @@ export default function SetupAssistant({ products, onAddProduct, isOpen, onToggl
             onKeyDown={handleKeyDown}
             placeholder="Ask me anything..."
             className="input input-bordered flex-1 bg-base-100"
+            disabled={error === "daily_limit"}
           />
           <button
             onClick={handleSend}
-            disabled={!input.trim() || isTyping}
+            disabled={!input.trim() || isTyping || error === "daily_limit"}
             className="btn btn-primary btn-square"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
@@ -254,9 +234,24 @@ export default function SetupAssistant({ products, onAddProduct, isOpen, onToggl
           </button>
         </div>
         <p className="text-xs text-base-content/40 mt-2 text-center">
-          AI recommendations based on SAFE methodology
+          AI-powered by SAFE methodology &bull; {usage ? `${usage.used}/${usage.limit} msgs today` : ""}
         </p>
       </div>
     </div>
   );
+}
+
+// Fallback responses when AI API is unavailable
+function getFallbackResponse(message, products) {
+  const lowerMsg = message.toLowerCase();
+  const topProducts = (products || []).filter((p) => p.score >= 70).slice(0, 3);
+
+  if (lowerMsg.includes("beginner") || lowerMsg.includes("new")) {
+    return { text: "For beginners, I recommend starting with a software wallet for learning, then upgrading to a hardware wallet. Here are some options:", recommendations: topProducts };
+  }
+  if (lowerMsg.includes("hardware") || lowerMsg.includes("cold")) {
+    const hw = (products || []).filter((p) => p.type_code?.includes("hardware")).slice(0, 3);
+    return { text: "Hardware wallets are the gold standard for crypto security. Top options:", recommendations: hw.length ? hw : topProducts };
+  }
+  return { text: "Based on SAFE scores, here are some top-rated products. Ask me more specific questions for better recommendations!", recommendations: topProducts };
 }

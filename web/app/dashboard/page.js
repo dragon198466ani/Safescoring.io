@@ -8,6 +8,8 @@ import SeniorityTracker from "@/components/SeniorityTracker";
 import StreakTracker from "@/components/StreakTracker";
 import AchievementBadges from "@/components/AchievementBadges";
 import SetupHealthScore from "@/components/SetupHealthScore";
+import DailyChallenge from "@/components/DailyChallenge";
+import QuestPanel from "@/components/QuestPanel";
 
 const getScoreColor = (score) => {
   if (score >= 80) return "text-green-400";
@@ -218,15 +220,18 @@ export default async function Dashboard() {
         </div>
       </div>
 
-      {/* Streak & Engagement Section */}
+      {/* Daily Challenge & Streak Section */}
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <StreakTracker />
         </div>
         <div>
-          <SeniorityTracker />
+          <DailyChallenge />
         </div>
       </div>
+
+      {/* Seniority */}
+      <SeniorityTracker />
 
       {/* Token & Reputation Section */}
       <div className="grid lg:grid-cols-3 gap-6">
@@ -239,6 +244,9 @@ export default async function Dashboard() {
           <AchievementBadges showAll={false} />
         </div>
       </div>
+
+      {/* Quest Paths */}
+      <QuestPanel />
 
       {/* Leaderboard */}
       <Leaderboard limit={5} />

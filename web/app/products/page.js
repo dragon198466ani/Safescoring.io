@@ -18,9 +18,9 @@ import { MiniScoreCircle as ScoreCircle } from "@/components/ScoreCircle";
 import FloatingStackBubble from "@/components/FloatingStackBubble";
 
 const scoreTypes = [
-  { id: "full", label: "Full", description: "100% des normes" },
-  { id: "consumer", label: "Consumer", description: "38% des normes" },
-  { id: "essential", label: "Essential", description: "17% des normes" },
+  { id: "full", label: "Full", description: "100% of norms" },
+  { id: "consumer", label: "Consumer", description: "38% of norms" },
+  { id: "essential", label: "Essential", description: "17% of norms" },
 ];
 
 const sortOptions = [
@@ -35,10 +35,10 @@ const sortOptions = [
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   const date = new Date(dateString);
-  return date.toLocaleDateString("fr-FR", {
+  return date.toLocaleDateString("en-US", {
     year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
+    month: "short",
+    day: "numeric",
   });
 };
 
@@ -139,7 +139,7 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
           {product.priceEur ? (
             <div className="bg-amber-500 text-white px-2 py-1 rounded-full shadow-lg inline-flex items-center gap-1">
               <span className="text-xs font-bold">
-                {product.priceEur.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} €
+                {product.priceEur.toLocaleString('en-US', { maximumFractionDigits: 0 })} €
               </span>
             </div>
           ) : (

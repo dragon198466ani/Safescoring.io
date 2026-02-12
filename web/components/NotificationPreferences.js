@@ -90,6 +90,11 @@ export default function NotificationPreferences() {
       label: "Monthly security report",
       description: "Detailed monthly report with trends and recommendations",
     },
+    {
+      key: "email_streak_reminder",
+      label: "Streak reminder",
+      description: "Get reminded when your streak is about to break",
+    },
   ];
 
   return (

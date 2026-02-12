@@ -16,6 +16,10 @@ const iconMap = {
   rocket: "\uD83D\uDE80",
   stack: "\uD83C\uDFD7\uFE0F",
   balance: "\u2696\uFE0F",
+  // Quest reward achievements
+  novice_shield: "\uD83D\uDEE1\uFE0F",
+  streak_fire: "\uD83D\uDD25",
+  magnifier: "\uD83D\uDD0D",
 };
 
 const categoryColors = {
@@ -25,6 +29,7 @@ const categoryColors = {
   setup: "from-purple-500/20 to-violet-500/20 border-purple-500/30",
   community: "from-cyan-500/20 to-teal-500/20 border-cyan-500/30",
   special: "from-amber-500/20 to-yellow-500/20 border-amber-500/30",
+  learning: "from-indigo-500/20 to-blue-500/20 border-indigo-500/30",
 };
 
 export default function AchievementBadges({ showAll = true }) {
