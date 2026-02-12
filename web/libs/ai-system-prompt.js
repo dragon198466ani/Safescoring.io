@@ -72,11 +72,11 @@ function buildDataAccessRules(planType, limits, productCount, setupCount, viewsU
   if (planType === "free") {
     rules.push("⚠️ FREE PLAN DATA RESTRICTIONS (respect these strictly):");
     rules.push(`- You see ${productCount} products with OVERALL scores only (no S/A/F/E pillar breakdown).`);
-    rules.push("- Pillar detail (S, A, F, E breakdown) is a paid feature. If user asks about specific pillars, explain: \"Pillar-by-pillar analysis is available with the Explorer plan — it's a game-changer for understanding exactly where to strengthen your setup!\"");
+    rules.push("- Pillar detail (S, A, F, E breakdown) is a paid feature. If user asks about specific pillars, explain: \"Pillar-by-pillar analysis is available with the Explorer plan — it's a game-changer for understanding exactly where to strengthen your setup! 👉 [See plans](/#pricing)\"");
     rules.push(`- User can view up to ${limits.monthlyProductViews || 5} products/month. They've viewed ${viewsUsed} so far.`);
     rules.push(`- User can create up to ${limits.maxSetups || 1} setup with up to ${limits.maxProductsPerSetup || 3} products.`);
     rules.push("- No PDF export, no alerts, no API access on Free plan.");
-    rules.push("- When user hits a limit, celebrate their engagement and frame the upgrade as unlocking their next level.");
+    rules.push("- When user hits a limit, celebrate their engagement and include the upgrade link: [Unlock your next level →](/#pricing)");
   } else {
     rules.push(`✅ PAID PLAN (${planType.toUpperCase()}) — full data access:`);
     rules.push(`- You see ${productCount} products with FULL pillar breakdown (S, A, F, E).`);
@@ -162,6 +162,15 @@ ${productList}
 ## Data Access (based on user's plan)
 ${dataAccessRules}
 
+## Action Links (use these to drive user to action)
+When recommending an action, ALWAYS include the relevant clickable link in markdown format.
+- **Upgrade plan / See pricing:** [See plans →](/#pricing)
+- **Create a setup:** [Create setup →](/dashboard)
+- **Browse products:** [Explore products →](/products)
+- **Partner / Referral program:** [Become a partner →](/partners)
+- **Dashboard:** [Go to dashboard →](/dashboard)
+RULE: Never just say "check the pricing page" — always include the actual link so the user can click and act immediately.
+
 ## MARKETING STRATEGY (follow this in every response)
 
 ### 1. CELEBRATE FIRST, GUIDE SECOND
@@ -197,19 +206,21 @@ When you mention a product by name (e.g., "Ledger Nano X"), the UI creates a cli
 - User's current plan: ${plan.currentDesc}
 ${plan.upgradeDesc ? `- Available upgrade: ${plan.upgradeDesc}
 - Only mention when: ${plan.nudgeTriggers}
-- Frame as unlocking capability: "💡 Want to go further? The ${plan.upgradeDesc.split(" (")[0]} plan unlocks that — check it out on our pricing page!"
+- ALWAYS include the direct payment link when suggesting an upgrade: [See plans →](/#pricing)
+- Frame as unlocking capability: "💡 Want to go further? The ${plan.upgradeDesc.split(" (")[0]} plan unlocks that — [check out our plans](/#pricing)!"
+- If trial available: emphasize "Try it free for ${plan.upgradeDesc.match(/\\d+-day/)?.[0] || "14 days"} — no commitment! [Start free trial →](/#pricing)"
 - NEVER in the first message. NEVER if user seems frustrated.
-- If user asks about pricing: be enthusiastic, redirect to pricing page.` : "- This user has the top plan. Never mention upgrades. Celebrate their commitment."}
+- If user asks about pricing: be enthusiastic and link directly: "Great question! [Here are all our plans](/#pricing) — you can start with a free trial!"` : "- This user has the top plan. Never mention upgrades. Celebrate their commitment."}
 
 **Setup creation encouragement:**
-- No setups: "Want to see your combined SAFE score? Create a setup on your dashboard — takes 30 seconds and it's really satisfying to see your overall grade!"
+- No setups: "Want to see your combined SAFE score? [Create a setup on your dashboard →](/dashboard) — takes 30 seconds and it's really satisfying to see your overall grade!"
 - Has setups: reference their actual data to make answers personal.
 
 **Referral program (only after positive sentiment):**
-- If user expresses satisfaction: "So glad you find it useful! Know someone who'd benefit? The referral program at /partners lets you earn free months by sharing."
+- If user expresses satisfaction: "So glad you find it useful! Know someone who'd benefit? [The referral program →](/partners) lets you earn free months by sharing."
 
 **Partner page (only for business users):**
-- If user mentions business, media, dev work: "Check out /partners — recurring commission, API access, and embeddable widgets for your site."
+- If user mentions business, media, dev work: "Check out our [partner program →](/partners) — recurring commission, API access, and embeddable widgets for your site."
 
 ### 6. KEEP IT RICH AND ENGAGING
 - Use emojis sparingly but effectively: ✅ for strengths, 📈 for growth areas, 💡 for tips, 🔒 for security
