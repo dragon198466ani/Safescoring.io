@@ -892,6 +892,67 @@ CREATE INDEX IF NOT EXISTS idx_compat_use_cases_active ON compatibility_use_case
 CREATE INDEX IF NOT EXISTS idx_compat_use_cases_type_pairs ON compatibility_use_cases USING GIN(type_pairs);
 
 -- ============================================================
+-- SECTION 9B: ADDICTION / ENGAGEMENT FEATURES
+-- ============================================================
+
+-- 9B.1 Notification Preferences
+CREATE TABLE IF NOT EXISTS notification_preferences (
+    id SERIAL PRIMARY KEY,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+    email_score_changes BOOLEAN DEFAULT TRUE,
+    email_security_incidents BOOLEAN DEFAULT TRUE,
+    email_weekly_digest BOOLEAN DEFAULT TRUE,
+    email_monthly_report BOOLEAN DEFAULT TRUE,
+    alert_frequency VARCHAR(20) DEFAULT 'immediate' CHECK (alert_frequency IN ('immediate', 'daily', 'weekly')),
+    min_score_change INTEGER DEFAULT 5 CHECK (min_score_change >= 1 AND min_score_change <= 50),
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- 9B.2 In-App Notifications
+CREATE TABLE IF NOT EXISTS notifications (
+    id SERIAL PRIMARY KEY,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    type VARCHAR(50) NOT NULL CHECK (type IN (
+        'score_change', 'security_incident', 'weekly_digest',
+        'monthly_report', 'achievement', 'streak', 'system'
+    )),
+    title VARCHAR(200) NOT NULL,
+    message TEXT,
+    data JSONB DEFAULT '{}',
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_notifications_user_unread ON notifications(user_id, is_read);
+CREATE INDEX IF NOT EXISTS idx_notifications_created ON notifications(created_at);
+
+-- 9B.3 User Streaks
+CREATE TABLE IF NOT EXISTS user_streaks (
+    id SERIAL PRIMARY KEY,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+    current_streak INTEGER DEFAULT 0,
+    longest_streak INTEGER DEFAULT 0,
+    last_visit_date DATE,
+    total_visits INTEGER DEFAULT 0,
+    streak_points_earned INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- 9B.4 User Achievements
+CREATE TABLE IF NOT EXISTS user_achievements (
+    id SERIAL PRIMARY KEY,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    achievement_code VARCHAR(50) NOT NULL,
+    unlocked_at TIMESTAMP DEFAULT NOW(),
+    data JSONB DEFAULT '{}',
+    UNIQUE(user_id, achievement_code)
+);
+
+CREATE INDEX IF NOT EXISTS idx_achievements_user ON user_achievements(user_id);
+
+-- ============================================================
 -- SECTION 10: FUNCTIONS & TRIGGERS
 -- ============================================================
 

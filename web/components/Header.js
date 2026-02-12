@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import ButtonSignin from "./ButtonSignin";
+import NotificationBell from "./NotificationBell";
 import config from "@/config";
 
 // Throttle function for scroll performance
@@ -119,7 +120,8 @@ const Header = () => {
         </div>
 
         {/* Desktop CTA */}
-        <div className="hidden lg:flex lg:justify-end lg:flex-1 lg:gap-4">
+        <div className="hidden lg:flex lg:justify-end lg:flex-1 lg:gap-4 lg:items-center">
+          <NotificationBell />
           <ButtonSignin text="Sign In" extraStyle="btn-ghost btn-sm" />
           <Link href="/dashboard/setups" className="btn btn-primary btn-sm">
             Get Started
