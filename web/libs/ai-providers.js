@@ -1,49 +1,135 @@
 /**
  * Multi-provider AI configuration for SafeScoring
  *
- * Strategy: Groq (1 key, free or Dev tier) → Gemini (free backup) → OpenAI (paid backup)
- * Rate limits are per-organization, so multiple keys on the same account don't help.
- * For scaling beyond 1,000 req/day: upgrade to Groq Dev tier (~$0.05/1M tokens).
+ * SMART ROUTING — route by question complexity to optimize cost:
  *
- * All providers use OpenAI-compatible SDK format.
+ * ┌─────────────┬──────────────────────────┬────────────────────┬─────────────┐
+ * │ Complexity   │ Model                    │ Cost/1M tokens     │ Cost/msg    │
+ * ├─────────────┼──────────────────────────┼────────────────────┼─────────────┤
+ * │ Simple       │ LLaMA 3.1 8B Instant     │ $0.05 in / $0.08 out │ ~$0.0001  │
+ * │ Complex      │ LLaMA 3.3 70B Versatile  │ $0.59 in / $0.79 out │ ~$0.001   │
+ * └─────────────┴──────────────────────────┴────────────────────┴─────────────┘
+ *
+ * 10x cheaper for simple questions = can afford way more free messages.
+ * Complex = comparison, multi-product analysis, strategy, DeFi advice.
+ * Simple = "what is X?", single product lookup, basic recommendation.
+ *
+ * Cascade fallback: Groq → Gemini → OpenAI (per complexity tier)
  */
 import OpenAI from "openai";
 
 // ============================================================
-// PROVIDER CONFIGURATIONS — order = priority
+// COMPLEXITY DETECTION
 // ============================================================
-const PROVIDERS = [
-  {
-    name: "groq",
-    label: "Groq (LLaMA 3.3 70B)",
-    baseURL: "https://api.groq.com/openai/v1",
-    apiKeyEnv: "GROQ_API_KEY",
-    model: "llama-3.3-70b-versatile",
-    maxTokens: 800,
-    temperature: 0.7,
-    // Free: 1,000 RPD, 30 RPM. Dev tier: unlimited RPD.
-  },
-  {
-    name: "gemini",
-    label: "Google Gemini Flash",
-    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
-    apiKeyEnv: "GEMINI_API_KEY",
-    model: "gemini-2.0-flash-lite",
-    maxTokens: 800,
-    temperature: 0.7,
-    // Free: 1,000 RPD, 15 RPM
-  },
-  {
-    name: "openai",
-    label: "OpenAI GPT-4o-mini",
-    baseURL: "https://api.openai.com/v1",
-    apiKeyEnv: "OPENAI_API_KEY",
-    model: "gpt-4o-mini",
-    maxTokens: 800,
-    temperature: 0.7,
-    // Paid — no hard daily limit
-  },
+
+// Keywords/patterns that indicate a complex question
+const COMPLEX_PATTERNS = [
+  // Comparisons
+  /compar/i, /vs\.?[\s]/i, /versus/i, /differ/i, /better|worse|best|worst/i,
+  /entre|zwischen|entre|比较|比べ/i,
+  // Multi-product analysis
+  /setup|portfolio|combination|stack|strateg/i,
+  /diversif/i, /allocat/i, /optimize|optimise/i,
+  // Deep analysis
+  /explain.*why|why.*score|analyz|analyse|in.?depth|detail/i,
+  /audit|review.*my|evaluat/i,
+  // DeFi / advanced
+  /defi|yield|liquidity|staking|impermanent/i,
+  /smart.?contract|bridge|cross.?chain/i,
+  // Risk assessment
+  /risk|vulnerab|threat|attack|hack/i,
+  /incident|breach|exploit/i,
+  // Migration / strategy
+  /migrat|switch|replac|transition|upgrade/i,
+  /plan|roadmap|recommend.*multiple/i,
 ];
+
+/**
+ * Detect if a message requires the complex (70B) or simple (8B) model
+ * Returns "complex" or "simple"
+ */
+export function detectComplexity(messages) {
+  // Look at the last user message
+  const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
+  if (!lastUserMsg) return "simple";
+
+  const text = lastUserMsg.content;
+
+  // Long messages (>150 chars) are likely complex
+  if (text.length > 150) return "complex";
+
+  // Check for complex patterns
+  for (const pattern of COMPLEX_PATTERNS) {
+    if (pattern.test(text)) return "complex";
+  }
+
+  // Multi-question (contains "?" more than once)
+  const questionMarks = (text.match(/\?/g) || []).length;
+  if (questionMarks >= 2) return "complex";
+
+  // If conversation is long (>4 exchanges), user needs deeper analysis
+  const userMsgCount = messages.filter((m) => m.role === "user").length;
+  if (userMsgCount > 4) return "complex";
+
+  return "simple";
+}
+
+// ============================================================
+// PROVIDER CONFIGURATIONS — per complexity tier
+// ============================================================
+const PROVIDERS = {
+  simple: [
+    {
+      name: "groq",
+      label: "Groq (LLaMA 3.1 8B)",
+      baseURL: "https://api.groq.com/openai/v1",
+      apiKeyEnv: "GROQ_API_KEY",
+      model: "llama-3.1-8b-instant",
+      maxTokens: 500,
+      temperature: 0.7,
+      // $0.05/1M in, $0.08/1M out → ~$0.0001/message
+    },
+    {
+      name: "gemini",
+      label: "Google Gemini Flash-Lite",
+      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
+      apiKeyEnv: "GEMINI_API_KEY",
+      model: "gemini-2.0-flash-lite",
+      maxTokens: 500,
+      temperature: 0.7,
+    },
+  ],
+  complex: [
+    {
+      name: "groq",
+      label: "Groq (LLaMA 3.3 70B)",
+      baseURL: "https://api.groq.com/openai/v1",
+      apiKeyEnv: "GROQ_API_KEY",
+      model: "llama-3.3-70b-versatile",
+      maxTokens: 800,
+      temperature: 0.7,
+      // $0.59/1M in, $0.79/1M out → ~$0.001/message
+    },
+    {
+      name: "gemini",
+      label: "Google Gemini Flash",
+      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
+      apiKeyEnv: "GEMINI_API_KEY",
+      model: "gemini-2.0-flash",
+      maxTokens: 800,
+      temperature: 0.7,
+    },
+    {
+      name: "openai",
+      label: "OpenAI GPT-4o-mini",
+      baseURL: "https://api.openai.com/v1",
+      apiKeyEnv: "OPENAI_API_KEY",
+      model: "gpt-4o-mini",
+      maxTokens: 800,
+      temperature: 0.7,
+    },
+  ],
+};
 
 // ============================================================
 // CLIENT MANAGEMENT
@@ -51,8 +137,9 @@ const PROVIDERS = [
 const clientCache = new Map();
 
 function getClient(provider) {
-  if (clientCache.has(provider.name)) {
-    return clientCache.get(provider.name);
+  const cacheKey = `${provider.name}-${provider.model}`;
+  if (clientCache.has(cacheKey)) {
+    return clientCache.get(cacheKey);
   }
 
   const apiKey = process.env[provider.apiKeyEnv];
@@ -63,30 +150,36 @@ function getClient(provider) {
     baseURL: provider.baseURL,
   });
 
-  clientCache.set(provider.name, client);
+  clientCache.set(cacheKey, client);
   return client;
 }
 
 /**
- * Get all available providers (those with API keys configured)
+ * Get available providers for a complexity tier
  */
-export function getAvailableProviders() {
-  return PROVIDERS.filter((p) => process.env[p.apiKeyEnv]);
+export function getAvailableProviders(complexity = "simple") {
+  const tier = PROVIDERS[complexity] || PROVIDERS.simple;
+  return tier.filter((p) => process.env[p.apiKeyEnv]);
 }
 
 /**
- * Call AI with automatic cascade fallback
- * Tries each provider in order: Groq → Gemini → OpenAI
- * On rate limit (429) or error, falls through to next provider.
+ * Call AI with smart model routing + cascade fallback
  *
  * @param {Array} messages - OpenAI-format messages array
- * @returns {{ content: string, provider: string, model: string, label: string }}
+ * @param {"simple"|"complex"} complexity - detected complexity
+ * @returns {{ content, provider, model, label, complexity }}
  */
-export async function callAI(messages) {
-  const available = getAvailableProviders();
+export async function callAI(messages, complexity = "simple") {
+  const available = getAvailableProviders(complexity);
 
   if (available.length === 0) {
-    throw new Error("No AI providers configured. Set GROQ_API_KEY, GEMINI_API_KEY, or OPENAI_API_KEY.");
+    // Fallback: try other tier if this one has no providers
+    const fallbackComplexity = complexity === "simple" ? "complex" : "simple";
+    const fallback = getAvailableProviders(fallbackComplexity);
+    if (fallback.length === 0) {
+      throw new Error("No AI providers configured. Set GROQ_API_KEY, GEMINI_API_KEY, or OPENAI_API_KEY.");
+    }
+    return callAI(messages, fallbackComplexity);
   }
 
   const errors = [];
@@ -114,25 +207,32 @@ export async function callAI(messages) {
         provider: provider.name,
         model: provider.model,
         label: provider.label,
+        complexity,
       };
     } catch (err) {
       const status = err?.status || err?.response?.status;
       const message = err?.message || "Unknown error";
 
-      console.warn(`AI provider ${provider.name} failed (${status}): ${message}`);
+      console.warn(`AI ${provider.name}/${provider.model} failed (${status}): ${message}`);
       errors.push({ provider: provider.name, error: message, status });
 
-      // Auth error → log and skip
       if (status === 401 || status === 403) {
         console.error(`AI provider ${provider.name}: invalid API key`);
       }
-
-      // Any error (429 rate limit, 5xx server, etc.) → try next provider
       continue;
     }
   }
 
-  // All providers failed
+  // All providers in this tier failed — try the other tier
+  if (complexity === "simple") {
+    console.warn("Simple tier exhausted, falling back to complex tier");
+    try {
+      return await callAI(messages, "complex");
+    } catch {
+      // Fall through to error
+    }
+  }
+
   const errorSummary = errors.map((e) => `${e.provider}: ${e.error}`).join("; ");
   throw new Error(`All AI providers failed: ${errorSummary}`);
 }
@@ -141,10 +241,19 @@ export async function callAI(messages) {
  * Get provider status info for debugging / admin
  */
 export function getProviderStatus() {
-  return PROVIDERS.map((p) => ({
-    name: p.name,
-    label: p.label,
-    model: p.model,
-    configured: !!process.env[p.apiKeyEnv],
-  }));
+  const allProviders = [...PROVIDERS.simple, ...PROVIDERS.complex];
+  const seen = new Set();
+  return allProviders
+    .filter((p) => {
+      const key = `${p.name}-${p.model}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .map((p) => ({
+      name: p.name,
+      label: p.label,
+      model: p.model,
+      configured: !!process.env[p.apiKeyEnv],
+    }));
 }

@@ -1,17 +1,41 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { supabaseAdmin } from "@/libs/supabase";
-import { callAI, getAvailableProviders } from "@/libs/ai-providers";
+import { callAI, getAvailableProviders, detectComplexity } from "@/libs/ai-providers";
 import { buildSystemPrompt } from "@/libs/ai-system-prompt";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
-const RATE_LIMITS = {
-  free: 5,
-  explorer: 25,
-  pro: 50,
-  enterprise: 200,
+// ============================================================
+// RATE LIMITS & COST MODEL
+//
+// Simple question (8B):  ~$0.0001/msg → can be generous
+// Complex question (70B): ~$0.001/msg → need to limit for free users
+//
+// Budget per user per day:
+//   Free:       ~$0.003/day  → 20 simple + 3 complex
+//   Explorer:   ~$0.02/day   → 40 simple + 10 complex
+//   Pro:        ~$0.05/day   → unlimited simple + 30 complex
+//   Enterprise: ~$0.10/day   → unlimited
+// ============================================================
+const PLAN_LIMITS = {
+  free: {
+    daily: 25,       // total messages per day
+    complex: 3,      // max complex (70B) messages per day
+  },
+  explorer: {
+    daily: 50,
+    complex: 15,
+  },
+  pro: {
+    daily: 100,
+    complex: 40,
+  },
+  enterprise: {
+    daily: 500,
+    complex: 200,
+  },
 };
 
 export async function POST(request) {
@@ -20,7 +44,6 @@ export async function POST(request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Check if any AI provider is configured
   if (getAvailableProviders().length === 0) {
     return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
   }
@@ -34,31 +57,56 @@ export async function POST(request) {
 
     const userId = session.user.id;
     const planType = session.user.planType || "free";
-    const limit = RATE_LIMITS[planType] || RATE_LIMITS.free;
+    const limits = PLAN_LIMITS[planType] || PLAN_LIMITS.free;
 
-    // Check rate limit
+    // Detect complexity from user's messages
+    const complexity = detectComplexity(messages);
+
+    // Check rate limits (daily total + complex quota)
     const today = new Date().toISOString().split("T")[0];
+    let currentUsage = { total: 0, complex: 0 };
 
     if (supabaseAdmin) {
       const { data: rateData } = await supabaseAdmin
         .from("ai_rate_limits")
-        .select("messages_sent")
+        .select("messages_sent, tokens_used")
         .eq("user_id", userId)
         .eq("usage_date", today)
         .single();
 
-      const used = rateData?.messages_sent || 0;
-      if (used >= limit) {
+      if (rateData) {
+        currentUsage.total = rateData.messages_sent || 0;
+        currentUsage.complex = rateData.tokens_used || 0; // reuse tokens_used column for complex count
+      }
+
+      // Check daily total limit
+      if (currentUsage.total >= limits.daily) {
         return NextResponse.json(
           {
             error: "Daily AI message limit reached",
-            usage: { used, limit },
+            usage: {
+              total: currentUsage.total,
+              complex: currentUsage.complex,
+              limits,
+            },
             upgrade: planType === "free",
           },
           { status: 429 }
         );
       }
+
+      // Check complex message quota — downgrade to simple if exceeded
+      if (complexity === "complex" && currentUsage.complex >= limits.complex) {
+        // Don't block — silently downgrade to simple model
+        // User still gets a response, just less nuanced
+      }
     }
+
+    // Determine final complexity (may be downgraded if quota exceeded)
+    const finalComplexity =
+      complexity === "complex" && currentUsage.complex >= limits.complex
+        ? "simple"
+        : complexity;
 
     // Get user context for system prompt
     let userSetups = [];
@@ -94,7 +142,7 @@ export async function POST(request) {
     // Build system prompt
     const systemPrompt = buildSystemPrompt(userSetups, topProducts, session.user.name);
 
-    // Prepare messages (OpenAI-compatible format — works with Groq & Gemini too)
+    // Prepare messages (OpenAI-compatible format)
     const aiMessages = [
       { role: "system", content: systemPrompt },
       ...messages.slice(-10).map((m) => ({
@@ -103,19 +151,19 @@ export async function POST(request) {
       })),
     ];
 
-    // Call AI with automatic cascade: Groq → Gemini → OpenAI
-    const result = await callAI(aiMessages);
+    // Call AI with smart routing
+    const result = await callAI(aiMessages, finalComplexity);
 
     const assistantContent = result.content;
-
-    // Extract product recommendations from the response
     const recommendations = extractRecommendations(assistantContent, topProducts);
 
-    // Update rate limit
+    // Update rate limits
     if (supabaseAdmin) {
+      const isComplex = result.complexity === "complex" ? 1 : 0;
+
       const { data: existing } = await supabaseAdmin
         .from("ai_rate_limits")
-        .select("messages_sent")
+        .select("messages_sent, tokens_used")
         .eq("user_id", userId)
         .eq("usage_date", today)
         .single();
@@ -123,7 +171,10 @@ export async function POST(request) {
       if (existing) {
         await supabaseAdmin
           .from("ai_rate_limits")
-          .update({ messages_sent: (existing.messages_sent || 0) + 1 })
+          .update({
+            messages_sent: (existing.messages_sent || 0) + 1,
+            tokens_used: (existing.tokens_used || 0) + isComplex,
+          })
           .eq("user_id", userId)
           .eq("usage_date", today);
       } else {
@@ -131,27 +182,36 @@ export async function POST(request) {
           user_id: userId,
           usage_date: today,
           messages_sent: 1,
+          tokens_used: isComplex,
         });
       }
     }
 
-    // Get updated usage
-    let currentUsage = 1;
+    // Get updated usage for response
+    let updatedUsage = { total: 1, complex: 0 };
     if (supabaseAdmin) {
       const { data: usage } = await supabaseAdmin
         .from("ai_rate_limits")
-        .select("messages_sent")
+        .select("messages_sent, tokens_used")
         .eq("user_id", userId)
         .eq("usage_date", today)
         .single();
-      currentUsage = usage?.messages_sent || 1;
+      updatedUsage = {
+        total: usage?.messages_sent || 1,
+        complex: usage?.tokens_used || 0,
+      };
     }
 
     return NextResponse.json({
       content: assistantContent,
       recommendations,
-      usage: { used: currentUsage, limit },
-      provider: result.provider,
+      usage: {
+        total: updatedUsage.total,
+        complex: updatedUsage.complex,
+        limits,
+      },
+      model: result.model,
+      complexity: result.complexity,
     });
   } catch (error) {
     console.error("AI chat error:", error);
