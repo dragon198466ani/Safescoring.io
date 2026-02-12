@@ -1,0 +1,45 @@
+# Daily Incident Scraper
+# Runs the incident scraper daily to fetch new hacks/exploits
+# from FREE sources (DefiLlama, SlowMist, Web3IsGoingGreat, Rekt, RSS)
+
+name: Daily Incident Scraper
+
+on:
+  schedule:
+    # Run daily at 6:00 UTC (after most US/EU business hours)
+    - cron: "0 6 * * *"
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  scrape-incidents:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install requests python-dotenv supabase
+
+      - name: Run incident scraper
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          cd src/automation
+          python incident_scraper.py --source all
+
+      - name: Trigger task digest (check for failures)
+        if: always()
+        env:
+          SITE_URL: ${{ secrets.NEXTAUTH_URL || 'https://safescoring.io' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -s "${SITE_URL}/api/admin/task-digest?key=${CRON_SECRET}" || true

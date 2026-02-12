@@ -13,14 +13,24 @@ import ProductLogo from "@/components/ProductLogo";
 import config from "@/config";
 import { PILLARS } from "@/libs/design-tokens";
 import { useTranslation } from "@/libs/i18n/LanguageProvider";
-import AIChat from "@/components/AIChat";
+import dynamic from "next/dynamic";
 import { MiniScoreCircle as ScoreCircle } from "@/components/ScoreCircle";
-import FloatingStackBubble from "@/components/FloatingStackBubble";
+import Breadcrumbs from "@/components/Breadcrumbs";
+
+// TODO: Post-launch — Re-enable AI Chat when LLM integration is implemented
+// const AIChat = dynamic(() => import("@/components/AIChat"), {
+//   loading: () => null,
+//   ssr: false,
+// });
+const FloatingStackBubble = dynamic(
+  () => import("@/components/FloatingStackBubble"),
+  { loading: () => null, ssr: false }
+);
 
 const scoreTypes = [
-  { id: "full", label: "Full", description: "100% des normes" },
-  { id: "consumer", label: "Consumer", description: "38% des normes" },
-  { id: "essential", label: "Essential", description: "17% des normes" },
+  { id: "full", label: "Full", description: "100% of norms" },
+  { id: "consumer", label: "Consumer", description: "38% of norms" },
+  { id: "essential", label: "Essential", description: "17% of norms" },
 ];
 
 const sortOptions = [
@@ -35,7 +45,7 @@ const sortOptions = [
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   const date = new Date(dateString);
-  return date.toLocaleDateString("fr-FR", {
+  return date.toLocaleDateString("en-US", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -139,7 +149,7 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
           {product.priceEur ? (
             <div className="bg-amber-500 text-white px-2 py-1 rounded-full shadow-lg inline-flex items-center gap-1">
               <span className="text-xs font-bold">
-                {product.priceEur.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} €
+                {product.priceEur.toLocaleString('en-US', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}
               </span>
             </div>
           ) : (
@@ -241,6 +251,7 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
           onClick={handleQuickAdd}
           className="absolute top-2 right-2 z-10 p-2 rounded-lg bg-primary/90 text-primary-content opacity-0 group-hover:opacity-100 hover:bg-primary hover:scale-110 transition-all duration-200 shadow-lg"
           title="Add to my stack"
+          aria-label={`Add ${productName} to my stack`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -315,7 +326,8 @@ export default function ProductsPage() {
   const [scoreType, setScoreType] = useState("full");
   const [expandedType, setExpandedType] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  // TODO: Post-launch — AI Chat state
+  // const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Stack management for FloatingStackBubble
   const [stackProductIds, setStackProductIds] = useState(new Set());
@@ -574,6 +586,10 @@ export default function ProductsPage() {
       <ErrorBoundary message="Failed to load products. Please refresh the page.">
         <main className="min-h-screen pt-24 pb-16 px-6 hero-bg">
           <div className="max-w-7xl mx-auto">
+          <Breadcrumbs items={[
+            { label: "Home", href: "/" },
+            { label: "Products" },
+          ]} />
           {/* Page header */}
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
@@ -619,6 +635,7 @@ export default function ProductsPage() {
                 onClick={forceRefresh}
                 className="ml-2 btn btn-ghost btn-xs"
                 title="Force refresh"
+                aria-label="Force refresh scores"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -629,11 +646,13 @@ export default function ProductsPage() {
 
           {/* Score Type Tabs - Compact horizontal scroll on mobile */}
           <div className="mb-4">
-            <div className="flex gap-2 overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide">
+            <div className="flex gap-2 overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide" role="tablist" aria-label="Score type">
               {scoreTypes.map((type) => (
                 <button
                   key={type.id}
                   onClick={() => setScoreType(type.id)}
+                  role="tab"
+                  aria-selected={scoreType === type.id}
                   className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                     scoreType === type.id
                       ? "bg-primary text-primary-content"
@@ -656,6 +675,7 @@ export default function ProductsPage() {
           <div className="flex gap-2 mb-2">
             {/* Search */}
             <div className="relative flex-1">
+              <label htmlFor="product-search" className="sr-only">Search products</label>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -663,6 +683,7 @@ export default function ProductsPage() {
                 strokeWidth={1.5}
                 stroke="currentColor"
                 className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -671,6 +692,7 @@ export default function ProductsPage() {
                 />
               </svg>
               <input
+                id="product-search"
                 type="text"
                 placeholder={t("product.searchPlaceholder")}
                 className="input input-bordered input-sm w-full pl-10 bg-base-200 border-base-300 h-10"
@@ -1179,12 +1201,7 @@ export default function ProductsPage() {
       </ErrorBoundary>
       <Footer />
 
-      {/* AI Chat Assistant */}
-      <AIChat
-        products={products}
-        isOpen={isChatOpen}
-        onToggle={() => setIsChatOpen(!isChatOpen)}
-      />
+      {/* TODO: Post-launch — Re-enable AI Chat when LLM integration is implemented */}
 
       {/* Floating Stack Bubble - Drag-and-drop stack management */}
       <FloatingStackBubble

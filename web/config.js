@@ -12,7 +12,7 @@ const config = {
     // Hide Crisp by default, except on route "/". Crisp is toggled with <ButtonSupport/>. If you want to show Crisp on every routes, just remove this below
     onlyShowOnRoutes: ["/"],
   },
-  // Lemon Squeezy configuration (replaces Stripe)
+  // Lemon Squeezy configuration (fiat payments — EU VAT as MoR)
   // Set your variant IDs from Lemon Squeezy dashboard
   lemonsqueezy: {
     plans: [
@@ -75,6 +75,8 @@ const config = {
           monthlyProductViews: -1,
           maxSetups: 20,
           maxProductsPerSetup: 10,
+          maxApiKeys: 3,
+          apiRequestsPerHour: 1000,
         },
       },
       {
@@ -96,13 +98,21 @@ const config = {
           monthlyProductViews: -1,
           maxSetups: -1, // unlimited
           maxProductsPerSetup: -1, // unlimited
+          maxApiKeys: 10,
+          apiRequestsPerHour: 10000,
+          maxWebhooks: 5,
+          whiteLabel: true,
         },
       },
     ],
   },
-  // Legacy Stripe config (kept for reference, can be removed)
-  stripe: {
-    plans: [],
+  // MoonPay configuration (crypto payments)
+  // Dashboard: https://dashboard.moonpay.com/
+  moonpay: {
+    // Supported cryptocurrencies displayed in the UI
+    supportedCurrencies: ["BTC", "ETH", "USDC", "SOL"],
+    // Default crypto for checkout (stablecoin = no volatility)
+    defaultCurrency: "usdc",
   },
   aws: {
     // If you use AWS S3/Cloudfront, put values in here
@@ -172,9 +182,9 @@ const config = {
     ],
     stats: {
       totalNorms: 916,
-      totalProducts: 100,
+      totalProducts: 1000,
       totalProductTypes: 21,
-      totalEvaluations: 50000,
+      totalEvaluations: 500000,
     },
     // Competitive differentiators
     differentiators: [
