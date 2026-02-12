@@ -36,18 +36,38 @@ export default {
   // Navigation
   nav: {
     products: "Products",
+    productsDesc: "Browse all rated products",
     community: "Community",
     leaderboard: "Leaderboard",
+    leaderboardDesc: "Top-ranked products",
     compare: "Compare",
+    compareDesc: "Side-by-side comparison",
     methodology: "Methodology",
+    methodologyDesc: "How we rate products",
     pricing: "Pricing",
     dashboard: "Dashboard",
     signIn: "Sign In",
     signOut: "Sign Out",
     blog: "Blog",
+    blogDesc: "News & insights",
     about: "About",
     map: "Map",
-    mySetups: "My Setups",
+    mySetups: "My Stack",
+    explore: "Explore",
+    resources: "Resources",
+    hacks: "Hacks Database",
+    hacksDesc: "Incidents & exploits",
+    transparency: "Score Transparency",
+    transparencyDesc: "Distribution & objectivity",
+    badge: "Badge / Widget",
+    badgeDesc: "Embed scores on your site",
+    getStarted: "Get Started",
+    getStartedFree: "Get Started Free",
+    openMenu: "Open main menu",
+    closeMenu: "Close menu",
+    toggleTheme: "Toggle theme",
+    lightMode: "Light",
+    darkMode: "Dark",
   },
 
   // Hero
@@ -101,6 +121,50 @@ export default {
     viewAllNorms: "View All {count} Norms",
     seePlans: "See Plans",
     comparePlans: "Compare all plans and features",
+    norms: {
+      S: {
+        items: ["AES-256 encryption", "secp256k1 signatures", "Keccak-256 hashing", "Multi-signature support", "HSM compatibility"],
+        example: "Does the wallet use industry-standard cryptographic algorithms?",
+      },
+      A: {
+        items: ["PIN duress protection", "Hidden wallets", "Anti-coercion features", "Plausible deniability", "Self-destruct options"],
+        example: "Can users protect themselves under physical threat?",
+      },
+      F: {
+        items: ["Security audits", "Bug bounty programs", "Regular updates", "Transparent development", "Long-term commitment"],
+        example: "Has the product been independently audited?",
+      },
+      E: {
+        items: ["Multi-chain support", "Intuitive interface", "Fast transactions", "Accessibility features", "Mobile support"],
+        example: "Is the product easy to use for all skill levels?",
+      },
+    },
+    learnMore: "Learn more about {name}",
+  },
+
+  // Why Not Audits
+  whyNotAudits: {
+    title: "Beyond Traditional Audits",
+    subtitle: "Audits are essential, but they're just one piece of the security puzzle. Here's how SafeScoring complements traditional security assessments.",
+    criteria: "Criteria",
+    traditionalAudits: "Traditional Audits",
+    safeScoring: "SafeScoring",
+    rows: {
+      coverage: { criteria: "Coverage", audit: "Primarily smart contracts", safe: "Wallets, Exchanges, DeFi, Cards & Custody" },
+      frequency: { criteria: "Frequency", audit: "Point-in-time assessment", safe: "Monthly updates" },
+      methodology: { criteria: "Methodology", audit: "Varies by auditor", safe: "916 standardized norms" },
+      opSec: { criteria: "Operational security", audit: "Usually outside scope", safe: "Assessed (Adversity pillar)" },
+      trackRecord: { criteria: "Track record", audit: "Typically not in scope", safe: "Fidelity pillar (F200-F204)" },
+      reproducibility: { criteria: "Reproducibility", audit: "Depends on team", safe: "Standardized methodology, highly reproducible" },
+      cost: { criteria: "Cost", audit: "$50K - $500K+ (manual audit)", safe: "From $29/month (automated monitoring)*" },
+      independence: { criteria: "Independence", audit: "Commissioned by project", safe: "Scoring independent from affiliates" },
+    },
+    stat87: "of exploited DeFi projects had audits — showing audits alone aren't enough",
+    stat916: "standardized norms across security, resilience, trust & usability",
+    statMonthly: "Monthly",
+    statMonthlyDesc: "continuous monitoring to catch changes between audits",
+    note: "*SafeScoring provides continuous automated monitoring and scoring. Traditional audits offer in-depth manual code review. Both serve complementary purposes in a comprehensive security strategy.",
+    sources: "Sources: Halborn DeFi Hacks Report 2025, CER.live Security Rankings",
   },
 
   // Product pages
@@ -338,6 +402,10 @@ export default {
     instantCrypto: "Instant crypto (no KYC)",
     cancelAnytime: "Cancel anytime",
     cryptoNote: "Crypto: BTC, ETH, SOL, USDC (Polygon/BSC) • Live rates • Need enterprise?",
+    cardPaypalNote: "Card & PayPal via LemonSqueezy (EU VAT handled)",
+    cryptoPaymentNote: "Crypto: BTC, ETH, USDC, SOL via MoonPay (no KYC for small amounts)",
+    trialCancelNote: "14-day trial on card payments (EU compliant) · Cancel anytime",
+    customSolution: "Need a custom solution?",
     gdprNotice: "By subscribing, you agree to our",
   },
 
@@ -458,6 +526,7 @@ export default {
     // CCPA specific
     ccpaMessage: "California residents: we do NOT sell your data.",
     doNotSell: "Do Not Sell My Info",
+    manage: "Manage Cookies",
   },
 
   // Privacy
@@ -570,7 +639,7 @@ export default {
     company: "Company",
     legal: "Legal",
     disclaimer: "Disclaimer",
-    disclaimerText: "This website does not provide investment advice. The information presented is for informational purposes only.",
+    disclaimerText: "This website does not provide investment, financial, tax, or legal advice. Security scores and ratings are for informational and educational purposes only and should not be relied upon as a basis for any investment decision. Cryptocurrency investments carry significant risk, including the risk of total loss. Past performance is not indicative of future results. Always conduct your own research and consult a qualified financial advisor before making any investment.",
     allRightsReserved: "All rights reserved",
     madeWith: "Made with",
     forCryptoSecurity: "for crypto security",

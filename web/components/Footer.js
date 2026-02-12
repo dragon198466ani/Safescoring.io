@@ -1,31 +1,41 @@
+"use client";
+
 import Link from "next/link";
 import config from "@/config";
-
-const footerLinks = {
-  product: [
-    { label: "Products", href: "/products" },
-    { label: "Score Transparency", href: "/transparency" },
-    { label: "Methodology", href: "/methodology" },
-    { label: "API", href: "/api-docs" },
-  ],
-  company: [
-    { label: "About", href: "/about" },
-    { label: "Blog", href: "/blog" },
-    { label: "Press Kit", href: "/press" },
-    { label: "Partners", href: "/partners" },
-  ],
-  legal: [
-    { label: "Legal Notice", href: "/legal" },
-    { label: "Privacy Policy", href: "/privacy-policy" },
-    { label: "Terms of Service", href: "/tos" },
-    { label: "Cookie Policy", href: "/cookies" },
-  ],
-};
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
+import { resetConsent } from "@/libs/cookie-consent";
 
 const Footer = () => {
+  const { t } = useTranslation();
+
+  const footerLinks = {
+    product: [
+      { label: t("footer.products"), href: "/products" },
+      { label: t("nav.compare"), href: "/compare" },
+      { label: t("nav.leaderboard"), href: "/leaderboard" },
+      { label: t("nav.hacks"), href: "/hacks" },
+      { label: t("footer.scoreTransparency"), href: "/transparency" },
+      { label: t("footer.methodology"), href: "/methodology" },
+    ],
+    company: [
+      { label: t("footer.about"), href: "/about" },
+      { label: t("footer.blog"), href: "/blog" },
+      { label: t("footer.pressKit"), href: "/press" },
+      { label: t("footer.partners"), href: "/partners" },
+      { label: t("nav.badge"), href: "/badge" },
+    ],
+    legal: [
+      { label: t("footer.legalNotice"), href: "/legal" },
+      { label: t("footer.privacyPolicy"), href: "/privacy-policy" },
+      { label: t("footer.termsOfService"), href: "/tos" },
+      { label: t("footer.cookiePolicy"), href: "/privacy-policy#cookies" },
+      { label: t("cookies.doNotSell"), href: "/privacy-policy#ccpa" },
+    ],
+  };
+
   return (
-    <footer className="bg-base-200 border-t border-base-300">
-      <div className="max-w-6xl mx-auto px-6 py-16">
+    <footer className="bg-base-200 border-t border-base-300 safe-bottom">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Brand column */}
           <div className="lg:col-span-2">
@@ -39,8 +49,7 @@ const Footer = () => {
               <span className="font-bold text-xl">SafeScoring</span>
             </Link>
             <p className="text-base-content/60 mb-6 max-w-sm">
-              The transparent database of verified crypto product security scores.
-              Independent, unbiased, and updated monthly.
+              {t("footer.description")}
             </p>
             {/* Social links */}
             <div className="flex items-center gap-4">
@@ -48,7 +57,7 @@ const Footer = () => {
                 href="https://twitter.com/safescoring"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg bg-base-300/50 hover:bg-base-300 transition-colors"
+                className="p-3 rounded-lg bg-base-300/50 hover:bg-base-300 transition-colors"
                 aria-label="Twitter"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -59,7 +68,7 @@ const Footer = () => {
                 href="https://github.com/safescoring"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg bg-base-300/50 hover:bg-base-300 transition-colors"
+                className="p-3 rounded-lg bg-base-300/50 hover:bg-base-300 transition-colors"
                 aria-label="GitHub"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -70,7 +79,7 @@ const Footer = () => {
                 href="https://discord.gg/safescoring"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg bg-base-300/50 hover:bg-base-300 transition-colors"
+                className="p-3 rounded-lg bg-base-300/50 hover:bg-base-300 transition-colors"
                 aria-label="Discord"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -82,7 +91,7 @@ const Footer = () => {
 
           {/* Product links */}
           <div>
-            <h3 className="font-semibold mb-4">Product</h3>
+            <h3 className="font-semibold mb-4">{t("footer.product")}</h3>
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.href}>
@@ -99,7 +108,7 @@ const Footer = () => {
 
           {/* Company links */}
           <div>
-            <h3 className="font-semibold mb-4">Company</h3>
+            <h3 className="font-semibold mb-4">{t("footer.company")}</h3>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.href}>
@@ -116,7 +125,7 @@ const Footer = () => {
 
           {/* Legal links */}
           <div>
-            <h3 className="font-semibold mb-4">Legal</h3>
+            <h3 className="font-semibold mb-4">{t("footer.legal")}</h3>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
@@ -128,6 +137,17 @@ const Footer = () => {
                   </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  onClick={() => {
+                    resetConsent();
+                    window.location.reload();
+                  }}
+                  className="text-base-content/60 hover:text-base-content transition-colors text-left"
+                >
+                  {t("cookies.manage")}
+                </button>
+              </li>
             </ul>
           </div>
         </div>
@@ -135,20 +155,17 @@ const Footer = () => {
         {/* Disclaimer */}
         <div className="mt-12 p-4 bg-base-300/30 rounded-lg border border-base-300">
           <p className="text-xs text-base-content/50 text-center">
-            <strong>Disclaimer:</strong> This website does not provide investment advice.
-            The information presented is for informational purposes only and does not constitute
-            a recommendation to buy, sell, or hold any digital assets.
-            Always do your own research before making any investment decisions.
+            <strong>{t("footer.disclaimer")}:</strong> {t("footer.disclaimerText")}
           </p>
         </div>
 
         {/* Bottom bar */}
         <div className="mt-8 pt-8 border-t border-base-300 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-base-content/50">
-            {new Date().getFullYear()} {config.appName}. All rights reserved.
+            {new Date().getFullYear()} {config.appName}. {t("footer.allRightsReserved")}.
           </p>
           <div className="flex items-center gap-2 text-sm text-base-content/50">
-            <span>Made with</span>
+            <span>{t("footer.madeWith")}</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
@@ -157,7 +174,7 @@ const Footer = () => {
             >
               <path d="M9.653 16.915l-.005-.003-.019-.01a20.759 20.759 0 01-1.162-.682 22.045 22.045 0 01-2.582-1.9C4.045 12.733 2 10.352 2 7.5a4.5 4.5 0 018-2.828A4.5 4.5 0 0118 7.5c0 2.852-2.044 5.233-3.885 6.82a22.049 22.049 0 01-3.744 2.582l-.019.01-.005.003h-.002a.739.739 0 01-.69.001l-.002-.001z" />
             </svg>
-            <span>for crypto security</span>
+            <span>{t("footer.forCryptoSecurity")}</span>
           </div>
         </div>
       </div>

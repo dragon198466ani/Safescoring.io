@@ -7,13 +7,16 @@ import config from "@/config";
 const content = {
   en: {
     title: `Privacy Policy for ${config.appName}`,
-    lastUpdated: "Last Updated: December 2024",
+    lastUpdated: "Last Updated: February 2026",
     sections: [
       {
         heading: "1. Data Controller",
         paragraphs: [
           `${config.appName} acts as the data controller for personal data collected through https://safescoring.io.`,
-          "Contact: support@safescoring.io",
+          "Contact: safescoring@proton.me",
+          "Data Protection Officer (DPO): For any questions regarding data protection, please contact our DPO at dpo@safescoring.io.",
+          "EU/EEA Representative (GDPR Art. 27): If you are in the EU/EEA and wish to contact a local representative, please email: eu-representative@safescoring.io.",
+          "UK Representative (UK GDPR): uk-representative@safescoring.io.",
         ],
       },
       {
@@ -498,7 +501,10 @@ const content = {
         heading: "41. Contact",
         paragraphs: [
           "Data Protection Inquiries:",
-          "Email: support@safescoring.io",
+          "General: safescoring@proton.me",
+          "Data Protection Officer (DPO): dpo@safescoring.io",
+          "EU/EEA Representative: eu-representative@safescoring.io",
+          "UK Representative: uk-representative@safescoring.io",
         ],
         footer: `By using ${config.appName}, you acknowledge that you have read and understood this Privacy Policy.`,
       },
@@ -506,13 +512,16 @@ const content = {
   },
   fr: {
     title: `Politique de Confidentialité de ${config.appName}`,
-    lastUpdated: "Dernière mise à jour : Décembre 2024",
+    lastUpdated: "Dernière mise à jour : Février 2026",
     sections: [
       {
         heading: "1. Responsable du traitement",
         paragraphs: [
           `${config.appName} agit en tant que responsable du traitement des données personnelles collectées via https://safescoring.io.`,
-          "Contact : support@safescoring.io",
+          "Contact : safescoring@proton.me",
+          "Délégué à la protection des données (DPO) : Pour toute question relative à la protection des données, contactez notre DPO à dpo@safescoring.io.",
+          "Représentant UE/EEE (RGPD Art. 27) : Si vous êtes dans l'UE/EEE et souhaitez contacter un représentant local, veuillez écrire à : eu-representative@safescoring.io.",
+          "Représentant Royaume-Uni (UK GDPR) : uk-representative@safescoring.io.",
         ],
       },
       {
@@ -998,7 +1007,10 @@ const content = {
         heading: "41. Contact",
         paragraphs: [
           "Questions relatives à la protection des données :",
-          "E-mail : support@safescoring.io",
+          "Général : safescoring@proton.me",
+          "Délégué à la protection des données (DPO) : dpo@safescoring.io",
+          "Représentant UE/EEE : eu-representative@safescoring.io",
+          "Représentant Royaume-Uni : uk-representative@safescoring.io",
         ],
         footer: `En utilisant ${config.appName}, vous reconnaissez avoir lu et compris cette Politique de Confidentialité.`,
       },
@@ -1006,9 +1018,27 @@ const content = {
   },
 };
 
+/** Map heading keywords to anchor IDs for deep linking from footer */
+function getAnchorId(heading) {
+  if (!heading) return undefined;
+  const h = heading.toLowerCase();
+  if (h.includes("cookie")) return "cookies";
+  if (h.includes("ccpa") || h.includes("california")) return "ccpa";
+  if (h.includes("contact")) return "contact";
+  if (h.includes("lgpd")) return "lgpd";
+  if (h.includes("pipeda")) return "pipeda";
+  if (h.includes("popia")) return "popia";
+  if (h.includes("australian") || h.includes("apps")) return "apps";
+  if (h.includes("pdpa")) return "pdpa";
+  if (h.includes("uk gdpr") || h.includes("uk-gdpr")) return "uk-gdpr";
+  if (h.includes("nfadp") || h.includes("swiss")) return "swiss";
+  return undefined;
+}
+
 function renderSection(section, idx) {
+  const anchorId = getAnchorId(section.heading);
   return (
-    <section key={idx} className="mb-6">
+    <section key={idx} className="mb-6" id={anchorId}>
       <h2 className="text-xl font-bold mt-4 mb-2">{section.heading}</h2>
       {section.paragraphs?.map((p, i) => (
         <p key={i} className="mb-2 opacity-90">

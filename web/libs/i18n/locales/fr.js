@@ -30,23 +30,44 @@ export default {
     yes: "Oui",
     no: "Non",
     home: "Accueil",
+    and: "et",
   },
 
   // Navigation
   nav: {
     products: "Produits",
+    productsDesc: "Parcourir tous les produits évalués",
     community: "Communauté",
     leaderboard: "Classement",
+    leaderboardDesc: "Produits les mieux classés",
     compare: "Comparer",
+    compareDesc: "Comparaison côte à côte",
     methodology: "Méthodologie",
+    methodologyDesc: "Comment nous évaluons",
     pricing: "Tarifs",
     dashboard: "Tableau de bord",
     signIn: "Connexion",
     signOut: "Déconnexion",
     blog: "Blog",
+    blogDesc: "Actualités et analyses",
     about: "À propos",
     map: "Carte",
-    mySetups: "Mes Configurations",
+    mySetups: "Mon Stack",
+    explore: "Explorer",
+    resources: "Ressources",
+    hacks: "Base de Hacks",
+    hacksDesc: "Incidents et exploits",
+    transparency: "Transparence des Scores",
+    transparencyDesc: "Distribution et objectivité",
+    badge: "Badge / Widget",
+    badgeDesc: "Intégrez les scores sur votre site",
+    getStarted: "Commencer",
+    getStartedFree: "Commencer Gratuitement",
+    openMenu: "Ouvrir le menu",
+    closeMenu: "Fermer le menu",
+    toggleTheme: "Changer de thème",
+    lightMode: "Clair",
+    darkMode: "Sombre",
   },
 
   // Hero
@@ -89,6 +110,61 @@ export default {
     efficiencyLong: "Est-ce utilisable ET sécurisé ? Nous évaluons l'UX, le support multi-chaînes et l'accessibilité.",
     strongest: "Point fort",
     needsWork: "À améliorer",
+    methodology: "Méthodologie",
+    frameworkTitle: "Le",
+    frameworkDesc: "Quatre piliers d'évaluation complète de la sécurité. Chaque produit est noté selon {count} normes à travers ces dimensions.",
+    hideTechnical: "Masquer les standards techniques",
+    viewTechnical: "Voir les standards techniques",
+    technicalStandards: "Standards Techniques",
+    viewStandards: "Voir les standards et la méthodologie",
+    wantFullMethodology: "Vous voulez voir la méthodologie complète ?",
+    viewAllNorms: "Voir les {count} Normes",
+    seePlans: "Voir les Plans",
+    comparePlans: "Comparer tous les plans et fonctionnalités",
+    norms: {
+      S: {
+        items: ["Chiffrement AES-256", "Signatures secp256k1", "Hachage Keccak-256", "Support multi-signature", "Compatibilité HSM"],
+        example: "Le wallet utilise-t-il des algorithmes cryptographiques standard ?",
+      },
+      A: {
+        items: ["Protection PIN sous contrainte", "Wallets cachés", "Fonctions anti-coercition", "Déni plausible", "Options d'auto-destruction"],
+        example: "Les utilisateurs peuvent-ils se protéger sous menace physique ?",
+      },
+      F: {
+        items: ["Audits de sécurité", "Programmes de bug bounty", "Mises à jour régulières", "Développement transparent", "Engagement long terme"],
+        example: "Le produit a-t-il été audité de manière indépendante ?",
+      },
+      E: {
+        items: ["Support multi-chaînes", "Interface intuitive", "Transactions rapides", "Fonctions d'accessibilité", "Support mobile"],
+        example: "Le produit est-il facile à utiliser pour tous les niveaux ?",
+      },
+    },
+    learnMore: "En savoir plus sur {name}",
+  },
+
+  // Pourquoi pas les audits
+  whyNotAudits: {
+    title: "Au-delà des Audits Traditionnels",
+    subtitle: "Les audits sont essentiels, mais ils ne sont qu'une pièce du puzzle sécuritaire. Voici comment SafeScoring complète les évaluations de sécurité traditionnelles.",
+    criteria: "Critère",
+    traditionalAudits: "Audits Traditionnels",
+    safeScoring: "SafeScoring",
+    rows: {
+      coverage: { criteria: "Couverture", audit: "Principalement smart contracts", safe: "Wallets, Exchanges, DeFi, Cartes & Custody" },
+      frequency: { criteria: "Fréquence", audit: "Évaluation ponctuelle", safe: "Mises à jour mensuelles" },
+      methodology: { criteria: "Méthodologie", audit: "Varie selon l'auditeur", safe: "916 normes standardisées" },
+      opSec: { criteria: "Sécurité opérationnelle", audit: "Généralement hors périmètre", safe: "Évaluée (pilier Adversité)" },
+      trackRecord: { criteria: "Historique", audit: "Généralement hors périmètre", safe: "Pilier Fidélité (F200-F204)" },
+      reproducibility: { criteria: "Reproductibilité", audit: "Dépend de l'équipe", safe: "Méthodologie standardisée, hautement reproductible" },
+      cost: { criteria: "Coût", audit: "50K$ - 500K$+ (audit manuel)", safe: "À partir de 29$/mois (monitoring automatisé)*" },
+      independence: { criteria: "Indépendance", audit: "Commandité par le projet", safe: "Scoring indépendant des affiliés" },
+    },
+    stat87: "des projets DeFi exploités avaient été audités — montrant que les audits seuls ne suffisent pas",
+    stat916: "normes standardisées couvrant sécurité, résilience, confiance et utilisabilité",
+    statMonthly: "Mensuel",
+    statMonthlyDesc: "monitoring continu pour détecter les changements entre les audits",
+    note: "*SafeScoring fournit un monitoring automatisé continu. Les audits traditionnels offrent une revue manuelle approfondie du code. Les deux sont complémentaires dans une stratégie de sécurité complète.",
+    sources: "Sources : Halborn DeFi Hacks Report 2025, CER.live Security Rankings",
   },
 
   // Product pages
@@ -118,24 +194,60 @@ export default {
     pillarBreakdown: "Détail des Piliers",
     scoreHistory: "Historique du Score",
     relatedProducts: "Produits Similaires",
+    verified: "Vérifié",
+    notEvaluated: "Non évalué",
+    updated: "Mis à jour le {date}",
     retry: "Réessayer",
   },
 
-  // Products Page
+  // Products Preview (Homepage)
+  productsPreview: {
+    latestEvaluations: "Dernières Évaluations",
+    topRated: "Produits les Mieux Notés",
+    viewAllProducts: "Voir Tous les Produits",
+    noProductsYet: "Aucun produit évalué pour le moment",
+  },
+
+  // Products Page (Full catalog)
   productsPage: {
     title: "Base de Produits Crypto",
     description: "Parcourez les scores de sécurité pour {count} produits crypto. Chaque produit est évalué selon {norms} normes de sécurité avec la méthodologie SAFE.",
     descriptionFallback: "Parcourez les scores de sécurité pour des centaines de produits crypto. Chaque produit est évalué selon {norms} normes de sécurité.",
+    // Score types
+    scoreTypes: {
+      full: "Complet",
+      fullDesc: "100% des normes",
+      consumer: "Consommateur",
+      consumerDesc: "38% des normes",
+      essential: "Essentiel",
+      essentialDesc: "17% des normes",
+    },
+    scoreTypeExplanations: {
+      essential: "Normes critiques pour la sécurité de base - Critères non négociables",
+      consumer: "Normes importantes pour le grand public - Facilité d'utilisation et transparence",
+      full: "Évaluation complète avec les {count} normes - Analyse experte",
+    },
+    // Sort options
+    sortOptions: {
+      highestScore: "Meilleur Score",
+      lowestScore: "Score le Plus Bas",
+      nameAZ: "Nom A-Z",
+      nameZA: "Nom Z-A",
+      recentlyUpdated: "Mis à Jour Récemment",
+    },
+    // Realtime sync
     realtimeSyncActive: "Synchronisation en temps réel",
     offlineMode: "Mode hors ligne",
     connecting: "Connexion...",
     updated: "Mis à jour : {time}",
+    // Filters
     filters: "Filtres",
     allCategories: "Toutes les catégories",
     allTypes: "Tous les types ({count})",
     clearFilters: "Effacer les filtres",
     showingProducts: "Affichage de {count} produits",
     updating: "Mise à jour...",
+    // Stack tip
     stackTip: {
       title: "Comment construire votre stack",
       description: "1 wallet = 1 stack. Commencez par un hardware ou software wallet comme base, puis ajoutez exchanges, apps DeFi et autres outils. Le score de votre stack reflète votre sécurité globale.",
@@ -152,23 +264,22 @@ export default {
         sovereign: "Auto-Souverain",
       },
     },
+    // Loading & errors
     loading: "Chargement...",
     loadMore: "Charger plus",
     attempt: "Tentative {current}/{max}...",
     dbConnectionIssue: "Problème de connexion à la base de données",
+    requestTimeout: "La requête a pris trop de temps. Veuillez réessayer.",
+    // Empty state
     noProductsFound: "Aucun produit trouvé",
     adjustFilters: "Essayez d'ajuster votre recherche ou vos filtres",
+    // Product types overview
     typesOverview: "Aperçu des Types de Produits",
     typesOverviewDesc: "Cliquez sur un type pour filtrer, ou développez pour lire la définition.",
     nTypes: "{count} types",
     viewNProducts: "Voir {count} produits",
     showDefinition: "Voir la définition",
     collapse: "Réduire",
-    scoreTypeExplanations: {
-      essential: "Normes critiques pour la sécurité de base - Critères non négociables",
-      consumer: "Normes importantes pour le grand public - Facilité d'utilisation et transparence",
-      full: "Évaluation complète avec les {count} normes - Analyse experte",
-    },
   },
 
   // Compare
@@ -212,14 +323,17 @@ export default {
     shareLeaderboard: "Partager le classement",
     downloadImage: "Télécharger l'image",
     qrCode: "QR Code",
+    // Social platforms
     twitter: "X (Twitter)",
     linkedin: "LinkedIn",
     telegram: "Telegram",
     whatsapp: "WhatsApp",
     email: "Email",
+    // Share messages
     productShareText: "Découvrez le score de sécurité de {product}: {score}/100 sur SafeScoring",
     comparisonShareText: "{productA} vs {productB} - Qui gagne en sécurité ? Voir la comparaison sur SafeScoring",
     setupShareText: "Le score de sécurité de mon stack crypto : {score}/100 - Analysé par SafeScoring",
+    // Viral prompts
     sharePrompt: "Partagez pour aider les autres à faire des choix plus sûrs",
     shareReward: "Partagez et débloquez des analyses détaillées",
   },
@@ -275,13 +389,24 @@ export default {
     freemium: "Freemium",
     getStartedFree: "Commencer Gratuitement",
     subscribe: "S'abonner",
-    orPayWithCrypto: "Ou payer en crypto",
+    orPayWithCrypto: "Ou payer en crypto :",
     trialDays: "{days} jours d'essai gratuit",
+    noCardRequired: "Pas de carte requise",
     features: "Fonctionnalités",
     currentPlan: "Plan Actuel",
     upgradePlan: "Passer au supérieur",
     contactUs: "Nous Contacter",
     enterprise: "Besoin entreprise ? Contactez-nous",
+    noPlans: "Aucun plan tarifaire disponible",
+    trialWithCard: "14 jours d'essai (avec carte)",
+    instantCrypto: "Crypto instantané (sans KYC)",
+    cancelAnytime: "Résiliable à tout moment",
+    cryptoNote: "Crypto : BTC, ETH, SOL, USDC (Polygon/BSC) • Taux en direct • Besoin entreprise ?",
+    cardPaypalNote: "Carte & PayPal via LemonSqueezy (TVA UE incluse)",
+    cryptoPaymentNote: "Crypto : BTC, ETH, USDC, SOL via MoonPay (pas de KYC pour petits montants)",
+    trialCancelNote: "14 jours d'essai sur paiement par carte (conforme UE) · Résiliable à tout moment",
+    customSolution: "Besoin d'une solution personnalisée ?",
+    gdprNotice: "En vous abonnant, vous acceptez nos",
   },
 
   // Stats
@@ -299,18 +424,64 @@ export default {
   // FAQ
   faq: {
     title: "Questions Fréquentes",
-    q1: "Qu'est-ce que SafeScoring ?",
-    a1: "SafeScoring est le premier système de notation de sécurité unifié pour les produits crypto. Nous évaluons les hardware wallets, software wallets et protocoles DeFi avec la même méthodologie SAFE rigoureuse et 981 normes de sécurité.",
-    q2: "Comment le score SAFE est-il calculé ?",
-    a2: "Le score SAFE est calculé sur quatre piliers : Sécurité (fondations cryptographiques), Adversité (résistance aux menaces), Fidélité (fiabilité et confiance), et Efficacité (utilisabilité). Chaque produit est évalué contre 981 critères spécifiques.",
-    q3: "Pourquoi faire confiance à SafeScoring plutôt qu'aux audits ?",
-    a3: "87% des projets hackés en 2024 avaient été audités. Les audits sont des instantanés ponctuels. SafeScoring fournit une évaluation continue et automatisée utilisant l'IA, reproductible et indépendante.",
-    q4: "SafeScoring est-il gratuit ?",
-    a4: "Oui ! Tous les scores de produits sont gratuits pour toujours. Les plans premium offrent des fonctionnalités avancées comme l'analyse de plusieurs configurations, l'accès API et les détails complets.",
-    q5: "À quelle fréquence les scores sont-ils mis à jour ?",
-    a5: "Les scores sont mis à jour mensuellement ou lors de changements significatifs (incidents de sécurité, mises à jour majeures, audits). Nous surveillons les produits en continu.",
-    q6: "Puis-je suggérer un produit à évaluer ?",
-    a6: "Absolument ! Utilisez le formulaire de contact ou contactez-nous sur Twitter. Nous priorisons les produits selon la demande et leur importance sur le marché.",
+    subtitle: "Tout ce que vous devez savoir sur SafeScoring",
+    beginner: "Débutant",
+    stillQuestions: "Vous avez encore des questions ?",
+    contactSupport: "Contacter le Support",
+    items: {
+      whatIsSafeScore: {
+        q: "Qu'est-ce qu'un score SAFE ? (Commencez ici)",
+        a: "Un score SAFE est un nombre simple de 0 à 100 qui vous indique le niveau de sécurité d'un produit crypto. Pensez-y comme une note de sécurité pour les voitures : 80+ signifie excellente sécurité (vert), 60-79 signifie bon mais avec quelques lacunes (orange), et en dessous de 60, soyez prudent (rouge). Plus le score est élevé, plus le produit est sûr.",
+      },
+      howToUseScore: {
+        q: "Comment utiliser mon score ?",
+        a: "Utilisez-le pour prendre des décisions : pour des montants importants, choisissez des produits notés 80+. Pour de petites sommes ou des tests, 60+ suffit généralement. Comparez des produits similaires (ex. deux hardware wallets) et choisissez le score le plus élevé. Regardez quel pilier parmi les 4 (Sécurité, Adversité, Fidélité, Efficacité) est le plus faible pour comprendre les axes d'amélioration.",
+      },
+      howToImprove: {
+        q: "Comment un produit peut-il améliorer son score ?",
+        a: "Les équipes produit peuvent améliorer leur score en : (1) obtenant des audits de sécurité indépendants, (2) implémentant les fonctionnalités de sécurité manquantes que nous signalons, (3) ajoutant des protections contre la contrainte et la coercition, (4) maintenant des mises à jour régulières et une communication transparente. Contactez-nous pour une feuille de route d'amélioration détaillée.",
+      },
+      whatIsSafeScoring: {
+        q: "Qu'est-ce que SAFE Scoring ?",
+        a: "SAFE Scoring est le premier système de notation de sécurité unifié pour tous les produits crypto. Nous évaluons les hardware wallets, software wallets et protocoles DeFi avec la même méthodologie rigoureuse : {count} normes de sécurité réparties sur 4 piliers - Sécurité (standards cryptographiques), Adversité (résistance aux menaces), Fidélité (fiabilité et confiance) et Efficacité (utilisabilité).",
+      },
+      vsCertik: {
+        q: "En quoi SafeScoring diffère-t-il de CertiK ou d'autres auditeurs ?",
+        a: "Les audits vérifient le code à un instant T. SafeScoring mesure la sécurité réelle en continu. Différences clés : (1) Nous couvrons TOUS les produits - hardware, software ET DeFi - avec une seule méthodologie. CertiK n'audite que les smart contracts. (2) Nous mettons à jour mensuellement, pas une seule fois. (3) 87% des projets hackés en 2024 avaient été audités. Nous allons au-delà du code pour évaluer la sécurité opérationnelle, l'historique et la résilience.",
+      },
+      howEvaluated: {
+        q: "Comment les produits sont-ils évalués ?",
+        a: "Notre système alimenté par l'IA évalue les produits selon {count} normes de sécurité en utilisant la documentation officielle, les audits de sécurité, les spécifications techniques et les données on-chain. Chaque norme est marquée OUI (conforme), NON (non conforme) ou N/A (non applicable). Le processus est automatisé et reproductible - aucune opinion subjective.",
+      },
+      updateFrequency: {
+        q: "À quelle fréquence les scores sont-ils mis à jour ?",
+        a: "Tous les produits sont réévalués mensuellement. Les événements de sécurité majeurs (piratages, vulnérabilités critiques, mises à jour importantes) déclenchent une réévaluation immédiate. Contrairement aux audits ponctuels, SafeScoring suit la sécurité dans le temps.",
+      },
+      independence: {
+        q: "SafeScoring est-il vraiment indépendant ?",
+        a: "À 100%. Bien que nous puissions percevoir des commissions d'affiliation sur les liens produits, cela n'influence jamais nos scores. Les scores sont calculés uniquement à partir de notre méthodologie à {count} normes - sans exception. Nous avons mal noté des produits même quand des affiliés proposaient de payer pour de meilleurs scores. L'indépendance est non négociable.",
+      },
+      fourPillars: {
+        q: "Quels sont les 4 piliers SAFE ?",
+        a: "S (Sécurité, 25%) : Standards cryptographiques, gestion des clés, chiffrement. A (Adversité, 25%) : Protection contre la contrainte, anti-coercition, sécurité physique. F (Fidélité, 25%) : Audits, uptime, fréquence des mises à jour, historique. E (Efficacité, 25%) : UX, support multi-chaînes, accessibilité. Chaque pilier contribue à parts égales au score final.",
+      },
+      requestEvaluation: {
+        q: "Puis-je demander l'évaluation d'un produit ?",
+        a: "Oui ! Les abonnés Professional et Enterprise peuvent demander des évaluations prioritaires. Les utilisateurs gratuits peuvent suggérer des produits via notre système communautaire. Nous priorisons selon la pertinence marché et la demande des utilisateurs.",
+      },
+      scoreCalculation: {
+        q: "Comment le score final est-il calculé ?",
+        a: "Le score SAFE est calculé ainsi : (S + A + F + E) / 4, où chaque score de pilier = (normes conformes / normes applicables) x 100. Les produits avec beaucoup de normes N/A ne sont pas pénalisés - seules les normes applicables comptent.",
+      },
+      planDifference: {
+        q: "Quelle est la différence entre les plans ?",
+        a: "Explorer (29$/mois) : Tous les scores + méthodologie. Professional (99$/mois) : Détails complets d'évaluation + accès API + rapports personnalisés. Enterprise (499$/mois) : Rapports en marque blanche + intégrations sur mesure + évaluations à la demande + support dédié.",
+      },
+      refunds: {
+        q: "Proposez-vous des remboursements ?",
+        a: "Oui, garantie satisfait ou remboursé pendant 14 jours sur tous les plans. Sans condition. Si SafeScoring ne répond pas à vos attentes, nous vous remboursons intégralement.",
+      },
+    },
   },
 
   // CTA
@@ -352,8 +523,10 @@ export default {
     savePreferences: "Enregistrer les préférences",
     rejectOptional: "Refuser les optionnels",
     viewPolicy: "Voir la politique complète",
+    // CCPA specific
     ccpaMessage: "Résidents californiens : nous ne vendons PAS vos données.",
     doNotSell: "Ne pas vendre mes infos",
+    manage: "Gérer les cookies",
   },
 
   // Privacy
@@ -366,11 +539,13 @@ export default {
     contact: "Nous contacter",
     responseTime: "Délai de réponse",
     days: "jours",
+    // Rights
     rightAccess: "Droit d'accès",
     rightRectification: "Droit de rectification",
     rightErasure: "Droit à l'effacement",
     rightPortability: "Droit à la portabilité",
     rightObject: "Droit d'opposition",
+    // CCPA
     ccpaTitle: "Droits de confidentialité Californie",
     ccpaRightKnow: "Droit de savoir",
     ccpaRightDelete: "Droit de suppression",
@@ -383,18 +558,21 @@ export default {
   settings: {
     title: "Paramètres",
     subtitle: "Gérez vos préférences de compte",
+    // Tabs
     tabProfile: "Profil",
     tabNotifications: "Notifications",
     tabDisplay: "Affichage",
     tabWeb3: "Web3 et Wallets",
     tabPrivacy: "Confidentialité",
     tabData: "Mes données",
+    // Profile
     email: "Email",
     emailCannotChange: "L'email ne peut pas être modifié",
     displayName: "Nom d'affichage",
     country: "Pays",
     accountType: "Type de compte",
     memberSince: "Membre depuis",
+    // Notifications
     alertEmails: "Emails d'alerte",
     alertEmailsDesc: "Recevoir des emails quand vos alertes se déclenchent",
     frequency: "Fréquence",
@@ -409,6 +587,7 @@ export default {
     newsletterDesc: "Conseils mensuels sur la sécurité",
     marketingEmails: "Emails marketing",
     marketingEmailsDesc: "Promotions et offres spéciales",
+    // Display
     theme: "Thème",
     themeDark: "Sombre",
     themeLight: "Clair",
@@ -417,6 +596,7 @@ export default {
     compactView: "Vue compacte",
     showScoreColors: "Afficher les couleurs de score",
     reduceAnimations: "Réduire les animations",
+    // Web3
     connectedWallets: "Wallets connectés",
     noWalletsConnected: "Aucun wallet connecté",
     preferredChain: "Chaîne préférée",
@@ -427,6 +607,7 @@ export default {
     gasFast: "Rapide",
     gasInstant: "Instantané (plus cher)",
     showWalletBalance: "Afficher les soldes",
+    // Privacy
     privacyTitle: "Confidentialité et données",
     privacySubtitle: "Gérez comment vos données sont collectées et utilisées.",
     profileVisibility: "Visibilité du profil",
@@ -441,6 +622,7 @@ export default {
     anonymizeDataDesc: "Supprimer les informations identifiantes des logs",
     trackViews: "Suivre les vues",
     trackViewsDesc: "Mémoriser les produits consultés pour les recommandations",
+    // Data
     exportData: "Exporter vos données",
     exportDataDesc: "Télécharger une copie de toutes vos données (RGPD Art. 20)",
     exportJSON: "Exporter JSON",
@@ -457,22 +639,22 @@ export default {
     company: "Entreprise",
     legal: "Légal",
     disclaimer: "Avertissement",
-    disclaimerText: "Ce site ne fournit pas de conseils en investissement. Les informations présentées sont à titre informatif uniquement.",
+    disclaimerText: "Ce site ne fournit pas de conseils en investissement, financiers, fiscaux ou juridiques. Les scores et notations de sécurité sont fournis à titre informatif et éducatif uniquement et ne doivent pas servir de base à une décision d'investissement. Les investissements en crypto-monnaies comportent des risques importants, y compris le risque de perte totale. Les performances passées ne préjugent pas des résultats futurs. Effectuez toujours vos propres recherches et consultez un conseiller financier qualifié avant tout investissement.",
     allRightsReserved: "Tous droits réservés",
     madeWith: "Fait avec",
     forCryptoSecurity: "pour la sécurité crypto",
     description: "La base de données transparente des scores de sécurité crypto vérifiés. Indépendant, impartial et mis à jour mensuellement.",
-    // Liens produit
+    // Product links
     products: "Produits",
     scoreTransparency: "Transparence des Scores",
     methodology: "Méthodologie",
     api: "API",
-    // Liens entreprise
+    // Company links
     about: "À propos",
     blog: "Blog",
     pressKit: "Kit Presse",
     partners: "Partenaires",
-    // Liens légaux
+    // Legal links
     legalNotice: "Mentions Légales",
     privacyPolicy: "Politique de Confidentialité",
     termsOfService: "Conditions d'Utilisation",
