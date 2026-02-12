@@ -1,15 +1,11 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { supabaseAdmin } from "@/libs/supabase";
-import OpenAI from "openai";
+import { callAI, getAvailableProviders } from "@/libs/ai-providers";
 import { buildSystemPrompt } from "@/libs/ai-system-prompt";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
-
-const openai = process.env.OPENAI_API_KEY
-  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-  : null;
 
 const RATE_LIMITS = {
   free: 5,
@@ -24,7 +20,8 @@ export async function POST(request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!openai) {
+  // Check if any AI provider is configured
+  if (getAvailableProviders().length === 0) {
     return NextResponse.json({ error: "AI service not configured" }, { status: 503 });
   }
 
@@ -97,7 +94,7 @@ export async function POST(request) {
     // Build system prompt
     const systemPrompt = buildSystemPrompt(userSetups, topProducts, session.user.name);
 
-    // Prepare messages for OpenAI
+    // Prepare messages (OpenAI-compatible format — works with Groq & Gemini too)
     const aiMessages = [
       { role: "system", content: systemPrompt },
       ...messages.slice(-10).map((m) => ({
@@ -106,39 +103,16 @@ export async function POST(request) {
       })),
     ];
 
-    // Call OpenAI
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: aiMessages,
-      max_tokens: 800,
-      temperature: 0.7,
-    });
+    // Call AI with automatic cascade: Groq → Gemini → OpenAI
+    const result = await callAI(aiMessages);
 
-    const assistantContent = completion.choices[0]?.message?.content || "I'm sorry, I couldn't generate a response.";
+    const assistantContent = result.content;
 
     // Extract product recommendations from the response
     const recommendations = extractRecommendations(assistantContent, topProducts);
 
     // Update rate limit
     if (supabaseAdmin) {
-      await supabaseAdmin.rpc("increment_ai_usage", { p_user_id: userId, p_date: today }).catch(() => {
-        // Fallback: upsert manually
-        supabaseAdmin
-          .from("ai_rate_limits")
-          .upsert(
-            { user_id: userId, usage_date: today, messages_sent: 1 },
-            { onConflict: "user_id,usage_date" }
-          )
-          .then(() => {
-            supabaseAdmin
-              .from("ai_rate_limits")
-              .update({ messages_sent: supabaseAdmin.raw("messages_sent + 1") })
-              .eq("user_id", userId)
-              .eq("usage_date", today);
-          });
-      });
-
-      // Simple upsert for rate tracking
       const { data: existing } = await supabaseAdmin
         .from("ai_rate_limits")
         .select("messages_sent")
@@ -177,6 +151,7 @@ export async function POST(request) {
       content: assistantContent,
       recommendations,
       usage: { used: currentUsage, limit },
+      provider: result.provider,
     });
   } catch (error) {
     console.error("AI chat error:", error);
