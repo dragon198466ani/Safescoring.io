@@ -1,10 +1,108 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import config from "@/config";
 import ButtonCheckout from "./ButtonCheckout";
+import PPPBanner from "./PPPBanner";
 
 const Pricing = () => {
   // Use lemonsqueezy plans (stripe.plans is deprecated/empty)
   const allPlans = config?.lemonsqueezy?.plans || config?.stripe?.plans || [];
+
+  // PPP state
+  const [ppp, setPpp] = useState(null);
+  const [pppLoading, setPppLoading] = useState(false);
+
+  useEffect(() => {
+    detectPPP();
+  }, []);
+
+  async function detectPPP() {
+    try {
+      // Read PPP tier from cookie (set by middleware)
+      const cookies = document.cookie.split(";").reduce((acc, c) => {
+        const [key, val] = c.trim().split("=");
+        acc[key] = val;
+        return acc;
+      }, {});
+
+      const tier = parseInt(cookies.ppp_tier || "0", 10);
+      const country = cookies.ppp_country || "";
+
+      // If tier 0 (US base price), no need for API call
+      if (tier === 0 || !country) {
+        setPpp(null);
+        return;
+      }
+
+      // Call server-side PPP detection with browser signals for VPN check
+      setPppLoading(true);
+      const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const browserLanguage = navigator.language;
+      const browserLanguages = [...(navigator.languages || [browserLanguage])];
+
+      const res = await fetch("/api/ppp/detect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ browserTimezone, browserLanguage, browserLanguages }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        // Only show PPP if tier != 0 after VPN check
+        if (data.tier !== 0) {
+          setPpp(data);
+        } else {
+          setPpp(null); // VPN detected or tier 0
+        }
+      }
+    } catch (e) {
+      console.error("PPP detection error:", e);
+    } finally {
+      setPppLoading(false);
+    }
+  }
+
+  /**
+   * Get PPP-adjusted price for a plan.
+   * Returns { displayPrice, originalPrice, discountCode, pppVariantId }
+   */
+  function getPPPPrice(plan) {
+    if (!ppp || ppp.tier === 0) {
+      return { displayPrice: plan.price, originalPrice: null, discountCode: null, pppVariantId: null };
+    }
+
+    const planKey = plan.name.toLowerCase() === "professional" ? "professional" : plan.name.toLowerCase();
+    const pppPrice = ppp.prices?.[planKey];
+
+    if (pppPrice === undefined || pppPrice === plan.price) {
+      return { displayPrice: plan.price, originalPrice: null, discountCode: null, pppVariantId: null };
+    }
+
+    // Surcharge tiers (+1, +2): use alternative variant ID
+    if (ppp.tier > 0 && ppp.surchargeVariants) {
+      const variantKey = plan.name.toLowerCase() === "professional" ? "professional" : plan.name.toLowerCase();
+      return {
+        displayPrice: pppPrice,
+        originalPrice: plan.price,
+        discountCode: null,
+        pppVariantId: ppp.surchargeVariants[variantKey] || null,
+      };
+    }
+
+    // Discount tiers (-1 to -4): use discount code
+    return {
+      displayPrice: pppPrice,
+      originalPrice: plan.price,
+      discountCode: ppp.discountCode || null,
+      pppVariantId: null,
+    };
+  }
+
+  function handlePPPDismiss() {
+    setPpp(null);
+  }
 
   return (
     <section className="py-24 px-6" id="pricing">
@@ -23,6 +121,17 @@ const Pricing = () => {
           </p>
         </div>
 
+        {/* PPP Banner */}
+        {ppp && (
+          <PPPBanner
+            country={ppp.country}
+            countryName={ppp.countryName}
+            countryFlag={ppp.countryFlag}
+            discount={ppp.discount}
+            onDismiss={handlePPPDismiss}
+          />
+        )}
+
         {/* Show message if no plans */}
         {allPlans.length === 0 && (
           <div className="text-center py-12 bg-base-200 rounded-lg">
@@ -40,6 +149,9 @@ const Pricing = () => {
             const planId = plan.priceId || plan.variantId;
             const isFreemium = planId === "free";
             const isFeatured = plan.isFeatured;
+
+            // Get PPP-adjusted price
+            const { displayPrice, originalPrice, discountCode, pppVariantId } = getPPPPrice(plan);
 
             return (
               <div
@@ -74,15 +186,29 @@ const Pricing = () => {
                   <p className="text-base-content/60 text-sm min-h-[40px]">{plan.description}</p>
                 </div>
 
-                {/* Price */}
+                {/* Price — PPP adjusted */}
                 <div className="mb-6">
                   <div className="flex items-baseline gap-2">
-                    {plan.priceAnchor && (
-                      <span className="text-lg text-base-content/40 line-through">
-                        ${plan.priceAnchor}
-                      </span>
+                    {/* Show original price as strikethrough if PPP active */}
+                    {originalPrice !== null ? (
+                      <>
+                        <span className="text-lg text-base-content/40 line-through">
+                          ${originalPrice}
+                        </span>
+                        <span className="text-4xl font-bold text-success">${displayPrice}</span>
+                      </>
+                    ) : (
+                      <>
+                        {plan.priceAnchor && (
+                          <span className="text-lg text-base-content/40 line-through">
+                            ${plan.priceAnchor}
+                          </span>
+                        )}
+                        <span className={`text-4xl font-bold ${pppLoading && !isFreemium ? "opacity-50" : ""}`}>
+                          ${displayPrice}
+                        </span>
+                      </>
                     )}
-                    <span className="text-4xl font-bold">${plan.price}</span>
                     <span className="text-base-content/60 text-sm">/month</span>
                   </div>
                   {plan.trialDays && (
@@ -102,6 +228,14 @@ const Pricing = () => {
                       </svg>
                       <span className="text-xs text-success font-medium">
                         No card required
+                      </span>
+                    </div>
+                  )}
+                  {/* PPP savings badge */}
+                  {ppp && ppp.discount > 0 && !isFreemium && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-xs text-success font-medium">
+                        {ppp.countryFlag} {ppp.discount}% local discount
                       </span>
                     </div>
                   )}
@@ -149,6 +283,8 @@ const Pricing = () => {
                 ) : (
                   <ButtonCheckout
                     priceId={planId}
+                    pppVariantId={pppVariantId}
+                    discountCode={discountCode}
                     mode="subscription"
                     className={`w-full mt-auto ${
                       isFeatured ? "btn-primary" : "btn-outline"

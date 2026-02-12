@@ -3,18 +3,36 @@
 import { useState } from "react";
 import apiClient from "@/libs/api";
 
-// This component is used to create Stripe Checkout Sessions
-// It calls the /api/stripe/create-checkout route with the priceId, successUrl and cancelUrl
-const ButtonCheckout = ({ priceId, mode = "subscription", className = "" }) => {
+/**
+ * ButtonCheckout — Creates Lemon Squeezy checkout session.
+ *
+ * Props:
+ * - priceId: Lemon Squeezy variant ID (default plan variant)
+ * - pppVariantId: Override variant for PPP surcharge tiers (+20%/+40%)
+ * - discountCode: PPP discount code for cheaper countries
+ * - mode: "subscription" or "payment"
+ * - className: optional CSS classes
+ */
+const ButtonCheckout = ({
+  priceId,
+  pppVariantId,
+  discountCode,
+  mode = "subscription",
+  className = "",
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handlePayment = async () => {
     setIsLoading(true);
 
     try {
-      const res = await apiClient.post("/stripe/create-checkout", {
-        priceId,
-        mode,
+      // Use surcharge variant if available (rich countries pay more)
+      // Otherwise use default variant + discount code (cheaper countries)
+      const variantId = pppVariantId || priceId;
+
+      const res = await apiClient.post("/lemonsqueezy/create-checkout", {
+        variantId,
+        discountCode: discountCode || undefined,
         successUrl: `${window.location.origin}/dashboard`,
         cancelUrl: window.location.href,
       });

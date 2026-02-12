@@ -213,6 +213,32 @@ const config = {
     trialDays: 14,
     requireCard: true,
   },
+  // Purchasing Power Parity — adaptive pricing per country
+  ppp: {
+    enabled: true,
+    proxyCheckApiKey: process.env.PROXYCHECK_API_KEY || null,
+    // Lemon Squeezy discount codes for cheaper countries (created by setup script)
+    discountCodes: {
+      tier1: process.env.PPP_DISCOUNT_TIER1 || null, // -20%
+      tier2: process.env.PPP_DISCOUNT_TIER2 || null, // -40%
+      tier3: process.env.PPP_DISCOUNT_TIER3 || null, // -60%
+      tier4: process.env.PPP_DISCOUNT_TIER4 || null, // -80%
+    },
+    // Lemon Squeezy variant IDs for surcharge countries (+20%)
+    surchargeVariantsPlus20: {
+      explorer: process.env.LS_EXPLORER_PLUS20_VARIANT || null,
+      professional: process.env.LS_PRO_PLUS20_VARIANT || null,
+      enterprise: process.env.LS_ENTERPRISE_PLUS20_VARIANT || null,
+    },
+    // Lemon Squeezy variant IDs for surcharge countries (+40%)
+    surchargeVariantsPlus40: {
+      explorer: process.env.LS_EXPLORER_PLUS40_VARIANT || null,
+      professional: process.env.LS_PRO_PLUS40_VARIANT || null,
+      enterprise: process.env.LS_ENTERPRISE_PLUS40_VARIANT || null,
+    },
+    // Only call proxycheck.io API for tiers with >= this discount (save API quota)
+    proxyCheckMinTier: -2, // i.e., -40% discount or more
+  },
 };
 
 export default config;
