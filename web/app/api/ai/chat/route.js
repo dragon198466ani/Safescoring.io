@@ -140,7 +140,7 @@ export async function POST(request) {
     }
 
     // Build system prompt
-    const systemPrompt = buildSystemPrompt(userSetups, topProducts, session.user.name);
+    const systemPrompt = buildSystemPrompt(userSetups, topProducts, session.user.name, planType);
 
     // Prepare messages (OpenAI-compatible format)
     const aiMessages = [
