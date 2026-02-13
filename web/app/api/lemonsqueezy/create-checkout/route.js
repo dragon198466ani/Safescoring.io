@@ -3,6 +3,7 @@ import { auth } from "@/libs/auth";
 import { createCheckout } from "@/libs/lemonsqueezy";
 import { supabaseAdmin } from "@/libs/supabase";
 import { getCountryPPPTier } from "@/libs/ppp";
+import config from "@/config";
 
 /**
  * POST /api/lemonsqueezy/create-checkout
@@ -19,6 +20,10 @@ export async function POST(req) {
     }
 
     const { variantId, successUrl, cancelUrl } = body;
+
+    // Detect if this is an annual checkout (for audit logging)
+    const plans = config?.lemonsqueezy?.plans || [];
+    const isAnnualCheckout = plans.some((p) => p.variantIdAnnual === variantId);
 
     if (!variantId) {
       return NextResponse.json(
@@ -75,6 +80,7 @@ export async function POST(req) {
               vpn_detected: false,
               vpn_signals: { reason: "discount_code_mismatch", attempted: body.discountCode },
               discount_code: null,
+              billing_cycle: isAnnualCheckout ? "annual" : "monthly",
               action: "denied",
             });
           } catch {
@@ -92,6 +98,7 @@ export async function POST(req) {
               applied_tier: pppData.tier,
               vpn_detected: false,
               discount_code: validatedDiscountCode,
+              billing_cycle: isAnnualCheckout ? "annual" : "monthly",
               action: "checkout",
             });
           } catch {

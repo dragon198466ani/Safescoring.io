@@ -4,6 +4,7 @@ import { supabaseAdmin } from "@/libs/supabase";
 import {
   getCountryPPPTier,
   getPPPPrices,
+  getPPPPricesAnnual,
   getCountryName,
   getCountryFlag,
   validateTimezoneMatch,
@@ -60,7 +61,9 @@ export async function POST(request) {
         discount: 0,
         discountCode: null,
         surchargeVariants: null,
+        surchargeVariantsAnnual: null,
         prices: getPPPPrices(1.0),
+        pricesAnnual: getPPPPricesAnnual(1.0),
         factor: 1.0,
       });
     }
@@ -150,6 +153,7 @@ export async function POST(request) {
     // Get final PPP data for the applied tier
     const finalPPP = vpnDetected ? getCountryPPPTier("US") : pppData;
     const prices = getPPPPrices(finalPPP.factor);
+    const pricesAnnual = getPPPPricesAnnual(finalPPP.factor);
 
     // ============================================================
     // AUDIT LOG — track detections for fraud review
@@ -183,7 +187,9 @@ export async function POST(request) {
       discount: appliedTier < 0 ? Math.abs(appliedTier) * 20 : appliedTier > 0 ? -(appliedTier * 20) : 0,
       discountCode: finalPPP.discountCode || null,
       surchargeVariants: finalPPP.surchargeVariants || null,
+      surchargeVariantsAnnual: finalPPP.surchargeVariantsAnnual || null,
       prices,
+      pricesAnnual,
       factor: finalPPP.factor,
     });
   } catch (error) {
@@ -196,7 +202,9 @@ export async function POST(request) {
       discount: 0,
       discountCode: null,
       surchargeVariants: null,
+      surchargeVariantsAnnual: null,
       prices: getPPPPrices(1.0),
+      pricesAnnual: getPPPPricesAnnual(1.0),
       factor: 1.0,
     });
   }

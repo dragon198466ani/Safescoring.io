@@ -26,8 +26,9 @@ function buildPlanContext(planType) {
   const currentPlan = plans[planIndex] || plans[0];
   const nextPlan = plans[planIndex + 1] || null;
 
+  const annualNote = currentPlan?.priceAnnual ? ` or $${currentPlan.priceAnnual}/yr — save 25%` : "";
   const currentDesc = currentPlan
-    ? `${currentPlan.name} ($${currentPlan.price}/mo — ${currentPlan.features?.map((f) => f.name).join(", ")})`
+    ? `${currentPlan.name} ($${currentPlan.price}/mo${annualNote} — ${currentPlan.features?.map((f) => f.name).join(", ")})`
     : "Free";
 
   let upgradeDesc = null;
@@ -35,7 +36,8 @@ function buildPlanContext(planType) {
 
   if (nextPlan) {
     const trial = nextPlan.trialDays ? `, ${nextPlan.trialDays}-day free trial` : "";
-    upgradeDesc = `${nextPlan.name} ($${nextPlan.price}/mo${trial})`;
+    const nextAnnual = nextPlan.priceAnnual ? ` or $${nextPlan.priceAnnual}/yr` : "";
+    upgradeDesc = `${nextPlan.name} ($${nextPlan.price}/mo${nextAnnual}${trial})`;
 
     // Build upgrade features diff (what's new vs current)
     const currentFeatureNames = (currentPlan?.features || []).map((f) => f.name.toLowerCase());

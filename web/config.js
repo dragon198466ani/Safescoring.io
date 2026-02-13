@@ -36,10 +36,13 @@ const config = {
       {
         // TODO: Replace with your actual Lemon Squeezy variant ID
         variantId: process.env.LEMON_SQUEEZY_EXPLORER_VARIANT_ID || "explorer_variant",
+        variantIdAnnual: process.env.LEMON_SQUEEZY_EXPLORER_ANNUAL_VARIANT_ID || "explorer_annual_variant",
         name: "Explorer",
         description: "Compare and optimize your crypto security",
         price: 19,
+        priceAnnual: 171, // 19 * 12 * 0.75 = 25% off annual
         priceAnchor: 29,
+        priceAnchorAnnual: 348, // 29 * 12
         trialDays: 14,
         features: [
           { name: "Unlimited product comparisons" },
@@ -58,10 +61,13 @@ const config = {
         isFeatured: true,
         // TODO: Replace with your actual Lemon Squeezy variant ID
         variantId: process.env.LEMON_SQUEEZY_PRO_VARIANT_ID || "pro_variant",
+        variantIdAnnual: process.env.LEMON_SQUEEZY_PRO_ANNUAL_VARIANT_ID || "pro_annual_variant",
         name: "Professional",
         description: "Full security intelligence for your crypto stack",
         price: 49,
+        priceAnnual: 441, // 49 * 12 * 0.75
         priceAnchor: 99,
+        priceAnchorAnnual: 1188, // 99 * 12
         trialDays: 14,
         features: [
           { name: "Everything in Explorer" },
@@ -80,10 +86,13 @@ const config = {
       {
         // TODO: Replace with your actual Lemon Squeezy variant ID
         variantId: process.env.LEMON_SQUEEZY_ENTERPRISE_VARIANT_ID || "enterprise_variant",
+        variantIdAnnual: process.env.LEMON_SQUEEZY_ENTERPRISE_ANNUAL_VARIANT_ID || "enterprise_annual_variant",
         name: "Enterprise",
         description: "Security intelligence at scale",
         price: 299,
+        priceAnnual: 2691, // 299 * 12 * 0.75
         priceAnchor: 499,
+        priceAnchorAnnual: 5988, // 499 * 12
         features: [
           { name: "Everything in Professional" },
           { name: "Unlimited setups & products", highlight: true },
@@ -235,6 +244,18 @@ const config = {
       explorer: process.env.LS_EXPLORER_PLUS40_VARIANT || null,
       professional: process.env.LS_PRO_PLUS40_VARIANT || null,
       enterprise: process.env.LS_ENTERPRISE_PLUS40_VARIANT || null,
+    },
+    // Annual surcharge variant IDs (+20%)
+    surchargeVariantsPlus20Annual: {
+      explorer: process.env.LS_EXPLORER_PLUS20_ANNUAL_VARIANT || null,
+      professional: process.env.LS_PRO_PLUS20_ANNUAL_VARIANT || null,
+      enterprise: process.env.LS_ENTERPRISE_PLUS20_ANNUAL_VARIANT || null,
+    },
+    // Annual surcharge variant IDs (+40%)
+    surchargeVariantsPlus40Annual: {
+      explorer: process.env.LS_EXPLORER_PLUS40_ANNUAL_VARIANT || null,
+      professional: process.env.LS_PRO_PLUS40_ANNUAL_VARIANT || null,
+      enterprise: process.env.LS_ENTERPRISE_PLUS40_ANNUAL_VARIANT || null,
     },
     // Only call proxycheck.io API for tiers with >= this discount (save API quota)
     proxyCheckMinTier: -2, // i.e., -40% discount or more

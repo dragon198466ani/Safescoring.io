@@ -93,11 +93,17 @@ export function getCountryPPPTier(countryCode) {
 
   // Surcharge variant IDs for positive tiers (rich countries)
   let surchargeVariants = null;
+  let surchargeVariantsAnnual = null;
   if (tierDef.tier === 1) {
     surchargeVariants = {
       explorer: process.env.LS_EXPLORER_PLUS20_VARIANT || null,
       professional: process.env.LS_PRO_PLUS20_VARIANT || null,
       enterprise: process.env.LS_ENTERPRISE_PLUS20_VARIANT || null,
+    };
+    surchargeVariantsAnnual = {
+      explorer: process.env.LS_EXPLORER_PLUS20_ANNUAL_VARIANT || null,
+      professional: process.env.LS_PRO_PLUS20_ANNUAL_VARIANT || null,
+      enterprise: process.env.LS_ENTERPRISE_PLUS20_ANNUAL_VARIANT || null,
     };
   }
   if (tierDef.tier === 2) {
@@ -105,6 +111,11 @@ export function getCountryPPPTier(countryCode) {
       explorer: process.env.LS_EXPLORER_PLUS40_VARIANT || null,
       professional: process.env.LS_PRO_PLUS40_VARIANT || null,
       enterprise: process.env.LS_ENTERPRISE_PLUS40_VARIANT || null,
+    };
+    surchargeVariantsAnnual = {
+      explorer: process.env.LS_EXPLORER_PLUS40_ANNUAL_VARIANT || null,
+      professional: process.env.LS_PRO_PLUS40_ANNUAL_VARIANT || null,
+      enterprise: process.env.LS_ENTERPRISE_PLUS40_ANNUAL_VARIANT || null,
     };
   }
 
@@ -115,6 +126,7 @@ export function getCountryPPPTier(countryCode) {
     label: tierDef.label,
     discountCode,
     surchargeVariants,
+    surchargeVariantsAnnual,
   };
 }
 
@@ -129,6 +141,21 @@ export function getPPPPrices(factor) {
     explorer: Math.round(19 * factor * 100) / 100,
     professional: Math.round(49 * factor * 100) / 100,
     enterprise: Math.round(299 * factor * 100) / 100,
+  };
+}
+
+/**
+ * Calculate PPP-adjusted ANNUAL prices for all plans.
+ * Annual base = monthly * 12 * 0.75 (25% off), then PPP factor applied.
+ * @param {number} factor - PPP factor (0.2 to 1.4)
+ * @returns {{ explorer: number, professional: number, enterprise: number }}
+ */
+export function getPPPPricesAnnual(factor) {
+  // Base annual prices (already 25% off)
+  return {
+    explorer: Math.round(171 * factor * 100) / 100,
+    professional: Math.round(441 * factor * 100) / 100,
+    enterprise: Math.round(2691 * factor * 100) / 100,
   };
 }
 

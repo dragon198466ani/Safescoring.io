@@ -14,6 +14,7 @@ import config from "@/config";
  */
 export default function PricingHybrid() {
   const [paymentMethod, setPaymentMethod] = useState("card"); // card | crypto
+  const [billingCycle, setBillingCycle] = useState("annual"); // monthly | annual
   const { isConnected } = useAccount();
 
   const plans = config.lemonsqueezy.plans;
@@ -69,11 +70,42 @@ export default function PricingHybrid() {
           </div>
         </div>
 
+        {/* Billing Cycle Toggle — only for card payments */}
+        {paymentMethod === "card" && (
+          <div className="flex justify-center mt-4">
+            <div className="bg-base-200 p-1 rounded-xl inline-flex items-center gap-1">
+              <button
+                onClick={() => setBillingCycle("monthly")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  billingCycle === "monthly"
+                    ? "bg-base-100 text-base-content shadow-sm"
+                    : "text-base-content/60 hover:text-base-content"
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setBillingCycle("annual")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  billingCycle === "annual"
+                    ? "bg-base-100 text-base-content shadow-sm"
+                    : "text-base-content/60 hover:text-base-content"
+                }`}
+              >
+                Annual
+                <span className="ml-1.5 px-2 py-0.5 text-xs bg-success/20 text-success rounded-full font-semibold">
+                  -25%
+                </span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Payment method descriptions */}
         <div className="mt-4 text-sm">
           {paymentMethod === "card" && (
             <p className="text-base-content/70">
-              Pay with credit card via Stripe. Cancel anytime.
+              Pay with credit card. Cancel anytime.
             </p>
           )}
           {paymentMethod === "crypto" && (
@@ -112,12 +144,23 @@ export default function PricingHybrid() {
                   {paymentMethod === "card" && (
                     <>
                       <div className="flex items-baseline gap-2">
-                        <span className="text-4xl font-bold">${plan.price}</span>
-                        <span className="text-base-content/50">/month</span>
+                        <span className="text-4xl font-bold">
+                          ${billingCycle === "annual" ? (plan.priceAnnual || plan.price) : plan.price}
+                        </span>
+                        <span className="text-base-content/50">
+                          {plan.price === 0 ? "" : billingCycle === "annual" ? "/year" : "/month"}
+                        </span>
                       </div>
                       {plan.priceAnchor && (
                         <p className="text-sm text-base-content/50 line-through">
-                          ${plan.priceAnchor}/month
+                          ${billingCycle === "annual"
+                            ? (plan.priceAnchorAnnual || plan.priceAnchor * 12)
+                            : plan.priceAnchor}/{billingCycle === "annual" ? "year" : "month"}
+                        </p>
+                      )}
+                      {billingCycle === "annual" && plan.price > 0 && plan.priceAnnual && (
+                        <p className="text-xs text-base-content/50 mt-1">
+                          ${(plan.priceAnnual / 12).toFixed(2)}/mo equivalent
                         </p>
                       )}
                     </>
@@ -180,7 +223,7 @@ export default function PricingHybrid() {
                     </button>
                   ) : paymentMethod === "card" ? (
                     <ButtonCheckout
-                      priceId={plan.variantId}
+                      priceId={billingCycle === "annual" ? (plan.variantIdAnnual || plan.variantId) : plan.variantId}
                       mode="subscription"
                       className="btn-primary btn-block"
                     />

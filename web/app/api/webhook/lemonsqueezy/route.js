@@ -4,6 +4,41 @@ import { verifyWebhookSignature } from "@/libs/lemonsqueezy";
 import config from "@/config";
 
 /**
+ * Find plan by variant ID — checks monthly, annual, and PPP surcharge variants.
+ * @param {string} variantId - The Lemon Squeezy variant ID
+ * @returns {{ plan: object|null, billingCycle: string|null }}
+ */
+function findPlanByVariantId(variantId) {
+  const plans = config.lemonsqueezy?.plans || [];
+
+  for (const plan of plans) {
+    if (plan.variantId === variantId) return { plan, billingCycle: "monthly" };
+    if (plan.variantIdAnnual === variantId) return { plan, billingCycle: "annual" };
+  }
+
+  // Check PPP surcharge variants (monthly + annual)
+  const pppConfig = config.ppp || {};
+  const surchargeKeys = [
+    { key: "surchargeVariantsPlus20", cycle: "monthly" },
+    { key: "surchargeVariantsPlus40", cycle: "monthly" },
+    { key: "surchargeVariantsPlus20Annual", cycle: "annual" },
+    { key: "surchargeVariantsPlus40Annual", cycle: "annual" },
+  ];
+
+  for (const { key, cycle } of surchargeKeys) {
+    const variants = pppConfig[key] || {};
+    for (const [planKey, vid] of Object.entries(variants)) {
+      if (vid === variantId) {
+        const plan = plans.find((p) => p.name.toLowerCase() === planKey);
+        if (plan) return { plan, billingCycle: cycle };
+      }
+    }
+  }
+
+  return { plan: null, billingCycle: null };
+}
+
+/**
  * POST /api/webhook/lemonsqueezy
  * Handle Lemon Squeezy webhook events
  *
@@ -54,10 +89,8 @@ export async function POST(req) {
         const variantId = data.variant_id?.toString();
         const subscriptionId = event.data?.id;
 
-        // Find the plan by variant ID
-        const plan = config.lemonsqueezy?.plans?.find(
-          (p) => p.variantId === variantId
-        );
+        // Find the plan by variant ID (supports monthly, annual, PPP surcharge variants)
+        const { plan, billingCycle } = findPlanByVariantId(variantId);
         const planType = plan?.name?.toLowerCase() || "explorer";
 
         // Get trial end date if applicable
@@ -114,6 +147,7 @@ export async function POST(req) {
           .update({
             has_access: true,
             plan_type: planType,
+            billing_cycle: billingCycle || "monthly",
             price_id: variantId,
             lemon_squeezy_customer_id: customerId,
             lemon_squeezy_subscription_id: subscriptionId,
@@ -136,9 +170,7 @@ export async function POST(req) {
         const variantId = data.variant_id?.toString();
         const status = data.status;
 
-        const plan = config.lemonsqueezy?.plans?.find(
-          (p) => p.variantId === variantId
-        );
+        const { plan, billingCycle } = findPlanByVariantId(variantId);
         const planType = plan?.name?.toLowerCase() || "explorer";
 
         // Update based on status
@@ -149,6 +181,7 @@ export async function POST(req) {
           .update({
             has_access: hasAccess,
             plan_type: hasAccess ? planType : "free",
+            billing_cycle: hasAccess ? (billingCycle || "monthly") : "monthly",
             price_id: hasAccess ? variantId : "free",
           })
           .eq("lemon_squeezy_customer_id", customerId);
@@ -190,9 +223,7 @@ export async function POST(req) {
         const customerId = event.data?.relationships?.customer?.data?.id;
         const variantId = data.variant_id?.toString();
 
-        const plan = config.lemonsqueezy?.plans?.find(
-          (p) => p.variantId === variantId
-        );
+        const { plan, billingCycle } = findPlanByVariantId(variantId);
         const planType = plan?.name?.toLowerCase() || "explorer";
 
         const { error } = await supabaseAdmin
@@ -200,6 +231,7 @@ export async function POST(req) {
           .update({
             has_access: true,
             plan_type: planType,
+            billing_cycle: billingCycle || "monthly",
             price_id: variantId,
           })
           .eq("lemon_squeezy_customer_id", customerId);

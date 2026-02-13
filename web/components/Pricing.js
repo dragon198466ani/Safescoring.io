@@ -10,6 +10,9 @@ const Pricing = () => {
   // Use lemonsqueezy plans (stripe.plans is deprecated/empty)
   const allPlans = config?.lemonsqueezy?.plans || config?.stripe?.plans || [];
 
+  // Billing cycle: default to annual (higher conversion)
+  const [billingCycle, setBillingCycle] = useState("annual");
+
   // PPP state
   const [ppp, setPpp] = useState(null);
   const [pppLoading, setPppLoading] = useState(false);
@@ -65,36 +68,40 @@ const Pricing = () => {
   }
 
   /**
-   * Get PPP-adjusted price for a plan.
+   * Get PPP-adjusted price for a plan, accounting for billing cycle.
    * Returns { displayPrice, originalPrice, discountCode, pppVariantId }
    */
   function getPPPPrice(plan) {
+    const isAnnual = billingCycle === "annual";
+    const basePrice = isAnnual ? (plan.priceAnnual || plan.price * 9) : plan.price;
+
     if (!ppp || ppp.tier === 0) {
-      return { displayPrice: plan.price, originalPrice: null, discountCode: null, pppVariantId: null };
+      return { displayPrice: basePrice, originalPrice: null, discountCode: null, pppVariantId: null };
     }
 
     const planKey = plan.name.toLowerCase() === "professional" ? "professional" : plan.name.toLowerCase();
-    const pppPrice = ppp.prices?.[planKey];
+    const priceSet = isAnnual ? ppp.pricesAnnual : ppp.prices;
+    const pppPrice = priceSet?.[planKey];
 
-    if (pppPrice === undefined || pppPrice === plan.price) {
-      return { displayPrice: plan.price, originalPrice: null, discountCode: null, pppVariantId: null };
+    if (pppPrice === undefined || pppPrice === basePrice) {
+      return { displayPrice: basePrice, originalPrice: null, discountCode: null, pppVariantId: null };
     }
 
     // Surcharge tiers (+1, +2): use alternative variant ID
     if (ppp.tier > 0 && ppp.surchargeVariants) {
-      const variantKey = plan.name.toLowerCase() === "professional" ? "professional" : plan.name.toLowerCase();
+      const variants = isAnnual ? ppp.surchargeVariantsAnnual : ppp.surchargeVariants;
       return {
         displayPrice: pppPrice,
-        originalPrice: plan.price,
+        originalPrice: basePrice,
         discountCode: null,
-        pppVariantId: ppp.surchargeVariants[variantKey] || null,
+        pppVariantId: variants?.[planKey] || null,
       };
     }
 
-    // Discount tiers (-1 to -4): use discount code
+    // Discount tiers (-1 to -4): same percentage discount code works on monthly or annual
     return {
       displayPrice: pppPrice,
-      originalPrice: plan.price,
+      originalPrice: basePrice,
       discountCode: ppp.discountCode || null,
       pppVariantId: null,
     };
@@ -108,7 +115,7 @@ const Pricing = () => {
     <section className="py-24 px-6" id="pricing">
       <div className="max-w-7xl mx-auto">
         {/* Section header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-8">
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
             Pricing
           </span>
@@ -119,6 +126,35 @@ const Pricing = () => {
             Explore SafeScoring for free with 5 products per month.
             Upgrade for unlimited access and advanced features.
           </p>
+        </div>
+
+        {/* Monthly / Annual Toggle */}
+        <div className="flex justify-center mb-8">
+          <div className="bg-base-200 p-1 rounded-xl inline-flex items-center gap-1">
+            <button
+              onClick={() => setBillingCycle("monthly")}
+              className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                billingCycle === "monthly"
+                  ? "bg-base-100 text-base-content shadow-sm"
+                  : "text-base-content/60 hover:text-base-content"
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setBillingCycle("annual")}
+              className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                billingCycle === "annual"
+                  ? "bg-base-100 text-base-content shadow-sm"
+                  : "text-base-content/60 hover:text-base-content"
+              }`}
+            >
+              Annual
+              <span className="ml-1.5 px-2 py-0.5 text-xs bg-success/20 text-success rounded-full font-semibold">
+                -25%
+              </span>
+            </button>
+          </div>
         </div>
 
         {/* PPP Banner */}
@@ -150,8 +186,18 @@ const Pricing = () => {
             const isFreemium = planId === "free";
             const isFeatured = plan.isFeatured;
 
-            // Get PPP-adjusted price
+            // Get PPP-adjusted price for current billing cycle
             const { displayPrice, originalPrice, discountCode, pppVariantId } = getPPPPrice(plan);
+
+            // Determine the correct variant ID for checkout
+            const checkoutVariantId = billingCycle === "annual" && !isFreemium
+              ? (plan.variantIdAnnual || planId)
+              : planId;
+
+            // Anchor price for current billing cycle
+            const anchorPrice = billingCycle === "annual"
+              ? (plan.priceAnchorAnnual || (plan.priceAnchor ? plan.priceAnchor * 12 : null))
+              : plan.priceAnchor;
 
             return (
               <div
@@ -199,9 +245,9 @@ const Pricing = () => {
                       </>
                     ) : (
                       <>
-                        {plan.priceAnchor && (
+                        {anchorPrice && (
                           <span className="text-lg text-base-content/40 line-through">
-                            ${plan.priceAnchor}
+                            ${anchorPrice}
                           </span>
                         )}
                         <span className={`text-4xl font-bold ${pppLoading && !isFreemium ? "opacity-50" : ""}`}>
@@ -209,8 +255,16 @@ const Pricing = () => {
                         </span>
                       </>
                     )}
-                    <span className="text-base-content/60 text-sm">/month</span>
+                    <span className="text-base-content/60 text-sm">
+                      {isFreemium ? "" : billingCycle === "annual" ? "/year" : "/month"}
+                    </span>
                   </div>
+                  {/* Monthly equivalent for annual pricing */}
+                  {billingCycle === "annual" && !isFreemium && displayPrice > 0 && (
+                    <div className="text-sm text-base-content/50 mt-1">
+                      ${(displayPrice / 12).toFixed(2)}/mo equivalent
+                    </div>
+                  )}
                   {plan.trialDays && (
                     <div className="flex items-center gap-2 mt-2">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-primary">
@@ -282,7 +336,7 @@ const Pricing = () => {
                   </Link>
                 ) : (
                   <ButtonCheckout
-                    priceId={planId}
+                    priceId={checkoutVariantId}
                     pppVariantId={pppVariantId}
                     discountCode={discountCode}
                     mode="subscription"
