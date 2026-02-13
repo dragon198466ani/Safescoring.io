@@ -51,7 +51,7 @@ const WhyNotAudits = () => {
                 {
                   criteria: "Methodology",
                   audit: "Varies by auditor",
-                  safe: "916 standardized norms",
+                  safe: "2159 standardized norms",
                   safeWins: true,
                 },
                 {
@@ -128,7 +128,7 @@ const WhyNotAudits = () => {
             </div>
           </div>
           <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20">
-            <div className="text-4xl font-bold text-primary mb-2">916</div>
+            <div className="text-4xl font-bold text-primary mb-2">2159</div>
             <div className="text-sm text-base-content/60">
               standardized norms across security, resilience, trust & usability
             </div>

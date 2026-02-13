@@ -103,7 +103,7 @@ REGLES DE SOFT SELLING (TRES IMPORTANT):
 8. Ton: expert curieux qui partage, pas vendeur
 
 EXEMPLES DE CTA SUBTILS (dernier tweet) - INSISTER SUR L'APPROCHE HYBRIDE:
-- "916 criteres analyses par IA, scores critiques verifies par experts → safescoring.io"
+- "2159 criteres analyses par IA, scores critiques verifies par experts → safescoring.io"
 - "IA pour la vitesse, humains pour le jugement. Verifiez → safescoring.io"
 - "Pas juste une IA: verification humaine sur les points critiques → safescoring.io"
 
@@ -155,7 +155,7 @@ STRATEGIE SOFT SELLING:
 3. Explique le concept avec des exemples concrets
 4. Donne de la VRAIE valeur (le lecteur apprend quelque chose)
 5. Dernier tweet = curiosite naturelle vers safescoring.io (MENTIONNER APPROCHE HYBRIDE)
-   - "916 criteres, IA + verification humaine. Donnees publiques → safescoring.io"
+   - "2159 criteres, IA + verification humaine. Donnees publiques → safescoring.io"
    - "IA pour l'analyse, experts pour le jugement. Comparez → safescoring.io"
 6. Chaque tweet < 270 caracteres
 7. Ton: expert passione qui partage, JAMAIS vendeur
@@ -204,7 +204,7 @@ STRATEGIE SOFT SELLING:
 3. Compare sur 3-4 criteres FACTUELS (pas d'opinion)
 4. Montre les forces ET faiblesses de chacun (objectivite = credibilite)
 5. Dernier tweet = curiosite naturelle (MENTIONNER APPROCHE HYBRIDE)
-   - "916 criteres analyses par IA, verifies par experts → safescoring.io/compare"
+   - "2159 criteres analyses par IA, verifies par experts → safescoring.io/compare"
    - "Donnees objectives, methode hybride IA+humain → safescoring.io"
 6. Chaque tweet < 270 caracteres
 7. JAMAIS de jugement definitif - laisser le lecteur conclure
@@ -256,7 +256,7 @@ UNIQUEMENT le JSON."""
 SUJET: {topic}
 
 CONTEXTE REEL DE SAFESCORING:
-- 916 criteres de securite evalues
+- 2159 criteres de securite evalues
 - IA (Gemini, Groq, DeepSeek) pour l'evaluation a grande echelle
 - Verification humaine pour les resultats incertains (TBD)
 - Systeme two-pass: Pass 1 = IA rapide, Pass 2 = modele expert pour cas critiques
@@ -422,7 +422,7 @@ REGLES:
 
 MESSAGE HYBRIDE A INTEGRER:
 - "Chez SafeScoring, nous combinons l'efficacite de l'IA avec la rigueur de l'expertise humaine"
-- "916 criteres analyses par IA, scores critiques verifies par des experts"
+- "2159 criteres analyses par IA, scores critiques verifies par des experts"
 
 Reponds UNIQUEMENT avec le texte du post."""
 
@@ -443,7 +443,7 @@ Reponds UNIQUEMENT avec le texte du post."""
 
 CONTEXTE REEL:
 - SafeScoring evalue la securite des produits crypto (wallets, exchanges, DeFi)
-- 916 criteres de securite analyses
+- 2159 criteres de securite analyses
 - IA pour l'evaluation a grande echelle (Gemini, Groq, DeepSeek)
 - Verification humaine pour les cas incertains
 - Systeme two-pass: IA rapide puis expert pour cas critiques
@@ -454,7 +454,7 @@ REGLES:
 1. 800-1200 caracteres
 2. Ton: fondateur transparent, pas corporate
 3. Structure: Probleme → Notre approche → Resultats
-4. Chiffres concrets (916 criteres, 150+ produits, $0-5/mois de cout)
+4. Chiffres concrets (2159 criteres, 150+ produits, $0-5/mois de cout)
 5. Pas de jargon marketing vide
 6. CTA discret: "Les scores sont publics sur safescoring.io"
 7. 1-2 emojis max en debut de paragraphe
@@ -474,7 +474,7 @@ Reponds UNIQUEMENT avec le texte du post."""
 Here's our approach at SafeScoring:
 
 1. AI does the heavy lifting
-We analyze each product against 916 security norms. Speed: minutes, not weeks. Cost: nearly zero.
+We analyze each product against 2159 security norms. Speed: minutes, not weeks. Cost: nearly zero.
 
 2. Humans handle uncertainty
 When the AI says "I'm not sure", experts review. Critical security scores get a second pass. New product types require manual validation.
@@ -509,7 +509,7 @@ All scores are public → safescoring.io"""
 STYLE: {style_prompts.get(subreddit_style, style_prompts['educational'])}
 
 CONTEXTE TECHNIQUE REEL:
-- 916 criteres de securite evalues par produit
+- 2159 criteres de securite evalues par produit
 - Stack IA: Gemini Flash (primaire), Groq Llama 3.3 (gratuit), DeepSeek (fallback)
 - 6 cles API Gemini en rotation pour maximiser le quota
 - Systeme two-pass: Pass 1 = IA rapide, Pass 2 = modele expert pour TBD
@@ -557,7 +557,7 @@ UNIQUEMENT le JSON."""
 
 **Our solution:**
 
-1. **AI for scale**: We use Gemini/Groq to evaluate 916 security norms per product. Takes minutes, not weeks.
+1. **AI for scale**: We use Gemini/Groq to evaluate 2159 security norms per product. Takes minutes, not weeks.
 
 2. **Human review for uncertainty**: When the AI outputs "TBD" (uncertain), human experts verify. Critical security norms always get a second pass.
 
@@ -589,7 +589,7 @@ Happy to answer questions about the approach. What would you want to see in a cr
             f"BREAKING: {title[:200]}",
             "Cet incident rappelle l'importance de verifier la securite de ses outils crypto AVANT de les utiliser.",
             "Les audits ne suffisent pas: 87% des projets hackes avaient ete audites.",
-            f"SafeScoring analyse {916} criteres de securite pour chaque produit.",
+            f"SafeScoring analyse {2159} criteres de securite pour chaque produit.",
             "Verifiez vos wallets et protocols sur https://safescoring.io #crypto #security"
         ]
 

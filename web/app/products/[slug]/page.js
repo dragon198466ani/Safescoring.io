@@ -83,7 +83,7 @@ export async function generateMetadata({ params }) {
 
   const title = `${product.name} Security Score${scoreText} | SafeScoring`;
   const description = product.short_description ||
-    `${product.name} ${typeName} security evaluation. See the full SAFE score breakdown across Security, Adversity, Fidelity & Efficiency. 916 norms evaluated.`;
+    `${product.name} ${typeName} security evaluation. See the full SAFE score breakdown across Security, Adversity, Fidelity & Efficiency. 2159 norms evaluated.`;
 
   return {
     title,

@@ -110,7 +110,7 @@ export async function GET(request) {
       } : null,
       recommendation,
       source: "SafeScoring.io",
-      methodology: "916 norms, SAFE framework (Security, Adversity, Fidelity, Efficiency)",
+      methodology: "2159 norms, SAFE framework (Security, Adversity, Fidelity, Efficiency)",
     };
 
     return NextResponse.json(response, {

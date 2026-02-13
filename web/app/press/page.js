@@ -8,7 +8,7 @@ export const metadata = {
 
 const stats = [
   { label: "Products Rated", value: "500+" },
-  { label: "Security Norms", value: "916" },
+  { label: "Security Norms", value: "2159" },
   { label: "Product Categories", value: "15+" },
   { label: "Monthly Visitors", value: "10K+" },
 ];
@@ -17,7 +17,7 @@ const pressReleases = [
   {
     date: "2025-01-15",
     title: "SafeScoring Launches Comprehensive Crypto Security Rating Platform",
-    excerpt: "New platform evaluates 500+ crypto products across 916 security norms to help users make safer choices.",
+    excerpt: "New platform evaluates 500+ crypto products across 2159 security norms to help users make safer choices.",
   },
   {
     date: "2025-02-01",
@@ -85,7 +85,7 @@ export default function PressPage() {
                 <p>
                   SafeScoring is the first comprehensive security rating platform for crypto products.
                   We evaluate wallets, exchanges, DeFi protocols, and blockchain services across
-                  916 security norms to provide objective, transparent security scores.
+                  2159 security norms to provide objective, transparent security scores.
                 </p>
                 <p>
                   Our mission is to make crypto safer by helping users identify secure products
@@ -108,14 +108,14 @@ export default function PressPage() {
                 <p className="text-sm text-base-content/80 leading-relaxed">
                   <strong>Short (50 words):</strong><br />
                   SafeScoring is a crypto security rating platform that evaluates wallets, exchanges,
-                  and DeFi protocols across 916 security norms. Using the SAFE methodology (Security,
+                  and DeFi protocols across 2159 security norms. Using the SAFE methodology (Security,
                   Audit, Functionality, Experience), SafeScoring provides objective scores to help
                   users make informed decisions about crypto products.
                 </p>
                 <div className="divider"></div>
                 <p className="text-sm text-base-content/80 leading-relaxed">
                   <strong>Tweet-sized (280 chars):</strong><br />
-                  SafeScoring rates crypto security. 500+ products. 916 norms. One score.
+                  SafeScoring rates crypto security. 500+ products. 2159 norms. One score.
                   Know if your wallet, exchange, or DeFi protocol is safe before you connect.
                   Free at safescoring.io
                 </p>

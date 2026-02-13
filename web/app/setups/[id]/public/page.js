@@ -153,7 +153,7 @@ export default async function PublicSetupPage({ params }) {
 
         <div className="text-center mt-6">
           <p className="text-xs text-base-content/30">
-            Powered by SafeScoring.io &bull; 916 norms, 0 opinion, 1 score
+            Powered by SafeScoring.io &bull; 2159 norms, 0 opinion, 1 score
           </p>
         </div>
       </div>

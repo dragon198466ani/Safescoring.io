@@ -83,7 +83,7 @@ Detailed comparison: safescoring.io/compare/{slug_a}/{slug_b}
             'general_mention': """
 Thanks for the mention! 🙏
 
-We rate 500+ crypto products across 916 security norms.
+We rate 500+ crypto products across 2159 security norms.
 
 Check your favorite wallet or protocol: safescoring.io
 

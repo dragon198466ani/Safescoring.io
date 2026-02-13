@@ -16,7 +16,7 @@ SafeScoring provides objective, transparent security evaluations for hardware wa
 
 ## Features
 
-- **916 Security Norms** across 4 pillars (Security, Adversity, Fidelity, Efficiency)
+- **2159 Security Norms** across 4 pillars (Security, Adversity, Fidelity, Efficiency)
 - **21 Product Categories** including hardware wallets, DEX, lending protocols
 - **AI-Powered Evaluation** with multi-provider support (DeepSeek, Claude, Gemini)
 - **Transparent Methodology** - every norm is publicly documented

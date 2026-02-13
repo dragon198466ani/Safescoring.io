@@ -6,7 +6,7 @@ const faqs = [
   {
     question: "What is SAFE Scoring?",
     answer:
-      "SAFE Scoring is the first unified security rating for all crypto products. We evaluate hardware wallets, software wallets, and DeFi protocols with the same rigorous methodology: 916 security norms across 4 pillars - Security (cryptographic standards), Adversity (threat resistance), Fidelity (reliability & trust), and Efficiency (usability).",
+      "SAFE Scoring is the first unified security rating for all crypto products. We evaluate hardware wallets, software wallets, and DeFi protocols with the same rigorous methodology: 2159 security norms across 4 pillars - Security (cryptographic standards), Adversity (threat resistance), Fidelity (reliability & trust), and Efficiency (usability).",
   },
   {
     question: "How is SafeScoring different from CertiK or other auditors?",
@@ -16,7 +16,7 @@ const faqs = [
   {
     question: "How are products evaluated?",
     answer:
-      "Our AI-powered system evaluates products against 916 norms using official documentation, security audits, technical specifications, and on-chain data. Each norm is marked YES (compliant), NO (non-compliant), or N/A (not applicable). The process is automated and reproducible - no subjective opinions.",
+      "Our AI-powered system evaluates products against 2159 norms using official documentation, security audits, technical specifications, and on-chain data. Each norm is marked YES (compliant), NO (non-compliant), or N/A (not applicable). The process is automated and reproducible - no subjective opinions.",
   },
   {
     question: "How often are scores updated?",
@@ -26,7 +26,7 @@ const faqs = [
   {
     question: "Is SafeScoring truly independent?",
     answer:
-      "100%. While we may earn affiliate commissions from product links, this never influences our scores. Scores are calculated purely from our 916-norm methodology - no exceptions. We've rated products poorly even when affiliates offered to pay for better scores. Independence is non-negotiable.",
+      "100%. While we may earn affiliate commissions from product links, this never influences our scores. Scores are calculated purely from our 2159-norm methodology - no exceptions. We've rated products poorly even when affiliates offered to pay for better scores. Independence is non-negotiable.",
   },
   {
     question: "What are the 4 SAFE pillars?",

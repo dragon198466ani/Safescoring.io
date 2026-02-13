@@ -3,7 +3,7 @@ const config = {
   appName: "SafeScoring",
   // REQUIRED: a short description of your app for SEO tags (can be overwritten)
   appDescription:
-    "The first unified security rating for all crypto products. 916 norms. 0 opinion. 1 score. Hardware wallets, software wallets, and DeFi protocols - all evaluated with the same rigorous SAFE methodology.",
+    "The first unified security rating for all crypto products. 2159 norms. 0 opinion. 1 score. Hardware wallets, software wallets, and DeFi protocols - all evaluated with the same rigorous SAFE methodology.",
   // REQUIRED (no https://, not trialing slash at the end, just the naked domain)
   domainName: "safescoring.io",
   crisp: {
@@ -133,7 +133,7 @@ const config = {
   // SafeScoring specific config
   safe: {
     // Strategic tagline
-    tagline: "916 norms. 0 opinion. 1 score.",
+    tagline: "2159 norms. 0 opinion. 1 score.",
     taglineAlt: "Beyond the audit.",
 
     pillars: [
@@ -143,7 +143,7 @@ const config = {
         description: "Is your crypto actually protected? We verify cryptographic standards, key management, and encryption.",
         shortDesc: "Cryptographic foundations",
         color: "#22c55e", // green
-        normCount: 269,
+        normCount: 794,
       },
       {
         code: "A",
@@ -151,7 +151,7 @@ const config = {
         description: "What happens under threat? We assess duress protection, anti-coercion features, and physical security.",
         shortDesc: "Threat resistance",
         color: "#f59e0b", // amber
-        normCount: 193,
+        normCount: 353,
       },
       {
         code: "F",
@@ -159,7 +159,7 @@ const config = {
         description: "Can you trust it long-term? We check audits, uptime, update frequency, and track record.",
         shortDesc: "Reliability & trust",
         color: "#3b82f6", // blue
-        normCount: 195,
+        normCount: 408,
       },
       {
         code: "E",
@@ -167,11 +167,11 @@ const config = {
         description: "Is it usable AND secure? We evaluate UX, multi-chain support, and accessibility.",
         shortDesc: "Usability & performance",
         color: "#8b5cf6", // purple
-        normCount: 259,
+        normCount: 604,
       },
     ],
     stats: {
-      totalNorms: 916,
+      totalNorms: 2159,
       totalProducts: 100,
       totalProductTypes: 21,
       totalEvaluations: 50000,

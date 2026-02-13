@@ -8,7 +8,7 @@ export const revalidate = 3600; // Revalidate every hour
 
 export const metadata = {
   title: "Compare Crypto Products - Security Comparison Tool | SafeScoring",
-  description: "Compare security scores of crypto wallets, exchanges, and DeFi protocols. See side-by-side SAFE Score analysis based on 916 security criteria.",
+  description: "Compare security scores of crypto wallets, exchanges, and DeFi protocols. See side-by-side SAFE Score analysis based on 2159 security criteria.",
   keywords: [
     "crypto comparison",
     "wallet comparison",
@@ -109,7 +109,7 @@ export default async function CompareLandingPage() {
               Compare Crypto Security Scores
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              Side-by-side comparison of wallets, exchanges, and DeFi protocols based on 916 security criteria.
+              Side-by-side comparison of wallets, exchanges, and DeFi protocols based on 2159 security criteria.
             </p>
           </div>
 

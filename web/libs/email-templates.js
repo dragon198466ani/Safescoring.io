@@ -55,7 +55,7 @@ ${preheader ? `<span style="display:none;font-size:1px;color:#0f0f14;max-height:
       &nbsp;&middot;&nbsp;
       <a href="${BRAND.url}" style="color:${BRAND.colors.muted};text-decoration:none;">${BRAND.name}</a>
     </p>
-    <p style="color:${BRAND.colors.muted};font-size:11px;margin:8px 0 0;">916 norms. 0 opinion. 1 score.</p>
+    <p style="color:${BRAND.colors.muted};font-size:11px;margin:8px 0 0;">2159 norms. 0 opinion. 1 score.</p>
   </td></tr>
 </table>
 </td></tr>
