@@ -8,6 +8,7 @@ import {
   sleep,
   calculatePublicDelay,
 } from "@/libs/user-protection";
+import { productsQuerySchema, validateSearchParams } from "@/libs/validations";
 
 // Cache pendant 60 secondes, revalide en arrière-plan
 export const revalidate = 60;
@@ -82,20 +83,23 @@ export async function GET(request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const category = searchParams.get("category");
-    const typeCode = searchParams.get("type");
-    const search = searchParams.get("search")?.trim();
-    const sort = searchParams.get("sort") || "score-desc";
-    const scoreType = searchParams.get("scoreType") || "full";
+
+    // Validate query parameters with Zod
+    const validation = validateSearchParams(searchParams, productsQuerySchema);
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
+
+    const { category, type: typeCode, search, sort, scoreType } = validation.data;
 
     // PROTECTION: Apply limits based on authentication and trust
-    const requestedLimit = parseInt(searchParams.get("limit")) || 100;
+    const requestedLimit = validation.data.limit;
     const maxLimit = userLimits.products;
     const limit = Math.min(requestedLimit, maxLimit);
 
     // Offset also limited to prevent pagination scraping
     const maxOffset = isAuthenticated ? (isPaid ? 500 : 50) : 5;
-    const offset = Math.min(parseInt(searchParams.get("offset")) || 0, maxOffset);
+    const offset = Math.min(validation.data.offset, maxOffset);
 
     // Optimisation: Utiliser une vue matérialisée ou une requête plus efficace
     // Sélectionner uniquement les colonnes nécessaires

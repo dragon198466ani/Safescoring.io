@@ -49,6 +49,7 @@ export const productsQuerySchema = z.object({
 
 export const newsletterSchema = z.object({
   email: z.string().email("Invalid email address").max(255),
+  source: z.string().max(50).default("website"),
 });
 
 export const unsubscribeSchema = z.object({
@@ -57,20 +58,56 @@ export const unsubscribeSchema = z.object({
 });
 
 // ============================================================
-// /api/claim
+// /api/lead
 // ============================================================
 
-export const claimSchema = z.object({
-  productId: z.string().uuid("Invalid product ID"),
-  companyName: z.string().min(1).max(200),
-  email: z.string().email("Invalid email").max(255),
-  role: z.string().min(1).max(100),
-  message: z.string().max(2000).optional(),
-  turnstileToken: z.string().min(1, "CAPTCHA required"),
+export const leadSchema = z.object({
+  email: z.string().email("Invalid email format").max(255),
 });
 
 // ============================================================
-// /api/admin/corrections
+// /api/claim (public)
+// ============================================================
+
+export const claimSchema = z.object({
+  productSlug: z.string().max(200).optional(),
+  companyName: z.string().min(1, "Company name required").max(200),
+  contactName: z.string().min(1, "Contact name required").max(200),
+  email: z.string().email("Invalid email").max(255),
+  website: z.string().max(500).optional(),
+  role: z.string().min(1, "Role required").max(100),
+  message: z.string().max(2000).optional(),
+  discord: z.string().max(200).optional(),
+  twitter: z.string().max(200).optional(),
+  telegram: z.string().max(200).optional(),
+  captchaToken: z.string().min(1, "CAPTCHA required"),
+  dnsVerified: z.boolean().optional().default(false),
+  dnsToken: z.string().max(500).optional(),
+});
+
+// ============================================================
+// /api/corrections (public, user-submitted)
+// ============================================================
+
+const correctionFieldTypes = ["evaluation", "product_info", "incident", "methodology", "other"];
+
+export const userCorrectionSchema = z.object({
+  productId: z.string().uuid("Invalid product ID").optional(),
+  productSlug: z.string().max(200).optional(),
+  normId: z.string().max(100).optional(),
+  fieldCorrected: z.enum(correctionFieldTypes, { message: `Must be one of: ${correctionFieldTypes.join(", ")}` }),
+  originalValue: z.string().max(5000).optional(),
+  suggestedValue: z.string().min(1, "Suggested value required").max(5000),
+  correctionReason: z.string().max(2000).optional(),
+  evidenceUrls: z.array(z.string().url()).max(10).optional().default([]),
+  evidenceDescription: z.string().max(2000).optional(),
+}).refine(
+  (data) => data.productId || data.productSlug,
+  { message: "Product ID or slug is required", path: ["productId"] }
+);
+
+// ============================================================
+// /api/admin/corrections (admin)
 // ============================================================
 
 export const correctionSchema = z.object({

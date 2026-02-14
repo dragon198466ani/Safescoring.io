@@ -1,23 +1,18 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/libs/supabase";
-
-// Email validation regex
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { leadSchema, validateBody } from "@/libs/validations";
 
 // This route is used to store the leads that are generated from the landing page.
 // The API call is initiated by <ButtonLead /> component
 // Duplicate emails just return 200 OK (using upsert to avoid race conditions)
 export async function POST(req) {
-  const body = await req.json();
-
-  if (!body.email) {
-    return NextResponse.json({ error: "Email is required" }, { status: 400 });
+  // Validate input with Zod
+  const validation = await validateBody(req, leadSchema);
+  if (!validation.success) {
+    return NextResponse.json({ error: validation.error }, { status: 400 });
   }
 
-  // Validate email format
-  if (!EMAIL_REGEX.test(body.email)) {
-    return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
-  }
+  const { email } = validation.data;
 
   try {
     if (supabaseAdmin) {
@@ -25,7 +20,7 @@ export async function POST(req) {
       const { error } = await supabaseAdmin
         .from("leads")
         .upsert(
-          { email: body.email },
+          { email },
           { onConflict: "email", ignoreDuplicates: true }
         );
 

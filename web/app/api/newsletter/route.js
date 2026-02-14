@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { newsletterSchema, validateBody } from "@/libs/validations";
 
 /**
  * Newsletter Subscription API
@@ -8,14 +9,16 @@ import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 
 export async function POST(request) {
   try {
-    const { email, source = "website" } = await request.json();
-
-    if (!email || !email.includes("@")) {
+    // Validate input with Zod
+    const validation = await validateBody(request, newsletterSchema);
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "Valid email required" },
+        { error: validation.error },
         { status: 400 }
       );
     }
+
+    const { email, source } = validation.data;
 
     // Normalize email
     const normalizedEmail = email.toLowerCase().trim();
