@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { searchQuerySchema, validateSearchParams } from "@/libs/validations";
 
 /**
  * Product Search API
@@ -8,9 +9,6 @@ import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-  const query = searchParams.get("q") || "";
-  const type = searchParams.get("type");
-  const limit = Math.min(parseInt(searchParams.get("limit")) || 10, 50);
 
   // CORS headers
   const allowedOrigin = process.env.ALLOWED_ORIGINS?.split(",")[0]?.trim() || "https://safescoring.io";
@@ -20,12 +18,16 @@ export async function GET(request) {
     "Cache-Control": "public, max-age=300, s-maxage=300",
   };
 
-  if (!query || query.length < 2) {
+  // Validate inputs
+  const validation = validateSearchParams(searchParams, searchQuerySchema);
+  if (!validation.success) {
     return NextResponse.json(
-      { error: "Query must be at least 2 characters" },
+      { error: validation.error },
       { status: 400, headers }
     );
   }
+
+  const { q: query, type, limit } = validation.data;
 
   if (!isSupabaseConfigured()) {
     return NextResponse.json(

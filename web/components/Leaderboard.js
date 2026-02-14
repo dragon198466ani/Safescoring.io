@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, memo, useMemo } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 const levelColors = {
@@ -137,10 +138,13 @@ function Leaderboard({ limit = 10, showTitle = true }) {
                 <td>
                   <div className="flex items-center gap-3">
                     {entry.avatar ? (
-                      <img
+                      <Image
                         src={entry.avatar}
                         alt={entry.name}
+                        width={32}
+                        height={32}
                         className="w-8 h-8 rounded-full"
+                        unoptimized
                       />
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
