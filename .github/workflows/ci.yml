@@ -84,6 +84,9 @@ jobs:
       - name: Lint
         run: npm run lint || true
 
+      - name: Unit tests
+        run: npm test
+
       - name: Type check
         run: npm run type-check || true
 
@@ -92,9 +95,6 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-
-      - name: Run tests
-        run: npm test || true
 
   # ===========================================================================
   # Security Scanning
