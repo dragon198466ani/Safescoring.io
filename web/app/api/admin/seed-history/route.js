@@ -15,7 +15,7 @@ async function requireAdmin() {
  * Seeds initial score history from existing safe_scoring_results
  * This creates the first historical data point for products that have scores but no history
  */
-export async function POST(request) {
+export async function POST(_request) {
   try {
     if (!(await requireAdmin())) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -160,13 +160,13 @@ export async function GET() {
     }
 
     // Count products with scores
-    const { count: scoresCount, error: scoresError } = await supabase
+    const { count: scoresCount, error: _scoresError } = await supabase
       .from("safe_scoring_results")
       .select("*", { count: "exact", head: true })
       .not("note_finale", "is", null);
 
     // Count unique products with history
-    const { data: historyProducts, error: historyError } = await supabase
+    const { data: historyProducts, error: _historyError } = await supabase
       .from("score_history")
       .select("product_id")
       .order("product_id");
@@ -176,7 +176,7 @@ export async function GET() {
     ).size;
 
     // Count total history records
-    const { count: historyCount, error: countError } = await supabase
+    const { count: historyCount, error: _countError } = await supabase
       .from("score_history")
       .select("*", { count: "exact", head: true });
 

@@ -35,7 +35,7 @@ export async function POST(req) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (e) {
+  } catch (_e) {
     // Don't expose internal error details to clients
     return NextResponse.json({ error: "Failed to save lead" }, { status: 500 });
   }

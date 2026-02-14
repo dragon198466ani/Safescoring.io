@@ -2,6 +2,7 @@
 
 import { useState, useEffect, memo } from "react";
 import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
 
 /**
  * Optimized Image Component

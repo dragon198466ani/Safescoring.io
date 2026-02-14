@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
  * SecurityAlerts - Displays real-time security alerts and status for a product
  * Inspired by GetMyKey's security news section
  */
-export default function SecurityAlerts({ slug, productName }) {
+export default function SecurityAlerts({ slug, productName: _productName }) {
   const [alertData, setAlertData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -43,7 +43,7 @@ export default function SecurityAlerts({ slug, productName }) {
           }),
           totalIncidents: data.stats?.total || 0,
         });
-      } catch (err) {
+      } catch (_err) {
         // Fallback to no alerts on error
         setAlertData({
           hasAlert: false,

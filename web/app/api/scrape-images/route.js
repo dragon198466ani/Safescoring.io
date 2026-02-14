@@ -88,7 +88,7 @@ export async function GET(request) {
       description: data.data?.description,
       images,
     });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({
       success: false,
       error: "Failed to scrape images",

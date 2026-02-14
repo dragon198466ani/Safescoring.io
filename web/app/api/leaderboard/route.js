@@ -19,7 +19,7 @@ export async function GET(request) {
 
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get("limit") || "10");
-    const period = searchParams.get("period") || "all"; // all, month, week
+    const _period = searchParams.get("period") || "all"; // all, month, week
 
     // Get leaderboard from user_reputation table
     let query = supabase

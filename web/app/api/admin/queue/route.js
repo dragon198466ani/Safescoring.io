@@ -63,7 +63,7 @@ export async function GET(request) {
     if (error) throw error;
 
     return NextResponse.json({ tasks });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -183,7 +183,7 @@ export async function POST(request) {
       { error: "Paramètres manquants" },
       { status: 400 }
     );
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

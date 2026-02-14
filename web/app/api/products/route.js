@@ -58,7 +58,7 @@ export async function GET(request) {
           await sleep(userProtection.delay);
         }
       }
-    } catch (e) {
+    } catch (_e) {
       // Auth failed, continue as unauthenticated
     }
 
@@ -360,7 +360,7 @@ export async function GET(request) {
         "X-Robots-Tag": "noindex, nofollow",
       },
     });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

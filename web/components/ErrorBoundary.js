@@ -34,7 +34,7 @@ class ErrorBoundary extends Component {
       Sentry.captureException(error, {
         extra: { componentStack: errorInfo?.componentStack },
       });
-    } catch (e) {
+    } catch (_e) {
       // Sentry not initialized, ignore
     }
   }

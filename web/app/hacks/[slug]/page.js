@@ -419,7 +419,7 @@ export default async function HackPage({ params }) {
 
           {/* CTA Box */}
           <div className="bg-gradient-to-br from-primary/20 to-base-200 border border-primary/30 rounded-xl p-8 text-center mb-8">
-            <h2 className="text-2xl font-bold mb-3">Don't trust. Verify.</h2>
+            <h2 className="text-2xl font-bold mb-3">Don&apos;t trust. Verify.</h2>
             <p className="text-base-content/70 mb-6 max-w-lg mx-auto">
               Check the SafeScore of any crypto tool before trusting it with your funds.
               Our ratings identified red flags in {hack.project} before this incident.
@@ -478,8 +478,8 @@ function parseMarkdown(md) {
   return escapeHtml(md)
     .replace(/^## (.+)$/gm, '<h2 class="text-2xl font-bold mt-8 mb-4">$1</h2>')
     .replace(/^### (.+)$/gm, '<h3 class="text-xl font-semibold mt-6 mb-3">$1</h3>')
-    .replace(/^\- \*\*(.+?)\*\* - (.+)$/gm, '<li class="mb-2"><strong>$1</strong> - $2</li>')
-    .replace(/^\- (.+)$/gm, "<li>$1</li>")
+    .replace(/^- \*\*(.+?)\*\* - (.+)$/gm, '<li class="mb-2"><strong>$1</strong> - $2</li>')
+    .replace(/^- (.+)$/gm, "<li>$1</li>")
     .replace(/^\d+\. \*\*(.+?)\*\* - (.+)$/gm, '<li class="mb-2"><strong>$1</strong> - $2</li>')
     .replace(/^\d+\. (.+)$/gm, "<li>$1</li>")
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")

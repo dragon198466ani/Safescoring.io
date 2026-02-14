@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, memo, useMemo } from "react";
+import { useState, useEffect, memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -66,7 +66,7 @@ function Leaderboard({ limit = 10, showTitle = true }) {
     return null;
   }
 
-  const { leaderboard, global, airdropInfo } = data;
+  const { leaderboard, global, airdropInfo: _airdropInfo } = data;
 
   return (
     <div className="rounded-2xl bg-base-200 border border-base-300 overflow-hidden">

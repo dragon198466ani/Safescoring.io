@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/libs/supabase";
 import {
   requireAdmin,
-  logAdminAction,
-  unauthorizedResponse,
 } from "@/libs/admin-auth";
 
 /**

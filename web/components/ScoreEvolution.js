@@ -115,7 +115,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
   };
 
   // Simple bar chart renderer
-  const maxScore = Math.max(...chartData.map((d) => d.safe_score || 0), 100);
+  const _maxScore = Math.max(...chartData.map((d) => d.safe_score || 0), 100);
 
   return (
     <div className="bg-base-200 rounded-lg p-6">

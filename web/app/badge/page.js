@@ -37,7 +37,7 @@ export default function BadgePage() {
               SafeScore Badge
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              Display your product's security score on your website. Build trust with your users by showing independent security verification.
+              Display your product&apos;s security score on your website. Build trust with your users by showing independent security verification.
             </p>
           </div>
 
@@ -172,7 +172,7 @@ export default function BadgePage() {
           {/* CTA */}
           <div className="text-center">
             <p className="text-base-content/60 mb-4">
-              Don't see your product? Get it evaluated.
+              Don&apos;t see your product? Get it evaluated.
             </p>
             <Link href="/submit" className="btn btn-primary">
               Submit Your Product

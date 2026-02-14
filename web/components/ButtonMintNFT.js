@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
-import { parseUnits } from "viem";
+import { parseUnits as _parseUnits } from "viem";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import toast from "react-hot-toast";
 import {
@@ -29,7 +29,7 @@ export default function ButtonMintNFT({
   const [usdcBalance, setUsdcBalance] = useState("0");
   const [allowance, setAllowance] = useState("0");
   const [step, setStep] = useState("idle"); // idle, approving, minting, success
-  const [loading, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
 
   const tierLevel = TIERS[tier] ?? 0;
   const addresses = getAddresses(chain?.id);
@@ -63,7 +63,7 @@ export default function ButtonMintNFT({
       }
     }
     load();
-  }, [address, tierLevel, chain?.id]);
+  }, [address, tierLevel, chain?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle approve success
   useEffect(() => {
@@ -75,7 +75,7 @@ export default function ButtonMintNFT({
         checkUSDCAllowance(address, addresses.safePassNFT).then(setAllowance);
       }
     }
-  }, [approveSuccess]);
+  }, [approveSuccess]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle mint success
   useEffect(() => {
@@ -84,7 +84,7 @@ export default function ButtonMintNFT({
       setStep("success");
       onSuccess?.();
     }
-  }, [mintSuccess]);
+  }, [mintSuccess]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const needsApproval =
     tierInfo && parseFloat(allowance) < parseFloat(tierInfo.priceUSDC);
