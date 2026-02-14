@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/libs/supabase";
 import {
   requireAdmin,
-  logAdminAction,
-  unauthorizedResponse,
 } from "@/libs/admin-auth";
 
 /**
@@ -123,7 +121,26 @@ export async function PATCH(request) {
       return NextResponse.json({ error: "Failed to update claim" }, { status: 500 });
     }
 
-    // TODO: Send email notification to claimant about the decision
+    // Send email notification to claimant about the decision
+    if (process.env.RESEND_API_KEY && claim?.email) {
+      try {
+        const { Resend } = await import("resend");
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        const isApproved = status === "approved";
+        await resend.emails.send({
+          from: process.env.RESEND_FROM_EMAIL || "SafeScoring <noreply@safescoring.io>",
+          to: claim.email,
+          subject: `Your product claim has been ${status}`,
+          html: `<h2>Claim ${isApproved ? "Approved" : "Rejected"}</h2>
+            <p>Your claim request has been <strong>${status}</strong>.</p>
+            ${admin_notes ? `<p><em>Note: ${admin_notes}</em></p>` : ""}
+            ${isApproved ? "<p>You can now manage your product on SafeScoring.</p>" : ""}
+            <p>— The SafeScoring Team</p>`,
+        });
+      } catch (emailError) {
+        console.error("Failed to send claim notification:", emailError);
+      }
+    }
 
     return NextResponse.json({
       success: true,

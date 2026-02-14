@@ -371,7 +371,7 @@ export default async function ComparePage({ params }) {
               <div>
                 <h3 className="font-semibold mb-2">What is the SAFE Score?</h3>
                 <p className="text-base-content/70">
-                  The SAFE Score evaluates crypto products across 4 pillars: Security, Adversity, Fidelity, and Efficiency. It's based on 916 security norms evaluated by AI and human experts.
+                  The SAFE Score evaluates crypto products across 4 pillars: Security, Adversity, Fidelity, and Efficiency. It&apos;s based on 916 security norms evaluated by AI and human experts.
                 </p>
               </div>
               <div>

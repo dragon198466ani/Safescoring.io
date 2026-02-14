@@ -1,16 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 export default function ProductLogo({ logoUrl, fallbackUrl, name, size = "lg" }) {
   const [errorLevel, setErrorLevel] = useState(0);
 
-  const sizeClasses = {
-    sm: "w-12 h-12 rounded-xl text-xl",
-    lg: "w-20 h-20 rounded-2xl text-3xl",
+  const sizeConfig = {
+    sm: { classes: "w-12 h-12 rounded-xl text-xl", px: 48 },
+    lg: { classes: "w-20 h-20 rounded-2xl text-3xl", px: 80 },
   };
 
-  const classes = sizeClasses[size] || sizeClasses.lg;
+  const { classes, px } = sizeConfig[size] || sizeConfig.lg;
 
   // Fallback chain: Clearbit → Google Favicon → Initial letter
   const handleError = () => {
@@ -40,11 +41,14 @@ export default function ProductLogo({ logoUrl, fallbackUrl, name, size = "lg" })
   }
 
   return (
-    <img
+    <Image
       src={currentUrl}
       alt={`${name} logo`}
+      width={px}
+      height={px}
       className={`${classes} object-contain bg-white border border-base-300`}
       onError={handleError}
+      unoptimized
     />
   );
 }

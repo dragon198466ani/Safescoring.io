@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+/* eslint-disable @next/next/no-img-element */
 
 export default function ProductMedia({ media = [], productName = "Product" }) {
   const [selectedMedia, setSelectedMedia] = useState(null);

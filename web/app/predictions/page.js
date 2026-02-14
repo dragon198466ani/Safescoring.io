@@ -330,7 +330,7 @@ export default async function PredictionsPage() {
 
           {/* CTA */}
           <div className="mt-12 rounded-xl bg-gradient-to-br from-primary/20 to-base-200 border border-base-300 p-8 text-center">
-            <h2 className="text-2xl font-bold mb-3">AI Can't Fake History</h2>
+            <h2 className="text-2xl font-bold mb-3">AI Can&apos;t Fake History</h2>
             <p className="text-base-content/70 mb-6 max-w-lg mx-auto">
               These predictions were committed to blockchain months or years before outcomes.
               This is proof that SafeScoring methodology works - not just marketing claims.

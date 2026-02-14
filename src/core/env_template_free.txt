@@ -10,7 +10,7 @@
 # Obtenir gratuitement sur: https://console.mistral.ai
 # Limites: 1 requête/sec, 500K tokens/mois
 # Modèles: Mistral Small, Mistral Large
-MISTRAL_API_KEY=1UrlJxV2G7O0kngOXMDI1dMT2xT39rLD
+MISTRAL_API_KEY=YOUR_MISTRAL_API_KEY_HERE
 
 # ============================================
 # 🔮 GOOGLE GEMINI API (GRATUIT - 1.5M tokens/jour!)

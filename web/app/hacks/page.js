@@ -304,7 +304,7 @@ export default async function HacksPage() {
 
           {/* CTA */}
           <div className="mt-12 rounded-xl bg-gradient-to-br from-error/20 to-base-200 border border-base-300 p-8 text-center">
-            <h2 className="text-2xl font-bold mb-2">Don't become the next victim</h2>
+            <h2 className="text-2xl font-bold mb-2">Don&apos;t become the next victim</h2>
             <p className="text-base-content/60 mb-6 max-w-xl mx-auto">
               Check the security score of your crypto tools before trusting them with your funds.
             </p>

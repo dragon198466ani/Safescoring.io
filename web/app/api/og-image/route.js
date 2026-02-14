@@ -44,7 +44,7 @@ export async function GET(request) {
         "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800"
       }
     });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({
       error: "Failed to fetch OG data",
       ogImage: null,

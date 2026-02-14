@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useStats } from "@/hooks/useStats";
 
 const HybridApproach = () => {
@@ -94,7 +95,7 @@ const HybridApproach = () => {
         {/* Micro CTA */}
         <div className="text-center mt-8">
           <div className="flex flex-wrap justify-center gap-3">
-            <a
+            <Link
               href="/compare"
               className="btn btn-primary btn-sm gap-1"
             >
@@ -102,7 +103,7 @@ const HybridApproach = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
               </svg>
               Compare Products
-            </a>
+            </Link>
             <a
               href="/stack-builder"
               className="btn btn-outline btn-sm gap-1"

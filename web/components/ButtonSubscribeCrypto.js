@@ -34,7 +34,7 @@ export default function ButtonSubscribeCrypto({
   const [step, setStep] = useState("idle"); // idle, approving, upgrading, streaming, success
   const [hasActiveStream, setHasActiveStream] = useState(false);
   const [usdcBalance, setUsdcBalance] = useState("0");
-  const [usdcxBalance, setUsdcxBalance] = useState("0");
+  const [_usdcxBalance, setUsdcxBalance] = useState("0");
 
   const addresses = getSuperfluidAddresses(chain?.id);
   const monthlyPrice = SUBSCRIPTION_PRICES[plan] || 19;
@@ -103,14 +103,14 @@ export default function ButtonSubscribeCrypto({
       toast.success("USDC approved!");
       handleUpgrade();
     }
-  }, [approveSuccess]);
+  }, [approveSuccess]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (upgradeSuccess && step === "upgrading") {
       toast.success("USDC wrapped to USDCx!");
       handleCreateStream();
     }
-  }, [upgradeSuccess]);
+  }, [upgradeSuccess]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (streamSuccess && step === "streaming") {
@@ -119,7 +119,7 @@ export default function ButtonSubscribeCrypto({
       setHasActiveStream(true);
       onSuccess?.();
     }
-  }, [streamSuccess]);
+  }, [streamSuccess]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (deleteSuccess) {

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { newsletterSchema, validateBody } from "@/libs/validations";
 
 /**
  * Newsletter Subscription API
@@ -8,14 +9,16 @@ import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 
 export async function POST(request) {
   try {
-    const { email, source = "website" } = await request.json();
-
-    if (!email || !email.includes("@")) {
+    // Validate input with Zod
+    const validation = await validateBody(request, newsletterSchema);
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "Valid email required" },
+        { error: validation.error },
         { status: 400 }
       );
     }
+
+    const { email, source } = validation.data;
 
     // Normalize email
     const normalizedEmail = email.toLowerCase().trim();
@@ -65,7 +68,23 @@ export async function POST(request) {
       );
     }
 
-    // TODO: Send welcome email via SendGrid/Resend
+    // Send welcome email if Resend is configured
+    if (process.env.RESEND_API_KEY) {
+      try {
+        const { Resend } = await import("resend");
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+          from: process.env.RESEND_FROM_EMAIL || "SafeScoring <noreply@safescoring.io>",
+          to: normalizedEmail,
+          subject: "Welcome to SafeScoring!",
+          html: `<h2>Welcome to SafeScoring!</h2>
+            <p>Thank you for subscribing to our newsletter. You'll receive security insights and product updates.</p>
+            <p>— The SafeScoring Team</p>`,
+        });
+      } catch (emailError) {
+        console.error("Failed to send welcome email:", emailError);
+      }
+    }
 
     return NextResponse.json({
       success: true,
@@ -100,7 +119,22 @@ export async function DELETE(request) {
     return NextResponse.json({ success: true });
   }
 
-  // TODO: Verify unsubscribe token for security
+  // Verify unsubscribe token (HMAC-based) if provided
+  if (token) {
+    const crypto = await import("crypto");
+    const secret = process.env.NEXTAUTH_SECRET || "";
+    const expectedToken = crypto
+      .createHmac("sha256", secret)
+      .update(email.toLowerCase().trim())
+      .digest("hex")
+      .substring(0, 32);
+    if (token !== expectedToken) {
+      return NextResponse.json(
+        { error: "Invalid unsubscribe token" },
+        { status: 403 }
+      );
+    }
+  }
 
   const { error } = await supabase
     .from("newsletter_subscribers")

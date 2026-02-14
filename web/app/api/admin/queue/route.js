@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { auth } from "@/libs/auth";
+import { requireAdmin as requireAdminAuth } from "@/libs/admin-auth";
 
 /**
  * API Routes pour la gestion de la queue
@@ -17,13 +17,10 @@ function getSupabase() {
   );
 }
 
-// Admin authentication check
+// Admin authentication check using centralized RBAC
 async function requireAdmin() {
-  const session = await auth();
-  if (!session?.user?.email || session.user.email !== "admin@safescoring.io") {
-    return false;
-  }
-  return true;
+  const admin = await requireAdminAuth();
+  return !!admin;
 }
 
 // GET - Stats de la queue
@@ -66,8 +63,8 @@ export async function GET(request) {
     if (error) throw error;
 
     return NextResponse.json({ tasks });
-  } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (_error) {
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
@@ -186,7 +183,7 @@ export async function POST(request) {
       { error: "Paramètres manquants" },
       { status: 400 }
     );
-  } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (_error) {
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

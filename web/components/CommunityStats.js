@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, memo, useCallback, useMemo } from "react";
+import Image from "next/image";
 
 /**
  * CommunityStats - Product Links & Data
@@ -231,11 +232,14 @@ function CommunityStats({ productName, productSlug }) {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         {stats.defillama.logo && (
-                          <img
+                          <Image
                             src={stats.defillama.logo}
                             alt=""
+                            width={20}
+                            height={20}
                             className="w-5 h-5 rounded-full"
                             onError={(e) => e.target.style.display = 'none'}
+                            unoptimized
                           />
                         )}
                         <span className="text-sm font-medium">DeFi Protocol</span>
