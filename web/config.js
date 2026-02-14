@@ -34,7 +34,6 @@ const config = {
         },
       },
       {
-        // TODO: Replace with your actual Lemon Squeezy variant ID
         variantId: process.env.LEMON_SQUEEZY_EXPLORER_VARIANT_ID || "explorer_variant",
         name: "Explorer",
         description: "Compare and optimize your crypto security",
@@ -56,7 +55,6 @@ const config = {
       },
       {
         isFeatured: true,
-        // TODO: Replace with your actual Lemon Squeezy variant ID
         variantId: process.env.LEMON_SQUEEZY_PRO_VARIANT_ID || "pro_variant",
         name: "Professional",
         description: "Full security intelligence for your crypto stack",
@@ -78,7 +76,6 @@ const config = {
         },
       },
       {
-        // TODO: Replace with your actual Lemon Squeezy variant ID
         variantId: process.env.LEMON_SQUEEZY_ENTERPRISE_VARIANT_ID || "enterprise_variant",
         name: "Enterprise",
         description: "Security intelligence at scale",

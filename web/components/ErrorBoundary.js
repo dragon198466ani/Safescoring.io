@@ -28,10 +28,10 @@ class ErrorBoundary extends Component {
 
     this.setState({ errorInfo });
 
-    // TODO: Send to error tracking service (Sentry, etc.)
-    // if (typeof window !== 'undefined' && window.Sentry) {
-    //   window.Sentry.captureException(error, { extra: errorInfo });
-    // }
+    // Report to error tracking service if available
+    if (typeof window !== 'undefined' && window.Sentry) {
+      window.Sentry.captureException(error, { extra: errorInfo });
+    }
   }
 
   handleRetry = () => {

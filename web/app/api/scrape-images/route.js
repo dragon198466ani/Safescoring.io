@@ -91,8 +91,8 @@ export async function GET(request) {
   } catch (error) {
     return NextResponse.json({
       success: false,
-      error: error.message,
+      error: "Failed to scrape images",
       images: [],
-    }, { status: 200 });
+    }, { status: 500 });
   }
 }

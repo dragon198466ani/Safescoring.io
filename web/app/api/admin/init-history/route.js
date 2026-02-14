@@ -80,7 +80,7 @@ export async function POST(request) {
     if (scoresError) {
       console.error("Error fetching scores:", scoresError);
       return NextResponse.json(
-        { error: "Failed to fetch scores", details: scoresError.message },
+        { error: "Failed to fetch scores" },
         { status: 500 }
       );
     }
@@ -291,7 +291,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("Error initializing history:", error);
     return NextResponse.json(
-      { error: "Internal server error", details: error.message },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
