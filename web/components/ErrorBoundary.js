@@ -1,6 +1,7 @@
 "use client";
 
 import { Component } from "react";
+import * as Sentry from "@sentry/nextjs";
 
 /**
  * Error Boundary Component
@@ -28,10 +29,14 @@ class ErrorBoundary extends Component {
 
     this.setState({ errorInfo });
 
-    // TODO: Send to error tracking service (Sentry, etc.)
-    // if (typeof window !== 'undefined' && window.Sentry) {
-    //   window.Sentry.captureException(error, { extra: errorInfo });
-    // }
+    // Report to Sentry if configured
+    try {
+      Sentry.captureException(error, {
+        extra: { componentStack: errorInfo?.componentStack },
+      });
+    } catch (_e) {
+      // Sentry not initialized, ignore
+    }
   }
 
   handleRetry = () => {

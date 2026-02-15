@@ -143,8 +143,8 @@ export default async function TransparencyPage() {
             Real Scores. <span className="text-gradient-safe">No Bias.</span>
           </h1>
           <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
-            We don't give everyone a gold star. Our ratings are based on {config.safe.stats.totalNorms} security
-            norms - some products excel, others don't. That's what makes our ratings trustworthy.
+            We don&apos;t give everyone a gold star. Our ratings are based on {config.safe.stats.totalNorms} security
+            norms - some products excel, others don&apos;t. That&apos;s what makes our ratings trustworthy.
           </p>
         </div>
       </section>
@@ -197,7 +197,7 @@ export default async function TransparencyPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-error">✗</span>
-                  <span><strong>Closed source code</strong> - Can't verify security claims without code review</span>
+                  <span><strong>Closed source code</strong> - Can&apos;t verify security claims without code review</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-error">✗</span>
@@ -295,7 +295,7 @@ export default async function TransparencyPage() {
               AI for Speed. Humans for Judgment.
             </h2>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              We combine the scale of AI with the nuance of human expertise. Here's how we avoid the pitfalls of pure automation.
+              We combine the scale of AI with the nuance of human expertise. Here&apos;s how we avoid the pitfalls of pure automation.
             </p>
           </div>
 
@@ -321,7 +321,7 @@ export default async function TransparencyPage() {
               <div>
                 <h3 className="font-bold text-lg mb-2">Humans Verify Critical Scores</h3>
                 <p className="text-base-content/60">
-                  When the AI says "I'm not sure" (TBD), human experts review. Critical security norms
+                  When the AI says &quot;I&apos;m not sure&quot; (TBD), human experts review. Critical security norms
                   get a second-pass verification. New product types require manual validation.
                 </p>
                 <div className="flex gap-4 mt-3 text-sm">
@@ -402,7 +402,7 @@ export default async function TransparencyPage() {
               <div className="text-success text-2xl mb-3">✓</div>
               <h3 className="font-bold mb-2">Regular Updates</h3>
               <p className="text-sm text-base-content/60">
-                Scores are recalculated when products update their security. Past performance doesn't lock in a score.
+                Scores are recalculated when products update their security. Past performance doesn&apos;t lock in a score.
               </p>
             </div>
           </div>
@@ -412,7 +412,7 @@ export default async function TransparencyPage() {
       {/* CTA */}
       <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4">Check Any Product's Score</h2>
+          <h2 className="text-2xl font-bold mb-4">Check Any Product&apos;s Score</h2>
           <p className="text-base-content/60 mb-8">
             Search our database of {stats?.total || config.safe.stats.totalProducts}+ rated products.
           </p>

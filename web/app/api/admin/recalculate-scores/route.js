@@ -1,16 +1,13 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import { auth } from "@/libs/auth";
+import { requireAdmin as requireAdminAuth } from "@/libs/admin-auth";
 
 export const dynamic = "force-dynamic";
 
-// Admin authentication check
+// Admin authentication check using centralized RBAC
 async function requireAdmin() {
-  const session = await auth();
-  if (!session?.user?.email || session.user.email !== "admin@safescoring.io") {
-    return false;
-  }
-  return true;
+  const admin = await requireAdminAuth();
+  return !!admin;
 }
 
 /**
@@ -54,7 +51,7 @@ export async function POST(request) {
       if (error) {
         console.error("Error recalculating scores:", error);
         return NextResponse.json(
-          { error: error.message },
+          { error: "Failed to recalculate scores" },
           { status: 500 }
         );
       }
@@ -71,7 +68,7 @@ export async function POST(request) {
       if (error) {
         console.error("Error recalculating all scores:", error);
         return NextResponse.json(
-          { error: error.message },
+          { error: "Failed to recalculate scores" },
           { status: 500 }
         );
       }

@@ -45,7 +45,7 @@ export async function GET(request) {
       query = query.eq("status", status);
     }
 
-    const { data: corrections, error, count } = await query;
+    const { data: corrections, error, count: _count } = await query;
 
     if (error) {
       console.error("Error fetching corrections:", error);

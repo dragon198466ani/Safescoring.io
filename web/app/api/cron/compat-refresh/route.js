@@ -59,7 +59,7 @@ export async function GET(request) {
       .select('id, name, slug, pilier_s, pilier_a, pilier_f, pilier_e, url')
       .in('id', productIds);
 
-    const productMap = Object.fromEntries(products.map(p => [p.id, p]));
+    const _productMap = Object.fromEntries(products.map(p => [p.id, p]));
 
     // Get ALL products for pair analysis
     const { data: allProducts } = await supabase
@@ -145,6 +145,6 @@ export async function GET(request) {
 
   } catch (error) {
     console.error('Compat refresh error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Compatibility refresh failed" }, { status: 500 });
   }
 }

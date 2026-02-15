@@ -1,18 +1,13 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/libs/auth";
+import { isAdminEmail } from "@/libs/admin-auth";
 import AdminDashboard from "@/components/AdminDashboard";
 
 export const metadata = {
   title: "Admin Dashboard - SafeScoring",
   description: "Gérer les tâches d'automatisation SafeScoring",
 };
-
-// Liste des emails admin autorisés
-const ADMIN_EMAILS = [
-  "admin@safescoring.io",
-  // Ajouter d'autres emails admin ici
-];
 
 export default async function AdminPage() {
   const session = await auth();
@@ -22,9 +17,9 @@ export default async function AdminPage() {
     redirect("/signin");
   }
 
-  // Vérifier si admin (par email ou rôle)
+  // Vérifier si admin (via centralized RBAC)
   const isAdmin =
-    ADMIN_EMAILS.includes(session.user?.email) ||
+    isAdminEmail(session.user?.email) ||
     session.user?.role === "admin";
 
   if (!isAdmin) {

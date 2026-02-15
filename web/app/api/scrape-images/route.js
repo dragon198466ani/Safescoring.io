@@ -88,11 +88,11 @@ export async function GET(request) {
       description: data.data?.description,
       images,
     });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({
       success: false,
-      error: error.message,
+      error: "Failed to scrape images",
       images: [],
-    }, { status: 200 });
+    }, { status: 500 });
   }
 }

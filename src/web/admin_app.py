@@ -10,8 +10,12 @@ from urllib.parse import urlparse
 import requests
 import os
 import hashlib
+import hmac
 import secrets
+import logging
 from datetime import datetime, timedelta
+
+logger = logging.getLogger(__name__)
 
 # Configuration
 def load_config():
@@ -60,18 +64,28 @@ if os.environ.get('FLASK_ENV') == 'production':
 ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
 ADMIN_PASSWORD_HASH = os.environ.get('ADMIN_PASSWORD_HASH', '')
 
-# If no password hash is set, generate a temporary one and print it
+# If no password hash is set, generate a temporary one (logged securely, not printed)
 if not ADMIN_PASSWORD_HASH:
     _temp_password = secrets.token_urlsafe(16)
     ADMIN_PASSWORD_HASH = hashlib.sha256(_temp_password.encode()).hexdigest()
-    print(f"[SECURITY] No ADMIN_PASSWORD_HASH set. Temporary password: {_temp_password}")
-    print(f"[SECURITY] Set ADMIN_PASSWORD_HASH={ADMIN_PASSWORD_HASH} in your environment")
+    logger.warning("[SECURITY] No ADMIN_PASSWORD_HASH set. A temporary password has been generated.")
+    logger.warning("[SECURITY] Set ADMIN_PASSWORD_HASH=%s in your environment", ADMIN_PASSWORD_HASH)
+    # Write temp password to a file only readable by the process owner
+    _temp_file = os.path.join(os.path.dirname(__file__), '.admin_temp_password')
+    try:
+        with open(_temp_file, 'w') as f:
+            f.write(_temp_password)
+        os.chmod(_temp_file, 0o600)
+        logger.warning("[SECURITY] Temporary password written to %s (delete after first login)", _temp_file)
+    except OSError:
+        logger.warning("[SECURITY] Could not write temp password file. Set ADMIN_PASSWORD_HASH env var.")
+    _temp_password = None  # Clear from memory
 
 
 def check_password(password):
-    """Verify password against stored hash (timing-safe comparison)"""
+    """Verify password against stored hash (timing-safe comparison using HMAC)"""
     password_hash = hashlib.sha256(password.encode()).hexdigest()
-    return secrets.compare_digest(password_hash, ADMIN_PASSWORD_HASH)
+    return hmac.compare_digest(password_hash, ADMIN_PASSWORD_HASH)
 
 
 def is_safe_redirect_url(target):

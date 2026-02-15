@@ -12,10 +12,27 @@ const blockedUsersStore = new Set();
 setInterval(() => {
   const now = Date.now();
   const oneHour = 3600000;
+  const sixHours = 21600000;
 
   for (const [userId, data] of userActivityStore.entries()) {
     if (now - data.lastActivity > oneHour) {
       userActivityStore.delete(userId);
+    }
+  }
+
+  // Cleanup suspicious users older than 6 hours
+  for (const [userId, data] of suspiciousUsersStore.entries()) {
+    if (now - data.firstFlagged > sixHours) {
+      suspiciousUsersStore.delete(userId);
+    }
+  }
+
+  // Cleanup blocked users periodically (unblock after 24 hours)
+  // Note: blockedUsersStore is a Set, so we track block times via suspiciousUsersStore
+  for (const userId of blockedUsersStore) {
+    const suspData = suspiciousUsersStore.get(userId);
+    if (!suspData || now - suspData.firstFlagged > 86400000) {
+      blockedUsersStore.delete(userId);
     }
   }
 }, 600000);

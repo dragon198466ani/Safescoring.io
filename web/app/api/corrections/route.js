@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { userCorrectionSchema, validateBody } from "@/libs/validations";
 
 /**
  * POST /api/corrections
@@ -23,12 +24,10 @@ export async function POST(request) {
       );
     }
 
-    // Parse request body
-    let body;
-    try {
-      body = await request.json();
-    } catch {
-      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    // Validate input with Zod
+    const validation = await validateBody(request, userCorrectionSchema);
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
     const {
@@ -41,38 +40,7 @@ export async function POST(request) {
       correctionReason,
       evidenceUrls,
       evidenceDescription,
-    } = body;
-
-    // Validation
-    if (!productId && !productSlug) {
-      return NextResponse.json(
-        { error: "Product ID or slug is required" },
-        { status: 400 }
-      );
-    }
-
-    if (!fieldCorrected || !suggestedValue) {
-      return NextResponse.json(
-        { error: "Field to correct and suggested value are required" },
-        { status: 400 }
-      );
-    }
-
-    // Valid field types
-    const validFields = [
-      "evaluation",      // Correction on norm evaluation (YES/NO/N/A)
-      "product_info",    // Correction on product information
-      "incident",        // Correction on incident data
-      "methodology",     // Suggestion for methodology improvement
-      "other"            // Other corrections
-    ];
-
-    if (!validFields.includes(fieldCorrected)) {
-      return NextResponse.json(
-        { error: `Invalid field type. Must be one of: ${validFields.join(", ")}` },
-        { status: 400 }
-      );
-    }
+    } = validation.data;
 
     if (!isSupabaseConfigured()) {
       return NextResponse.json(
