@@ -1,47 +1,41 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 
-/**
- * FloatingStackBubble - Floating bubble showing user's product stack
- */
-export default function FloatingStackBubble({ products = [], pendingAddProduct, onProductAdded }) {
-  const [stackIds, setStackIds] = useState(new Set());
-  const [isExpanded, setIsExpanded] = useState(false);
+const FloatingStackBubble = ({ products, pendingAddProduct, onProductAdded, onProductRemoved }) => {
+  const [stackItems, setStackItems] = useState([]);
 
   useEffect(() => {
-    if (pendingAddProduct && !stackIds.has(pendingAddProduct.id)) {
-      setStackIds((prev) => new Set([...prev, pendingAddProduct.id]));
-      if (onProductAdded) onProductAdded(pendingAddProduct);
+    if (pendingAddProduct && !stackItems.find((p) => p.id === pendingAddProduct.id)) {
+      setStackItems((prev) => [...prev, pendingAddProduct]);
+      onProductAdded?.(pendingAddProduct);
     }
-  }, [pendingAddProduct, stackIds, onProductAdded]);
+  }, [pendingAddProduct]);
 
-  const stackCount = stackIds.size;
+  const handleRemove = (product) => {
+    setStackItems((prev) => prev.filter((p) => p.id !== product.id));
+    onProductRemoved?.(product);
+  };
 
-  if (stackCount === 0) return null;
+  if (stackItems.length === 0) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-40">
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="btn btn-primary btn-circle shadow-lg"
-      >
-        {stackCount}
-      </button>
-      {isExpanded && (
-        <div className="absolute bottom-16 right-0 w-64 rounded-xl bg-base-200 border border-base-300 shadow-xl p-3">
-          <div className="flex items-center justify-between mb-2">
-            <span className="font-semibold text-sm">My Stack ({stackCount})</span>
-            <Link href="/stack-audit" className="text-xs text-primary hover:underline">
-              View
-            </Link>
-          </div>
-          <p className="text-xs text-base-content/50">
-            {stackCount} product{stackCount > 1 ? "s" : ""} in your stack
-          </p>
-        </div>
-      )}
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-base-100 border border-base-300 rounded-2xl shadow-2xl px-4 py-3 flex items-center gap-3">
+      <span className="text-sm font-semibold">{stackItems.length} in stack</span>
+      <div className="flex gap-1">
+        {stackItems.slice(0, 5).map((item) => (
+          <button
+            key={item.id}
+            onClick={() => handleRemove(item)}
+            className="btn btn-ghost btn-xs"
+            title={`Remove ${item.name}`}
+          >
+            {item.name?.slice(0, 3)}
+          </button>
+        ))}
+      </div>
     </div>
   );
-}
+};
+
+export default FloatingStackBubble;

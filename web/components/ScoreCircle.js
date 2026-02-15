@@ -1,17 +1,15 @@
 "use client";
 
-/**
- * MiniScoreCircle - Circular score display with SVG ring
- */
-export function MiniScoreCircle({ score = 0, size = 72, strokeWidth = 6 }) {
+export const MiniScoreCircle = ({ score, size = 72, strokeWidth = 6 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const progress = Math.min(100, Math.max(0, score));
-  const offset = circumference - (progress / 100) * circumference;
+  const safeScore = Math.max(0, Math.min(100, score || 0));
+  const offset = circumference - (safeScore / 100) * circumference;
 
   const getColor = (s) => {
-    if (s >= 80) return "#00d4aa";
+    if (s >= 80) return "#22c55e";
     if (s >= 60) return "#f59e0b";
+    if (s >= 40) return "#f97316";
     return "#ef4444";
   };
 
@@ -25,25 +23,23 @@ export function MiniScoreCircle({ score = 0, size = 72, strokeWidth = 6 }) {
           fill="none"
           stroke="currentColor"
           strokeWidth={strokeWidth}
-          className="text-base-300"
+          className="opacity-10"
         />
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke={getColor(progress)}
+          stroke={getColor(safeScore)}
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
         />
       </svg>
-      <span className="absolute text-sm font-bold" style={{ color: getColor(progress) }}>
-        {Math.round(progress)}
-      </span>
+      <span className="absolute text-sm font-bold">{safeScore > 0 ? safeScore : "-"}</span>
     </div>
   );
-}
+};
 
 export default MiniScoreCircle;

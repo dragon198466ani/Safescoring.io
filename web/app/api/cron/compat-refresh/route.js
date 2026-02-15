@@ -40,7 +40,7 @@ export async function GET(request) {
 
   const supabase = getSupabase();
   if (!supabase) {
-    return NextResponse.json({ error: 'Database not configured' }, { status: 500 });
+    return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
   }
 
   try {
