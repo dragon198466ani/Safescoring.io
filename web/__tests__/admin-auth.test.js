@@ -58,8 +58,8 @@ describe("admin-auth", () => {
   });
 
   describe("logAdminAction", () => {
-    it("returns structured log entry", () => {
-      const entry = logAdminAction({
+    it("returns structured log entry", async () => {
+      const entry = await logAdminAction({
         adminEmail: "admin@safescoring.io",
         action: "test_action",
         resource: "test_resource",
@@ -67,14 +67,14 @@ describe("admin-auth", () => {
       });
 
       expect(entry).toHaveProperty("timestamp");
-      expect(entry.adminEmail).toBe("admin@safescoring.io");
+      expect(entry.admin_email).toBe("admin@safescoring.io");
       expect(entry.action).toBe("test_action");
       expect(entry.resource).toBe("test_resource");
       expect(entry.details).toEqual({ key: "value" });
     });
 
-    it("handles empty details", () => {
-      const entry = logAdminAction({
+    it("handles empty details", async () => {
+      const entry = await logAdminAction({
         adminEmail: "admin@safescoring.io",
         action: "test",
         resource: "test",

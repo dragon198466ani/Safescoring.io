@@ -9,6 +9,11 @@ vi.mock("@/libs/supabase", () => ({
   isSupabaseConfigured: vi.fn(() => true),
 }));
 
+// Mock api-protection (avoids transitive next/server import in vitest)
+vi.mock("@/libs/api-protection", () => ({
+  quickProtect: vi.fn(() => Promise.resolve({ blocked: false })),
+}));
+
 const { GET } = await import("@/app/api/health/route");
 
 describe("/api/health", () => {
