@@ -5,6 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 import { getNormStats } from "@/libs/getNormStats";
 import { getT } from "@/libs/i18n/server";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = getSEOTags({
   title: `Score Transparency | ${config.appName}`,
   description: "See real score distribution across all crypto products. We rate objectively - some products score high, others don't. No pay-to-play, just data.",
