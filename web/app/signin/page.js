@@ -8,7 +8,7 @@ import config from "@/config";
 import { useNormStats } from "@/libs/NormStatsProvider";
 
 function SignInContent() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const normStats = useNormStats();

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import { quickProtect } from "@/libs/api-protection";
+import { searchQuerySchema, validateSearchParams } from "@/libs/validations";
 import config from "@/config";
 
 /**
@@ -14,24 +15,25 @@ export async function GET(request) {
   if (protection.blocked) return protection.response;
 
   const { searchParams } = new URL(request.url);
-  const query = searchParams.get("q") || "";
-  const type = searchParams.get("type");
-  const limit = Math.min(parseInt(searchParams.get("limit")) || 10, 50);
 
   // CORS headers - restrict to allowed origins
-  const allowedOrigin = process.env.ALLOWED_ORIGINS || "https://safescoring.io";
+  const allowedOrigin = process.env.ALLOWED_ORIGINS?.split(",")[0]?.trim() || "https://safescoring.io";
   const headers = {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Methods": "GET",
     "Cache-Control": "public, max-age=300, s-maxage=300",
   };
 
-  if (!query || query.length < 2) {
+  // Validate inputs
+  const validation = validateSearchParams(searchParams, searchQuerySchema);
+  if (!validation.success) {
     return NextResponse.json(
-      { error: "Query must be at least 2 characters" },
+      { error: validation.error },
       { status: 400, headers }
     );
   }
+
+  const { q: query, type, limit } = validation.data;
 
   if (!isSupabaseConfigured()) {
     return NextResponse.json(
@@ -134,7 +136,7 @@ export async function GET(request) {
 
 // Handle CORS preflight
 export async function OPTIONS() {
-  const allowedOrigin = process.env.ALLOWED_ORIGINS || "https://safescoring.io";
+  const allowedOrigin = process.env.ALLOWED_ORIGINS?.split(",")[0]?.trim() || "https://safescoring.io";
   return new NextResponse(null, {
     headers: {
       "Access-Control-Allow-Origin": allowedOrigin,

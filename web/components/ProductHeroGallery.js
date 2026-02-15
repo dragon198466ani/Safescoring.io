@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+/* eslint-disable @next/next/no-img-element */
 
 /**
  * ProductHeroGallery - Galerie intégrée au hero de la page produit
@@ -68,7 +69,7 @@ export default function ProductHeroGallery({ media = [], productName = "Product"
 
   // Style: Featured image + thumbnails strip
   const featuredMedia = validMedia[0];
-  const thumbnails = validMedia.slice(0, 5); // Max 5 thumbnails visibles
+  const _thumbnails = validMedia.slice(0, 5); // Max 5 thumbnails visibles
 
   return (
     <>

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import { sendEmail } from "@/libs/resend";
 import { quickProtect } from "@/libs/api-protection";
+import { newsletterSchema, validateBody } from "@/libs/validations";
 import config from "@/config";
 
 // Generate HMAC token for a given email + purpose (unsubscribe, confirm, etc.)
@@ -51,14 +52,16 @@ export async function POST(request) {
   if (protection.blocked) return protection.response;
 
   try {
-    const { email, source = "website" } = await request.json();
-
-    if (!email || !email.includes("@")) {
+    // Validate input with Zod
+    const validation = await validateBody(request, newsletterSchema);
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "Valid email required" },
+        { error: validation.error },
         { status: 400 }
       );
     }
+
+    const { email, source } = validation.data;
 
     // Normalize email
     const normalizedEmail = email.toLowerCase().trim();

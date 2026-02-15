@@ -1,3 +1,5 @@
+const { withSentryConfig } = require("@sentry/nextjs");
+
 /** @type {import('next').NextConfig} */
 
 // Security headers configuration
@@ -51,8 +53,8 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' data: https: blob:",
       "font-src 'self' https://fonts.gstatic.com data:",
-      "connect-src 'self' https://*.supabase.co https://api.lemonsqueezy.com https://api.moonpay.com https://api.microlink.io wss://*.supabase.co",
-      "frame-src 'self' https://challenges.cloudflare.com https://app.lemonsqueezy.com https://buy.moonpay.com",
+      "connect-src 'self' https://*.supabase.co https://api.lemonsqueezy.com https://api.moonpay.com https://api.stripe.com https://api.microlink.io wss://*.supabase.co https://www.google-analytics.com https://*.ingest.sentry.io",
+      "frame-src 'self' https://challenges.cloudflare.com https://app.lemonsqueezy.com https://buy.moonpay.com https://js.stripe.com",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
@@ -151,6 +153,7 @@ const nextConfig = {
         protocol: "https",
         hostname: "safescoring.io",
       },
+      // Logos & favicons (used by ProductLogo, Leaderboard, etc.)
       {
         protocol: "https",
         hostname: "logo.clearbit.com",
@@ -158,6 +161,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "www.google.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**",
       },
     ],
   },
@@ -179,4 +186,16 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+// Wrap with Sentry only if DSN is configured
+module.exports = process.env.NEXT_PUBLIC_SENTRY_DSN
+  ? withSentryConfig(nextConfig, {
+      // Sentry webpack plugin options
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      silent: !process.env.CI, // Suppress logs in local dev
+      widenClientFileUpload: true,
+      disableLogger: true,
+      // Automatically tree-shake Sentry logger statements
+      automaticVercelMonitors: true,
+    })
+  : nextConfig;

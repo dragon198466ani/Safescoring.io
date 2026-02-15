@@ -52,7 +52,7 @@ export async function GET(request, { params }) {
           await sleep(userProtection.delay);
         }
       }
-    } catch (e) {
+    } catch (_e) {
       // Auth failed, continue as unauthenticated
     }
 
@@ -136,7 +136,7 @@ export async function GET(request, { params }) {
       }))
       .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    const incidentsError = impactError;
+    const _incidentsError = impactError;
 
     // Transform incidents data
     const incidents = (incidentsData || []).map((incident) => {

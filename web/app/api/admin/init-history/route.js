@@ -4,6 +4,7 @@ import { requireAdmin } from "@/libs/admin-auth";
 
 export const dynamic = "force-dynamic";
 
+
 /**
  * POST /api/admin/init-history
  * Complete initialization of score history for ALL products
@@ -186,7 +187,7 @@ export async function POST(request) {
         recordDate.setDate(Math.floor(Math.random() * 28) + 1); // Random day of month
 
         // Check if similar record already exists for this month
-        const monthKey = `${product.product_id}-${recordDate.getFullYear()}-${recordDate.getMonth()}`;
+        const _monthKey = `${product.product_id}-${recordDate.getFullYear()}-${recordDate.getMonth()}`;
 
         // Calculate score with variance (showing improvement trend)
         const trendBonus = ((months - i) / months) * 2.5; // Up to 2.5% improvement

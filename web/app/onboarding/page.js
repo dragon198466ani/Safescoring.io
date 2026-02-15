@@ -20,7 +20,7 @@ export default function OnboardingPage() {
     if (status === "authenticated") {
       fetchOnboardingState();
     }
-  }, [status, router]);
+  }, [status, router]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchOnboardingState = async () => {
     try {

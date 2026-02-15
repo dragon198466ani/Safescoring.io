@@ -134,7 +134,7 @@ export default function PartnersPage() {
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-center mb-4">Partner Programs</h2>
           <p className="text-center text-base-content/70 mb-12 max-w-2xl mx-auto">
-            Whether you're a wallet, exchange, media outlet, or auditor, we have a partnership program for you.
+            Whether you&apos;re a wallet, exchange, media outlet, or auditor, we have a partnership program for you.
           </p>
 
           <div className="grid md:grid-cols-2 gap-8">

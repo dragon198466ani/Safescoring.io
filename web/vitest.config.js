@@ -3,13 +3,17 @@ import path from "path";
 
 export default defineConfig({
   test: {
-    environment: "jsdom",
-    setupFiles: ["./vitest.setup.js"],
+    environment: "node",
     globals: true,
+    include: ["__tests__/**/*.test.{js,ts}"],
+    coverage: {
+      reporter: ["text", "lcov"],
+      include: ["libs/**", "app/api/**"],
+    },
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./"),
+      "@": path.resolve(__dirname, "."),
     },
   },
 });

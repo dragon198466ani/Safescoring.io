@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -13,13 +13,7 @@ export default function AdminCorrectionsPage() {
   const [filter, setFilter] = useState("pending");
   const [processing, setProcessing] = useState(null);
 
-  useEffect(() => {
-    if (session?.user) {
-      fetchCorrections();
-    }
-  }, [session, filter]);
-
-  const fetchCorrections = async () => {
+  const fetchCorrections = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch(`/api/admin/corrections?status=${filter}`);
@@ -33,7 +27,13 @@ export default function AdminCorrectionsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter]);
+
+  useEffect(() => {
+    if (session?.user) {
+      fetchCorrections();
+    }
+  }, [session, filter, fetchCorrections]);
 
   const handleReview = async (correctionId, newStatus, applyCorrection = false) => {
     setProcessing(correctionId);

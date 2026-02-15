@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { createClient } from "@supabase/supabase-js";
-import { createPublicClient, http } from "viem";
-import { polygon } from "viem/chains";
 import { verifyMessage } from "viem";
 import { quickProtect } from "@/libs/api-protection";
 
@@ -54,7 +52,7 @@ export async function POST(req) {
             { status: 400 }
           );
         }
-      } catch (e) {
+      } catch (_e) {
         return NextResponse.json(
           { error: "Signature verification failed" },
           { status: 400 }
@@ -108,7 +106,7 @@ export async function POST(req) {
  * DELETE /api/wallet/link
  * Unlink wallet from user account
  */
-export async function DELETE(req) {
+export async function DELETE(_req) {
   try {
     const protection = await quickProtect(req, "sensitive");
     if (protection.blocked) return protection.response;

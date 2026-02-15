@@ -4,6 +4,7 @@ import { requireAdmin } from "@/libs/admin-auth";
 
 export const dynamic = "force-dynamic";
 
+
 /**
  * POST /api/admin/generate-history
  * Generates simulated historical data for products to demonstrate score evolution charts

@@ -117,8 +117,12 @@ export async function logAdminAction({ adminEmail, action, resource, details = {
     details,
   };
 
-  // Always log to console for immediate visibility
-  console.log("[ADMIN AUDIT]", JSON.stringify(logEntry));
+  // Log admin action (structured for log aggregation)
+  if (process.env.NODE_ENV === "production") {
+    console.log(JSON.stringify({ level: "info", type: "admin_audit", ...logEntry }));
+  } else {
+    console.log("[ADMIN AUDIT]", JSON.stringify(logEntry));
+  }
 
   // Persist to database if available (non-blocking)
   if (supabaseAdmin) {

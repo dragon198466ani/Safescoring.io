@@ -8,6 +8,7 @@ import {
   sleep,
   calculatePublicDelay,
 } from "@/libs/user-protection";
+import { productsQuerySchema, validateSearchParams } from "@/libs/validations";
 
 // Cache pendant 60 secondes, revalide en arrière-plan
 export const revalidate = 60;
@@ -58,7 +59,7 @@ export async function GET(request) {
           await sleep(userProtection.delay);
         }
       }
-    } catch (e) {
+    } catch (_e) {
       // Auth failed, continue as unauthenticated
     }
 
@@ -82,20 +83,23 @@ export async function GET(request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const category = searchParams.get("category");
-    const typeCode = searchParams.get("type");
-    const search = searchParams.get("search")?.trim();
-    const sort = searchParams.get("sort") || "score-desc";
-    const scoreType = searchParams.get("scoreType") || "full";
+
+    // Validate query parameters with Zod
+    const validation = validateSearchParams(searchParams, productsQuerySchema);
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
+
+    const { category, type: typeCode, search, sort, scoreType } = validation.data;
 
     // PROTECTION: Apply limits based on authentication and trust
-    const requestedLimit = parseInt(searchParams.get("limit")) || 100;
+    const requestedLimit = validation.data.limit;
     const maxLimit = userLimits.products;
     const limit = Math.min(requestedLimit, maxLimit);
 
     // Offset also limited to prevent pagination scraping
     const maxOffset = isAuthenticated ? (isPaid ? 500 : 50) : 5;
-    const offset = Math.min(parseInt(searchParams.get("offset")) || 0, maxOffset);
+    const offset = Math.min(validation.data.offset, maxOffset);
 
     // Optimisation: Utiliser une vue matérialisée ou une requête plus efficace
     // Sélectionner uniquement les colonnes nécessaires
@@ -146,7 +150,7 @@ export async function GET(request) {
           total_na,
           calculated_at
         )
-      `);
+      `, { count: "exact" });
 
     // Filtrage côté serveur (plus efficace)
     if (search) {
@@ -172,11 +176,17 @@ export async function GET(request) {
       query = query.order("name", { ascending: true });
     }
 
-    const { data: products, error } = await query;
+    // Apply database-level pagination for name-based sorts (no post-processing needed)
+    const useDbPagination = sort === "name-asc" || sort === "name-desc";
+    if (useDbPagination) {
+      query = query.range(offset, offset + limit - 1);
+    }
+
+    const { data: products, error, count: dbCount } = await query;
 
     if (error) {
       return NextResponse.json(
-        { error: "Failed to fetch products", details: error.message },
+        { error: "Failed to fetch products" },
         { status: 500 }
       );
     }
@@ -314,9 +324,11 @@ export async function GET(request) {
       });
     }
 
-    // Pagination
-    const total = transformedProducts.length;
-    const paginatedProducts = transformedProducts.slice(offset, offset + limit);
+    // Pagination: use DB-level result if available, otherwise fallback to in-memory
+    const total = useDbPagination ? (dbCount ?? transformedProducts.length) : transformedProducts.length;
+    const paginatedProducts = useDbPagination
+      ? transformedProducts
+      : transformedProducts.slice(offset, offset + limit);
 
     // Generate watermark for tracking copied data
     const clientId = getClientId(request);
@@ -352,7 +364,7 @@ export async function GET(request) {
         "X-Robots-Tag": "noindex, nofollow",
       },
     });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

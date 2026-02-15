@@ -5,6 +5,7 @@ import { dispatchWebhookEvent } from "@/libs/webhook-dispatch";
 
 export const dynamic = "force-dynamic";
 
+
 /**
  * POST /api/admin/recalculate-scores
  * Recalculates SAFE scores for a single product or all products
@@ -46,7 +47,7 @@ export async function POST(request) {
       if (error) {
         console.error("Error recalculating scores:", error);
         return NextResponse.json(
-          { error: error.message },
+          { error: "Failed to recalculate scores" },
           { status: 500 }
         );
       }
@@ -70,7 +71,7 @@ export async function POST(request) {
       if (error) {
         console.error("Error recalculating all scores:", error);
         return NextResponse.json(
-          { error: error.message },
+          { error: "Failed to recalculate scores" },
           { status: 500 }
         );
       }

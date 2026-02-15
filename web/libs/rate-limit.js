@@ -73,32 +73,40 @@ setInterval(() => {
   }
 }, CLEANUP_INTERVAL);
 
+/**
+ * Rate limit configuration per endpoint type
+ * Can be overridden via environment variables
+ */
+const isProduction = process.env.NODE_ENV === "production";
+
 // ─── Configuration ────────────────────────────────────────────────
 export const RATE_LIMITS = {
+  // Public APIs
   public: {
-    windowMs: 60000,
-    maxRequests: parseInt(process.env.RATE_LIMIT_PUBLIC) || (process.env.NODE_ENV === "production" ? 60 : 1000),
-    blockDuration: process.env.NODE_ENV === "production" ? 300000 : 0,
+    windowMs: 60000, // 1 minute
+    maxRequests: parseInt(process.env.RATE_LIMIT_PUBLIC) || (isProduction ? 60 : 1000),
+    blockDuration: isProduction ? 300000 : 0, // 5 min block in production
   },
   authenticated: {
     windowMs: 60000,
-    maxRequests: parseInt(process.env.RATE_LIMIT_AUTHENTICATED) || (process.env.NODE_ENV === "production" ? 120 : 2000),
-    blockDuration: process.env.NODE_ENV === "production" ? 300000 : 0,
+    maxRequests: parseInt(process.env.RATE_LIMIT_AUTHENTICATED) || (isProduction ? 120 : 2000),
+    blockDuration: isProduction ? 300000 : 0, // 5 min block in production
   },
+  // Sensitive APIs (history, bulk data, DNS verification)
   sensitive: {
     windowMs: 60000,
-    maxRequests: process.env.NODE_ENV === "production" ? 20 : 500,
-    blockDuration: process.env.NODE_ENV === "production" ? 600000 : 0,
+    maxRequests: isProduction ? 20 : 500,
+    blockDuration: isProduction ? 600000 : 0, // 10 min block in production
   },
   admin: {
     windowMs: 60000,
-    maxRequests: parseInt(process.env.RATE_LIMIT_ADMIN) || (process.env.NODE_ENV === "production" ? 100 : 1000),
-    blockDuration: 0,
+    maxRequests: parseInt(process.env.RATE_LIMIT_ADMIN) || (isProduction ? 100 : 1000),
+    blockDuration: isProduction ? 60000 : 0, // 1 min block in production
   },
   search: {
     windowMs: 60000,
-    maxRequests: process.env.NODE_ENV === "production" ? 30 : 500,
-    blockDuration: process.env.NODE_ENV === "production" ? 300000 : 0,
+    maxRequests: isProduction ? 30 : 500,
+    blockDuration: isProduction ? 300000 : 0, // 5 min block in production
   },
 };
 

@@ -1,3 +1,15 @@
+// Sourced stats — single source of truth (update annually)
+const STATS = {
+  // Source: Chainalysis "Crypto Hacking Stolen Funds 2025" (Dec 2024)
+  hackLosses2024: "$2.2 billion",
+  hackLosses2024Short: "$2.2B",
+  // Source: Cyvers 2024 Web3 Security Report — access control breaches
+  accessControlLossPct: "81%",
+  // Source: Hacken Q2 2024 Web3 Security Report — ~half of affected projects had audits
+  auditedHackedApprox: "nearly half",
+  auditedHackedYear: "2024",
+};
+
 const config = {
   // REQUIRED
   appName: "SafeScoring",
@@ -34,7 +46,6 @@ const config = {
         },
       },
       {
-        // TODO: Replace with your actual Lemon Squeezy variant ID
         variantId: process.env.LEMON_SQUEEZY_EXPLORER_VARIANT_ID || "explorer_variant",
         name: "Explorer",
         description: "Compare and optimize your crypto security",
@@ -55,7 +66,6 @@ const config = {
       },
       {
         isFeatured: true,
-        // TODO: Replace with your actual Lemon Squeezy variant ID
         variantId: process.env.LEMON_SQUEEZY_PRO_VARIANT_ID || "pro_variant",
         name: "Professional",
         description: "Full security intelligence for your crypto stack",
@@ -78,7 +88,6 @@ const config = {
         },
       },
       {
-        // TODO: Replace with your actual Lemon Squeezy variant ID
         variantId: process.env.LEMON_SQUEEZY_ENTERPRISE_VARIANT_ID || "enterprise_variant",
         name: "Enterprise",
         description: "Security intelligence at scale",
@@ -147,35 +156,38 @@ const config = {
       {
         code: "S",
         name: "Security",
-        description: "Is your crypto actually protected? We verify cryptographic standards, key management, and encryption.",
-        shortDesc: "Cryptographic foundations",
+        description: "Would your wallet survive a state-level attack? We verify encryption, key management, and cryptographic standards — because a single weak algorithm means everything you own is one exploit away from zero.",
+        shortDesc: "Cryptographic armor",
         color: "#22c55e", // green
       },
       {
         code: "A",
         name: "Adversity",
-        description: "What happens under threat? We assess duress protection, anti-coercion features, and physical security.",
-        shortDesc: "Threat resistance",
+        description: "What happens when someone holds a gun to your head? We assess duress protection, anti-coercion mechanisms, time-locks, and physical security — because the real threat to crypto holders is no longer just hackers.",
+        shortDesc: "Physical threat & coercion resistance",
         color: "#f59e0b", // amber
       },
       {
         code: "F",
         name: "Fidelity",
-        description: "Can you trust it long-term? We check audits, uptime, update frequency, and track record.",
-        shortDesc: "Reliability & trust",
+        description: `${STATS.auditedHackedApprox} of hacked projects in ${STATS.auditedHackedYear} had been audited. An audit is a snapshot — we measure what happens after. Update frequency, incident response, team track record, and whether they actually fix what breaks.`,
+        shortDesc: "Proven reliability over time",
         color: "#3b82f6", // blue
       },
       {
         code: "E",
         name: "Efficiency",
-        description: "Is it usable AND secure? We evaluate UX, multi-chain support, and accessibility.",
-        shortDesc: "Usability & performance",
+        description: "The most secure wallet is worthless if you send funds to the wrong address because the UI was confusing. We measure whether security actually works in your hands — UX, clarity, multi-chain support, and error prevention.",
+        shortDesc: "Security you can actually use",
         color: "#8b5cf6", // purple
       },
     ],
     // Stats are fetched dynamically from the DB via /api/norms/stats
     // No hardcoded numbers — the database is the single source of truth
-    stats: {},
+    stats: {
+      // Pillar-specific sourced stats (from STATS constant above)
+      ...STATS,
+    },
     // Score thresholds (single source of truth for FAQ, achievements, UI)
     thresholds: {
       excellent: 80,   // 80+ = excellent (green)
@@ -192,7 +204,7 @@ const config = {
       },
       {
         title: "Complementary to Audits",
-        description: "Audits evaluate code at a point in time. We provide continuous security evaluation based on published standards.",
+        description: `${STATS.auditedHackedApprox} of hacked projects in ${STATS.auditedHackedYear} had been audited. We provide continuous security evaluation based on published standards.`,
         icon: "beyond",
       },
       {
@@ -204,6 +216,11 @@ const config = {
         title: "AI-Powered",
         description: "Automated, reproducible evaluations updated monthly. Based on published security standards.",
         icon: "ai",
+      },
+      {
+        title: "Physical Threat Defense",
+        description: "The only rating that evaluates anti-coercion features: time-locks, duress PINs, hidden wallets. Because kidnappings targeting crypto holders are real.",
+        icon: "physical",
       },
     ],
     // Competitor comparison data — factual scope descriptions only (no disparaging claims)

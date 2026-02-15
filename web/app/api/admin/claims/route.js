@@ -4,8 +4,6 @@ import { sendEmail } from "@/libs/resend";
 import config from "@/config";
 import {
   requireAdmin,
-  logAdminAction,
-  unauthorizedResponse,
 } from "@/libs/admin-auth";
 
 /**

@@ -71,7 +71,7 @@ function getRecommendations(answers, products) {
   // Score each product based on quiz answers
   products.forEach(product => {
     let score = 0;
-    const productTags = [
+    const _productTags = [
       product.type_code,
       product.name?.toLowerCase(),
     ].filter(Boolean);

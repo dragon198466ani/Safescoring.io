@@ -15,7 +15,7 @@ const PERIODS = [
   { id: 'all', label: 'All', limit: 120 },
 ];
 
-export default function ScoreSecurityPanel({ slug, productName }) {
+export default function ScoreSecurityPanel({ slug, productName: _productName }) {
   const [historyData, setHistoryData] = useState(null);
   const [securityData, setSecurityData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -114,14 +114,6 @@ export default function ScoreSecurityPanel({ slug, productName }) {
         {trend.label}
       </span>
     );
-  };
-
-  // Format currency
-  const formatUSD = (amount) => {
-    if (!amount) return "$0";
-    if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
-    if (amount >= 1000) return `$${(amount / 1000).toFixed(0)}K`;
-    return `$${amount.toFixed(0)}`;
   };
 
   return (

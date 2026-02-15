@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { sendEmail } from "@/libs/resend";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import { quickProtect } from "@/libs/api-protection";
+import { claimSchema, validateBody } from "@/libs/validations";
 
 /**
  * Escape HTML to prevent XSS in email templates
@@ -55,11 +56,10 @@ export async function POST(request) {
   if (protection.blocked) return protection.response;
 
   try {
-    let body;
-    try {
-      body = await request.json();
-    } catch {
-      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    // Validate input with Zod
+    const validation = await validateBody(request, claimSchema);
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
     const {
@@ -76,32 +76,7 @@ export async function POST(request) {
       captchaToken,
       dnsVerified,
       dnsToken,
-    } = body;
-
-    // Validation
-    if (!companyName || !contactName || !email || !role) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: "Invalid email format" },
-        { status: 400 }
-      );
-    }
-
-    // Verify captcha
-    if (!captchaToken) {
-      return NextResponse.json(
-        { error: "Captcha verification required" },
-        { status: 400 }
-      );
-    }
+    } = validation.data;
 
     const captchaValid = await verifyTurnstile(captchaToken);
     if (!captchaValid) {

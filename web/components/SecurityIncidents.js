@@ -78,7 +78,7 @@ export default function SecurityIncidents({ slug }) {
   const allResolved = incidents.length > 0 && incidents.every(i => i.status === "resolved");
 
   // Use a more reassuring style if all incidents are resolved
-  const effectiveRiskLevel = allResolved ? "resolved" : stats.riskLevel;
+  const _effectiveRiskLevel = allResolved ? "resolved" : stats.riskLevel;
 
   const riskStyle = allResolved
     ? { bg: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/30" }

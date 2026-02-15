@@ -10,14 +10,35 @@ from urllib.parse import urlparse
 import requests
 import os
 import hashlib
+import hmac
 import secrets
+import logging
 from datetime import datetime, timedelta
 
-# Add parent directory to path to access core/
-import sys
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+logger = logging.getLogger(__name__)
 
-from core.config import load_config, CONFIG, SUPABASE_URL, SUPABASE_KEY
+# Configuration
+def load_config():
+    config = {}
+    # Try multiple config file locations
+    config_paths = [
+        os.path.join(os.path.dirname(__file__), 'env_template_free.txt'),
+        os.path.join(os.path.dirname(__file__), '..', '..', 'config', '.env'),
+        os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'env_template_free.txt'),
+    ]
+    for config_path in config_paths:
+        if os.path.exists(config_path):
+            with open(config_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#') and '=' in line:
+                        key, value = line.split('=', 1)
+                        config[key.strip()] = value.strip()
+    return config
+
+CONFIG = load_config()
+SUPABASE_URL = CONFIG.get('NEXT_PUBLIC_SUPABASE_URL', '')
+SUPABASE_KEY = CONFIG.get('NEXT_PUBLIC_SUPABASE_ANON_KEY', '')
 
 # Validate required configuration
 if not SUPABASE_URL or not SUPABASE_KEY:
@@ -43,18 +64,28 @@ if os.environ.get('FLASK_ENV') == 'production':
 ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
 ADMIN_PASSWORD_HASH = os.environ.get('ADMIN_PASSWORD_HASH', '')
 
-# If no password hash is set, generate a temporary one and print it
+# If no password hash is set, generate a temporary one (logged securely, not printed)
 if not ADMIN_PASSWORD_HASH:
     _temp_password = secrets.token_urlsafe(16)
     ADMIN_PASSWORD_HASH = hashlib.sha256(_temp_password.encode()).hexdigest()
-    print(f"[SECURITY] No ADMIN_PASSWORD_HASH set. Temporary password: {_temp_password}")
-    print(f"[SECURITY] Set ADMIN_PASSWORD_HASH={ADMIN_PASSWORD_HASH} in your environment")
+    logger.warning("[SECURITY] No ADMIN_PASSWORD_HASH set. A temporary password has been generated.")
+    logger.warning("[SECURITY] Set ADMIN_PASSWORD_HASH=%s in your environment", ADMIN_PASSWORD_HASH)
+    # Write temp password to a file only readable by the process owner
+    _temp_file = os.path.join(os.path.dirname(__file__), '.admin_temp_password')
+    try:
+        with open(_temp_file, 'w') as f:
+            f.write(_temp_password)
+        os.chmod(_temp_file, 0o600)
+        logger.warning("[SECURITY] Temporary password written to %s (delete after first login)", _temp_file)
+    except OSError:
+        logger.warning("[SECURITY] Could not write temp password file. Set ADMIN_PASSWORD_HASH env var.")
+    _temp_password = None  # Clear from memory
 
 
 def check_password(password):
-    """Verify password against stored hash (timing-safe comparison)"""
+    """Verify password against stored hash (timing-safe comparison using HMAC)"""
     password_hash = hashlib.sha256(password.encode()).hexdigest()
-    return secrets.compare_digest(password_hash, ADMIN_PASSWORD_HASH)
+    return hmac.compare_digest(password_hash, ADMIN_PASSWORD_HASH)
 
 
 def is_safe_redirect_url(target):
