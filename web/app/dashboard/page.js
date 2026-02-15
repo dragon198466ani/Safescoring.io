@@ -2,9 +2,6 @@ import Link from "next/link";
 import { auth } from "@/libs/auth";
 import { supabaseAdmin } from "@/libs/supabase";
 import config from "@/config";
-import Leaderboard from "@/components/Leaderboard";
-import TokenTeaser from "@/components/TokenTeaser";
-import SeniorityTracker from "@/components/SeniorityTracker";
 
 const getScoreColor = (score) => {
   if (score >= 80) return "text-green-400";
@@ -198,21 +195,6 @@ export default async function Dashboard() {
           ))}
         </div>
       </div>
-
-      {/* Token & Reputation Section */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Token Teaser - takes 2 columns */}
-        <div className="lg:col-span-2">
-          <TokenTeaser />
-        </div>
-        {/* Seniority Tracker */}
-        <div>
-          <SeniorityTracker />
-        </div>
-      </div>
-
-      {/* Leaderboard */}
-      <Leaderboard limit={5} />
 
       {/* Top rated products table */}
       <div className="rounded-2xl bg-base-200 border border-base-300 overflow-hidden">

@@ -97,7 +97,7 @@ export default function CorrectionForm({
           <a href="/signin" className="link link-primary">
             sign in
           </a>{" "}
-          to submit corrections and earn reputation points.
+          to submit corrections and help improve our evaluations.
         </p>
       </div>
     );

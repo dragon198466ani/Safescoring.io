@@ -135,10 +135,10 @@ const Footer = () => {
         {/* Disclaimer */}
         <div className="mt-12 p-4 bg-base-300/30 rounded-lg border border-base-300">
           <p className="text-xs text-base-content/50 text-center">
-            <strong>Disclaimer:</strong> This website does not provide investment advice.
-            The information presented is for informational purposes only and does not constitute
-            a recommendation to buy, sell, or hold any digital assets.
-            Always do your own research before making any investment decisions.
+            <strong>Disclaimer:</strong> SafeScoring is not a financial advisor. All scores and evaluations
+            are algorithmic assessments of products provided for informational purposes only. This is not
+            financial, investment, or legal advice. SafeScoring does not score or profile individuals.
+            Always do your own research before making any decisions. Use at your own risk.
           </p>
         </div>
 
