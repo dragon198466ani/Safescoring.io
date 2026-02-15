@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import ShareButtons from "@/components/ShareButtons";
+import { getT } from "@/libs/i18n/server";
 
 export const revalidate = 3600;
 
@@ -281,6 +282,8 @@ export default async function HackPage({ params }) {
     notFound();
   }
 
+  const t = getT();
+
   // JSON-LD for SEO
   const jsonLd = {
     "@context": "https://schema.org",
@@ -320,8 +323,8 @@ export default async function HackPage({ params }) {
           {/* Breadcrumb */}
           <nav className="text-sm breadcrumbs mb-6">
             <ul>
-              <li><Link href="/">Home</Link></li>
-              <li><Link href="/hacks">Hacks</Link></li>
+              <li><Link href="/">{t("hackDetail.home")}</Link></li>
+              <li><Link href="/hacks">{t("hackDetail.hacks")}</Link></li>
               <li className="text-base-content/70">{hack.project}</li>
             </ul>
           </nav>
@@ -358,19 +361,19 @@ export default async function HackPage({ params }) {
                 {/* Amount */}
                 <div className="bg-error/10 border border-error/30 rounded-xl p-4 text-center">
                   <div className="text-4xl font-black text-error">{formatAmount(hack.amount_usd)}</div>
-                  <div className="text-sm text-base-content/60">Total Stolen</div>
+                  <div className="text-sm text-base-content/60">{t("hackDetail.totalStolen")}</div>
                 </div>
 
                 {/* Pre-hack Score */}
                 {hack.safescore_before && (
                   <div className="bg-base-100 rounded-xl p-4 text-center">
-                    <div className="text-sm text-base-content/50 mb-1">SafeScore BEFORE Hack</div>
+                    <div className="text-sm text-base-content/50 mb-1">{t("hackDetail.safeScoreBefore")}</div>
                     <div className={`text-4xl font-black ${getScoreColor(hack.safescore_before)}`}>
                       {hack.safescore_before}
                       <span className="text-base text-base-content/40">/100</span>
                     </div>
                     <div className="text-xs text-base-content/40 mt-1">
-                      {hack.safescore_before < 50 ? "We warned about this" : "Red flags identified"}
+                      {hack.safescore_before < 50 ? t("hackDetail.weWarned") : t("hackDetail.redFlagsIdentified")}
                     </div>
                   </div>
                 )}
@@ -381,7 +384,7 @@ export default async function HackPage({ params }) {
                     href={`/products/${hack.product_slug}`}
                     className="btn btn-outline btn-sm w-full"
                   >
-                    View Current Score
+                    {t("hackDetail.viewCurrentScore")}
                   </Link>
                 )}
               </div>
@@ -391,21 +394,21 @@ export default async function HackPage({ params }) {
           {/* Quick Facts */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-base-200 rounded-lg p-4 text-center">
-              <div className="text-xs text-base-content/50 mb-1">Attack Vector</div>
+              <div className="text-xs text-base-content/50 mb-1">{t("hackDetail.attackVector")}</div>
               <div className="font-semibold text-sm">{hack.attack_vector || "Unknown"}</div>
             </div>
             <div className="bg-base-200 rounded-lg p-4 text-center">
-              <div className="text-xs text-base-content/50 mb-1">Funds Recovered</div>
+              <div className="text-xs text-base-content/50 mb-1">{t("hackDetail.fundsRecovered")}</div>
               <div className="font-semibold text-sm">
                 {hack.funds_recovered ? formatAmount(hack.funds_recovered) : "None"}
               </div>
             </div>
             <div className="bg-base-200 rounded-lg p-4 text-center">
-              <div className="text-xs text-base-content/50 mb-1">Attacker Identified</div>
+              <div className="text-xs text-base-content/50 mb-1">{t("hackDetail.attackerIdentified")}</div>
               <div className="font-semibold text-sm">{hack.attacker_identified ? "Yes" : "No"}</div>
             </div>
             <div className="bg-base-200 rounded-lg p-4 text-center">
-              <div className="text-xs text-base-content/50 mb-1">Category</div>
+              <div className="text-xs text-base-content/50 mb-1">{t("hackDetail.category")}</div>
               <div className="font-semibold text-sm">{hack.category}</div>
             </div>
           </div>
@@ -419,18 +422,17 @@ export default async function HackPage({ params }) {
 
           {/* CTA Box */}
           <div className="bg-gradient-to-br from-primary/20 to-base-200 border border-primary/30 rounded-xl p-8 text-center mb-8">
-            <h2 className="text-2xl font-bold mb-3">Don&apos;t trust. Verify.</h2>
+            <h2 className="text-2xl font-bold mb-3">{t("hackDetail.dontTrustVerify")}</h2>
             <p className="text-base-content/70 mb-6 max-w-lg mx-auto">
-              Check the SafeScore of any crypto tool before trusting it with your funds.
-              Our ratings identified red flags in {hack.project} before this incident.
+              {t("hackDetail.dontTrustVerifyDesc")}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link href="/products" className="btn btn-primary">
-                Check Your Tools
+                {t("hackDetail.checkYourTools")}
               </Link>
               {hack.product_slug && (
                 <Link href={`/products/${hack.product_slug}`} className="btn btn-outline">
-                  View {hack.project} Score
+                  {t("hackDetail.viewProductScore", { product: hack.project })}
                 </Link>
               )}
             </div>
@@ -438,7 +440,7 @@ export default async function HackPage({ params }) {
 
           {/* Related Hacks */}
           <div className="border-t border-base-300 pt-8">
-            <h3 className="text-xl font-bold mb-4">Other Security Incidents</h3>
+            <h3 className="text-xl font-bold mb-4">{t("hackDetail.otherIncidents")}</h3>
             <div className="flex flex-wrap gap-3">
               {getSampleHacks()
                 .filter((h) => h.slug !== slug)
@@ -453,7 +455,7 @@ export default async function HackPage({ params }) {
                   </Link>
                 ))}
               <Link href="/hacks" className="badge badge-lg badge-outline py-3 px-4">
-                View All
+                {t("hackDetail.viewAllIncidents")}
               </Link>
             </div>
           </div>

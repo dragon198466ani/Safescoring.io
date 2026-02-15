@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * LockedContent - Shows blurred content with sign-up CTA for non-authenticated users
  */
 export default function LockedContent({ children, title = "Premium Content" }) {
+  const { t } = useTranslation();
+
   return (
     <div className="relative">
       {/* Blurred content */}
@@ -23,10 +26,10 @@ export default function LockedContent({ children, title = "Premium Content" }) {
           </div>
           <h3 className="font-semibold text-lg mb-2">{title}</h3>
           <p className="text-sm text-base-content/60 mb-4">
-            Créez un compte gratuit pour accéder aux analyses détaillées et recommandations personnalisées.
+            {t("lockedContent.description")}
           </p>
           <Link href="/signin" className="btn btn-primary btn-sm">
-            Créer un compte gratuit
+            {t("lockedContent.createAccount")}
           </Link>
         </div>
       </div>

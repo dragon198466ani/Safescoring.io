@@ -1,7 +1,10 @@
 import Link from "next/link";
 import config from "@/config";
+import { getNormStats } from "@/libs/getNormStats";
 
-const Hero = () => {
+const Hero = async () => {
+  const normStats = await getNormStats();
+
   return (
     <section className="max-w-7xl mx-auto bg-base-100 flex flex-col items-center justify-center gap-10 px-8 py-12 lg:py-20">
       <div className="flex flex-col gap-8 items-center justify-center text-center max-w-4xl">
@@ -18,7 +21,7 @@ const Hero = () => {
 
         {/* Tagline badge */}
         <div className="badge badge-lg badge-outline gap-2 py-4 px-6">
-          <span className="text-primary font-bold">{config.safe.stats.totalNorms}</span> norms
+          <span className="text-primary font-bold">{normStats?.totalNorms ?? "—"}</span> norms
           <span className="opacity-50">•</span>
           <span>0 opinion</span>
           <span className="opacity-50">•</span>
@@ -71,15 +74,15 @@ const Hero = () => {
         {/* Stats row */}
         <div className="flex flex-wrap justify-center gap-8 mt-8 pt-8 border-t border-base-300">
           <div className="text-center">
-            <div className="text-3xl font-bold text-primary">{config.safe.stats.totalProducts}+</div>
+            <div className="text-3xl font-bold text-primary">{normStats?.totalProducts ?? "—"}+</div>
             <div className="text-sm opacity-60">Products Rated</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold">{config.safe.stats.totalNorms}</div>
+            <div className="text-3xl font-bold">{normStats?.totalNorms ?? "—"}</div>
             <div className="text-sm opacity-60">Security Norms</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold">{config.safe.stats.totalProductTypes}</div>
+            <div className="text-3xl font-bold">{normStats?.totalProductTypes ?? "—"}</div>
             <div className="text-sm opacity-60">Product Types</div>
           </div>
         </div>

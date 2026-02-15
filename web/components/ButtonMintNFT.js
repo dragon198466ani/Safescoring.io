@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { parseUnits as _parseUnits } from "viem";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -24,6 +25,7 @@ export default function ButtonMintNFT({
   className = "",
   onSuccess,
 }) {
+  const { t } = useTranslation();
   const { address, isConnected, chain } = useAccount();
   const [tierInfo, setTierInfo] = useState(null);
   const [usdcBalance, setUsdcBalance] = useState("0");
@@ -68,7 +70,7 @@ export default function ButtonMintNFT({
   // Handle approve success
   useEffect(() => {
     if (approveSuccess && step === "approving") {
-      toast.success("USDC approved!");
+      toast.success(t("buttonMintNFT.usdcApproved"));
       setStep("idle");
       // Refresh allowance
       if (address && addresses.safePassNFT) {
@@ -80,7 +82,7 @@ export default function ButtonMintNFT({
   // Handle mint success
   useEffect(() => {
     if (mintSuccess && step === "minting") {
-      toast.success(`SafePass ${tier} minted!`);
+      toast.success(t("buttonMintNFT.safePassMinted", { tier }));
       setStep("success");
       onSuccess?.();
     }
@@ -106,7 +108,7 @@ export default function ButtonMintNFT({
       });
     } catch (error) {
       console.error("Approve error:", error);
-      toast.error("Approval failed");
+      toast.error(t("buttonMintNFT.approvalFailed"));
       setStep("idle");
     }
 
@@ -128,7 +130,7 @@ export default function ButtonMintNFT({
       });
     } catch (error) {
       console.error("Mint error:", error);
-      toast.error("Minting failed");
+      toast.error(t("buttonMintNFT.mintingFailed"));
       setStep("idle");
     }
 
@@ -144,7 +146,7 @@ export default function ButtonMintNFT({
             onClick={openConnectModal}
             className={`btn btn-primary ${className}`}
           >
-            Connect Wallet
+            {t("buttonMintNFT.connectWallet")}
           </button>
         )}
       </ConnectButton.Custom>
@@ -156,7 +158,7 @@ export default function ButtonMintNFT({
     return (
       <button className={`btn btn-disabled ${className}`} disabled>
         <span className="loading loading-spinner loading-sm"></span>
-        Loading...
+        {t("buttonMintNFT.loading")}
       </button>
     );
   }
@@ -165,7 +167,7 @@ export default function ButtonMintNFT({
   if (!tierInfo.active) {
     return (
       <button className={`btn btn-disabled ${className}`} disabled>
-        Not Available
+        {t("buttonMintNFT.notAvailable")}
       </button>
     );
   }
@@ -174,7 +176,7 @@ export default function ButtonMintNFT({
   if (tierInfo.maxSupply > 0 && tierInfo.remaining === 0) {
     return (
       <button className={`btn btn-disabled ${className}`} disabled>
-        Sold Out
+        {t("buttonMintNFT.soldOut")}
       </button>
     );
   }
@@ -183,7 +185,7 @@ export default function ButtonMintNFT({
   if (!hasEnoughBalance) {
     return (
       <button className={`btn btn-error ${className}`} disabled>
-        Insufficient USDC (need ${tierInfo.priceUSDC})
+        {t("buttonMintNFT.insufficientUsdc", { amount: tierInfo.priceUSDC })}
       </button>
     );
   }
@@ -205,7 +207,7 @@ export default function ButtonMintNFT({
             d="M5 13l4 4L19 7"
           />
         </svg>
-        Minted!
+        {t("buttonMintNFT.minted")}
       </button>
     );
   }
@@ -221,11 +223,11 @@ export default function ButtonMintNFT({
         {step === "approving" ? (
           <>
             <span className="loading loading-spinner loading-sm"></span>
-            Approving USDC...
+            {t("buttonMintNFT.approvingUsdc")}
           </>
         ) : (
           <>
-            Approve ${tierInfo.priceUSDC} USDC
+            {t("buttonMintNFT.approveUsdc", { amount: tierInfo.priceUSDC })}
           </>
         )}
       </button>
@@ -242,7 +244,7 @@ export default function ButtonMintNFT({
       {step === "minting" ? (
         <>
           <span className="loading loading-spinner loading-sm"></span>
-          Minting...
+          {t("buttonMintNFT.minting")}
         </>
       ) : (
         <>
@@ -259,7 +261,7 @@ export default function ButtonMintNFT({
               d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          Mint for ${tierInfo.priceUSDC} USDC
+          {t("buttonMintNFT.mintFor", { amount: tierInfo.priceUSDC })}
         </>
       )}
     </button>

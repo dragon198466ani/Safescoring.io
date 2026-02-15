@@ -1,13 +1,16 @@
 import Link from "next/link";
 import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
+import { getT } from "@/libs/i18n/server";
 
 export const metadata = getSEOTags({
   title: `Privacy Policy | ${config.appName}`,
   canonicalUrlRelative: "/privacy-policy",
 });
 
-const PrivacyPolicy = () => {
+const PrivacyPolicy = async () => {
+  const t = await getT();
+
   return (
     <main className="max-w-xl mx-auto">
       <div className="p-5">
@@ -24,10 +27,10 @@ const PrivacyPolicy = () => {
               clipRule="evenodd"
             />
           </svg>{" "}
-          Back
+          {t("privacyPage.back")}
         </Link>
         <h1 className="text-3xl font-extrabold pb-6">
-          Privacy Policy for {config.appName}
+          {t("privacyPage.title", { appName: config.appName })}
         </h1>
 
         <pre

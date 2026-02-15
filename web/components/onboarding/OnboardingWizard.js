@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 import StepWelcome from "./StepWelcome";
 import StepProfile from "./StepProfile";
 import StepInterests from "./StepInterests";
@@ -9,14 +10,15 @@ import StepComplete from "./StepComplete";
 import config from "@/config";
 
 const STEPS = [
-  { id: 0, title: "Welcome", component: StepWelcome },
-  { id: 1, title: "Profile", component: StepProfile },
-  { id: 2, title: "Interests", component: StepInterests },
-  { id: 3, title: "First Product", component: StepFirstProduct },
-  { id: 4, title: "Complete", component: StepComplete },
+  { id: 0, labelKey: "onboarding.welcome", component: StepWelcome },
+  { id: 1, labelKey: "onboarding.profile", component: StepProfile },
+  { id: 2, labelKey: "onboarding.interests", component: StepInterests },
+  { id: 3, labelKey: "onboarding.firstProduct", component: StepFirstProduct },
+  { id: 4, labelKey: "onboarding.complete", component: StepComplete },
 ];
 
 export default function OnboardingWizard({ initialStep = 0, initialData = {}, onComplete }) {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [formData, setFormData] = useState({
     name: initialData.name || "",
@@ -89,7 +91,7 @@ export default function OnboardingWizard({ initialStep = 0, initialData = {}, on
             <span className="text-xl font-bold">{config.appName}</span>
           </div>
           <div className="text-sm text-base-content/60">
-            Step {currentStep + 1} of {STEPS.length}
+            {t("onboarding.stepOf", { current: currentStep + 1, total: STEPS.length })}
           </div>
         </div>
       </header>

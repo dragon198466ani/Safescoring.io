@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useStats } from "@/hooks/useStats";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 const HybridApproach = () => {
   const { stats } = useStats();
+  const { t } = useTranslation();
 
   return (
     <section className="py-12 px-6 relative overflow-hidden">
@@ -15,13 +17,13 @@ const HybridApproach = () => {
         {/* Header with context */}
         <div className="text-center mb-8">
           <span className="inline-block px-3 py-1 mb-3 text-xs font-medium rounded-full bg-primary/10 text-primary">
-            Scoring Methodology
+            {t("hybridApproach.badge")}
           </span>
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-3">
-            Why Hybrid Works Better
+            {t("hybridApproach.title")}
           </h2>
           <p className="text-sm md:text-base text-base-content/60 max-w-2xl mx-auto">
-            AI speed + human expertise + community verification = accurate, consistent security ratings at scale.
+            {t("hybridApproach.subtitle")}
           </p>
         </div>
 
@@ -37,9 +39,9 @@ const HybridApproach = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-2">100% AI</h3>
+                  <h3 className="font-bold text-lg mb-2">{t("hybridApproach.aiOnly")}</h3>
                   <p className="text-xs text-base-content/70 leading-relaxed">
-                    Fast ✓ • Hallucinations ✗ • No edge cases ✗
+                    {t("hybridApproach.aiDesc")}
                   </p>
                 </div>
               </div>
@@ -52,7 +54,7 @@ const HybridApproach = () => {
             <div className="relative card bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-2xl p-5 h-full border-2 border-green-400/50">
               <div className="absolute top-3 right-3">
                 <span className="px-2 py-0.5 bg-white/20 backdrop-blur-sm rounded-full text-[10px] font-semibold">
-                  Our Approach
+                  {t("hybridApproach.ourApproach")}
                 </span>
               </div>
               <div className="flex flex-col items-center text-center gap-3">
@@ -62,9 +64,9 @@ const HybridApproach = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-bold text-xl mb-2">Hybrid</h3>
+                  <h3 className="font-bold text-xl mb-2">{t("hybridApproach.hybrid")}</h3>
                   <p className="text-xs leading-relaxed opacity-95">
-                    {stats.totalNorms} norms analyzed by AI ✓ • Expert review ✓ • Community validated ✓
+                    {t("hybridApproach.hybridDesc", { norms: stats.totalNorms })}
                   </p>
                 </div>
               </div>
@@ -82,9 +84,9 @@ const HybridApproach = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-2">100% Human</h3>
+                  <h3 className="font-bold text-lg mb-2">{t("hybridApproach.humanOnly")}</h3>
                   <p className="text-xs text-base-content/70 leading-relaxed">
-                    Nuanced ✓ • Slow ✗ • Inconsistent ✗
+                    {t("hybridApproach.humanDesc")}
                   </p>
                 </div>
               </div>
@@ -102,7 +104,7 @@ const HybridApproach = () => {
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
               </svg>
-              Compare Products
+              {t("hybridApproach.compareProducts")}
             </Link>
             <a
               href="/stack-builder"
@@ -111,11 +113,11 @@ const HybridApproach = () => {
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L12 12.75l-5.571-3m11.142 0l4.179 2.25-4.179 2.25m0 0L12 17.25l-5.571-3m11.142 0l4.179 2.25L12 21.75l-9.75-5.25 4.179-2.25" />
               </svg>
-              Build my Stack
+              {t("hybridApproach.buildMyStack")}
             </a>
           </div>
           <p className="mt-2 text-xs text-base-content/50">
-            See the hybrid methodology in action
+            {t("hybridApproach.seeHybrid")}
           </p>
         </div>
       </div>

@@ -28,13 +28,13 @@ Disadvantages: "Rug pull risk, Smart contract vulnerabilities, Higher learning c
 
 ---
 
-### 2. **norms** (911 normes)
+### 2. **norms** (2159 normes — 2159 d'origine + 5 normes F ajoutées en v2.0)
 
 **Colonnes clés:**
 - `id`, `code`, `pillar`, `title`, `description`
-- ✅ `is_essential` - Boolean (16% des normes = 153/911)
-- ✅ `consumer` - Boolean (37% des normes = 341/911)
-- ✅ `full` - Boolean (100% des normes = 911/911)
+- ✅ `is_essential` - Boolean (16% des normes = 153/2159)
+- ✅ `consumer` - Boolean (37% des normes = 341/2159)
+- ✅ `full` - Boolean (100% des normes = 2159/2159)
 - ✅ `official_link` - Lien vers documentation officielle
 - ✅ `access_type` - Type d'accès (G = Global, etc.)
 
@@ -43,7 +43,7 @@ Disadvantages: "Rug pull risk, Smart contract vulnerabilities, Higher learning c
 |------|-------|-----------|
 | Essential | 153 | 16% |
 | Consumer | 341 | 37% |
-| Full | 911 | 100% |
+| Full | 2159 | 100% |
 
 ---
 
@@ -55,7 +55,7 @@ Disadvantages: "Rug pull risk, Smart contract vulnerabilities, Higher learning c
 **Pour DEX (type_id=39):**
 - ✅ Applicable: 501 normes (après nos corrections!)
 - ❌ N/A: 406 normes
-- **Total: 907 normes** (4 normes manquantes?)
+- **Total: 912 normes** dans norm_applicability pour DEX (2159 normes totales - 4 normes sans règle d'applicabilité DEX)
 
 ---
 
@@ -184,7 +184,7 @@ Devrait contenir les scores du produit:
 
 1. **Norms Classification (Essential/Consumer/Full)**
    - J'ai vérifié l'applicabilité DEX mais pas les flags essential/consumer!
-   - 153 normes essential, 341 consumer, 911 full
+   - 153 normes essential, 341 consumer, 2159 full
    - **Question:** Les normes essential/consumer sont-elles bien marquées pour DEX?
 
 2. **Product Scores (JSONB)**
@@ -268,7 +268,7 @@ Mais elle est **introuvable** dans Supabase!
 |-------|------|--------|---------------------|
 | product_types | 22 | ✅ OK | description, examples, advantages, disadvantages, scores_*** |
 | products | 216 | ✅ OK | scores (JSONB, NULL) |
-| norms | 911 | ✅ OK | is_essential, consumer, full |
+| norms | 2159 | ✅ OK | is_essential, consumer, full (2159 d'origine + 5 F ajoutées v2.0) |
 | norm_applicability | 19,876 | ✅ OK | Mis à jour pour DEX |
 | evaluations | 192,640 | ✅ OK | why_this_result ajouté |
 | brands | 0 | ❌ MISSING | Table n'existe pas! |
@@ -293,7 +293,7 @@ Mais elle est **introuvable** dans Supabase!
 1. **Scores JSONB** dans products/product_types (NULL - doivent être recalculés)
 2. **Brands table** manquante (référencée mais n'existe pas)
 3. **Essential/Consumer flags** des normes DEX (à vérifier)
-4. **Norms manquantes** (907 au lieu de 911 dans norm_applicability)
+4. **Norms applicabilité DEX** (912 dans norm_applicability sur 2159 totales — 4 normes sans règle pour DEX)
 
 ### 🚀 Prochaines Étapes:
 

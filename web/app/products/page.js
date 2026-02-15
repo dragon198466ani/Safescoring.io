@@ -11,24 +11,26 @@ import { useRealtimeProducts } from "@/hooks/useRealtimeProducts";
 import { useDebounce } from "@/hooks/useDebounce";
 import ProductLogo from "@/components/ProductLogo";
 import config from "@/config";
+import { useNormStats } from "@/hooks/useNormStats";
 import { PILLARS } from "@/libs/design-tokens";
 import { useTranslation } from "@/libs/i18n/LanguageProvider";
 import AIChat from "@/components/AIChat";
 import { MiniScoreCircle as ScoreCircle } from "@/components/ScoreCircle";
+import { getCompactFeeSummary } from "@/components/PricingDisplay";
 import FloatingStackBubble from "@/components/FloatingStackBubble";
 
 const scoreTypes = [
-  { id: "full", label: "Full", description: "100% des normes" },
-  { id: "consumer", label: "Consumer", description: "38% des normes" },
-  { id: "essential", label: "Essential", description: "17% des normes" },
+  { id: "full", labelKey: "productsPageExtra.scoreTypeFull", descKey: "productsPageExtra.scoreTypeFullDesc" },
+  { id: "consumer", labelKey: "productsPageExtra.scoreTypeConsumer", descKey: "productsPageExtra.scoreTypeConsumerDesc" },
+  { id: "essential", labelKey: "productsPageExtra.scoreTypeEssential", descKey: "productsPageExtra.scoreTypeEssentialDesc" },
 ];
 
 const sortOptions = [
-  { id: "score-desc", label: "Highest Score" },
-  { id: "score-asc", label: "Lowest Score" },
-  { id: "name-asc", label: "Name A-Z" },
-  { id: "name-desc", label: "Name Z-A" },
-  { id: "recent", label: "Recently Updated" },
+  { id: "score-desc", labelKey: "productsPageExtra.sortHighest" },
+  { id: "score-asc", labelKey: "productsPageExtra.sortLowest" },
+  { id: "name-asc", labelKey: "productsPageExtra.sortNameAZ" },
+  { id: "name-desc", labelKey: "productsPageExtra.sortNameZA" },
+  { id: "recent", labelKey: "productsPageExtra.sortRecent" },
 ];
 
 
@@ -47,6 +49,7 @@ const formatDate = (dateString) => {
 // OPTIMIZED: Receives scoreType instead of scores object to avoid breaking memo
 // ENHANCED: Supports drag-and-drop to add to stack
 const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack = false }) => {
+  const { t: tCard } = useTranslation();
   const [isDragging, setIsDragging] = useState(false);
 
   // Get scores based on scoreType - computed once per product/scoreType change
@@ -144,15 +147,28 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
             </div>
           ) : (
             <div className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg inline-block">
-              Free
+              {tCard("productsPageExtra.free")}
             </div>
           )}
-          {/* Fees / Gas details */}
-          {product.priceDetails && (
+          {/* Structured fee badges (from fees_breakdown) */}
+          {product.feesBreakdown ? (
+            (() => {
+              const feeSummary = getCompactFeeSummary(product.feesBreakdown);
+              return feeSummary && feeSummary.length > 0 ? (
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {feeSummary.map((item, i) => (
+                    <span key={i} className="text-[7px] bg-white/20 backdrop-blur-sm text-white/90 px-1.5 py-0.5 rounded-full drop-shadow-sm">
+                      {item.text}
+                    </span>
+                  ))}
+                </div>
+              ) : null;
+            })()
+          ) : product.priceDetails ? (
             <div className="text-[8px] text-white/90 mt-1 line-clamp-2 drop-shadow-md">
               {product.priceDetails}
             </div>
-          )}
+          ) : null}
         </div>
       </div>
 
@@ -228,7 +244,7 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-2.5 h-2.5">
                 <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
               </svg>
-              Verified
+              {tCard("productsPageExtra.verified")}
             </span>
           )}
         </div>
@@ -240,7 +256,7 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
         <button
           onClick={handleQuickAdd}
           className="absolute top-2 right-2 z-10 p-2 rounded-lg bg-primary/90 text-primary-content opacity-0 group-hover:opacity-100 hover:bg-primary hover:scale-110 transition-all duration-200 shadow-lg"
-          title="Add to my stack"
+          title={tCard("productsPageExtra.addToStack")}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -307,6 +323,7 @@ export default function ProductsPage() {
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const { t, locale } = useTranslation();
+  const normStats = useNormStats();
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
@@ -581,8 +598,8 @@ export default function ProductsPage() {
             </h1>
             <p className="text-lg text-base-content/60 max-w-2xl">
               {hasMounted && totalProducts > 0
-                ? t("productsPage.description", { count: `${totalProducts}+`, norms: config.safe.stats.totalNorms })
-                : t("productsPage.descriptionFallback", { norms: config.safe.stats.totalNorms })}
+                ? t("productsPage.description", { count: `${totalProducts}+`, norms: normStats.totalNorms ?? "—" })
+                : t("productsPage.descriptionFallback", { norms: normStats.totalNorms ?? "—" })}
             </p>
             {/* Realtime sync indicator */}
             <div className="mt-3 flex items-center gap-2">
@@ -640,15 +657,15 @@ export default function ProductsPage() {
                       : "bg-base-200 text-base-content/70 hover:bg-base-300"
                   }`}
                 >
-                  <span>{type.label}</span>
-                  <span className="ml-1.5 text-xs opacity-70">({type.description})</span>
+                  <span>{t(type.labelKey)}</span>
+                  <span className="ml-1.5 text-xs opacity-70">({t(type.descKey)})</span>
                 </button>
               ))}
             </div>
             <p className="mt-1.5 text-xs text-base-content/50">
               {scoreType === "essential" && t("productsPage.scoreTypeExplanations.essential")}
               {scoreType === "consumer" && t("productsPage.scoreTypeExplanations.consumer")}
-              {scoreType === "full" && t("productsPage.scoreTypeExplanations.full", { count: config.safe.stats.totalNorms })}
+              {scoreType === "full" && t("productsPage.scoreTypeExplanations.full", { count: normStats.totalNorms ?? "—" })}
             </p>
           </div>
 
@@ -737,7 +754,7 @@ export default function ProductsPage() {
               >
                 {sortOptions.map((opt) => (
                   <option key={opt.id} value={opt.id}>
-                    {opt.label}
+                    {t(opt.labelKey)}
                   </option>
                 ))}
               </select>
@@ -785,7 +802,7 @@ export default function ProductsPage() {
               >
                 {sortOptions.map((opt) => (
                   <option key={opt.id} value={opt.id}>
-                    {opt.label}
+                    {t(opt.labelKey)}
                   </option>
                 ))}
               </select>

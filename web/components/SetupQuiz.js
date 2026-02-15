@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * SetupQuiz - Recommendation quiz to help users build their crypto stack
@@ -9,57 +10,57 @@ import { useState } from "react";
 const QUIZ_QUESTIONS = [
   {
     id: "experience",
-    question: "What's your crypto experience level?",
-    icon: "🎓",
+    questionKey: "setupQuiz.experienceQuestion",
+    iconKey: "setupQuiz.experienceIcon",
     options: [
-      { id: "beginner", label: "Beginner", description: "Just getting started", tags: ["simple", "user-friendly"] },
-      { id: "intermediate", label: "Intermediate", description: "1-2 years experience", tags: ["balanced"] },
-      { id: "advanced", label: "Advanced", description: "3+ years, DeFi user", tags: ["advanced", "defi"] },
+      { id: "beginner", labelKey: "setupQuiz.beginnerLabel", descKey: "setupQuiz.beginnerDesc", tags: ["simple", "user-friendly"] },
+      { id: "intermediate", labelKey: "setupQuiz.intermediateLabel", descKey: "setupQuiz.intermediateDesc", tags: ["balanced"] },
+      { id: "advanced", labelKey: "setupQuiz.advancedLabel", descKey: "setupQuiz.advancedDesc", tags: ["advanced", "defi"] },
     ],
   },
   {
     id: "holdings",
-    question: "What's your approximate crypto holdings?",
-    icon: "💰",
+    questionKey: "setupQuiz.holdingsQuestion",
+    iconKey: "setupQuiz.holdingsIcon",
     options: [
-      { id: "small", label: "< $1,000", description: "Starting small", tags: ["software"] },
-      { id: "medium", label: "$1,000 - $10,000", description: "Growing portfolio", tags: ["hardware-optional"] },
-      { id: "large", label: "$10,000 - $100,000", description: "Significant holdings", tags: ["hardware"] },
-      { id: "whale", label: "> $100,000", description: "Whale status", tags: ["hardware", "multisig", "custody"] },
+      { id: "small", labelKey: "setupQuiz.holdingsSmallLabel", descKey: "setupQuiz.holdingsSmallDesc", tags: ["software"] },
+      { id: "medium", labelKey: "setupQuiz.holdingsMediumLabel", descKey: "setupQuiz.holdingsMediumDesc", tags: ["hardware-optional"] },
+      { id: "large", labelKey: "setupQuiz.holdingsLargeLabel", descKey: "setupQuiz.holdingsLargeDesc", tags: ["hardware"] },
+      { id: "whale", labelKey: "setupQuiz.holdingsWhaleLabel", descKey: "setupQuiz.holdingsWhaleDesc", tags: ["hardware", "multisig", "custody"] },
     ],
   },
   {
     id: "usage",
-    question: "How do you primarily use crypto?",
-    icon: "🎯",
+    questionKey: "setupQuiz.usageQuestion",
+    iconKey: "setupQuiz.usageIcon",
     options: [
-      { id: "hodl", label: "Long-term holding", description: "Buy and hold strategy", tags: ["cold-storage", "hardware"] },
-      { id: "trade", label: "Active trading", description: "Regular buying/selling", tags: ["exchange", "hot-wallet"] },
-      { id: "defi", label: "DeFi & Yield", description: "Staking, lending, farming", tags: ["defi", "software"] },
-      { id: "payments", label: "Payments", description: "Day-to-day transactions", tags: ["mobile", "fast"] },
+      { id: "hodl", labelKey: "setupQuiz.hodlLabel", descKey: "setupQuiz.hodlDesc", tags: ["cold-storage", "hardware"] },
+      { id: "trade", labelKey: "setupQuiz.tradeLabel", descKey: "setupQuiz.tradeDesc", tags: ["exchange", "hot-wallet"] },
+      { id: "defi", labelKey: "setupQuiz.defiLabel", descKey: "setupQuiz.defiDesc", tags: ["defi", "software"] },
+      { id: "payments", labelKey: "setupQuiz.paymentsLabel", descKey: "setupQuiz.paymentsDesc", tags: ["mobile", "fast"] },
     ],
   },
   {
     id: "chains",
-    question: "Which blockchains do you use?",
-    icon: "⛓️",
+    questionKey: "setupQuiz.chainsQuestion",
+    iconKey: "setupQuiz.chainsIcon",
     multiSelect: true,
     options: [
-      { id: "bitcoin", label: "Bitcoin", tags: ["bitcoin"] },
-      { id: "ethereum", label: "Ethereum", tags: ["ethereum", "evm"] },
-      { id: "solana", label: "Solana", tags: ["solana"] },
-      { id: "multi", label: "Multiple chains", tags: ["multichain"] },
+      { id: "bitcoin", labelKey: "setupQuiz.bitcoinLabel", tags: ["bitcoin"] },
+      { id: "ethereum", labelKey: "setupQuiz.ethereumLabel", tags: ["ethereum", "evm"] },
+      { id: "solana", labelKey: "setupQuiz.solanaLabel", tags: ["solana"] },
+      { id: "multi", labelKey: "setupQuiz.multiLabel", tags: ["multichain"] },
     ],
   },
   {
     id: "priority",
-    question: "What's most important to you?",
-    icon: "⭐",
+    questionKey: "setupQuiz.priorityQuestion",
+    iconKey: "setupQuiz.priorityIcon",
     options: [
-      { id: "security", label: "Maximum Security", description: "I want the safest setup", tags: ["security-first"] },
-      { id: "ease", label: "Ease of Use", description: "Simple and intuitive", tags: ["user-friendly"] },
-      { id: "features", label: "Features", description: "Advanced capabilities", tags: ["feature-rich"] },
-      { id: "cost", label: "Low Cost", description: "Budget-friendly options", tags: ["affordable"] },
+      { id: "security", labelKey: "setupQuiz.securityLabel", descKey: "setupQuiz.securityDesc", tags: ["security-first"] },
+      { id: "ease", labelKey: "setupQuiz.easeLabel", descKey: "setupQuiz.easeDesc", tags: ["user-friendly"] },
+      { id: "features", labelKey: "setupQuiz.featuresLabel", descKey: "setupQuiz.featuresDesc", tags: ["feature-rich"] },
+      { id: "cost", labelKey: "setupQuiz.costLabel", descKey: "setupQuiz.costDesc", tags: ["affordable"] },
     ],
   },
 ];
@@ -109,6 +110,7 @@ function getRecommendations(answers, products) {
 }
 
 export default function SetupQuiz({ products, onComplete, onSkip }) {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [showResults, setShowResults] = useState(false);
@@ -140,9 +142,9 @@ export default function SetupQuiz({ products, onComplete, onSkip }) {
       <div className="bg-base-200 rounded-2xl border border-base-300 p-6">
         <div className="text-center mb-6">
           <div className="text-4xl mb-3">🎯</div>
-          <h3 className="text-xl font-bold">Recommended for You</h3>
+          <h3 className="text-xl font-bold">{t("setupQuiz.recommendedForYou")}</h3>
           <p className="text-base-content/60 text-sm mt-1">
-            Based on your answers, here are the best products for your stack
+            {t("setupQuiz.recommendedDesc")}
           </p>
         </div>
 
@@ -172,7 +174,7 @@ export default function SetupQuiz({ products, onComplete, onSkip }) {
           </div>
         ) : (
           <p className="text-center text-base-content/50 py-4">
-            No specific recommendations. Browse the catalog to find products.
+            {t("setupQuiz.noRecommendations")}
           </p>
         )}
 
@@ -185,10 +187,10 @@ export default function SetupQuiz({ products, onComplete, onSkip }) {
             }}
             className="btn btn-ghost flex-1"
           >
-            Retake Quiz
+            {t("setupQuiz.retakeQuiz")}
           </button>
           <button onClick={onSkip} className="btn btn-primary flex-1">
-            Browse Catalog
+            {t("setupQuiz.browseCatalog")}
           </button>
         </div>
       </div>
@@ -200,9 +202,9 @@ export default function SetupQuiz({ products, onComplete, onSkip }) {
       {/* Progress bar */}
       <div className="mb-6">
         <div className="flex items-center justify-between text-sm mb-2">
-          <span className="text-base-content/60">Question {currentStep + 1}/{QUIZ_QUESTIONS.length}</span>
+          <span className="text-base-content/60">{t("setupQuiz.questionCount", { current: currentStep + 1, total: QUIZ_QUESTIONS.length })}</span>
           <button onClick={onSkip} className="text-primary hover:underline text-sm">
-            Skip quiz
+            {t("setupQuiz.skipQuiz")}
           </button>
         </div>
         <div className="h-2 bg-base-300 rounded-full overflow-hidden">
@@ -215,8 +217,8 @@ export default function SetupQuiz({ products, onComplete, onSkip }) {
 
       {/* Question */}
       <div className="text-center mb-6">
-        <div className="text-4xl mb-3">{currentQuestion.icon}</div>
-        <h3 className="text-xl font-bold">{currentQuestion.question}</h3>
+        <div className="text-4xl mb-3">{t(currentQuestion.iconKey)}</div>
+        <h3 className="text-xl font-bold">{t(currentQuestion.questionKey)}</h3>
       </div>
 
       {/* Options */}
@@ -231,9 +233,9 @@ export default function SetupQuiz({ products, onComplete, onSkip }) {
                 : "bg-base-300 border-base-300 hover:border-primary/50"
             }`}
           >
-            <p className="font-medium">{option.label}</p>
-            {option.description && (
-              <p className="text-sm text-base-content/60 mt-1">{option.description}</p>
+            <p className="font-medium">{t(option.labelKey)}</p>
+            {option.descKey && (
+              <p className="text-sm text-base-content/60 mt-1">{t(option.descKey)}</p>
             )}
           </button>
         ))}
@@ -245,7 +247,7 @@ export default function SetupQuiz({ products, onComplete, onSkip }) {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
-          Back
+          {t("setupQuiz.back")}
         </button>
       )}
     </div>

@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 export default function UsageBanner() {
+  const { t } = useTranslation();
   const [usage, setUsage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dismissed, setDismissed] = useState(false);
@@ -73,11 +75,9 @@ export default function UsageBanner() {
             <div className="flex items-center justify-between mb-1">
               <span className="text-sm font-medium">
                 {isEmpty ? (
-                  "Monthly limit reached"
+                  t("usageBanner.limitReached")
                 ) : (
-                  <>
-                    {used}/{limit} products viewed this month
-                  </>
+                  t("usageBanner.productsViewed", { used, limit })
                 )}
               </span>
               <span
@@ -89,7 +89,7 @@ export default function UsageBanner() {
                     : "text-base-content/60"
                 }`}
               >
-                {remaining} remaining
+                {t("usageBanner.remaining", { count: remaining })}
               </span>
             </div>
             <div className="w-full bg-base-300 rounded-full h-1.5">
@@ -110,7 +110,7 @@ export default function UsageBanner() {
         <div className="flex items-center gap-2">
           {(isLow || isEmpty) && (
             <Link href="/#pricing" className="btn btn-primary btn-sm">
-              Upgrade
+              {t("usageBanner.upgrade")}
             </Link>
           )}
           <button

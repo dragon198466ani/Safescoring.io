@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import ButtonSignin from "./ButtonSignin";
 import config from "@/config";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 // Throttle function for scroll performance
 const useThrottle = (callback, delay) => {
@@ -18,18 +19,19 @@ const useThrottle = (callback, delay) => {
   }, [callback, delay]);
 };
 
-const links = [
-  { href: "/dashboard/setups", label: "My Stack", highlight: true },
-  { href: "/products", label: "Products" },
-  { href: "/transparency", label: "Scores" },
-  { href: "/methodology", label: "Methodology" },
-  { href: "/#pricing", label: "Pricing" },
-];
-
 const Header = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { t } = useTranslation();
+
+  const links = [
+    { href: "/dashboard/setups", label: t("nav.mySetups"), highlight: true },
+    { href: "/products", label: t("nav.products") },
+    { href: "/transparency", label: t("nav.scores") },
+    { href: "/methodology", label: t("nav.methodology") },
+    { href: "/#pricing", label: t("nav.pricing") },
+  ];
 
   useEffect(() => {
     setIsOpen(false);
@@ -120,7 +122,7 @@ const Header = () => {
 
         {/* Desktop CTA */}
         <div className="hidden lg:flex lg:justify-end lg:flex-1 lg:gap-4">
-          <ButtonSignin text="Sign In" extraStyle="btn-ghost btn-sm" />
+          <ButtonSignin text={t("nav.signIn")} extraStyle="btn-ghost btn-sm" />
           <Link href="/dashboard/setups" className="btn btn-primary btn-sm">
             Get Started
           </Link>
@@ -185,7 +187,7 @@ const Header = () => {
               </Link>
             ))}
             <div className="divider" />
-            <ButtonSignin text="Sign In" extraStyle="btn-ghost w-full" />
+            <ButtonSignin text={t("nav.signIn")} extraStyle="btn-ghost w-full" />
             <Link
               href="/dashboard/setups"
               className="btn btn-primary w-full"

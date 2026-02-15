@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { getT } from "@/libs/i18n/server";
 
-const CTA = () => {
+const CTA = async () => {
+  const t = await getT();
+
   return (
     <section className="py-24 px-6">
       <div className="max-w-4xl mx-auto">
@@ -34,18 +37,18 @@ const CTA = () => {
 
             {/* Heading */}
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
-              Stop guessing. Start scoring.
+              {t("cta.heading")}
             </h2>
 
             {/* Subheading */}
             <p className="text-lg text-base-content/60 max-w-xl mx-auto mb-8">
-              Don&apos;t rely on audits alone. Get objective, reproducible security scores for every crypto product you use or invest in.
+              {t("cta.subheading")}
             </p>
 
             {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/#pricing" className="btn btn-primary btn-lg gap-2">
-                Get Started Free
+                {t("cta.getStarted")}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -62,7 +65,7 @@ const CTA = () => {
                 </svg>
               </Link>
               <Link href="/products" className="btn btn-ghost btn-lg">
-                Browse Products
+                {t("cta.browseProducts")}
               </Link>
             </div>
 
@@ -81,7 +84,7 @@ const CTA = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-                14-day free trial
+                {t("cta.trial")}
               </div>
               <div className="flex items-center gap-2">
                 <svg
@@ -96,7 +99,7 @@ const CTA = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-                No credit card required
+                {t("cta.noCard")}
               </div>
               <div className="flex items-center gap-2">
                 <svg
@@ -111,7 +114,7 @@ const CTA = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-                Cancel anytime
+                {t("cta.cancelAnytime")}
               </div>
             </div>
           </div>

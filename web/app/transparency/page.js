@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
 import { createClient } from "@supabase/supabase-js";
+import { getNormStats } from "@/libs/getNormStats";
+import { getT } from "@/libs/i18n/server";
 
 export const metadata = getSEOTags({
   title: `Score Transparency | ${config.appName}`,
@@ -110,13 +112,17 @@ const ProductCard = ({ product, rank }) => (
 
 export default async function TransparencyPage() {
   const stats = await getStats();
+  const normStats = await getNormStats();
+  const t = await getT();
+
+  const norms = normStats?.totalNorms ?? "—";
 
   const categories = [
-    { key: 'excellent', label: 'Excellent', range: '90-100%', color: 'bg-success', textColor: 'text-success', description: 'Top-tier security across all pillars' },
-    { key: 'good', label: 'Good', range: '70-89%', color: 'bg-info', textColor: 'text-info', description: 'Strong security with minor gaps' },
-    { key: 'average', label: 'Average', range: '50-69%', color: 'bg-warning', textColor: 'text-warning', description: 'Moderate security, room for improvement' },
-    { key: 'poor', label: 'Poor', range: '30-49%', color: 'bg-orange-500', textColor: 'text-orange-500', description: 'Significant security concerns' },
-    { key: 'critical', label: 'Critical', range: '0-29%', color: 'bg-error', textColor: 'text-error', description: 'Major security risks identified' },
+    { key: 'excellent', label: t("transparencyPage.catExcellent"), range: '90-100%', color: 'bg-success', textColor: 'text-success', description: t("transparencyPage.catExcellentDesc") },
+    { key: 'good', label: t("transparencyPage.catGood"), range: '70-89%', color: 'bg-info', textColor: 'text-info', description: t("transparencyPage.catGoodDesc") },
+    { key: 'average', label: t("transparencyPage.catAverage"), range: '50-69%', color: 'bg-warning', textColor: 'text-warning', description: t("transparencyPage.catAverageDesc") },
+    { key: 'poor', label: t("transparencyPage.catPoor"), range: '30-49%', color: 'bg-orange-500', textColor: 'text-orange-500', description: t("transparencyPage.catPoorDesc") },
+    { key: 'critical', label: t("transparencyPage.catCritical"), range: '0-29%', color: 'bg-error', textColor: 'text-error', description: t("transparencyPage.catCriticalDesc") },
   ];
 
   return (
@@ -128,7 +134,7 @@ export default async function TransparencyPage() {
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
               <path fillRule="evenodd" d="M15 10a.75.75 0 01-.75.75H7.612l2.158 1.96a.75.75 0 11-1.04 1.08l-3.5-3.25a.75.75 0 010-1.08l3.5-3.25a.75.75 0 111.04 1.08L7.612 9.25h6.638A.75.75 0 0115 10z" clipRule="evenodd" />
             </svg>
-            Back
+            {t("transparencyPage.back")}
           </Link>
         </div>
       </div>
@@ -137,14 +143,13 @@ export default async function TransparencyPage() {
       <section className="py-16 px-6 bg-gradient-to-b from-base-200/50 to-transparent">
         <div className="max-w-4xl mx-auto text-center">
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
-            Transparency Report
+            {t("transparencyPage.badge")}
           </span>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-            Real Scores. <span className="text-gradient-safe">No Bias.</span>
+            {t("transparencyPage.title")} <span className="text-gradient-safe">{t("transparencyPage.titleHighlight")}</span>
           </h1>
           <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
-            We don&apos;t give everyone a gold star. Our ratings are based on {config.safe.stats.totalNorms} security
-            norms - some products excel, others don&apos;t. That&apos;s what makes our ratings trustworthy.
+            {t("transparencyPage.subtitle", { norms })}
           </p>
         </div>
       </section>
@@ -156,19 +161,19 @@ export default async function TransparencyPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-base-200/50 rounded-2xl p-6 text-center border border-base-300">
                 <div className="text-4xl font-bold text-primary">{stats.total}</div>
-                <div className="text-sm text-base-content/60 mt-1">Products Rated</div>
+                <div className="text-sm text-base-content/60 mt-1">{t("transparencyPage.productsRated")}</div>
               </div>
               <div className="bg-base-200/50 rounded-2xl p-6 text-center border border-base-300">
                 <div className="text-4xl font-bold">{stats.avg}%</div>
-                <div className="text-sm text-base-content/60 mt-1">Average Score</div>
+                <div className="text-sm text-base-content/60 mt-1">{t("transparencyPage.averageScore")}</div>
               </div>
               <div className="bg-base-200/50 rounded-2xl p-6 text-center border border-base-300">
                 <div className="text-4xl font-bold text-success">{stats.max}%</div>
-                <div className="text-sm text-base-content/60 mt-1">Highest Score</div>
+                <div className="text-sm text-base-content/60 mt-1">{t("transparencyPage.highestScore")}</div>
               </div>
               <div className="bg-base-200/50 rounded-2xl p-6 text-center border border-base-300">
                 <div className="text-4xl font-bold text-error">{stats.min}%</div>
-                <div className="text-sm text-base-content/60 mt-1">Lowest Score</div>
+                <div className="text-sm text-base-content/60 mt-1">{t("transparencyPage.lowestScore")}</div>
               </div>
             </div>
           </div>
@@ -183,38 +188,36 @@ export default async function TransparencyPage() {
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-error">
                 <path fillRule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
               </svg>
-              Why Some Products Score Low
+              {t("transparencyPage.whyLowTitle")}
             </h2>
             <div className="space-y-4 text-base-content/80">
               <p>
-                Not every product passes our security evaluation. Here are the most common reasons
-                products receive low scores:
+                {t("transparencyPage.whyLowIntro")}
               </p>
               <ul className="space-y-2">
                 <li className="flex items-start gap-2">
                   <span className="text-error">✗</span>
-                  <span><strong>No independent security audit</strong> - Many products skip third-party audits</span>
+                  <span><strong>{t("transparencyPage.reasonNoAudit")}</strong> - {t("transparencyPage.reasonNoAuditDesc")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-error">✗</span>
-                  <span><strong>Closed source code</strong> - Can&apos;t verify security claims without code review</span>
+                  <span><strong>{t("transparencyPage.reasonClosedSource")}</strong> - {t("transparencyPage.reasonClosedSourceDesc")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-error">✗</span>
-                  <span><strong>Missing duress protection</strong> - No features to protect under coercion</span>
+                  <span><strong>{t("transparencyPage.reasonNoDuress")}</strong> - {t("transparencyPage.reasonNoDuressDesc")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-error">✗</span>
-                  <span><strong>Poor key management</strong> - Weak encryption or exposed secrets</span>
+                  <span><strong>{t("transparencyPage.reasonPoorKeys")}</strong> - {t("transparencyPage.reasonPoorKeysDesc")}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-error">✗</span>
-                  <span><strong>No bug bounty program</strong> - No incentive for responsible disclosure</span>
+                  <span><strong>{t("transparencyPage.reasonNoBugBounty")}</strong> - {t("transparencyPage.reasonNoBugBountyDesc")}</span>
                 </li>
               </ul>
               <p className="text-sm text-base-content/60 mt-4">
-                We evaluate all products against the same {config.safe.stats.totalNorms} norms.
-                No exceptions, no paid placements.
+                {t("transparencyPage.whyLowFooter", { norms })}
               </p>
             </div>
           </div>
@@ -225,7 +228,7 @@ export default async function TransparencyPage() {
       {stats && (
         <section className="py-12 px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl font-bold mb-8 text-center">Score Distribution</h2>
+            <h2 className="text-2xl font-bold mb-8 text-center">{t("transparencyPage.scoreDistribution")}</h2>
 
             <div className="grid md:grid-cols-5 gap-4 mb-12">
               {categories.map(cat => {
@@ -236,7 +239,7 @@ export default async function TransparencyPage() {
                     <div className={`text-sm font-medium ${cat.textColor}`}>{cat.label}</div>
                     <div className="text-xs text-base-content/50 mb-2">{cat.range}</div>
                     <div className="text-3xl font-bold">{count}</div>
-                    <div className="text-xs text-base-content/50">{percentage}% of products</div>
+                    <div className="text-xs text-base-content/50">{percentage}% {t("transparencyPage.ofProducts")}</div>
                     <div className="mt-2">
                       <ScoreBar percentage={percentage * 2} color={cat.color} />
                     </div>
@@ -261,7 +264,7 @@ export default async function TransparencyPage() {
                         <p className="text-sm text-base-content/50">{cat.description}</p>
                       </div>
                       <div className={`px-3 py-1 rounded-full text-sm font-medium ${cat.color} text-white`}>
-                        {products.length} products
+                        {products.length} {t("transparencyPage.products")}
                       </div>
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -272,7 +275,7 @@ export default async function TransparencyPage() {
                     {products.length > 6 && (
                       <div className="mt-4 text-center">
                         <Link href="/products" className="text-sm text-primary hover:underline">
-                          View all {products.length} products in this category →
+                          {t("transparencyPage.viewAllInCategory", { count: products.length })} →
                         </Link>
                       </div>
                     )}
@@ -289,13 +292,13 @@ export default async function TransparencyPage() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
-              Our Approach
+              {t("transparencyPage.approachBadge")}
             </span>
             <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              AI for Speed. Humans for Judgment.
+              {t("transparencyPage.approachTitle")}
             </h2>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              We combine the scale of AI with the nuance of human expertise. Here&apos;s how we avoid the pitfalls of pure automation.
+              {t("transparencyPage.approachSubtitle")}
             </p>
           </div>
 
@@ -304,14 +307,13 @@ export default async function TransparencyPage() {
             <div className="flex gap-4 items-start bg-base-100 rounded-xl p-6 border border-base-300">
               <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold">1</div>
               <div>
-                <h3 className="font-bold text-lg mb-2">AI Analyzes at Scale</h3>
+                <h3 className="font-bold text-lg mb-2">{t("transparencyPage.step1Title")}</h3>
                 <p className="text-base-content/60">
-                  Our AI system evaluates each product against {config.safe.stats.totalNorms} security norms in minutes, not weeks.
-                  Same criteria applied consistently to every product.
+                  {t("transparencyPage.step1Desc", { norms })}
                 </p>
                 <div className="flex gap-4 mt-3 text-sm">
-                  <span className="text-success">✓ Speed: minutes per product</span>
-                  <span className="text-success">✓ Consistency: identical criteria</span>
+                  <span className="text-success">✓ {t("transparencyPage.step1Pro1")}</span>
+                  <span className="text-success">✓ {t("transparencyPage.step1Pro2")}</span>
                 </div>
               </div>
             </div>
@@ -319,14 +321,13 @@ export default async function TransparencyPage() {
             <div className="flex gap-4 items-start bg-base-100 rounded-xl p-6 border border-base-300">
               <div className="flex-shrink-0 w-10 h-10 rounded-full bg-secondary text-secondary-content flex items-center justify-center font-bold">2</div>
               <div>
-                <h3 className="font-bold text-lg mb-2">Humans Verify Critical Scores</h3>
+                <h3 className="font-bold text-lg mb-2">{t("transparencyPage.step2Title")}</h3>
                 <p className="text-base-content/60">
-                  When the AI says &quot;I&apos;m not sure&quot; (TBD), human experts review. Critical security norms
-                  get a second-pass verification. New product types require manual validation.
+                  {t("transparencyPage.step2Desc")}
                 </p>
                 <div className="flex gap-4 mt-3 text-sm">
-                  <span className="text-success">✓ Expert review on edge cases</span>
-                  <span className="text-success">✓ Conservative bias: no false positives</span>
+                  <span className="text-success">✓ {t("transparencyPage.step2Pro1")}</span>
+                  <span className="text-success">✓ {t("transparencyPage.step2Pro2")}</span>
                 </div>
               </div>
             </div>
@@ -334,14 +335,13 @@ export default async function TransparencyPage() {
             <div className="flex gap-4 items-start bg-base-100 rounded-xl p-6 border border-base-300">
               <div className="flex-shrink-0 w-10 h-10 rounded-full bg-accent text-accent-content flex items-center justify-center font-bold">3</div>
               <div>
-                <h3 className="font-bold text-lg mb-2">Community Corrects Errors</h3>
+                <h3 className="font-bold text-lg mb-2">{t("transparencyPage.step3Title")}</h3>
                 <p className="text-base-content/60">
-                  Found a mistake? Submit a correction with evidence. Our experts validate submissions,
-                  and all approved corrections are visible in the changelog.
+                  {t("transparencyPage.step3Desc")}
                 </p>
                 <div className="flex gap-4 mt-3 text-sm">
-                  <span className="text-success">✓ Open correction system</span>
-                  <span className="text-success">✓ Full changelog transparency</span>
+                  <span className="text-success">✓ {t("transparencyPage.step3Pro1")}</span>
+                  <span className="text-success">✓ {t("transparencyPage.step3Pro2")}</span>
                 </div>
               </div>
             </div>
@@ -349,22 +349,22 @@ export default async function TransparencyPage() {
 
           {/* Why Hybrid */}
           <div className="bg-base-200/50 rounded-2xl p-8 border border-base-300">
-            <h3 className="font-bold text-lg mb-4 text-center">Why Hybrid Works Better</h3>
+            <h3 className="font-bold text-lg mb-4 text-center">{t("transparencyPage.whyHybridTitle")}</h3>
             <div className="grid md:grid-cols-3 gap-6 text-center">
               <div>
                 <div className="text-3xl mb-2">🤖</div>
-                <div className="font-medium">100% AI</div>
-                <p className="text-sm text-base-content/50 mt-1">Fast but can hallucinate. No judgment on edge cases.</p>
+                <div className="font-medium">{t("transparencyPage.hybrid100AI")}</div>
+                <p className="text-sm text-base-content/50 mt-1">{t("transparencyPage.hybrid100AIDesc")}</p>
               </div>
               <div>
                 <div className="text-3xl mb-2">👤</div>
-                <div className="font-medium">100% Human</div>
-                <p className="text-sm text-base-content/50 mt-1">Accurate but slow, expensive, and inconsistent.</p>
+                <div className="font-medium">{t("transparencyPage.hybrid100Human")}</div>
+                <p className="text-sm text-base-content/50 mt-1">{t("transparencyPage.hybrid100HumanDesc")}</p>
               </div>
               <div className="bg-success/10 rounded-xl p-4 -m-2">
                 <div className="text-3xl mb-2">🤝</div>
-                <div className="font-medium text-success">Hybrid</div>
-                <p className="text-sm text-base-content/70 mt-1">AI speed + human judgment + community verification.</p>
+                <div className="font-medium text-success">{t("transparencyPage.hybridLabel")}</div>
+                <p className="text-sm text-base-content/70 mt-1">{t("transparencyPage.hybridDesc")}</p>
               </div>
             </div>
           </div>
@@ -374,35 +374,35 @@ export default async function TransparencyPage() {
       {/* Our Commitment */}
       <section className="py-16 px-6 bg-base-200/50 border-t border-base-300">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold mb-8 text-center">Our Commitment to Objectivity</h2>
+          <h2 className="text-2xl font-bold mb-8 text-center">{t("transparencyPage.commitmentTitle")}</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-base-100 rounded-xl p-6 border border-base-300">
               <div className="text-success text-2xl mb-3">✓</div>
-              <h3 className="font-bold mb-2">No Pay-to-Play</h3>
+              <h3 className="font-bold mb-2">{t("transparencyPage.noPayToPlay")}</h3>
               <p className="text-sm text-base-content/60">
-                Companies cannot pay for better scores. Our ratings are based solely on security data.
+                {t("transparencyPage.noPayToPlayDesc")}
               </p>
             </div>
             <div className="bg-base-100 rounded-xl p-6 border border-base-300">
               <div className="text-success text-2xl mb-3">✓</div>
-              <h3 className="font-bold mb-2">Same Standards for All</h3>
+              <h3 className="font-bold mb-2">{t("transparencyPage.sameStandards")}</h3>
               <p className="text-sm text-base-content/60">
-                Every product is evaluated against the same {config.safe.stats.totalNorms} security norms.
+                {t("transparencyPage.sameStandardsDesc", { norms })}
               </p>
             </div>
             <div className="bg-base-100 rounded-xl p-6 border border-base-300">
               <div className="text-success text-2xl mb-3">✓</div>
-              <h3 className="font-bold mb-2">Transparent Methodology</h3>
+              <h3 className="font-bold mb-2">{t("transparencyPage.transparentMethodology")}</h3>
               <p className="text-sm text-base-content/60">
-                Our SAFE framework is fully documented. Anyone can understand how scores are calculated.
+                {t("transparencyPage.transparentMethodologyDesc")}
               </p>
             </div>
             <div className="bg-base-100 rounded-xl p-6 border border-base-300">
               <div className="text-success text-2xl mb-3">✓</div>
-              <h3 className="font-bold mb-2">Regular Updates</h3>
+              <h3 className="font-bold mb-2">{t("transparencyPage.regularUpdates")}</h3>
               <p className="text-sm text-base-content/60">
-                Scores are recalculated when products update their security. Past performance doesn&apos;t lock in a score.
+                {t("transparencyPage.regularUpdatesDesc")}
               </p>
             </div>
           </div>
@@ -412,16 +412,16 @@ export default async function TransparencyPage() {
       {/* CTA */}
       <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4">Check Any Product&apos;s Score</h2>
+          <h2 className="text-2xl font-bold mb-4">{t("transparencyPage.ctaTitle")}</h2>
           <p className="text-base-content/60 mb-8">
-            Search our database of {stats?.total || config.safe.stats.totalProducts}+ rated products.
+            {t("transparencyPage.ctaSubtitle", { count: stats?.total || normStats?.totalProducts || "—" })}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/products" className="btn btn-primary btn-lg">
-              Browse All Products
+              {t("transparencyPage.browseAll")}
             </Link>
             <Link href="/methodology" className="btn btn-outline btn-lg">
-              View Methodology
+              {t("transparencyPage.viewMethodology")}
             </Link>
           </div>
         </div>

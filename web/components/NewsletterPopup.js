@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * Newsletter Popup Component
@@ -8,6 +9,7 @@ import { useState, useEffect } from "react";
  * Uses localStorage to avoid showing repeatedly
  */
 export default function NewsletterPopup() {
+  const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle, loading, success, error
@@ -120,10 +122,10 @@ export default function NewsletterPopup() {
         <div className="bg-gradient-to-r from-primary/20 to-secondary/20 p-8 text-center">
           <div className="text-4xl mb-4">🔐</div>
           <h2 className="text-2xl font-bold mb-2">
-            Stay Safe in Crypto
+            {t("newsletter.title")}
           </h2>
           <p className="text-base-content/70">
-            Get weekly security alerts, new product ratings, and expert insights.
+            {t("newsletter.subtitle")}
           </p>
         </div>
 
@@ -132,15 +134,15 @@ export default function NewsletterPopup() {
           {status === "success" ? (
             <div className="text-center py-4">
               <div className="text-4xl mb-2">✅</div>
-              <p className="text-lg font-semibold text-success">You&apos;re subscribed!</p>
-              <p className="text-sm text-base-content/70">Check your inbox for a welcome email.</p>
+              <p className="text-lg font-semibold text-success">{t("newsletter.subscribed")}</p>
+              <p className="text-sm text-base-content/70">{t("newsletter.checkInbox")}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="form-control">
                 <input
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder={t("newsletter.placeholder")}
                   className="input input-bordered w-full"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -153,17 +155,17 @@ export default function NewsletterPopup() {
                 className={`btn btn-primary w-full ${status === "loading" ? "loading" : ""}`}
                 disabled={status === "loading"}
               >
-                {status === "loading" ? "Subscribing..." : "Subscribe Free"}
+                {status === "loading" ? t("newsletter.subscribing") : t("newsletter.subscribeFree")}
               </button>
 
               {status === "error" && (
                 <p className="text-sm text-error text-center">
-                  Something went wrong. Please try again.
+                  {t("newsletter.errorMessage")}
                 </p>
               )}
 
               <p className="text-xs text-center text-base-content/50">
-                No spam. Unsubscribe anytime. We respect your privacy.
+                {t("newsletter.noSpam")}
               </p>
             </form>
           )}
@@ -171,8 +173,7 @@ export default function NewsletterPopup() {
           {/* Social proof */}
           <div className="mt-6 pt-4 border-t border-base-300 text-center">
             <p className="text-sm text-base-content/60">
-              Join <span className="font-semibold text-primary">2,500+</span> crypto enthusiasts
-              who trust SafeScoring for security insights.
+              {t("newsletter.socialProof", { count: "2,500+" })}
             </p>
           </div>
         </div>

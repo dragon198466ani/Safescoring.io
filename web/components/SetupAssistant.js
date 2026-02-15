@@ -1,25 +1,21 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * SetupAssistant - AI-powered chat assistant for building crypto stacks
  */
 
-const INITIAL_MESSAGE = {
-  role: "assistant",
-  content: "Hi! 👋 I'm your crypto security assistant. I can help you build a secure setup based on your needs. Tell me about your crypto usage, and I'll recommend the best products for you.\n\nFor example, you can ask:\n• \"I'm new to crypto, what do I need?\"\n• \"What's the best hardware wallet for Bitcoin?\"\n• \"I have $50k, how should I secure it?\"\n• \"Compare Ledger vs Trezor\"",
-};
-
 // Pre-defined responses based on keywords (local AI simulation)
-function getAIResponse(message, products) {
+function getAIResponse(message, products, t) {
   const lowerMsg = message.toLowerCase();
 
   // Beginner questions
   if (lowerMsg.includes("beginner") || lowerMsg.includes("new to crypto") || lowerMsg.includes("getting started")) {
     const softwareWallets = products.filter(p => p.type_code?.includes("software")).slice(0, 2);
     return {
-      text: "Welcome to crypto! 🎉 For beginners, I recommend starting with:\n\n1. **A software wallet** for small amounts and learning\n2. **A hardware wallet** once you have more than $500\n\nHere are some beginner-friendly options:",
+      text: t("setupAssistant.responseBeginner"),
       recommendations: softwareWallets,
     };
   }
@@ -28,7 +24,7 @@ function getAIResponse(message, products) {
   if (lowerMsg.includes("hardware wallet") || lowerMsg.includes("cold storage") || lowerMsg.includes("ledger") || lowerMsg.includes("trezor")) {
     const hardwareWallets = products.filter(p => p.type_code?.includes("hardware")).slice(0, 3);
     return {
-      text: "Hardware wallets are the gold standard for securing crypto! 🔐 They keep your private keys offline, protecting you from hackers.\n\nTop hardware wallets by SAFE score:",
+      text: t("setupAssistant.responseHardware"),
       recommendations: hardwareWallets,
     };
   }
@@ -39,7 +35,7 @@ function getAIResponse(message, products) {
     if (amount >= 10000) {
       const hardware = products.filter(p => p.type_code?.includes("hardware") && p.score >= 80).slice(0, 2);
       return {
-        text: `With significant holdings, security is critical! 💎 I recommend:\n\n1. **Hardware wallet** for cold storage (90% of funds)\n2. **Software wallet** for active use (10%)\n3. Consider a **multisig setup** for extra security\n\nTop secure options:`,
+        text: t("setupAssistant.responseHighAmount"),
         recommendations: hardware,
       };
     }
@@ -49,7 +45,7 @@ function getAIResponse(message, products) {
   if (lowerMsg.includes("defi") || lowerMsg.includes("yield") || lowerMsg.includes("staking")) {
     const defiProducts = products.filter(p => p.type_code === "defi" || p.name?.toLowerCase().includes("metamask")).slice(0, 3);
     return {
-      text: "DeFi is exciting but requires extra security awareness! 🌾\n\nFor DeFi users, I recommend:\n1. **Hardware wallet** connected to MetaMask for signing\n2. Use **separate wallets** for different protocols\n3. **Never** approve unlimited token spending\n\nPopular DeFi-compatible options:",
+      text: t("setupAssistant.responseDefi"),
       recommendations: defiProducts,
     };
   }
@@ -62,7 +58,7 @@ function getAIResponse(message, products) {
       p.type_code?.includes("hardware")
     ).slice(0, 3);
     return {
-      text: "Bitcoin-only? Great choice for security! ₿\n\nBitcoin-focused wallets often have stronger security because they do one thing well. Look for:\n• Open-source firmware\n• Air-gapped signing\n• PSBT support\n\nTop Bitcoin wallets:",
+      text: t("setupAssistant.responseBitcoin"),
       recommendations: btcWallets,
     };
   }
@@ -71,7 +67,7 @@ function getAIResponse(message, products) {
   if (lowerMsg.includes("exchange") || lowerMsg.includes("trading") || lowerMsg.includes("buy")) {
     const exchanges = products.filter(p => p.type_code === "exchange").slice(0, 3);
     return {
-      text: "For trading, you'll need an exchange, but remember: \"Not your keys, not your coins!\" 🔑\n\nTips:\n• Only keep trading amounts on exchanges\n• Enable 2FA and withdrawal whitelists\n• Move long-term holdings to self-custody\n\nSafest exchanges by SAFE score:",
+      text: t("setupAssistant.responseExchange"),
       recommendations: exchanges,
     };
   }
@@ -79,7 +75,7 @@ function getAIResponse(message, products) {
   // Compare products
   if (lowerMsg.includes("compare") || lowerMsg.includes("vs") || lowerMsg.includes("versus")) {
     return {
-      text: "I can help you compare products! 📊 Add the products you're considering to your stack on the right, and you'll see their combined SAFE scores.\n\nOr tell me specifically which products you want to compare, like:\n• \"Compare Ledger Nano X vs Trezor Model T\"\n• \"What's better for beginners, Exodus or Trust Wallet?\"",
+      text: t("setupAssistant.responseCompare"),
       recommendations: [],
     };
   }
@@ -87,13 +83,17 @@ function getAIResponse(message, products) {
   // Default response
   const topProducts = products.filter(p => p.score >= 80).slice(0, 3);
   return {
-    text: "I can help with that! 🤔 Based on our SAFE methodology, here are some top-rated products. Feel free to ask more specific questions about your needs!\n\nPopular secure options:",
+    text: t("setupAssistant.responseDefault"),
     recommendations: topProducts,
   };
 }
 
 export default function SetupAssistant({ products, onAddProduct, isOpen, onToggle }) {
-  const [messages, setMessages] = useState([INITIAL_MESSAGE]);
+  const { t } = useTranslation();
+  const [messages, setMessages] = useState(() => [{
+    role: "assistant",
+    content: t("setupAssistant.initialMessage"),
+  }]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
@@ -116,7 +116,7 @@ export default function SetupAssistant({ products, onAddProduct, isOpen, onToggl
 
     // Simulate AI thinking
     setTimeout(() => {
-      const response = getAIResponse(input, products);
+      const response = getAIResponse(input, products, t);
       const assistantMessage = {
         role: "assistant",
         content: response.text,
@@ -158,8 +158,8 @@ export default function SetupAssistant({ products, onAddProduct, isOpen, onToggl
             </svg>
           </div>
           <div>
-            <h3 className="font-semibold">SAFE Assistant</h3>
-            <p className="text-xs text-green-400">Online</p>
+            <h3 className="font-semibold">{t("setupAssistant.title")}</h3>
+            <p className="text-xs text-green-400">{t("setupAssistant.online")}</p>
           </div>
         </div>
         <button onClick={onToggle} className="btn btn-ghost btn-sm btn-circle">
@@ -240,7 +240,7 @@ export default function SetupAssistant({ products, onAddProduct, isOpen, onToggl
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask me anything..."
+            placeholder={t("setupAssistant.placeholder")}
             className="input input-bordered flex-1 bg-base-100"
           />
           <button
@@ -254,7 +254,7 @@ export default function SetupAssistant({ products, onAddProduct, isOpen, onToggl
           </button>
         </div>
         <p className="text-xs text-base-content/40 mt-2 text-center">
-          AI recommendations based on SAFE methodology
+          {t("setupAssistant.disclaimer")}
         </p>
       </div>
     </div>

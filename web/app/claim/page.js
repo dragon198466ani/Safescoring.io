@@ -4,8 +4,10 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Turnstile } from "@marsidev/react-turnstile";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 function ClaimForm() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const productSlug = searchParams.get("product") || "";
 
@@ -81,7 +83,7 @@ function ClaimForm() {
   // Generate DNS verification token
   const generateDnsToken = async () => {
     if (!formData.website) {
-      setError("Please enter your website URL first");
+      setError(t("claimPage.websiteUrlError"));
       return;
     }
 
@@ -139,7 +141,7 @@ function ClaimForm() {
       if (data.verified) {
         setDnsVerification(prev => ({ ...prev, verified: true }));
       } else {
-        setError("DNS record not found. Please make sure you added the TXT record correctly and wait a few minutes for DNS propagation.");
+        setError(t("claimPage.dnsNotFound"));
       }
     } catch (err) {
       setError(err.message);
@@ -154,7 +156,7 @@ function ClaimForm() {
     setError("");
 
     if (!captchaToken) {
-      setError("Please complete the CAPTCHA verification");
+      setError(t("claimPage.captchaError"));
       setLoading(false);
       return;
     }
@@ -191,12 +193,12 @@ function ClaimForm() {
       <div className="min-h-screen bg-base-100 flex items-center justify-center p-4">
         <div className="max-w-md w-full text-center">
           <div className="text-6xl mb-4">✅</div>
-          <h1 className="text-2xl font-bold mb-2">Request Submitted!</h1>
+          <h1 className="text-2xl font-bold mb-2">{t("claimPage.requestSubmitted")}</h1>
           <p className="text-base-content/70 mb-6">
-            We&apos;ll review your claim and get back to you within 2-3 business days.
+            {t("claimPage.reviewMessage")}
           </p>
           <Link href={productSlug ? `/products/${productSlug}` : "/"} className="btn btn-primary">
-            {productSlug ? "Back to Product" : "Back to Home"}
+            {productSlug ? t("claimPage.backToProduct") : t("claimPage.backToHome")}
           </Link>
         </div>
       </div>
@@ -215,8 +217,8 @@ function ClaimForm() {
               </svg>
             </div>
             <div>
-              <h1 className="text-3xl font-bold">Claim Your Product</h1>
-              <p className="text-base-content/70">Verify ownership and manage your listing</p>
+              <h1 className="text-3xl font-bold">{t("claimPage.title")}</h1>
+              <p className="text-base-content/70">{t("claimPage.subtitle")}</p>
             </div>
           </div>
 
@@ -236,22 +238,22 @@ function ClaimForm() {
 
       {/* Benefits */}
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <h2 className="text-lg font-semibold mb-4">Benefits of Claiming Your Product</h2>
+        <h2 className="text-lg font-semibold mb-4">{t("claimPage.benefitsTitle")}</h2>
         <div className="grid md:grid-cols-3 gap-4 mb-6">
           <div className="p-4 bg-base-200 rounded-lg">
             <div className="text-2xl mb-2">✓</div>
-            <div className="font-medium">Verified Badge</div>
-            <div className="text-sm text-base-content/60">Show users your listing is official</div>
+            <div className="font-medium">{t("claimPage.verifiedBadge")}</div>
+            <div className="text-sm text-base-content/60">{t("claimPage.verifiedBadgeDesc")}</div>
           </div>
           <div className="p-4 bg-base-200 rounded-lg">
             <div className="text-2xl mb-2">🔗</div>
-            <div className="font-medium">Update Links</div>
-            <div className="text-sm text-base-content/60">Add Discord, Twitter, Telegram & more</div>
+            <div className="font-medium">{t("claimPage.updateLinks")}</div>
+            <div className="text-sm text-base-content/60">{t("claimPage.updateLinksDesc")}</div>
           </div>
           <div className="p-4 bg-base-200 rounded-lg">
             <div className="text-2xl mb-2">📊</div>
-            <div className="font-medium">Analytics Access</div>
-            <div className="text-sm text-base-content/60">See how users interact with your listing</div>
+            <div className="font-medium">{t("claimPage.analyticsAccess")}</div>
+            <div className="text-sm text-base-content/60">{t("claimPage.analyticsAccessDesc")}</div>
           </div>
         </div>
 
@@ -261,9 +263,9 @@ function ClaimForm() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <div>
-            <div className="font-medium">Verification takes time</div>
+            <div className="font-medium">{t("claimPage.verificationTakesTime")}</div>
             <div className="text-sm text-base-content/60">
-              Our team manually reviews each request to ensure authenticity. We aim to validate all requests within 5-10 business days. Thank you for your patience!
+              {t("claimPage.verificationTimeDesc")}
             </div>
           </div>
         </div>
@@ -272,20 +274,20 @@ function ClaimForm() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="bg-base-200 rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Company Information</h3>
+              <h3 className="font-semibold">{t("claimPage.companyInfo")}</h3>
               {productSlug && autoFilledFields.some(f => ["companyName", "website"].includes(f)) && (
                 <span className="badge badge-success badge-sm gap-1">
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Auto-filled from listing
+                  {t("claimPage.autoFilledFromListing")}
                 </span>
               )}
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Product/Company Name *</span>
+                  <span className="label-text">{t("claimPage.companyNameLabel")}</span>
                 </label>
                 <input
                   type="text"
@@ -297,7 +299,7 @@ function ClaimForm() {
               </div>
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Official Website *</span>
+                  <span className="label-text">{t("claimPage.officialWebsiteLabel")}</span>
                 </label>
                 <input
                   type="url"
@@ -312,11 +314,11 @@ function ClaimForm() {
           </div>
 
           <div className="bg-base-200 rounded-xl p-6">
-            <h3 className="font-semibold mb-4">Contact Information</h3>
+            <h3 className="font-semibold mb-4">{t("claimPage.contactInfo")}</h3>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Your Name *</span>
+                  <span className="label-text">{t("claimPage.yourNameLabel")}</span>
                 </label>
                 <input
                   type="text"
@@ -328,7 +330,7 @@ function ClaimForm() {
               </div>
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Professional Email *</span>
+                  <span className="label-text">{t("claimPage.professionalEmailLabel")}</span>
                 </label>
                 <input
                   type="email"
@@ -339,12 +341,12 @@ function ClaimForm() {
                   required
                 />
                 <label className="label">
-                  <span className="label-text-alt text-base-content/50">Use your company email for faster verification</span>
+                  <span className="label-text-alt text-base-content/50">{t("claimPage.emailHint")}</span>
                 </label>
               </div>
               <div className="form-control md:col-span-2">
                 <label className="label">
-                  <span className="label-text">Your Role *</span>
+                  <span className="label-text">{t("claimPage.yourRoleLabel")}</span>
                 </label>
                 <select
                   className="select select-bordered"
@@ -352,13 +354,13 @@ function ClaimForm() {
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   required
                 >
-                  <option value="">Select your role</option>
-                  <option value="founder">Founder / Co-Founder</option>
-                  <option value="ceo">CEO / Executive</option>
-                  <option value="marketing">Marketing / PR</option>
-                  <option value="developer">Developer / CTO</option>
-                  <option value="community">Community Manager</option>
-                  <option value="other">Other</option>
+                  <option value="">{t("claimPage.selectRole")}</option>
+                  <option value="founder">{t("claimPage.roleFounder")}</option>
+                  <option value="ceo">{t("claimPage.roleCeo")}</option>
+                  <option value="marketing">{t("claimPage.roleMarketing")}</option>
+                  <option value="developer">{t("claimPage.roleDeveloper")}</option>
+                  <option value="community">{t("claimPage.roleCommunity")}</option>
+                  <option value="other">{t("claimPage.roleOther")}</option>
                 </select>
               </div>
             </div>
@@ -366,20 +368,20 @@ function ClaimForm() {
 
           <div className="bg-base-200 rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Social Links (Optional)</h3>
+              <h3 className="font-semibold">{t("claimPage.socialLinksTitle")}</h3>
               {autoFilledFields.some(f => ["discord", "twitter", "telegram"].includes(f)) && (
                 <span className="badge badge-success badge-sm gap-1">
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Auto-filled from listing
+                  {t("claimPage.autoFilledFromListing")}
                 </span>
               )}
             </div>
             <p className="text-sm text-base-content/60 mb-4">
               {productSlug && autoFilledFields.some(f => ["discord", "twitter", "telegram"].includes(f))
-                ? "Links pre-filled from your product listing. Update if needed."
-                : "Provide your official social links to be added to your listing"
+                ? t("claimPage.socialLinksPreFilled")
+                : t("claimPage.socialLinksProvide")
               }
             </p>
             <div className="grid md:grid-cols-3 gap-4">
@@ -438,14 +440,14 @@ function ClaimForm() {
           </div>
 
           <div className="bg-base-200 rounded-xl p-6">
-            <h3 className="font-semibold mb-4">Additional Information</h3>
+            <h3 className="font-semibold mb-4">{t("claimPage.additionalInfo")}</h3>
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Message (Optional)</span>
+                <span className="label-text">{t("claimPage.messageLabel")}</span>
               </label>
               <textarea
                 className="textarea textarea-bordered h-24"
-                placeholder="Any additional information to help verify your ownership..."
+                placeholder={t("claimPage.messagePlaceholder")}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               />
@@ -454,9 +456,9 @@ function ClaimForm() {
 
           {/* DNS Verification Section */}
           <div className="bg-base-200 rounded-xl p-6">
-            <h3 className="font-semibold mb-2">Domain Ownership Verification</h3>
+            <h3 className="font-semibold mb-2">{t("claimPage.dnsTitle")}</h3>
             <p className="text-sm text-base-content/60 mb-4">
-              Prove you control the domain by adding a DNS TXT record. This is anonymous and doesn&apos;t require any personal data.
+              {t("claimPage.dnsDescription")}
             </p>
 
             {!dnsVerification ? (
@@ -469,10 +471,10 @@ function ClaimForm() {
                 {verifying ? (
                   <>
                     <span className="loading loading-spinner loading-xs"></span>
-                    Generating...
+                    {t("claimPage.generating")}
                   </>
                 ) : (
-                  "Generate Verification Token"
+                  t("claimPage.generateToken")
                 )}
               </button>
             ) : (
@@ -482,21 +484,21 @@ function ClaimForm() {
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span>Domain verified! You control {dnsVerification.domain}</span>
+                    <span>{t("claimPage.domainVerified").replace("{domain}", dnsVerification.domain)}</span>
                   </div>
                 ) : (
                   <>
                     <div className="bg-base-300 rounded-lg p-4">
-                      <div className="text-sm font-medium mb-2">Add this TXT record to your DNS:</div>
+                      <div className="text-sm font-medium mb-2">{t("claimPage.addTxtRecord")}</div>
                       <div className="grid gap-2 text-sm">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-base-content/70">Host/Name:</span>
+                          <span className="font-medium text-base-content/70">{t("claimPage.hostName")}</span>
                           <code className="bg-base-100 px-2 py-1 rounded">@</code>
-                          <span className="text-base-content/50">or</span>
+                          <span className="text-base-content/50">{t("claimPage.or")}</span>
                           <code className="bg-base-100 px-2 py-1 rounded">{dnsVerification.domain}</code>
                         </div>
                         <div className="flex items-start gap-2">
-                          <span className="font-medium text-base-content/70 shrink-0">Value:</span>
+                          <span className="font-medium text-base-content/70 shrink-0">{t("claimPage.value")}</span>
                           <code className="bg-base-100 px-2 py-1 rounded break-all select-all">
                             safescoring-verify={dnsVerification.token}
                           </code>
@@ -514,14 +516,14 @@ function ClaimForm() {
                         {verifying ? (
                           <>
                             <span className="loading loading-spinner loading-xs"></span>
-                            Checking...
+                            {t("claimPage.checking")}
                           </>
                         ) : (
-                          "Verify DNS Record"
+                          t("claimPage.verifyDnsRecord")
                         )}
                       </button>
                       <span className="text-xs text-base-content/50">
-                        DNS changes can take a few minutes to propagate
+                        {t("claimPage.dnsPropagation")}
                       </span>
                     </div>
                   </>
@@ -531,14 +533,14 @@ function ClaimForm() {
 
             {!dnsVerification?.verified && (
               <p className="text-xs text-base-content/50 mt-4">
-                This step is optional but speeds up verification. You can still submit without DNS verification.
+                {t("claimPage.dnsOptional")}
               </p>
             )}
           </div>
 
           {/* Captcha Section */}
           <div className="bg-base-200 rounded-xl p-6">
-            <h3 className="font-semibold mb-4">Security Verification</h3>
+            <h3 className="font-semibold mb-4">{t("claimPage.securityVerification")}</h3>
             <Turnstile
               siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
               onSuccess={(token) => setCaptchaToken(token)}
@@ -558,20 +560,20 @@ function ClaimForm() {
 
           <div className="flex items-center justify-between">
             <Link href={productSlug ? `/products/${productSlug}` : "/"} className="btn btn-ghost">
-              Cancel
+              {t("claimPage.cancel")}
             </Link>
             <button type="submit" className="btn btn-primary gap-2" disabled={loading}>
               {loading ? (
                 <>
                   <span className="loading loading-spinner loading-sm"></span>
-                  Submitting...
+                  {t("claimPage.submitting")}
                 </>
               ) : (
                 <>
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Submit Claim Request
+                  {t("claimPage.submitClaimRequest")}
                 </>
               )}
             </button>
@@ -580,27 +582,27 @@ function ClaimForm() {
 
         {/* FAQ */}
         <div className="mt-12 pt-8 border-t border-base-300">
-          <h2 className="text-lg font-semibold mb-4">Frequently Asked Questions</h2>
+          <h2 className="text-lg font-semibold mb-4">{t("claimPage.faqTitle")}</h2>
           <div className="space-y-4">
             <div className="collapse collapse-arrow bg-base-200">
               <input type="radio" name="faq" />
-              <div className="collapse-title font-medium">How long does verification take?</div>
+              <div className="collapse-title font-medium">{t("claimPage.faqVerificationTime")}</div>
               <div className="collapse-content text-sm text-base-content/70">
-                <p>We typically verify claims within 2-3 business days. Using a company email (@yourcompany.com) speeds up the process.</p>
+                <p>{t("claimPage.faqVerificationTimeAnswer")}</p>
               </div>
             </div>
             <div className="collapse collapse-arrow bg-base-200">
               <input type="radio" name="faq" />
-              <div className="collapse-title font-medium">What proof of ownership is required?</div>
+              <div className="collapse-title font-medium">{t("claimPage.faqProofRequired")}</div>
               <div className="collapse-content text-sm text-base-content/70">
-                <p>We verify ownership through: company email domain, website ownership (DNS record or meta tag), or social media verification.</p>
+                <p>{t("claimPage.faqProofRequiredAnswer")}</p>
               </div>
             </div>
             <div className="collapse collapse-arrow bg-base-200">
               <input type="radio" name="faq" />
-              <div className="collapse-title font-medium">Is this service free?</div>
+              <div className="collapse-title font-medium">{t("claimPage.faqFree")}</div>
               <div className="collapse-content text-sm text-base-content/70">
-                <p>Basic verification and link updates are free. Premium features like analytics, priority support, and custom badges are available with our Pro plan.</p>
+                <p>{t("claimPage.faqFreeAnswer")}</p>
               </div>
             </div>
           </div>

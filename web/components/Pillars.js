@@ -2,55 +2,23 @@
 
 import { useState } from "react";
 import config from "@/config";
+import { useNormStats } from "@/hooks/useNormStats";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 import PillarInfoModal from "./PillarInfoModal";
 import PillarIllustrations, { ExampleIcons } from "./PillarIllustrations";
 
-// Configuration des normes avec leurs icônes associées
-const pillarDetails = {
-  S: {
-    norms: [
-      { text: "AES-256 encryption (military-grade)", icon: "encryption" },
-      { text: "secp256k1 / EdDSA signatures", icon: "signature" },
-      { text: "Keccak-256 hashing", icon: "key" },
-      { text: "Secure key derivation (BIP-32/39/44)", icon: "signature" },
-      { text: "Hardware Security Module (HSM) support", icon: "encryption" },
-    ],
-    example: "If a hacker had unlimited computing power, how long would your wallet hold?",
-  },
-  A: {
-    norms: [
-      { text: "Duress PIN (fake unlock under threat)", icon: "duress" },
-      { text: "Hidden & decoy wallets", icon: "hidden" },
-      { text: "Time-locked transfers (impossible to send instantly)", icon: "shield" },
-      { text: "Plausible deniability", icon: "hidden" },
-      { text: "Multi-signature (no single point of coercion)", icon: "shield" },
-    ],
-    example: "If someone kidnaps you tonight, can your wallet protect your funds until help arrives?",
-  },
-  F: {
-    norms: [
-      { text: "Independent security audits (not just once)", icon: "audit" },
-      { text: "Active bug bounty programs", icon: "bug" },
-      { text: "Patch speed after vulnerabilities", icon: "update" },
-      { text: "Open-source & transparent governance", icon: "audit" },
-      { text: "Proven incident response track record", icon: "update" },
-    ],
-    example: "Your wallet was audited in 2022. Three critical CVEs dropped since. Did they patch them?",
-  },
-  E: {
-    norms: [
-      { text: "Clear transaction confirmation (no blind signing)", icon: "multichain" },
-      { text: "Address verification before sending", icon: "mobile" },
-      { text: "Multi-chain / multi-asset support", icon: "speed" },
-      { text: "Accessible backup & recovery process", icon: "mobile" },
-      { text: "Error prevention & undo mechanisms", icon: "mobile" },
-    ],
-    example: "Wrong address, wrong chain, blind-signed phishing tx. How many irreversible mistakes does your product actually prevent?",
-  },
+// Static icon mapping per pillar code — icons are not translatable
+const pillarIconMap = {
+  S: ["encryption", "signature", "key", "signature", "encryption"],
+  A: ["duress", "hidden", "shield", "hidden", "shield"],
+  F: ["audit", "bug", "update", "audit", "update"],
+  E: ["multichain", "mobile", "speed", "mobile", "mobile"],
 };
 
 const Pillars = () => {
   const [selectedPillar, setSelectedPillar] = useState(null);
+  const normStats = useNormStats();
+  const { t } = useTranslation();
 
   const openModal = (pillarCode) => {
     setSelectedPillar(pillarCode);
@@ -72,20 +40,26 @@ const Pillars = () => {
         {/* Section header */}
         <div className="text-center mb-16">
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
-            Methodology
+            {t("pillars.badge")}
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-            The <span className="text-gradient-safe">SAFE</span> Framework
+            {t("pillars.title")} <span className="text-gradient-safe">{t("pillars.titleSafe")}</span> {t("pillars.titleFramework")}
           </h2>
           <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
-            Four pillars of comprehensive security evaluation. Each product is scored against {config.safe.stats.totalNorms} norms across these dimensions.
+            {t("pillars.subtitle", { count: normStats.totalNorms ?? "\u2014" })}
           </p>
         </div>
 
         {/* Pillars grid */}
         <div className="grid md:grid-cols-2 gap-8">
           {config.safe.pillars.map((pillar) => {
-            const details = pillarDetails[pillar.code];
+            const normTexts = t(`pillars.pillar${pillar.code}.norms`);
+            const icons = pillarIconMap[pillar.code] || [];
+            const norms = Array.isArray(normTexts)
+              ? normTexts.map((text, i) => ({ text, icon: icons[i] || "encryption" }))
+              : [];
+            const example = t(`pillars.pillar${pillar.code}.example`);
+
             return (
               <div
                 key={pillar.code}
@@ -115,8 +89,8 @@ const Pillars = () => {
                     <button
                       onClick={() => openModal(pillar.code)}
                       className="btn btn-ghost btn-xs btn-circle opacity-60 hover:opacity-100 transition-opacity"
-                      title={`Learn more about ${pillar.name}`}
-                      aria-label={`Learn more about ${pillar.name}`}
+                      title={t("pillars.learnMore", { name: pillar.name })}
+                      aria-label={t("pillars.learnMore", { name: pillar.name })}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +112,7 @@ const Pillars = () => {
 
                 {/* Example norms avec icônes */}
                 <div className="relative space-y-3 mb-6">
-                  {details.norms.map((norm, i) => {
+                  {norms.map((norm, i) => {
                     const IconComponent = ExampleIcons[norm.icon];
                     return (
                       <div key={i} className="flex items-center gap-3">
@@ -173,7 +147,7 @@ const Pillars = () => {
                   style={{ borderColor: pillar.color, backgroundColor: `${pillar.color}10` }}
                 >
                   <p className="text-sm text-base-content/70 italic">
-                    &quot;{details.example}&quot;
+                    &quot;{example}&quot;
                   </p>
                 </div>
 
@@ -183,7 +157,7 @@ const Pillars = () => {
                   className="mt-4 text-sm font-medium flex items-center gap-1 opacity-70 hover:opacity-100 transition-opacity"
                   style={{ color: pillar.color }}
                 >
-                  <span>View standards & methodology</span>
+                  <span>{t("pillars.viewStandards")}</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
@@ -205,13 +179,13 @@ const Pillars = () => {
         {/* Bottom CTA */}
         <div className="text-center mt-12">
           <p className="text-base-content/60 mb-4">
-            Want to see the full methodology?
+            {t("pillars.bottomText")}
           </p>
           <a
             href="/methodology"
             className="btn btn-outline btn-primary"
           >
-            View All {config.safe.stats.totalNorms} Norms
+            {t("pillars.viewAllNorms", { count: normStats.totalNorms ?? "\u2014" })}
           </a>
         </div>
       </div>

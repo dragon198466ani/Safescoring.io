@@ -42,7 +42,7 @@ CURIOSITY_HOOKS = {
 
     # Authority/expertise (positions SafeScoring as the source)
     'authority': [
-        "We evaluate 916 security norms. Most products fail half.",
+        "We evaluate 2159 security norms. Most products fail half.",
         "87% of hacked projects were audited. We measure what audits miss.",
         "After analyzing {count}+ products, here's what we learned.",
         "The security data nobody else is showing you.",
@@ -141,7 +141,7 @@ Not saying which one.
 But you can check all of them here → safescoring.io/products""",
 
     # Template 5: Authority + value
-    """We analyze 916 security criteria for every crypto product.
+    """We analyze 2159 security criteria for every crypto product.
 
 Some pass. Many don't.
 
@@ -199,7 +199,7 @@ SOFT_SELL_REDDIT = [
         'title': "I found a free tool that rates crypto wallet security",
         'body': """Been researching wallet security and found safescoring.io
 
-They rate wallets against 916 security criteria. All scores are public.
+They rate wallets against 2159 security criteria. All scores are public.
 
 What I liked:
 - Can compare any two products
@@ -218,7 +218,7 @@ Checked my main wallet - it scored lower than I expected.
 
 Might be worth checking yours before something happens.
 
-The methodology is transparent (916 norms they check for)."""
+The methodology is transparent (2159 norms they check for)."""
     },
     {
         'title': "Interesting data on wallet security ratings",
@@ -245,7 +245,7 @@ SOFT_SELL_LINKEDIN = [
 
 Audits check code. But security is more than code.
 
-At SafeScoring, we evaluate 916 criteria across 4 dimensions:
+At SafeScoring, we evaluate 2159 criteria across 4 dimensions:
 • Security (cryptography, key management)
 • Adversity (duress protection, coercion resistance)
 • Fidelity (track record, transparency)

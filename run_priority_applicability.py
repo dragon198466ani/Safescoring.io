@@ -33,7 +33,7 @@ def get_types_with_products():
     types_with_data = {x['type_id'] for x in existing}
 
     # Filter to only types without complete data
-    # A type needs 916 norms, if less than 800 it's incomplete
+    # A type needs 2159 norms, if less than 800 it's incomplete
     type_counts_filtered = {tid: count for tid, count in type_counts.items() if tid not in types_with_data}
 
     # Sort by count

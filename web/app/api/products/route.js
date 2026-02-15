@@ -112,6 +112,8 @@ export async function GET(request) {
         url,
         type_id,
         media,
+        price_eur,
+        price_details,
         product_types!inner (
           code,
           name,
@@ -288,6 +290,9 @@ export async function GET(request) {
           no: ssr?.total_no ?? 0,
           na: ssr?.total_na ?? 0,
         },
+        priceEur: product.price_eur || null,
+        priceDetails: product.price_details || null,
+        feesBreakdown: product.fees_breakdown || null,
         verified: ssr?.note_finale != null,
         lastUpdate: ssr?.calculated_at || null,
       };

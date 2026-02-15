@@ -5,10 +5,14 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import config from "@/config";
+import { useNormStats } from "@/hooks/useNormStats";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 function SignInContent() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const normStats = useNormStats();
   const router = useRouter();
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const error = searchParams.get("error");
@@ -63,19 +67,19 @@ function SignInContent() {
 
         <div className="space-y-6">
           <h1 className="text-4xl font-bold leading-tight">
-            The unified security rating for all crypto products
+            {t("signin.heroTagline")}
           </h1>
           <p className="text-lg text-base-content/60">
-            {config.safe.tagline}
+            {config.safe.taglineTemplate.replace("{count}", normStats.totalNorms ?? "—")}
           </p>
           <div className="flex items-center gap-8 text-sm text-base-content/60">
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-primary">{config.safe.stats.totalNorms}</span>
-              <span>security norms</span>
+              <span className="text-2xl font-bold text-primary">{normStats.totalNorms ?? "—"}</span>
+              <span>{t("signin.securityNorms")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-primary">{config.safe.stats.totalProducts}+</span>
-              <span>products</span>
+              <span className="text-2xl font-bold text-primary">{normStats.totalProducts ?? "—"}+</span>
+              <span>{t("signin.productsLabel")}</span>
             </div>
           </div>
         </div>
@@ -114,9 +118,9 @@ function SignInContent() {
           </div>
 
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold mb-2">Welcome back</h2>
+            <h2 className="text-2xl font-bold mb-2">{t("signin.welcomeBack")}</h2>
             <p className="text-base-content/60">
-              Sign in to access your security dashboard
+              {t("signin.signInDesc")}
             </p>
           </div>
 
@@ -126,16 +130,11 @@ function SignInContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>
-                {error === "OAuthSignin" && "Error starting OAuth sign in"}
-                {error === "OAuthCallback" && "Error during OAuth callback"}
-                {error === "OAuthCreateAccount" && "Error creating OAuth account"}
-                {error === "EmailCreateAccount" && "Error creating email account"}
-                {error === "Callback" && "Error during callback"}
-                {error === "OAuthAccountNotLinked" && "Email already linked to another account"}
-                {error === "EmailSignin" && "Error sending email"}
-                {error === "CredentialsSignin" && "Invalid credentials"}
-                {error === "SessionRequired" && "Please sign in to continue"}
-                {!["OAuthSignin", "OAuthCallback", "OAuthCreateAccount", "EmailCreateAccount", "Callback", "OAuthAccountNotLinked", "EmailSignin", "CredentialsSignin", "SessionRequired"].includes(error) && "An error occurred"}
+                {["OAuthSignin", "OAuthCallback", "OAuthCreateAccount", "OAuthAccountNotLinked"].includes(error) && t("signin.errorOAuth")}
+                {["Callback"].includes(error) && t("signin.errorCallback")}
+                {["EmailCreateAccount", "EmailSignin"].includes(error) && t("signin.errorEmail")}
+                {["CredentialsSignin", "SessionRequired"].includes(error) && t("signin.errorDefault")}
+                {!["OAuthSignin", "OAuthCallback", "OAuthCreateAccount", "EmailCreateAccount", "Callback", "OAuthAccountNotLinked", "EmailSignin", "CredentialsSignin", "SessionRequired"].includes(error) && t("signin.errorDefault")}
               </span>
             </div>
           )}
@@ -147,18 +146,18 @@ function SignInContent() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold">Check your email</h3>
+              <h3 className="text-xl font-bold">{t("signin.checkYourEmail")}</h3>
               <p className="text-base-content/60">
-                We sent a magic link to <strong>{email}</strong>
+                {t("signin.magicLinkSent", { email })}
               </p>
               <p className="text-sm text-base-content/50">
-                Click the link in the email to sign in. The link expires in 24 hours.
+                {t("signin.magicLinkExpiry")}
               </p>
               <button
                 onClick={() => setEmailSent(false)}
                 className="btn btn-ghost btn-sm mt-4"
               >
-                Use a different email
+                {t("signin.useDifferentEmail")}
               </button>
             </div>
           ) : (
@@ -175,22 +174,22 @@ function SignInContent() {
                   <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                   <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                Continue with Google
+                {t("signin.continueWithGoogle")}
               </button>
 
-              <div className="divider text-base-content/40 text-sm">or continue with email</div>
+              <div className="divider text-base-content/40 text-sm">{t("signin.orContinueWithEmail")}</div>
 
               {/* Email Sign In */}
               <form onSubmit={handleEmailSignIn} className="space-y-4">
                 <div>
                   <label className="label">
-                    <span className="label-text">Email address</span>
+                    <span className="label-text">{t("signin.emailAddress")}</span>
                   </label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
+                    placeholder={t("signin.emailPlaceholder")}
                     className="input input-bordered w-full"
                     required
                   />
@@ -203,19 +202,19 @@ function SignInContent() {
                   {isLoading ? (
                     <span className="loading loading-spinner loading-sm"></span>
                   ) : (
-                    "Send magic link"
+                    t("signin.sendMagicLink")
                   )}
                 </button>
               </form>
 
               <p className="text-center text-sm text-base-content/50">
-                By signing in, you agree to our{" "}
+                {t("signin.termsAgreement")}{" "}
                 <Link href="/tos" className="text-primary hover:underline">
-                  Terms of Service
+                  {t("signin.termsOfService")}
                 </Link>{" "}
-                and{" "}
+                &{" "}
                 <Link href="/privacy-policy" className="text-primary hover:underline">
-                  Privacy Policy
+                  {t("signin.privacyPolicy")}
                 </Link>
               </p>
             </div>
@@ -227,7 +226,7 @@ function SignInContent() {
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-green-500">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>Free plan includes 5 detailed products/month</span>
+              <span>{t("signin.freePlanNote")}</span>
             </div>
           </div>
         </div>

@@ -48,12 +48,12 @@ Updated norm applicability for **DEX (Decentralized Exchanges)** products.
 ## Updated Statistics
 
 ### Before Update:
-- Total norms: 911
+- Total norms: 2159
 - Applicable: 495 (54%)
 - N/A: 412 (46%)
 
 ### After Update:
-- Total norms: 911
+- Total norms: 2159
 - **Applicable: 501 (55%)** ⬆️ +6 norms
 - **N/A: 406 (45%)** ⬇️ -6 norms (4 confirmed as N/A)
 
@@ -152,7 +152,7 @@ python check_dex_types.py
 
 ## Next Steps (Optional)
 
-If you want to do a **comprehensive AI-powered review** of ALL 911 norms:
+If you want to do a **comprehensive AI-powered review** of ALL 2159 norms:
 
 ```bash
 python update_dex_applicability.py

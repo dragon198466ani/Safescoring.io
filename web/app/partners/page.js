@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getT } from "@/libs/i18n/server";
 
 export const metadata = {
   title: "Partners & Integrations | SafeScoring",
@@ -6,118 +7,115 @@ export const metadata = {
   keywords: "crypto security partnership, SafeScoring integration, blockchain security API partner",
 };
 
-const partnerTypes = [
-  {
-    title: "Wallet Providers",
-    icon: "💼",
-    description: "Show security scores for DeFi protocols before users connect. Protect your users with real-time risk assessment.",
-    benefits: [
-      "Reduce user exposure to risky protocols",
-      "Increase trust in your wallet",
-      "Free API integration",
-      "Co-marketing opportunities"
-    ],
-    cta: "Integrate Now",
-  },
-  {
-    title: "Exchanges & Platforms",
-    icon: "📊",
-    description: "Display SafeScores alongside listed tokens and protocols. Help users make informed trading decisions.",
-    benefits: [
-      "Enhanced due diligence for listings",
-      "Differentiate from competitors",
-      "Automated score updates",
-      "Custom branded widgets"
-    ],
-    cta: "Get Started",
-  },
-  {
-    title: "Media & Research",
-    icon: "📰",
-    description: "Embed security ratings in your articles and research reports. Add credibility with objective data.",
-    benefits: [
-      "Instant credibility boost",
-      "Easy badge embedding",
-      "Affiliate revenue share",
-      "Exclusive data access"
-    ],
-    cta: "Join Program",
-  },
-  {
-    title: "Security Auditors",
-    icon: "🔒",
-    description: "Get your audited projects rated on SafeScoring. Showcase your audit quality to a wider audience.",
-    benefits: [
-      "Featured auditor profile",
-      "Direct client referrals",
-      "Audit verification badges",
-      "Priority listing for clients"
-    ],
-    cta: "Apply Now",
-  },
-];
+export default async function PartnersPage() {
+  const t = await getT();
 
-const integrationOptions = [
-  {
-    name: "API Access",
-    description: "RESTful API with JSON responses. Perfect for backend integrations.",
-    features: ["100 req/hour free tier", "Real-time scores", "Full CORS support"],
-    link: "/api-docs",
-  },
-  {
-    name: "Embeddable Widgets",
-    description: "Drop-in HTML widgets with customizable themes.",
-    features: ["Iframe or JS embed", "Dark/light themes", "Multiple sizes"],
-    link: "/badge",
-  },
-  {
-    name: "Webhooks",
-    description: "Get notified when scores change for products you track.",
-    features: ["Real-time updates", "Configurable thresholds", "Retry logic"],
-    link: "/api-docs#webhooks",
-  },
-  {
-    name: "White Label",
-    description: "Custom-branded security ratings for enterprise partners.",
-    features: ["Your branding", "Custom domains", "Dedicated support"],
-    link: "mailto:partners@safescoring.io",
-  },
-];
+  const partnerTypes = [
+    {
+      title: t("partnersPage.walletProviders"),
+      icon: "\uD83D\uDCBC",
+      description: t("partnersPage.walletProvidersDesc"),
+      benefits: [
+        t("partnersPage.walletBenefit1"),
+        t("partnersPage.walletBenefit2"),
+        t("partnersPage.walletBenefit3"),
+        t("partnersPage.walletBenefit4"),
+      ],
+      cta: t("partnersPage.walletCta"),
+    },
+    {
+      title: t("partnersPage.exchangesPlatforms"),
+      icon: "\uD83D\uDCCA",
+      description: t("partnersPage.exchangesPlatformsDesc"),
+      benefits: [
+        t("partnersPage.exchangeBenefit1"),
+        t("partnersPage.exchangeBenefit2"),
+        t("partnersPage.exchangeBenefit3"),
+        t("partnersPage.exchangeBenefit4"),
+      ],
+      cta: t("partnersPage.exchangeCta"),
+    },
+    {
+      title: t("partnersPage.mediaResearch"),
+      icon: "\uD83D\uDCF0",
+      description: t("partnersPage.mediaResearchDesc"),
+      benefits: [
+        t("partnersPage.mediaBenefit1"),
+        t("partnersPage.mediaBenefit2"),
+        t("partnersPage.mediaBenefit3"),
+        t("partnersPage.mediaBenefit4"),
+      ],
+      cta: t("partnersPage.mediaCta"),
+    },
+    {
+      title: t("partnersPage.securityAuditors"),
+      icon: "\uD83D\uDD12",
+      description: t("partnersPage.securityAuditorsDesc"),
+      benefits: [
+        t("partnersPage.auditorBenefit1"),
+        t("partnersPage.auditorBenefit2"),
+        t("partnersPage.auditorBenefit3"),
+        t("partnersPage.auditorBenefit4"),
+      ],
+      cta: t("partnersPage.auditorCta"),
+    },
+  ];
 
-const affiliateProgram = {
-  commission: "20%",
-  cookie: "90 days",
-  payouts: "Monthly",
-  features: [
-    "Earn 20% recurring commission on all referrals",
-    "90-day cookie duration for attribution",
-    "Real-time dashboard with analytics",
-    "Marketing materials provided",
-    "Dedicated affiliate manager",
-    "Custom promo codes available",
-  ],
-};
+  const integrationOptions = [
+    {
+      name: t("partnersPage.apiAccess"),
+      description: t("partnersPage.apiAccessDesc"),
+      features: [t("partnersPage.apiFeature1"), t("partnersPage.apiFeature2"), t("partnersPage.apiFeature3")],
+      link: "/api-docs",
+    },
+    {
+      name: t("partnersPage.embeddableWidgets"),
+      description: t("partnersPage.embeddableWidgetsDesc"),
+      features: [t("partnersPage.widgetFeature1"), t("partnersPage.widgetFeature2"), t("partnersPage.widgetFeature3")],
+      link: "/badge",
+    },
+    {
+      name: t("partnersPage.webhooks"),
+      description: t("partnersPage.webhooksDesc"),
+      features: [t("partnersPage.webhookFeature1"), t("partnersPage.webhookFeature2"), t("partnersPage.webhookFeature3")],
+      link: "/api-docs#webhooks",
+    },
+    {
+      name: t("partnersPage.whiteLabel"),
+      description: t("partnersPage.whiteLabelDesc"),
+      features: [t("partnersPage.whiteLabelFeature1"), t("partnersPage.whiteLabelFeature2"), t("partnersPage.whiteLabelFeature3")],
+      link: "mailto:partners@safescoring.io",
+    },
+  ];
 
-export default function PartnersPage() {
+  const affiliateFeatures = [
+    t("partnersPage.affiliateFeature1"),
+    t("partnersPage.affiliateFeature2"),
+    t("partnersPage.affiliateFeature3"),
+    t("partnersPage.affiliateFeature4"),
+    t("partnersPage.affiliateFeature5"),
+    t("partnersPage.affiliateFeature6"),
+  ];
+
   return (
     <main className="min-h-screen bg-base-200">
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary/20 to-secondary/20 py-16">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center">
-            <div className="badge badge-primary mb-4">Partnership Program</div>
+            <div className="badge badge-primary mb-4">{t("partnersPage.badge")}</div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Partner with SafeScoring
+              {t("partnersPage.title")}
             </h1>
             <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-8">
-              Integrate security ratings into your product. Help your users make safer crypto decisions.
+              {t("partnersPage.subtitle")}
             </p>
             <div className="flex gap-4 justify-center">
               <a href="#become-partner" className="btn btn-primary">
-                Become a Partner
+                {t("partnersPage.becomePartner")}
               </a>
               <Link href="/api-docs" className="btn btn-outline">
-                View API Docs
+                {t("partnersPage.viewApiDocs")}
               </Link>
             </div>
           </div>
@@ -127,9 +125,9 @@ export default function PartnersPage() {
       {/* Partner Types */}
       <section className="py-16 bg-base-100">
         <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-3xl font-bold text-center mb-4">Partner Programs</h2>
+          <h2 className="text-3xl font-bold text-center mb-4">{t("partnersPage.partnerPrograms")}</h2>
           <p className="text-center text-base-content/70 mb-12 max-w-2xl mx-auto">
-            Whether you&apos;re a wallet, exchange, media outlet, or auditor, we have a partnership program for you.
+            {t("partnersPage.partnerProgramsDesc")}
           </p>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -169,9 +167,9 @@ export default function PartnersPage() {
       {/* Integration Options */}
       <section className="py-16 bg-base-200">
         <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-3xl font-bold text-center mb-4">Integration Options</h2>
+          <h2 className="text-3xl font-bold text-center mb-4">{t("partnersPage.integrationOptions")}</h2>
           <p className="text-center text-base-content/70 mb-12">
-            Multiple ways to integrate SafeScoring into your product.
+            {t("partnersPage.integrationOptionsDesc")}
           </p>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -184,14 +182,14 @@ export default function PartnersPage() {
                   <ul className="space-y-1 mb-4">
                     {option.features.map((feature, fIdx) => (
                       <li key={fIdx} className="text-xs text-base-content/60">
-                        • {feature}
+                        {"\u2022"} {feature}
                       </li>
                     ))}
                   </ul>
 
                   <div className="card-actions mt-auto">
                     <Link href={option.link} className="btn btn-ghost btn-sm w-full">
-                      Learn More →
+                      {t("partnersPage.learnMoreArrow")}
                     </Link>
                   </div>
                 </div>
@@ -206,44 +204,43 @@ export default function PartnersPage() {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="badge badge-secondary mb-4">Affiliate Program</div>
-              <h2 className="text-3xl font-bold mb-4">Earn with SafeScoring</h2>
+              <div className="badge badge-secondary mb-4">{t("partnersPage.affiliateBadge")}</div>
+              <h2 className="text-3xl font-bold mb-4">{t("partnersPage.earnTitle")}</h2>
               <p className="text-base-content/70 mb-6">
-                Refer users to SafeScoring and earn recurring commission on all Premium subscriptions.
-                Perfect for content creators, influencers, and crypto educators.
+                {t("partnersPage.earnDesc")}
               </p>
 
               <ul className="space-y-3 mb-8">
-                {affiliateProgram.features.map((feature, idx) => (
+                {affiliateFeatures.map((feature, idx) => (
                   <li key={idx} className="flex items-center gap-3">
-                    <div className="badge badge-success badge-sm">✓</div>
+                    <div className="badge badge-success badge-sm">{"\u2713"}</div>
                     <span>{feature}</span>
                   </li>
                 ))}
               </ul>
 
               <a href="#become-partner" className="btn btn-primary">
-                Join Affiliate Program
+                {t("partnersPage.joinAffiliate")}
               </a>
             </div>
 
             <div className="grid grid-cols-3 gap-4">
               <div className="card bg-primary/10 text-center">
                 <div className="card-body">
-                  <div className="text-4xl font-bold text-primary">{affiliateProgram.commission}</div>
-                  <div className="text-sm text-base-content/70">Commission</div>
+                  <div className="text-4xl font-bold text-primary">20%</div>
+                  <div className="text-sm text-base-content/70">{t("partnersPage.commission")}</div>
                 </div>
               </div>
               <div className="card bg-secondary/10 text-center">
                 <div className="card-body">
-                  <div className="text-4xl font-bold text-secondary">{affiliateProgram.cookie}</div>
-                  <div className="text-sm text-base-content/70">Cookie Duration</div>
+                  <div className="text-4xl font-bold text-secondary">90 days</div>
+                  <div className="text-sm text-base-content/70">{t("partnersPage.cookieDuration")}</div>
                 </div>
               </div>
               <div className="card bg-accent/10 text-center">
                 <div className="card-body">
-                  <div className="text-4xl font-bold text-accent">{affiliateProgram.payouts}</div>
-                  <div className="text-sm text-base-content/70">Payouts</div>
+                  <div className="text-4xl font-bold text-accent">Monthly</div>
+                  <div className="text-sm text-base-content/70">{t("partnersPage.payouts")}</div>
                 </div>
               </div>
             </div>
@@ -254,7 +251,7 @@ export default function PartnersPage() {
       {/* Current Partners */}
       <section className="py-16 bg-base-200">
         <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-2xl font-bold text-center mb-8">Trusted By</h2>
+          <h2 className="text-2xl font-bold text-center mb-8">{t("partnersPage.trustedBy")}</h2>
 
           <div className="flex flex-wrap justify-center items-center gap-12 opacity-60">
             <div className="text-2xl font-bold">DeFiSafety</div>
@@ -265,7 +262,7 @@ export default function PartnersPage() {
           </div>
 
           <p className="text-center text-sm text-base-content/50 mt-6">
-            (Join these industry leaders)
+            {t("partnersPage.trustedByNote")}
           </p>
         </div>
       </section>
@@ -276,20 +273,20 @@ export default function PartnersPage() {
           <div className="card bg-base-100 shadow-xl">
             <div className="card-body">
               <h2 className="card-title text-2xl justify-center mb-6">
-                Apply to Partner
+                {t("partnersPage.applyToPartner")}
               </h2>
 
               <form className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="form-control">
                     <label className="label">
-                      <span className="label-text">Company Name</span>
+                      <span className="label-text">{t("partnersPage.companyName")}</span>
                     </label>
                     <input type="text" className="input input-bordered" required />
                   </div>
                   <div className="form-control">
                     <label className="label">
-                      <span className="label-text">Website</span>
+                      <span className="label-text">{t("partnersPage.website")}</span>
                     </label>
                     <input type="url" className="input input-bordered" placeholder="https://" />
                   </div>
@@ -298,13 +295,13 @@ export default function PartnersPage() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="form-control">
                     <label className="label">
-                      <span className="label-text">Your Name</span>
+                      <span className="label-text">{t("partnersPage.yourName")}</span>
                     </label>
                     <input type="text" className="input input-bordered" required />
                   </div>
                   <div className="form-control">
                     <label className="label">
-                      <span className="label-text">Email</span>
+                      <span className="label-text">{t("partnersPage.email")}</span>
                     </label>
                     <input type="email" className="input input-bordered" required />
                   </div>
@@ -312,34 +309,34 @@ export default function PartnersPage() {
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Partnership Type</span>
+                    <span className="label-text">{t("partnersPage.partnershipType")}</span>
                   </label>
                   <select className="select select-bordered">
-                    <option>API Integration</option>
-                    <option>Affiliate / Referral</option>
-                    <option>White Label Solution</option>
-                    <option>Media Partnership</option>
-                    <option>Auditor Partnership</option>
-                    <option>Other</option>
+                    <option>{t("partnersPage.optionApiIntegration")}</option>
+                    <option>{t("partnersPage.optionAffiliate")}</option>
+                    <option>{t("partnersPage.optionWhiteLabel")}</option>
+                    <option>{t("partnersPage.optionMedia")}</option>
+                    <option>{t("partnersPage.optionAuditor")}</option>
+                    <option>{t("partnersPage.optionOther")}</option>
                   </select>
                 </div>
 
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Tell us about your project</span>
+                    <span className="label-text">{t("partnersPage.tellUsAbout")}</span>
                   </label>
                   <textarea
                     className="textarea textarea-bordered h-24"
-                    placeholder="How would you like to integrate SafeScoring?"
+                    placeholder={t("partnersPage.formPlaceholder")}
                   ></textarea>
                 </div>
 
                 <button type="submit" className="btn btn-primary w-full">
-                  Submit Application
+                  {t("partnersPage.submitApplication")}
                 </button>
 
                 <p className="text-xs text-center text-base-content/50">
-                  We typically respond within 24-48 hours.
+                  {t("partnersPage.responseTime")}
                 </p>
               </form>
             </div>

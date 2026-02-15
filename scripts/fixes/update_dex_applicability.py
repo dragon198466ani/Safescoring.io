@@ -18,7 +18,7 @@ DEX_TYPE_ID = 39  # DEX type ID from database
 print("""
 ╔══════════════════════════════════════════════════════════════╗
 ║   UPDATE DEX NORM APPLICABILITY                              ║
-║   Reviews all 911 norms for DEX products                     ║
+║   Reviews all 2159 norms for DEX products                     ║
 ╚══════════════════════════════════════════════════════════════╝
 """)
 

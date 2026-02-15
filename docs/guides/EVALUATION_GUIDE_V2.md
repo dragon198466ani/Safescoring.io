@@ -30,7 +30,7 @@ Le système charge automatiquement depuis `norm_applicability`:
 **Exemple pour DEX (type_id=39):**
 - **506 normes applicables** (incluant F200-F204)
 - **406 normes N/A**
-- **Total: 912 normes** dans la base
+- **Total: 2159 normes** dans la base (912 dans norm_applicability pour DEX)
 
 ### Étape 3: Collecte des Informations
 

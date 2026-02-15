@@ -1,7 +1,7 @@
 {
   "name": "SafeScoring - Crypto Security Ratings",
   "short_name": "SafeScoring",
-  "description": "Independent security ratings for crypto products. 916 norms evaluated across the SAFE methodology.",
+  "description": "Independent security ratings for crypto products. Comprehensive norms evaluated across the SAFE methodology.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f0f0f",

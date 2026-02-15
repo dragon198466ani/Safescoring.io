@@ -3,12 +3,14 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import ProductLogo from "@/components/ProductLogo";
+import { getNormStats } from "@/libs/getNormStats";
+import { getT } from "@/libs/i18n/server";
 
 export const revalidate = 3600; // Revalidate every hour
 
 export const metadata = {
   title: "Compare Crypto Products - Security Comparison Tool | SafeScoring",
-  description: "Compare security scores of crypto wallets, exchanges, and DeFi protocols. See side-by-side SAFE Score analysis based on 916 security criteria.",
+  description: "Compare security scores of crypto wallets, exchanges, and DeFi protocols. See side-by-side SAFE Score analysis based on thousands of security criteria.",
   keywords: [
     "crypto comparison",
     "wallet comparison",
@@ -81,7 +83,12 @@ async function getTopProducts() {
 }
 
 export default async function CompareLandingPage() {
-  const products = await getTopProducts();
+  const [products, normStats, t] = await Promise.all([
+    getTopProducts(),
+    getNormStats(),
+    getT(),
+  ]);
+  const totalNorms = normStats?.totalNorms ?? "—";
 
   // Group by category
   const byCategory = {};
@@ -91,11 +98,11 @@ export default async function CompareLandingPage() {
   });
 
   const categoryLabels = {
-    hardware: "Hardware Wallets",
-    software: "Software Wallets",
-    exchange: "Exchanges",
-    defi: "DeFi Protocols",
-    other: "Other",
+    hardware: t("compareLanding.categoryHardware"),
+    software: t("compareLanding.categorySoftware"),
+    exchange: t("compareLanding.categoryExchange"),
+    defi: t("compareLanding.categoryDefi"),
+    other: t("compareLanding.categoryOther"),
   };
 
   return (
@@ -106,16 +113,16 @@ export default async function CompareLandingPage() {
           {/* Hero */}
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              Compare Crypto Security Scores
+              {t("compareLanding.title")}
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              Side-by-side comparison of wallets, exchanges, and DeFi protocols based on 916 security criteria.
+              {t("compareLanding.subtitle", { norms: totalNorms })}
             </p>
           </div>
 
           {/* Popular comparisons */}
           <div className="mb-12">
-            <h2 className="text-xl font-bold mb-6">Popular Comparisons</h2>
+            <h2 className="text-xl font-bold mb-6">{t("compareLanding.popularComparisons")}</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               {POPULAR_COMPARISONS.map((comp) => (
                 <Link
@@ -124,7 +131,7 @@ export default async function CompareLandingPage() {
                   className="p-4 rounded-xl bg-base-200 border border-base-300 hover:border-primary transition-colors text-center"
                 >
                   <span className="font-medium">{comp.label}</span>
-                  <span className="block text-xs text-base-content/50 mt-1">View comparison →</span>
+                  <span className="block text-xs text-base-content/50 mt-1">{t("compareLanding.viewComparison")} →</span>
                 </Link>
               ))}
             </div>
@@ -132,9 +139,9 @@ export default async function CompareLandingPage() {
 
           {/* Custom comparison */}
           <div className="rounded-xl bg-base-200 border border-base-300 p-8 mb-12">
-            <h2 className="text-xl font-bold mb-6 text-center">Create Custom Comparison</h2>
+            <h2 className="text-xl font-bold mb-6 text-center">{t("compareLanding.createCustom")}</h2>
             <p className="text-center text-base-content/60 mb-6">
-              Select two products from the lists below to compare their security scores.
+              {t("compareLanding.selectTwoProducts")}
             </p>
 
             {Object.entries(byCategory).map(([category, prods]) => (
@@ -167,7 +174,7 @@ export default async function CompareLandingPage() {
 
             <div className="text-center mt-6 p-4 bg-base-300/50 rounded-lg">
               <p className="text-sm text-base-content/60">
-                <strong>Tip:</strong> To compare two products, use the URL format:{' '}
+                <strong>{t("compareLanding.tip")}:</strong> {t("compareLanding.tipText")}{' '}
                 <code className="bg-base-300 px-2 py-0.5 rounded text-xs">
                   /compare/product-a/product-b
                 </code>
@@ -177,25 +184,28 @@ export default async function CompareLandingPage() {
 
           {/* SEO content */}
           <div className="prose prose-invert max-w-none">
-            <h2>Why Compare Crypto Security Scores?</h2>
+            <h2>{t("compareLanding.whyCompare")}</h2>
             <p>
-              Not all crypto products are created equal when it comes to security. Our comparison tool helps you make informed decisions by showing side-by-side security analysis based on our comprehensive SAFE Score methodology.
+              {t("compareLanding.whyCompareDesc")}
             </p>
 
-            <h3>What We Compare</h3>
+            <h3>{t("compareLanding.whatWeCompare")}</h3>
             <ul>
-              <li><strong>Security (S)</strong> - Technical security measures, encryption, key management</li>
-              <li><strong>Adversity (A)</strong> - Resilience to attacks, incident history, recovery capabilities</li>
-              <li><strong>Fidelity (F)</strong> - Team reputation, transparency, audit history</li>
-              <li><strong>Efficiency (E)</strong> - User experience, update frequency, documentation</li>
+              <li><strong>{t("compareLanding.pillarS")}</strong></li>
+              <li><strong>{t("compareLanding.pillarA")}</strong></li>
+              <li><strong>{t("compareLanding.pillarF")}</strong></li>
+              <li><strong>{t("compareLanding.pillarE")}</strong></li>
             </ul>
 
-            <h3>Popular Questions</h3>
+            <h3>{t("compareLanding.popularQuestions")}</h3>
             <p>
-              <strong>Is Ledger or Trezor more secure?</strong> Both are industry leaders, but they have different strengths. Use our <Link href="/compare/ledger-nano-x/trezor-model-t">Ledger vs Trezor comparison</Link> to see the detailed breakdown.
+              <strong>{t("compareLanding.questionLedger")}</strong> {t("compareLanding.answerLedger")}{" "}
+              {t("compareLanding.seeDetailed", {
+                link: <Link key="ledger-trezor" href="/compare/ledger-nano-x/trezor-model-t">{t("compareLanding.ledgerCompareLink")}</Link>,
+              })}
             </p>
             <p>
-              <strong>Which software wallet is safest?</strong> Security varies significantly between hot wallets. Compare MetaMask, Trust Wallet, and others to find the best fit for your needs.
+              <strong>{t("compareLanding.questionSoftware")}</strong> {t("compareLanding.answerSoftware")}
             </p>
           </div>
         </div>

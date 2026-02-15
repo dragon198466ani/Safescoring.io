@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * SeniorityTracker - Shows user's seniority and airdrop multiplier progression
  * Encourages early sign-up and continued engagement
  */
 export default function SeniorityTracker() {
+  const { t } = useTranslation();
   const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
@@ -47,10 +49,10 @@ export default function SeniorityTracker() {
 
   // Calculate progress to next milestone
   const milestones = [
-    { days: 30, label: "1 Month", multiplier: 1.08 },
-    { days: 90, label: "3 Months", multiplier: 1.25 },
-    { days: 180, label: "6 Months", multiplier: 1.5 },
-    { days: 365, label: "1 Year", multiplier: 2.0 },
+    { days: 30, labelKey: "seniorityTracker.milestone1Month", multiplier: 1.08 },
+    { days: 90, labelKey: "seniorityTracker.milestone3Months", multiplier: 1.25 },
+    { days: 180, labelKey: "seniorityTracker.milestone6Months", multiplier: 1.5 },
+    { days: 365, labelKey: "seniorityTracker.milestone1Year", multiplier: 2.0 },
   ];
 
   const currentMilestone = milestones.filter(m => daysSinceJoined >= m.days).pop();
@@ -90,7 +92,7 @@ export default function SeniorityTracker() {
                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <span className="font-medium">Seniority Tracker</span>
+            <span className="font-medium">{t("seniorityTracker.title")}</span>
           </div>
           <span className="text-sm text-blue-400 font-mono">x{seniorityMultiplier.toFixed(2)}</span>
         </div>
@@ -101,15 +103,15 @@ export default function SeniorityTracker() {
         {/* Days active */}
         <div className="text-center">
           <div className="text-3xl font-bold">{daysSinceJoined}</div>
-          <div className="text-sm text-base-content/60">days as contributor</div>
+          <div className="text-sm text-base-content/60">{t("seniorityTracker.daysAsContributor")}</div>
         </div>
 
         {/* Progress bar */}
         {nextMilestone && (
           <div className="space-y-2">
             <div className="flex justify-between text-xs text-base-content/50">
-              <span>{currentMilestone?.label || "Start"}</span>
-              <span>{nextMilestone.label}</span>
+              <span>{t(currentMilestone?.labelKey) || t("seniorityTracker.start")}</span>
+              <span>{t(nextMilestone.labelKey)}</span>
             </div>
             <div className="h-2 bg-base-300 rounded-full overflow-hidden">
               <div
@@ -118,15 +120,15 @@ export default function SeniorityTracker() {
               />
             </div>
             <div className="text-center text-xs text-base-content/50">
-              {nextMilestone.days - daysSinceJoined} days until x{nextMilestone.multiplier} multiplier
+              {t("seniorityTracker.daysUntilMultiplier", { days: nextMilestone.days - daysSinceJoined, multiplier: nextMilestone.multiplier })}
             </div>
           </div>
         )}
 
         {!nextMilestone && (
           <div className="text-center p-3 rounded-lg bg-gradient-to-r from-amber-500/20 to-purple-500/20">
-            <span className="text-amber-400 font-medium">Max Seniority Reached!</span>
-            <p className="text-xs text-base-content/50 mt-1">You have the maximum x2.0 multiplier</p>
+            <span className="text-amber-400 font-medium">{t("seniorityTracker.maxSeniority")}</span>
+            <p className="text-xs text-base-content/50 mt-1">{t("seniorityTracker.maxSeniorityDesc")}</p>
           </div>
         )}
 
@@ -158,7 +160,7 @@ export default function SeniorityTracker() {
                     <div className="w-4 h-4 rounded-full border-2 border-base-content/30" />
                   )}
                   <span className={`text-sm ${achieved ? "text-green-400" : "text-base-content/50"}`}>
-                    {milestone.label}
+                    {t(milestone.labelKey)}
                   </span>
                 </div>
                 <span className={`text-sm font-mono ${achieved ? "text-green-400" : "text-base-content/40"}`}>
@@ -171,10 +173,7 @@ export default function SeniorityTracker() {
 
         {/* Join date */}
         <div className="text-center text-xs text-base-content/40 pt-2 border-t border-base-300">
-          Member since {new Date(joinDate).toLocaleDateString("en-US", {
-            month: "long",
-            year: "numeric"
-          })}
+          {t("seniorityTracker.memberSince", { date: new Date(joinDate).toLocaleDateString(t("lang") === "fr" ? "fr-FR" : "en-GB", { month: "long", year: "numeric" }) })}
         </div>
       </div>
     </div>

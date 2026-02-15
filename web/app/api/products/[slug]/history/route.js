@@ -63,6 +63,12 @@ export async function GET(request, { params }) {
       // Auth failed, continue as unauthenticated
     }
 
+    // DEV MODE: Skip auth for local development
+    if (!isAuthenticated && process.env.NODE_ENV === "development") {
+      isAuthenticated = true;
+      userLimits = { history: 50 };
+    }
+
     // PROTECTION HARDCORE: History requires authentication
     if (!isAuthenticated) {
       // IP-level rate limiting even for teaser
@@ -198,7 +204,7 @@ export async function GET(request, { params }) {
       _ss: Buffer.from(JSON.stringify({
         t: Date.now(),
         c: clientId.substring(0, 12),
-        u: session.user.id.substring(0, 8),
+        u: (session?.user?.id || "dev").substring(0, 8),
         p: slug,
       })).toString("base64"),
     };

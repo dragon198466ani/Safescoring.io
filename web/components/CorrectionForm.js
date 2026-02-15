@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * CorrectionForm - Allows users to submit corrections
@@ -18,6 +19,7 @@ export default function CorrectionForm({
   onClose = () => {},
 }) {
   const { data: session } = useSession();
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -31,11 +33,11 @@ export default function CorrectionForm({
   });
 
   const fieldOptions = [
-    { value: "evaluation", label: "Evaluation Result (YES/NO/N/A)" },
-    { value: "product_info", label: "Product Information" },
-    { value: "incident", label: "Security Incident" },
-    { value: "methodology", label: "Methodology Suggestion" },
-    { value: "other", label: "Other" },
+    { value: "evaluation", label: t("correction.fieldEvaluation") },
+    { value: "product_info", label: t("correction.fieldProductInfo") },
+    { value: "incident", label: t("correction.fieldIncident") },
+    { value: "methodology", label: t("correction.fieldMethodology") },
+    { value: "other", label: t("correction.fieldOther") },
   ];
 
   const handleSubmit = async (e) => {
@@ -93,11 +95,9 @@ export default function CorrectionForm({
     return (
       <div className="card bg-base-200 p-4">
         <p className="text-center text-base-content/70">
-          Please{" "}
-          <a href="/signin" className="link link-primary">
-            sign in
-          </a>{" "}
-          to submit corrections and earn reputation points.
+          {t("correction.signInToSubmit").split("{link}")[0]}
+          <a href="/signin" className="link link-primary">{t("correction.signInLink")}</a>
+          {t("correction.signInToSubmit").split("{link}")[1]}
         </p>
       </div>
     );
@@ -122,9 +122,9 @@ export default function CorrectionForm({
             />
           </svg>
           <div>
-            <h4 className="font-semibold text-success">Correction Submitted!</h4>
+            <h4 className="font-semibold text-success">{t("correction.submitted")}</h4>
             <p className="text-sm text-base-content/70">
-              Thank you for helping improve SafeScoring. Your correction is pending review.
+              {t("correction.submittedDesc")}
             </p>
           </div>
         </div>
@@ -149,21 +149,21 @@ export default function CorrectionForm({
             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
           />
         </svg>
-        Suggest a Correction
+        {t("correction.suggestCorrection")}
         {productName && (
           <span className="text-base-content/50 font-normal">
-            for {productName}
+            {t("correction.forProduct", { name: productName })}
           </span>
         )}
       </h3>
 
       {normCode && (
         <div className="mb-4 p-2 bg-base-300 rounded text-sm">
-          <span className="text-base-content/50">Norm:</span>{" "}
+          <span className="text-base-content/50">{t("correction.norm")}</span>{" "}
           <span className="font-mono">{normCode}</span>
           {currentValue && (
             <>
-              <span className="text-base-content/50 ml-2">Current:</span>{" "}
+              <span className="text-base-content/50 ml-2">{t("correction.current")}</span>{" "}
               <span
                 className={`badge badge-sm ${
                   currentValue === "YES"
@@ -184,7 +184,7 @@ export default function CorrectionForm({
         {/* Field Type */}
         <div className="form-control">
           <label className="label">
-            <span className="label-text">What are you correcting?</span>
+            <span className="label-text">{t("correction.whatCorrecting")}</span>
           </label>
           <select
             className="select select-bordered w-full"
@@ -207,8 +207,8 @@ export default function CorrectionForm({
           <label className="label">
             <span className="label-text">
               {formData.fieldCorrected === "evaluation"
-                ? "Correct Value (YES, NO, or N/A)"
-                : "Your Suggestion"}
+                ? t("correction.correctValue")
+                : t("correction.yourSuggestion")}
             </span>
           </label>
           {formData.fieldCorrected === "evaluation" ? (
@@ -220,16 +220,16 @@ export default function CorrectionForm({
               }
               required
             >
-              <option value="">Select correct value...</option>
-              <option value="YES">YES - Product implements this</option>
-              <option value="YESp">YESp - Implied by design</option>
-              <option value="NO">NO - Product does NOT implement this</option>
-              <option value="N/A">N/A - Not applicable to this product</option>
+              <option value="">{t("correction.selectValue")}</option>
+              <option value="YES">{t("correction.yesImplements")}</option>
+              <option value="YESp">{t("correction.yesByDesign")}</option>
+              <option value="NO">{t("correction.noDoesNot")}</option>
+              <option value="N/A">{t("correction.naNotApplicable")}</option>
             </select>
           ) : (
             <textarea
               className="textarea textarea-bordered w-full"
-              placeholder="Describe the correct information..."
+              placeholder={t("correction.describeSuggestion")}
               rows={3}
               value={formData.suggestedValue}
               onChange={(e) =>
@@ -243,11 +243,11 @@ export default function CorrectionForm({
         {/* Reason */}
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Why is this incorrect?</span>
+            <span className="label-text">{t("correction.whyIncorrect")}</span>
           </label>
           <textarea
             className="textarea textarea-bordered w-full"
-            placeholder="Explain why the current value is wrong..."
+            placeholder={t("correction.explainWhy")}
             rows={2}
             value={formData.correctionReason}
             onChange={(e) =>
@@ -259,8 +259,8 @@ export default function CorrectionForm({
         {/* Evidence URLs */}
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Evidence URLs (one per line)</span>
-            <span className="label-text-alt text-base-content/50">Optional</span>
+            <span className="label-text">{t("correction.evidenceUrls")}</span>
+            <span className="label-text-alt text-base-content/50">{t("correction.optional")}</span>
           </label>
           <textarea
             className="textarea textarea-bordered w-full font-mono text-sm"
@@ -301,7 +301,7 @@ export default function CorrectionForm({
             className="btn btn-ghost"
             onClick={onClose}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             type="submit"
@@ -311,14 +311,13 @@ export default function CorrectionForm({
             {isSubmitting ? (
               <span className="loading loading-spinner loading-sm" />
             ) : (
-              "Submit Correction"
+              t("correction.submitCorrection")
             )}
           </button>
         </div>
 
         <p className="text-xs text-base-content/50 text-center">
-          Approved corrections earn reputation points. High-reputation users get
-          priority review.
+          {t("correction.reputationNote")}
         </p>
       </form>
     </div>

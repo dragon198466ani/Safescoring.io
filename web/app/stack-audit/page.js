@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import ProductLogo from "@/components/ProductLogo";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * Stack Audit - Analyze compatibility between products in your stack
@@ -19,13 +20,13 @@ const getCompatibilityColor = (status) => {
   }
 };
 
-const getCompatibilityLabel = (status) => {
+const getCompatibilityLabelKey = (status) => {
   switch (status) {
-    case "excellent": return "Excellent";
-    case "good": return "Good";
-    case "limited": return "Limited";
-    case "incompatible": return "Incompatible";
-    default: return "Not analyzed";
+    case "excellent": return "stackAudit.compatExcellent";
+    case "good": return "stackAudit.compatGood";
+    case "limited": return "stackAudit.compatLimited";
+    case "incompatible": return "stackAudit.compatIncompatible";
+    default: return "stackAudit.compatNotAnalyzed";
   }
 };
 
@@ -66,6 +67,7 @@ const getCompatibilityIcon = (status) => {
 
 function CompatibilityCard({ compatibility }) {
   const [expanded, setExpanded] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div
@@ -92,11 +94,11 @@ function CompatibilityCard({ compatibility }) {
           {/* Status & Confidence */}
           <div className="flex items-center gap-3 mb-2">
             <span className="text-xs font-medium uppercase tracking-wide">
-              {getCompatibilityLabel(compatibility.status)}
+              {t(getCompatibilityLabelKey(compatibility.status))}
             </span>
             {compatibility.ai_confidence !== null && (
               <span className="text-xs opacity-70">
-                {Math.round(compatibility.ai_confidence * 100)}% confidence
+                {t("stackAudit.confidence", { confidence: Math.round(compatibility.ai_confidence * 100) })}
               </span>
             )}
           </div>
@@ -111,7 +113,7 @@ function CompatibilityCard({ compatibility }) {
           {/* Method - Show on expand */}
           {expanded && compatibility.ai_method && (
             <div className="mt-3 pt-3 border-t border-current/10">
-              <p className="text-xs opacity-70 mb-1">Integration method:</p>
+              <p className="text-xs opacity-70 mb-1">{t("stackAudit.integrationMethod")}</p>
               <p className="text-sm">{compatibility.ai_method}</p>
             </div>
           )}
@@ -119,7 +121,7 @@ function CompatibilityCard({ compatibility }) {
           {/* Steps - Show on expand */}
           {expanded && compatibility.ai_steps && (
             <div className="mt-3">
-              <p className="text-xs opacity-70 mb-1">Steps:</p>
+              <p className="text-xs opacity-70 mb-1">{t("stackAudit.steps")}</p>
               <p className="text-sm whitespace-pre-line">{compatibility.ai_steps}</p>
             </div>
           )}
@@ -127,7 +129,7 @@ function CompatibilityCard({ compatibility }) {
           {/* Limitations - Show on expand */}
           {expanded && compatibility.ai_limitations && (
             <div className="mt-3 p-2 rounded-lg bg-base-content/5">
-              <p className="text-xs opacity-70 mb-1">⚠️ Limitations:</p>
+              <p className="text-xs opacity-70 mb-1">{t("stackAudit.limitations")}</p>
               <p className="text-sm">{compatibility.ai_limitations}</p>
             </div>
           )}
@@ -186,6 +188,7 @@ function ProductSelector({ products, selectedIds, onToggle }) {
 }
 
 export default function StackAuditPage() {
+  const { t } = useTranslation();
   const [products, setProducts] = useState([]);
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [compatibility, setCompatibility] = useState(null);
@@ -264,18 +267,18 @@ export default function StackAuditPage() {
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Stack Audit</h1>
+        <h1 className="text-3xl font-bold mb-2">{t("stackAudit.title")}</h1>
         <p className="text-base-content/60">
-          Select products to analyze how well they work together
+          {t("stackAudit.subtitle")}
         </p>
       </div>
 
       {/* Product Selection */}
       <div className="bg-base-200 rounded-2xl border border-base-300 p-6 mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">Select Products</h2>
+          <h2 className="text-lg font-semibold">{t("stackAudit.selectProducts")}</h2>
           <span className="text-sm text-base-content/50">
-            {selectedProductIds.length} selected
+            {t("stackAudit.selected", { count: selectedProductIds.length })}
           </span>
         </div>
 
@@ -285,7 +288,7 @@ export default function StackAuditPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search products..."
+            placeholder={t("stackAudit.searchProducts")}
             className="input input-bordered w-full pl-10 bg-base-100"
           />
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40">
@@ -315,10 +318,10 @@ export default function StackAuditPage() {
               onClick={() => setSelectedProductIds([])}
               className="btn btn-ghost btn-sm"
             >
-              Clear selection
+              {t("stackAudit.clearSelection")}
             </button>
             <span className="text-sm text-base-content/50">
-              {(selectedProductIds.length * (selectedProductIds.length - 1)) / 2} pairs to analyze
+              {t("stackAudit.pairsToAnalyze", { count: (selectedProductIds.length * (selectedProductIds.length - 1)) / 2 })}
             </span>
           </div>
         )}
@@ -337,7 +340,7 @@ export default function StackAuditPage() {
                   : "bg-base-200 border-base-300"
             }`}>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">Compatibility Summary</h2>
+                <h2 className="text-lg font-semibold">{t("stackAudit.compatibilitySummary")}</h2>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                   compatibility.summary.overallStatus === "issues"
                     ? "bg-red-500/20 text-red-400"
@@ -346,38 +349,38 @@ export default function StackAuditPage() {
                       : "bg-base-300 text-base-content/70"
                 }`}>
                   {compatibility.summary.overallStatus === "issues"
-                    ? "Issues Found"
+                    ? t("stackAudit.issuesFound")
                     : compatibility.summary.overallStatus === "excellent"
-                      ? "All Compatible"
+                      ? t("stackAudit.allCompatible")
                       : compatibility.summary.overallStatus === "incomplete"
-                        ? "Partially Analyzed"
-                        : "Good"}
+                        ? t("stackAudit.partiallyAnalyzed")
+                        : t("stackAudit.good")}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-green-400">{compatibility.summary.compatiblePairs}</p>
-                  <p className="text-xs text-base-content/50">Compatible</p>
+                  <p className="text-xs text-base-content/50">{t("stackAudit.compatible")}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-red-400">{compatibility.summary.incompatiblePairs}</p>
-                  <p className="text-xs text-base-content/50">Incompatible</p>
+                  <p className="text-xs text-base-content/50">{t("stackAudit.incompatible")}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold">{compatibility.summary.avgConfidence}%</p>
-                  <p className="text-xs text-base-content/50">Avg. Confidence</p>
+                  <p className="text-xs text-base-content/50">{t("stackAudit.avgConfidence")}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-base-content/50">{compatibility.summary.missingPairs}</p>
-                  <p className="text-xs text-base-content/50">Not Analyzed</p>
+                  <p className="text-xs text-base-content/50">{t("stackAudit.notAnalyzed")}</p>
                 </div>
               </div>
 
               {/* Issues alert */}
               {compatibility.issues?.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-current/10">
-                  <p className="text-sm font-medium mb-2">⚠️ Attention Required:</p>
+                  <p className="text-sm font-medium mb-2">{t("stackAudit.attentionRequired")}</p>
                   <ul className="space-y-1">
                     {compatibility.issues.map((issue, i) => (
                       <li key={i} className="text-sm opacity-80">
@@ -392,7 +395,7 @@ export default function StackAuditPage() {
 
           {/* Compatibility List */}
           <div>
-            <h2 className="text-lg font-semibold mb-4">Detailed Analysis</h2>
+            <h2 className="text-lg font-semibold mb-4">{t("stackAudit.detailedAnalysis")}</h2>
 
             {loading ? (
               <div className="space-y-3">
@@ -411,8 +414,8 @@ export default function StackAuditPage() {
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 mx-auto mb-3 opacity-50">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
                 </svg>
-                <p className="font-medium mb-1">No compatibility data yet</p>
-                <p className="text-sm">These product pairs haven&apos;t been analyzed yet.</p>
+                <p className="font-medium mb-1">{t("stackAudit.noCompatibilityData")}</p>
+                <p className="text-sm">{t("stackAudit.notAnalyzedDesc")}</p>
               </div>
             )}
           </div>
@@ -425,15 +428,15 @@ export default function StackAuditPage() {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16 mx-auto mb-4 opacity-50">
             <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
           </svg>
-          <p className="text-lg font-medium mb-2">Select at least 2 products</p>
-          <p className="text-sm">to analyze their compatibility</p>
+          <p className="text-lg font-medium mb-2">{t("stackAudit.selectAtLeast2")}</p>
+          <p className="text-sm">{t("stackAudit.toAnalyzeCompatibility")}</p>
         </div>
       )}
 
       {/* Link to build setup */}
       <div className="mt-8 text-center">
         <Link href="/dashboard/setups" className="btn btn-outline btn-primary">
-          Build Your Full Stack
+          {t("stackAudit.buildFullStack")}
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
           </svg>

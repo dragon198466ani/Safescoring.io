@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { getNormStats } from "@/libs/getNormStats";
 
 /**
  * Dynamic OG Image Generator
@@ -47,10 +48,10 @@ export async function GET(request, { params }) {
     }
 
     // Default OG image
-    return generateDefaultOG();
+    return await generateDefaultOG();
   } catch (error) {
     console.error('OG generation error:', error);
-    return generateDefaultOG();
+    return await generateDefaultOG();
   }
 }
 
@@ -332,7 +333,10 @@ async function generateLeaderboardOG() {
   );
 }
 
-function generateDefaultOG() {
+async function generateDefaultOG() {
+  const normStats = await getNormStats();
+  const totalNorms = normStats?.totalNorms ?? "2000+";
+
   return new ImageResponse(
     (
       <div
@@ -354,7 +358,7 @@ function generateDefaultOG() {
           Crypto Security Ratings You Can Trust
         </div>
         <div style={{ fontSize: 24, color: COLORS.text, marginTop: 24 }}>
-          916 norms • 500+ products • Objective scores
+          {totalNorms} norms • 500+ products • Objective scores
         </div>
       </div>
     ),

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import config from "@/config";
 import ButtonCheckout from "./ButtonCheckout";
+import { getT } from "@/libs/i18n/server";
 
-const Pricing = () => {
+const Pricing = async () => {
+  const t = await getT();
   // Use lemonsqueezy plans (stripe.plans is deprecated/empty)
   const allPlans = config?.lemonsqueezy?.plans || config?.stripe?.plans || [];
 
@@ -12,23 +14,22 @@ const Pricing = () => {
         {/* Section header */}
         <div className="text-center mb-16">
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
-            Pricing
+            {t("pricing.badge")}
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-            Start free, upgrade when ready
+            {t("pricing.title")}
           </h2>
           <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
-            Explore SafeScoring for free with 5 products per month.
-            Upgrade for unlimited access and advanced features.
+            {t("pricing.subtitle")}
           </p>
         </div>
 
         {/* Show message if no plans */}
         {allPlans.length === 0 && (
           <div className="text-center py-12 bg-base-200 rounded-lg">
-            <p className="text-base-content/60">No pricing plans found</p>
+            <p className="text-base-content/60">{t("pricing.noPlans")}</p>
             <p className="text-xs text-base-content/40 mt-2">
-              Try restarting the dev server (npm run dev)
+              {t("pricing.noPlansHint")}
             </p>
           </div>
         )}
@@ -56,14 +57,14 @@ const Pricing = () => {
                 {isFeatured && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span className="px-3 py-1 text-xs font-semibold bg-primary text-primary-content rounded-full whitespace-nowrap">
-                      Most Popular
+                      {t("pricing.mostPopular")}
                     </span>
                   </div>
                 )}
                 {isFreemium && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span className="px-3 py-1 text-xs font-semibold bg-success text-success-content rounded-full whitespace-nowrap">
-                      Freemium
+                      {t("pricing.freemium")}
                     </span>
                   </div>
                 )}
@@ -83,7 +84,7 @@ const Pricing = () => {
                       </span>
                     )}
                     <span className="text-4xl font-bold">${plan.price}</span>
-                    <span className="text-base-content/60 text-sm">/month</span>
+                    <span className="text-base-content/60 text-sm">{t("pricing.perMonth")}</span>
                   </div>
                   {plan.trialDays && (
                     <div className="flex items-center gap-2 mt-2">
@@ -91,7 +92,7 @@ const Pricing = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <span className="text-xs text-primary font-medium">
-                        {plan.trialDays}-day free trial
+                        {t("pricing.trialDays", { days: plan.trialDays })}
                       </span>
                     </div>
                   )}
@@ -101,7 +102,7 @@ const Pricing = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <span className="text-xs text-success font-medium">
-                        No card required
+                        {t("pricing.noCardRequired")}
                       </span>
                     </div>
                   )}
@@ -144,7 +145,7 @@ const Pricing = () => {
                     href="/api/auth/signin?callbackUrl=/onboarding"
                     className="btn btn-success btn-outline w-full mt-auto"
                   >
-                    Get Started Free
+                    {t("pricing.getStartedFree")}
                   </Link>
                 ) : (
                   <ButtonCheckout
@@ -166,12 +167,12 @@ const Pricing = () => {
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
-            14-day trial with card required (EU compliant)
+            {t("pricing.trialNote")}
           </div>
           <p className="text-base-content/50 text-sm">
-            Need a custom solution?{" "}
+            {t("pricing.customSolution")}{" "}
             <a href="mailto:enterprise@safescoring.io" className="text-primary hover:underline">
-              Contact us
+              {t("pricing.contactUs")}
             </a>
           </p>
         </div>

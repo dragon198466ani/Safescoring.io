@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Header from "@/components/Header";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 export default function AdminCorrectionsPage() {
   const { data: session, status } = useSession();
@@ -12,6 +13,7 @@ export default function AdminCorrectionsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("pending");
   const [processing, setProcessing] = useState(null);
+  const { t } = useTranslation();
 
   const fetchCorrections = useCallback(async () => {
     setLoading(true);
@@ -71,9 +73,9 @@ export default function AdminCorrectionsPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Admin Access Required</h1>
+          <h1 className="text-2xl font-bold mb-4">{t("adminCorrections.adminAccessRequired")}</h1>
           <Link href="/signin" className="btn btn-primary">
-            Sign In
+            {t("adminCorrections.signIn")}
           </Link>
         </div>
       </div>
@@ -96,13 +98,13 @@ export default function AdminCorrectionsPage() {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-3xl font-bold">User Corrections</h1>
+              <h1 className="text-3xl font-bold">{t("adminCorrections.userCorrections")}</h1>
               <p className="text-base-content/60 mt-1">
-                Review and approve community feedback
+                {t("adminCorrections.reviewAndApprove")}
               </p>
             </div>
             <Link href="/admin" className="btn btn-ghost">
-              Back to Admin
+              {t("adminCorrections.backToAdmin")}
             </Link>
           </div>
 
@@ -114,11 +116,11 @@ export default function AdminCorrectionsPage() {
               }`}
               onClick={() => setFilter("pending")}
             >
-              <div className="stat-title">Pending</div>
+              <div className="stat-title">{t("adminCorrections.pending")}</div>
               <div className="stat-value text-warning">
                 {stats.pending || 0}
               </div>
-              <div className="stat-desc">Awaiting review</div>
+              <div className="stat-desc">{t("adminCorrections.awaitingReview")}</div>
             </div>
             <div
               className={`stat cursor-pointer hover:bg-base-300 ${
@@ -126,11 +128,11 @@ export default function AdminCorrectionsPage() {
               }`}
               onClick={() => setFilter("approved")}
             >
-              <div className="stat-title">Approved</div>
+              <div className="stat-title">{t("adminCorrections.approved")}</div>
               <div className="stat-value text-success">
                 {stats.approved || 0}
               </div>
-              <div className="stat-desc">Applied to data</div>
+              <div className="stat-desc">{t("adminCorrections.appliedToData")}</div>
             </div>
             <div
               className={`stat cursor-pointer hover:bg-base-300 ${
@@ -138,11 +140,11 @@ export default function AdminCorrectionsPage() {
               }`}
               onClick={() => setFilter("rejected")}
             >
-              <div className="stat-title">Rejected</div>
+              <div className="stat-title">{t("adminCorrections.rejected")}</div>
               <div className="stat-value text-error">
                 {stats.rejected || 0}
               </div>
-              <div className="stat-desc">Invalid corrections</div>
+              <div className="stat-desc">{t("adminCorrections.invalidCorrections")}</div>
             </div>
             <div
               className={`stat cursor-pointer hover:bg-base-300 ${
@@ -150,13 +152,13 @@ export default function AdminCorrectionsPage() {
               }`}
               onClick={() => setFilter("all")}
             >
-              <div className="stat-title">Total</div>
+              <div className="stat-title">{t("adminCorrections.total")}</div>
               <div className="stat-value">
                 {(stats.pending || 0) +
                   (stats.approved || 0) +
                   (stats.rejected || 0)}
               </div>
-              <div className="stat-desc">All corrections</div>
+              <div className="stat-desc">{t("adminCorrections.allCorrections")}</div>
             </div>
           </div>
 
@@ -167,10 +169,10 @@ export default function AdminCorrectionsPage() {
             </div>
           ) : corrections.length === 0 ? (
             <div className="card bg-base-200 p-12 text-center">
-              <h3 className="text-xl font-semibold mb-2">No corrections found</h3>
+              <h3 className="text-xl font-semibold mb-2">{t("adminCorrections.noCorrectionsFound")}</h3>
               <p className="text-base-content/60">
                 {filter === "pending"
-                  ? "All caught up! No pending corrections."
+                  ? t("adminCorrections.allCaughtUp")
                   : `No ${filter} corrections.`}
               </p>
             </div>
@@ -211,7 +213,7 @@ export default function AdminCorrectionsPage() {
                     <div className="grid md:grid-cols-2 gap-4 mt-4">
                       <div className="p-3 bg-base-300/50 rounded-lg">
                         <div className="text-xs text-base-content/50 mb-1">
-                          Original Value
+                          {t("adminCorrections.originalValue")}
                         </div>
                         <div className="font-mono text-sm">
                           {correction.original_value || "N/A"}
@@ -219,7 +221,7 @@ export default function AdminCorrectionsPage() {
                       </div>
                       <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
                         <div className="text-xs text-primary mb-1">
-                          Suggested Value
+                          {t("adminCorrections.suggestedValue")}
                         </div>
                         <div className="font-mono text-sm">
                           {correction.suggested_value}
@@ -231,7 +233,7 @@ export default function AdminCorrectionsPage() {
                     {correction.correction_reason && (
                       <div className="mt-4">
                         <div className="text-xs text-base-content/50 mb-1">
-                          Reason
+                          {t("adminCorrections.reason")}
                         </div>
                         <p className="text-sm">{correction.correction_reason}</p>
                       </div>
@@ -241,7 +243,7 @@ export default function AdminCorrectionsPage() {
                     {correction.evidence_urls?.length > 0 && (
                       <div className="mt-4">
                         <div className="text-xs text-base-content/50 mb-1">
-                          Evidence URLs
+                          {t("adminCorrections.evidenceUrls")}
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {correction.evidence_urls.map((url, i) => (
@@ -252,7 +254,7 @@ export default function AdminCorrectionsPage() {
                               rel="noopener noreferrer"
                               className="link link-primary text-sm"
                             >
-                              Source {i + 1}
+                              {t("adminCorrections.source", { index: i + 1 })}
                             </a>
                           ))}
                         </div>
@@ -262,10 +264,10 @@ export default function AdminCorrectionsPage() {
                     {/* User info */}
                     <div className="mt-4 pt-4 border-t border-base-300 flex items-center justify-between">
                       <div className="text-sm text-base-content/50">
-                        Submitted by: {correction.users?.email || "Unknown"}
+                        {t("adminCorrections.submittedBy", { email: correction.users?.email || "Unknown" })}
                         {correction.user_reputation_score && (
                           <span className="ml-2 badge badge-sm">
-                            Rep: {correction.user_reputation_score}
+                            {t("adminCorrections.reputation", { score: correction.user_reputation_score })}
                           </span>
                         )}
                       </div>
@@ -281,7 +283,7 @@ export default function AdminCorrectionsPage() {
                             {processing === correction.id ? (
                               <span className="loading loading-spinner loading-xs" />
                             ) : (
-                              "Reject"
+                              t("adminCorrections.reject")
                             )}
                           </button>
                           <button
@@ -292,7 +294,7 @@ export default function AdminCorrectionsPage() {
                             {processing === correction.id ? (
                               <span className="loading loading-spinner loading-xs" />
                             ) : (
-                              "Approve & Apply"
+                              t("adminCorrections.approveAndApply")
                             )}
                           </button>
                         </div>

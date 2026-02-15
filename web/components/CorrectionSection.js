@@ -3,13 +3,15 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import CorrectionForm from "./CorrectionForm";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * CorrectionSection - Collapsible section for submitting corrections
  * Creates closed-loop data that improves evaluations
  */
 export default function CorrectionSection({ productId, productSlug, productName }) {
-  const { data: _session } = useSession();
+  const { data: session } = useSession();
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [recentSubmission, setRecentSubmission] = useState(null);
 
@@ -43,9 +45,9 @@ export default function CorrectionSection({ productId, productSlug, productName 
             </svg>
           </div>
           <div className="text-left">
-            <h3 className="font-semibold">Help Improve This Evaluation</h3>
+            <h3 className="font-semibold">{t("correction.helpImprove")}</h3>
             <p className="text-sm text-base-content/60">
-              Found inaccurate data? Submit a correction and earn reputation points.
+              {t("correction.helpImproveDesc")}
             </p>
           </div>
         </div>
@@ -88,9 +90,9 @@ export default function CorrectionSection({ productId, productSlug, productName 
                   />
                 </svg>
                 <div>
-                  <h4 className="font-semibold">Correction Submitted!</h4>
+                  <h4 className="font-semibold">{t("correction.submitted")}</h4>
                   <p className="text-sm">
-                    Thank you for helping improve SafeScoring. Your correction is pending review.
+                    {t("correction.submittedDesc")}
                   </p>
                 </div>
               </div>
@@ -114,12 +116,12 @@ export default function CorrectionSection({ productId, productSlug, productName 
                       />
                     </svg>
                     <div className="text-sm">
-                      <p className="font-medium text-info">How corrections work:</p>
+                      <p className="font-medium text-info">{t("correction.howItWorks")}</p>
                       <ul className="mt-1 text-base-content/70 space-y-1">
-                        <li>1. Submit a correction with evidence</li>
-                        <li>2. When 3 users suggest the same fix, it auto-approves</li>
-                        <li>3. The evaluation updates automatically</li>
-                        <li>4. All contributors earn reputation points</li>
+                        <li>{t("correction.step1")}</li>
+                        <li>{t("correction.step2")}</li>
+                        <li>{t("correction.step3")}</li>
+                        <li>{t("correction.step4")}</li>
                       </ul>
                     </div>
                   </div>

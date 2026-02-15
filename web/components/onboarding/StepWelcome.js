@@ -1,16 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 import config from "@/config";
+import { useNormStats } from "@/hooks/useNormStats";
 
 export default function StepWelcome({ data, onNext, saving }) {
+  const { t } = useTranslation();
   const [name, setName] = useState(data.name || "");
   const [error, setError] = useState("");
+  const normStats = useNormStats();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name.trim()) {
-      setError("Please enter your name");
+      setError(t("onboarding.pleaseEnterName"));
       return;
     }
     onNext({ name: name.trim() });
@@ -22,16 +26,16 @@ export default function StepWelcome({ data, onNext, saving }) {
         <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-green-500 via-amber-500 to-purple-500 mb-6">
           <span className="text-4xl font-black text-white">S</span>
         </div>
-        <h1 className="text-3xl font-bold mb-3">Welcome to {config.appName}</h1>
+        <h1 className="text-3xl font-bold mb-3">{t("onboarding.welcomeTo", { appName: config.appName })}</h1>
         <p className="text-base-content/60 text-lg">
-          The first unified security rating for all crypto products.
+          {t("onboarding.welcomeSubtitle")}
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="text-left">
           <label className="label">
-            <span className="label-text font-medium">What should we call you?</span>
+            <span className="label-text font-medium">{t("onboarding.whatShouldWeCallYou")}</span>
           </label>
           <input
             type="text"
@@ -40,7 +44,7 @@ export default function StepWelcome({ data, onNext, saving }) {
               setName(e.target.value);
               setError("");
             }}
-            placeholder="Enter your name"
+            placeholder={t("onboarding.enterYourName")}
             className={`input input-bordered w-full ${error ? "input-error" : ""}`}
             autoFocus
           />
@@ -52,13 +56,12 @@ export default function StepWelcome({ data, onNext, saving }) {
           disabled={saving}
           className="btn btn-primary w-full"
         >
-          {saving ? <span className="loading loading-spinner loading-sm"></span> : "Get Started"}
+          {saving ? <span className="loading loading-spinner loading-sm"></span> : t("onboarding.getStarted")}
         </button>
       </form>
 
       <p className="text-sm text-base-content/50 mt-8">
-        You&apos;re joining {config.safe.stats.totalProducts}+ products evaluated with{" "}
-        {config.safe.stats.totalNorms} security norms.
+        {t("onboarding.joiningStats", { products: normStats.totalProducts ?? "—", norms: normStats.totalNorms ?? "—" })}
       </p>
     </div>
   );

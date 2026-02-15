@@ -2,6 +2,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { getT } from "@/libs/i18n/server";
 
 export const revalidate = 3600; // 1 hour ISR
 
@@ -176,6 +177,7 @@ function getScoreColor(score) {
 }
 
 export default async function HacksPage() {
+  const t = await getT();
   const hacks = await getHacks();
 
   // Calculate stats
@@ -212,28 +214,34 @@ export default async function HacksPage() {
           {/* Hero */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-black mb-4">
-              Crypto <span className="text-error">Hacks</span> Database
+              {t("hacksPage.title").split("{highlight}").map((part, i) =>
+                i === 0 ? (
+                  <span key={i}>{part}</span>
+                ) : (
+                  <span key={i}><span className="text-error">{t("hacksPage.titleHighlight")}</span>{part}</span>
+                )
+              )}
             </h1>
             <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-8">
-              Learn from past security incidents. Every hack listed includes our pre-incident SafeScore rating.
+              {t("hacksPage.subtitle")}
             </p>
 
             {/* Stats */}
             <div className="flex flex-wrap justify-center gap-6">
               <div className="stat bg-base-200 rounded-box px-6 py-4">
-                <div className="stat-title">Total Stolen</div>
+                <div className="stat-title">{t("hacksPage.totalStolen")}</div>
                 <div className="stat-value text-error">{formatAmount(totalStolen)}</div>
-                <div className="stat-desc">from tracked incidents</div>
+                <div className="stat-desc">{t("hacksPage.fromTrackedIncidents")}</div>
               </div>
               <div className="stat bg-base-200 rounded-box px-6 py-4">
-                <div className="stat-title">Avg Score Before Hack</div>
+                <div className="stat-title">{t("hacksPage.avgScoreBefore")}</div>
                 <div className="stat-value text-warning">{avgScoreBefore}/100</div>
-                <div className="stat-desc">SafeScore pre-incident</div>
+                <div className="stat-desc">{t("hacksPage.safeScorePreIncident")}</div>
               </div>
               <div className="stat bg-base-200 rounded-box px-6 py-4">
-                <div className="stat-title">Incidents Tracked</div>
+                <div className="stat-title">{t("hacksPage.incidentsTracked")}</div>
                 <div className="stat-value">{hacks.length}</div>
-                <div className="stat-desc">and growing</div>
+                <div className="stat-desc">{t("hacksPage.andGrowing")}</div>
               </div>
             </div>
           </div>
@@ -244,8 +252,8 @@ export default async function HacksPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <div>
-              <h3 className="font-bold">Nearly half of hacked projects had been audited</h3>
-              <p className="text-sm">Audits are not enough. SafeScoring evaluates ongoing security practices, not just code snapshots.</p>
+              <h3 className="font-bold">{t("hacksPage.auditInsight")}</h3>
+              <p className="text-sm">{t("hacksPage.auditInsightDesc")}</p>
             </div>
           </div>
 
@@ -279,7 +287,7 @@ export default async function HacksPage() {
                     {/* Amount Stolen */}
                     <div className="text-right">
                       <div className="text-2xl font-black text-error">{formatAmount(hack.amount_usd)}</div>
-                      <div className="text-xs text-base-content/50">stolen</div>
+                      <div className="text-xs text-base-content/50">{t("hacksPage.stolen")}</div>
                     </div>
 
                     {/* Pre-hack Score */}
@@ -288,7 +296,7 @@ export default async function HacksPage() {
                         <div className={`text-2xl font-bold ${getScoreColor(hack.safescore_before)}`}>
                           {hack.safescore_before}
                         </div>
-                        <div className="text-xs text-base-content/50">pre-hack score</div>
+                        <div className="text-xs text-base-content/50">{t("hacksPage.preHackScore")}</div>
                       </div>
                     )}
 
@@ -304,12 +312,12 @@ export default async function HacksPage() {
 
           {/* CTA */}
           <div className="mt-12 rounded-xl bg-gradient-to-br from-error/20 to-base-200 border border-base-300 p-8 text-center">
-            <h2 className="text-2xl font-bold mb-2">Don&apos;t become the next victim</h2>
+            <h2 className="text-2xl font-bold mb-2">{t("hacksPage.dontBecomeVictim")}</h2>
             <p className="text-base-content/60 mb-6 max-w-xl mx-auto">
-              Check the security score of your crypto tools before trusting them with your funds.
+              {t("hacksPage.dontBecomeVictimDesc")}
             </p>
             <Link href="/products" className="btn btn-primary btn-lg">
-              Check Your Tools Now
+              {t("hacksPage.checkToolsNow")}
             </Link>
           </div>
         </div>

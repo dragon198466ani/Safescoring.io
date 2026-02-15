@@ -5,6 +5,8 @@ import Footer from "@/components/Footer";
 import config from "@/config";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import ProductLogo from "@/components/ProductLogo";
+import { getNormStats } from "@/libs/getNormStats";
+import { getT } from "@/libs/i18n/server";
 
 // SEO: Revalidate every hour for fresh data
 export const revalidate = 3600;
@@ -36,8 +38,11 @@ export async function generateMetadata({ params }) {
   const productA = products.find(p => p.slug === slugA);
   const productB = products.find(p => p.slug === slugB);
 
+  const normStats = await getNormStats();
+  const totalNorms = normStats?.totalNorms ?? "comprehensive";
+
   const title = `${productA.name} vs ${productB.name} - Security Comparison | SafeScoring`;
-  const description = `Compare ${productA.name} and ${productB.name} security scores. See which is safer based on 916 security criteria across Security, Adversity, Fidelity & Efficiency.`;
+  const description = `Compare ${productA.name} and ${productB.name} security scores. See which is safer based on ${totalNorms} security criteria across Security, Adversity, Fidelity & Efficiency.`;
 
   return {
     title,
@@ -158,14 +163,18 @@ export default async function ComparePage({ params }) {
   }
 
   const [slugA, slugB] = slugs;
-  const [productA, productB] = await Promise.all([
+  const [productA, productB, normStats] = await Promise.all([
     getProduct(slugA),
-    getProduct(slugB)
+    getProduct(slugB),
+    getNormStats(),
   ]);
+  const totalNorms = normStats?.totalNorms ?? "—";
 
   if (!productA || !productB) {
     notFound();
   }
+
+  const t = getT();
 
   // Determine winners for each category
   const winners = {
@@ -190,20 +199,20 @@ export default async function ComparePage({ params }) {
         <div className="max-w-5xl mx-auto">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-sm text-base-content/60 mb-8">
-            <Link href="/" className="hover:text-base-content">Home</Link>
+            <Link href="/" className="hover:text-base-content">{t("comparePage.home")}</Link>
             <span>/</span>
-            <Link href="/products" className="hover:text-base-content">Products</Link>
+            <Link href="/products" className="hover:text-base-content">{t("comparePage.products")}</Link>
             <span>/</span>
-            <span className="text-base-content">Compare</span>
+            <span className="text-base-content">{t("comparePage.compare")}</span>
           </div>
 
           {/* Title */}
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              {productA.name} vs {productB.name}
+              {t("comparePage.vsTitle", { productA: productA.name, productB: productB.name })}
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              Security comparison based on 916 criteria across Security, Adversity, Fidelity & Efficiency pillars.
+              {t("comparePage.comparisonSubtitle", { count: totalNorms })}
             </p>
           </div>
 
@@ -222,15 +231,15 @@ export default async function ComparePage({ params }) {
               <div className={`text-5xl font-bold text-center mb-2 ${getScoreColor(productA.scores.total)}`}>
                 {productA.scores.total}
               </div>
-              <div className="text-center text-sm text-base-content/60 mb-4">SAFE Score</div>
+              <div className="text-center text-sm text-base-content/60 mb-4">{t("comparePage.safeScore")}</div>
               <Link href={`/products/${productA.slug}`} className="btn btn-sm btn-outline w-full">
-                View Details
+                {t("comparePage.viewDetails")}
               </Link>
             </div>
 
             {/* VS */}
             <div className="flex items-center justify-center">
-              <div className="text-4xl font-black text-base-content/20">VS</div>
+              <div className="text-4xl font-black text-base-content/20">{t("comparePage.vs")}</div>
             </div>
 
             {/* Product B */}
@@ -246,16 +255,16 @@ export default async function ComparePage({ params }) {
               <div className={`text-5xl font-bold text-center mb-2 ${getScoreColor(productB.scores.total)}`}>
                 {productB.scores.total}
               </div>
-              <div className="text-center text-sm text-base-content/60 mb-4">SAFE Score</div>
+              <div className="text-center text-sm text-base-content/60 mb-4">{t("comparePage.safeScore")}</div>
               <Link href={`/products/${productB.slug}`} className="btn btn-sm btn-outline w-full">
-                View Details
+                {t("comparePage.viewDetails")}
               </Link>
             </div>
           </div>
 
           {/* Pillar breakdown */}
           <div className="rounded-xl bg-base-200 border border-base-300 p-6 mb-12">
-            <h2 className="text-xl font-bold mb-6 text-center">Pillar-by-Pillar Comparison</h2>
+            <h2 className="text-xl font-bold mb-6 text-center">{t("comparePage.pillarComparison")}</h2>
 
             <div className="space-y-4">
               {config.safe.pillars.map((pillar) => {
@@ -328,56 +337,63 @@ export default async function ComparePage({ params }) {
 
           {/* Verdict */}
           <div className="rounded-xl bg-gradient-to-br from-primary/20 to-base-200 border border-base-300 p-8 text-center mb-12">
-            <h2 className="text-2xl font-bold mb-4">Verdict</h2>
-            {winners.total === 'tie' ? (
-              <p className="text-lg text-base-content/80">
-                Both products have the same overall SAFE Score. Check individual pillar scores to see which best fits your needs.
-              </p>
-            ) : (
-              <p className="text-lg text-base-content/80">
-                <strong className="text-primary">
-                  {winners.total === 'A' ? productA.name : productB.name}
-                </strong>
-                {' '}has a higher overall security score with{' '}
-                <strong className={getScoreColor(winners.total === 'A' ? productA.scores.total : productB.scores.total)}>
-                  {winners.total === 'A' ? productA.scores.total : productB.scores.total}/100
-                </strong>
-                {' '}compared to{' '}
-                <strong className={getScoreColor(winners.total === 'A' ? productB.scores.total : productA.scores.total)}>
-                  {winners.total === 'A' ? productB.scores.total : productA.scores.total}/100
-                </strong>.
-              </p>
-            )}
+            <h2 className="text-2xl font-bold mb-4">{t("comparePage.verdict")}</h2>
+            {(() => {
+              const winnerName = winners.total === 'A' ? productA.name : productB.name;
+              const loserName = winners.total === 'A' ? productB.name : productA.name;
+              const winnerScore = winners.total === 'A' ? productA.scores.total : productB.scores.total;
+              const loserScore = winners.total === 'A' ? productB.scores.total : productA.scores.total;
+              const diff = Math.abs(winnerScore - loserScore);
+
+              if (winners.total === 'tie') {
+                return (
+                  <p className="text-lg text-base-content/80">
+                    {t("comparePage.verdictClose", { winner: productA.name })}
+                  </p>
+                );
+              }
+
+              const verdictKey = diff > 20 ? "verdictClearWinner" : winnerScore >= 80 ? "verdictBothExcellent" : "verdictClose";
+              return (
+                <p className="text-lg text-base-content/80">
+                  {t(`comparePage.${verdictKey}`, { winner: winnerName, loser: loserName })}
+                </p>
+              );
+            })()}
           </div>
 
           {/* Compare other products CTA */}
           <div className="text-center">
-            <p className="text-base-content/60 mb-4">Want to compare other products?</p>
+            <p className="text-base-content/60 mb-4">{t("comparePage.compareOther")}</p>
             <Link href="/products" className="btn btn-primary">
-              Browse All Products
+              {t("comparePage.browseAll")}
             </Link>
           </div>
 
           {/* SEO: Structured FAQ */}
           <div className="mt-16 rounded-xl bg-base-200 border border-base-300 p-8">
-            <h2 className="text-xl font-bold mb-6">Frequently Asked Questions</h2>
+            <h2 className="text-xl font-bold mb-6">{t("comparePage.faqTitle")}</h2>
             <div className="space-y-6">
               <div>
-                <h3 className="font-semibold mb-2">Which is safer: {productA.name} or {productB.name}?</h3>
+                <h3 className="font-semibold mb-2">{t("comparePage.faqWhichSafer", { productA: productA.name, productB: productB.name })}</h3>
                 <p className="text-base-content/70">
-                  Based on our 916-criteria security evaluation, {winners.total === 'tie' ? 'both products have similar security levels' : `${winners.total === 'A' ? productA.name : productB.name} has a higher security score (${winners.total === 'A' ? productA.scores.total : productB.scores.total}/100)`}.
+                  {t("comparePage.faqWhichSaferAnswer", {
+                    winner: winners.total === 'tie' ? productA.name : (winners.total === 'A' ? productA.name : productB.name),
+                    winnerScore: winners.total === 'A' ? productA.scores.total : productB.scores.total,
+                    loserScore: winners.total === 'A' ? productB.scores.total : productA.scores.total,
+                  })}
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold mb-2">What is the SAFE Score?</h3>
+                <h3 className="font-semibold mb-2">{t("comparePage.faqWhatIsSafe")}</h3>
                 <p className="text-base-content/70">
-                  The SAFE Score evaluates crypto products across 4 pillars: Security, Adversity, Fidelity, and Efficiency. It&apos;s based on 916 security norms evaluated by AI and human experts.
+                  {t("comparePage.faqWhatIsSafeAnswer")}
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold mb-2">How often are scores updated?</h3>
+                <h3 className="font-semibold mb-2">{t("comparePage.faqHowOften")}</h3>
                 <p className="text-base-content/70">
-                  We update security scores monthly and immediately after any security incidents or major product updates.
+                  {t("comparePage.faqHowOftenAnswer")}
                 </p>
               </div>
             </div>

@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 const USER_TYPES = [
   {
     id: "investor",
-    title: "Investor",
-    description: "I invest in crypto and want to evaluate products before using them",
+    labelKey: "onboarding.investor",
+    descKey: "onboarding.investorDesc",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
@@ -15,8 +16,8 @@ const USER_TYPES = [
   },
   {
     id: "developer",
-    title: "Developer",
-    description: "I build crypto products and want to improve their security",
+    labelKey: "onboarding.developer",
+    descKey: "onboarding.developerDesc",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
@@ -25,8 +26,8 @@ const USER_TYPES = [
   },
   {
     id: "researcher",
-    title: "Security Researcher",
-    description: "I analyze crypto security and need detailed evaluation data",
+    labelKey: "onboarding.securityResearcher",
+    descKey: "onboarding.securityResearcherDesc",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
@@ -35,8 +36,8 @@ const USER_TYPES = [
   },
   {
     id: "institution",
-    title: "Institution",
-    description: "I represent an exchange, fund, or company evaluating crypto products",
+    labelKey: "onboarding.institution",
+    descKey: "onboarding.institutionDesc",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
@@ -46,6 +47,7 @@ const USER_TYPES = [
 ];
 
 export default function StepProfile({ data, onNext, onBack, saving }) {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState(data.userType || "");
 
   const handleSubmit = () => {
@@ -57,9 +59,9 @@ export default function StepProfile({ data, onNext, onBack, saving }) {
   return (
     <div>
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">What best describes you?</h2>
+        <h2 className="text-2xl font-bold mb-2">{t("onboarding.whatDescribesYou")}</h2>
         <p className="text-base-content/60">
-          This helps us personalize your experience.
+          {t("onboarding.personalizeExperience")}
         </p>
       </div>
 
@@ -85,8 +87,8 @@ export default function StepProfile({ data, onNext, onBack, saving }) {
                 {type.icon}
               </div>
               <div className="flex-1">
-                <div className="font-semibold mb-1">{type.title}</div>
-                <div className="text-sm text-base-content/60">{type.description}</div>
+                <div className="font-semibold mb-1">{t(type.labelKey)}</div>
+                <div className="text-sm text-base-content/60">{t(type.descKey)}</div>
               </div>
               {selected === type.id && (
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-primary">
@@ -100,14 +102,14 @@ export default function StepProfile({ data, onNext, onBack, saving }) {
 
       <div className="flex gap-3">
         <button onClick={onBack} className="btn btn-ghost">
-          Back
+          {t("onboarding.back")}
         </button>
         <button
           onClick={handleSubmit}
           disabled={!selected || saving}
           className="btn btn-primary flex-1"
         >
-          {saving ? <span className="loading loading-spinner loading-sm"></span> : "Continue"}
+          {saving ? <span className="loading loading-spinner loading-sm"></span> : t("onboarding.continue")}
         </button>
       </div>
     </div>

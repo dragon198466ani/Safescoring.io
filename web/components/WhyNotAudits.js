@@ -1,6 +1,51 @@
 import config from "@/config";
+import { getT } from "@/libs/i18n/server";
+import { getNormStats } from "@/libs/getNormStats";
 
-const WhyNotAudits = () => {
+const WhyNotAudits = async () => {
+  const t = await getT();
+  const normStats = await getNormStats();
+  const totalNorms = normStats?.totalNorms ?? "—";
+
+  const rows = [
+    {
+      criteria: t("whyNotAudits.coverage"),
+      audit: t("whyNotAudits.coverageAudit"),
+      safe: t("whyNotAudits.coverageSafe"),
+      safeWins: true,
+    },
+    {
+      criteria: t("whyNotAudits.frequency"),
+      audit: t("whyNotAudits.frequencyAudit"),
+      safe: t("whyNotAudits.frequencySafe"),
+      safeWins: true,
+    },
+    {
+      criteria: t("whyNotAudits.methodology"),
+      audit: t("whyNotAudits.methodologyAudit"),
+      safe: t("whyNotAudits.methodologySafe", { norms: totalNorms }),
+      safeWins: true,
+    },
+    {
+      criteria: t("whyNotAudits.comparability"),
+      audit: t("whyNotAudits.comparabilityAudit"),
+      safe: t("whyNotAudits.comparabilitySafe"),
+      safeWins: true,
+    },
+    {
+      criteria: t("whyNotAudits.cost"),
+      audit: t("whyNotAudits.costAudit"),
+      safe: t("whyNotAudits.costSafe"),
+      safeWins: true,
+    },
+    {
+      criteria: t("whyNotAudits.accessibility"),
+      audit: t("whyNotAudits.accessibilityAudit"),
+      safe: t("whyNotAudits.accessibilitySafe"),
+      safeWins: true,
+    },
+  ];
+
   return (
     <section className="py-24 px-6 bg-base-200/30" id="why-audits">
       <div className="max-w-6xl mx-auto">
@@ -10,11 +55,10 @@ const WhyNotAudits = () => {
             {config.safe.taglineAlt}
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-            Beyond Traditional Audits
+            {t("whyNotAudits.title")}
           </h2>
           <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
-            Audits are essential, but they&apos;re just one piece of the security puzzle.
-            Here&apos;s how SafeScoring complements traditional security assessments.
+            {t("whyNotAudits.subtitle")}
           </p>
         </div>
 
@@ -24,10 +68,10 @@ const WhyNotAudits = () => {
             <thead>
               <tr className="border-b border-base-300">
                 <th className="text-left py-4 px-4 font-semibold text-base-content/60">
-                  Criteria
+                  {t("whyNotAudits.criteria")}
                 </th>
                 <th className="text-center py-4 px-4 font-semibold text-base-content/60">
-                  Traditional Audits
+                  {t("whyNotAudits.traditionalAudits")}
                 </th>
                 <th className="text-center py-4 px-4 font-semibold text-primary">
                   SafeScoring
@@ -35,56 +79,7 @@ const WhyNotAudits = () => {
               </tr>
             </thead>
             <tbody>
-              {[
-                {
-                  criteria: "Coverage",
-                  audit: "Primarily smart contracts",
-                  safe: "Wallets, Exchanges, DeFi, Cards & Custody",
-                  safeWins: true,
-                },
-                {
-                  criteria: "Frequency",
-                  audit: "Point-in-time assessment",
-                  safe: "Monthly updates",
-                  safeWins: true,
-                },
-                {
-                  criteria: "Methodology",
-                  audit: "Varies by auditor",
-                  safe: "916 standardized norms",
-                  safeWins: true,
-                },
-                {
-                  criteria: "Operational security",
-                  audit: "Usually outside scope",
-                  safe: "Assessed (Adversity pillar)",
-                  safeWins: true,
-                },
-                {
-                  criteria: "Track record",
-                  audit: "Typically not in scope",
-                  safe: "Fidelity pillar (F200-F204)",
-                  safeWins: true,
-                },
-                {
-                  criteria: "Reproducibility",
-                  audit: "Depends on team",
-                  safe: "Standardized methodology, highly reproducible",
-                  safeWins: true,
-                },
-                {
-                  criteria: "Cost",
-                  audit: "$50K - $500K+ (manual audit)",
-                  safe: "From $29/month (automated monitoring)*",
-                  safeWins: true,
-                },
-                {
-                  criteria: "Independence",
-                  audit: "Commissioned by project",
-                  safe: "Scoring independent from affiliates",
-                  safeWins: true,
-                },
-              ].map((row, index) => (
+              {rows.map((row, index) => (
                 <tr
                   key={index}
                   className="border-b border-base-300/50 hover:bg-base-200/30 transition-colors"
@@ -124,31 +119,33 @@ const WhyNotAudits = () => {
           <div className="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/20">
             <div className="text-4xl font-bold text-amber-400 mb-2">~50%</div>
             <div className="text-sm text-base-content/60">
-              of exploited DeFi projects had audits — showing audits alone aren&apos;t enough
+              {t("whyNotAudits.statExploited")}
             </div>
           </div>
           <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20">
-            <div className="text-4xl font-bold text-primary mb-2">916</div>
+            <div className="text-4xl font-bold text-primary mb-2">{totalNorms}</div>
             <div className="text-sm text-base-content/60">
-              standardized norms across security, resilience, trust & usability
+              {t("whyNotAudits.statNorms")}
             </div>
           </div>
           <div className="p-6 rounded-2xl bg-green-500/10 border border-green-500/20">
-            <div className="text-4xl font-bold text-green-400 mb-2">Monthly</div>
+            <div className="text-4xl font-bold text-green-400 mb-2">
+              {t("whyNotAudits.statMonthly")}
+            </div>
             <div className="text-sm text-base-content/60">
-              continuous monitoring to catch changes between audits
+              {t("whyNotAudits.statMonthlyDesc")}
             </div>
           </div>
         </div>
 
         {/* Note */}
         <p className="mt-8 text-center text-sm text-base-content/50">
-          *SafeScoring provides continuous automated monitoring and scoring. Traditional audits offer in-depth manual code review. Both serve complementary purposes in a comprehensive security strategy.
+          {t("whyNotAudits.note")}
         </p>
 
         {/* Disclaimer */}
         <p className="mt-4 text-center text-sm text-base-content/40">
-          Sources: Halborn DeFi Hacks Report 2025, CER.live Security Rankings
+          {t("whyNotAudits.sources")}
         </p>
       </div>
     </section>

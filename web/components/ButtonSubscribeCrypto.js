@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 import {
   useAccount,
   useWriteContract,
@@ -30,6 +31,7 @@ export default function ButtonSubscribeCrypto({
   className = "",
   onSuccess,
 }) {
+  const { t } = useTranslation();
   const { address, isConnected, chain } = useAccount();
   const [step, setStep] = useState("idle"); // idle, approving, upgrading, streaming, success
   const [hasActiveStream, setHasActiveStream] = useState(false);
@@ -100,21 +102,21 @@ export default function ButtonSubscribeCrypto({
   // Handle transaction successes
   useEffect(() => {
     if (approveSuccess && step === "approving") {
-      toast.success("USDC approved!");
+      toast.success(t("buttonSubscribeCrypto.usdcApproved"));
       handleUpgrade();
     }
   }, [approveSuccess]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (upgradeSuccess && step === "upgrading") {
-      toast.success("USDC wrapped to USDCx!");
+      toast.success(t("buttonSubscribeCrypto.usdcWrapped"));
       handleCreateStream();
     }
   }, [upgradeSuccess]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (streamSuccess && step === "streaming") {
-      toast.success("Subscription started!");
+      toast.success(t("buttonSubscribeCrypto.subscriptionStarted"));
       setStep("success");
       setHasActiveStream(true);
       onSuccess?.();
@@ -123,7 +125,7 @@ export default function ButtonSubscribeCrypto({
 
   useEffect(() => {
     if (deleteSuccess) {
-      toast.success("Subscription cancelled");
+      toast.success(t("buttonSubscribeCrypto.subscriptionCancelled"));
       setHasActiveStream(false);
       setStep("idle");
     }
@@ -143,7 +145,7 @@ export default function ButtonSubscribeCrypto({
       });
     } catch (error) {
       console.error("Approve error:", error);
-      toast.error("Approval failed");
+      toast.error(t("buttonSubscribeCrypto.approvalFailed"));
       setStep("idle");
     }
   };
@@ -162,7 +164,7 @@ export default function ButtonSubscribeCrypto({
       });
     } catch (error) {
       console.error("Upgrade error:", error);
-      toast.error("Wrapping failed");
+      toast.error(t("buttonSubscribeCrypto.wrappingFailed"));
       setStep("idle");
     }
   };
@@ -193,7 +195,7 @@ export default function ButtonSubscribeCrypto({
       });
     } catch (error) {
       console.error("Stream error:", error);
-      toast.error("Stream creation failed");
+      toast.error(t("buttonSubscribeCrypto.streamCreationFailed"));
       setStep("idle");
     }
   };
@@ -222,7 +224,7 @@ export default function ButtonSubscribeCrypto({
       });
     } catch (error) {
       console.error("Cancel error:", error);
-      toast.error("Cancellation failed");
+      toast.error(t("buttonSubscribeCrypto.cancellationFailed"));
     }
   };
 
@@ -232,7 +234,7 @@ export default function ButtonSubscribeCrypto({
       <ConnectButton.Custom>
         {({ openConnectModal }) => (
           <button onClick={openConnectModal} className={`btn btn-primary ${className}`}>
-            Connect Wallet
+            {t("buttonSubscribeCrypto.connectWallet")}
           </button>
         )}
       </ConnectButton.Custom>
@@ -246,10 +248,10 @@ export default function ButtonSubscribeCrypto({
       <div className="flex flex-col gap-2">
         <div className="badge badge-success gap-2">
           <span className="loading loading-ring loading-xs"></span>
-          Streaming ${currentMonthly}/month
+          {t("buttonSubscribeCrypto.streaming", { amount: currentMonthly })}
         </div>
         <button onClick={handleCancel} className={`btn btn-outline btn-error btn-sm ${className}`}>
-          Cancel Subscription
+          {t("buttonSubscribeCrypto.cancelSubscription")}
         </button>
       </div>
     );
@@ -259,7 +261,7 @@ export default function ButtonSubscribeCrypto({
   if (parseFloat(usdcBalance) < monthlyPrice) {
     return (
       <button className={`btn btn-disabled ${className}`} disabled>
-        Need ${monthlyPrice} USDC (have ${parseFloat(usdcBalance).toFixed(2)})
+        {t("buttonSubscribeCrypto.needUsdc", { need: monthlyPrice, have: parseFloat(usdcBalance).toFixed(2) })}
       </button>
     );
   }
@@ -267,11 +269,11 @@ export default function ButtonSubscribeCrypto({
   // In progress states
   const isLoading = ["approving", "upgrading", "streaming"].includes(step);
   const buttonText = {
-    idle: `Subscribe $${monthlyPrice}/month`,
-    approving: "Approving USDC...",
-    upgrading: "Wrapping to USDCx...",
-    streaming: "Starting stream...",
-    success: "Subscribed!",
+    idle: t("buttonSubscribeCrypto.subscribe", { price: monthlyPrice }),
+    approving: t("buttonSubscribeCrypto.approvingUsdc"),
+    upgrading: t("buttonSubscribeCrypto.wrappingToUsdcx"),
+    streaming: t("buttonSubscribeCrypto.startingStream"),
+    success: t("buttonSubscribeCrypto.subscribed"),
   };
 
   return (

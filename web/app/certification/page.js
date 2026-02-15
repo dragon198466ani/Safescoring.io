@@ -4,68 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import config from "@/config";
+import { useNormStats } from "@/hooks/useNormStats";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
-const certificationTiers = [
-  {
-    id: "starter",
-    name: "Starter",
-    price: 990,
-    priceYearly: 790,
-    description: "For emerging projects seeking credibility",
-    features: [
-      "Full SAFE evaluation (916 norms)",
-      "Public score on SafeScoring.io",
-      "Starter Badge for your website",
-      "Quarterly re-evaluation",
-      "Basic improvement roadmap",
-    ],
-    badge: "starter",
-    cta: "Get Started",
-    popular: false,
-  },
-  {
-    id: "verified",
-    name: "Verified",
-    price: 2990,
-    priceYearly: 2490,
-    description: "For established projects ready to prove security",
-    features: [
-      "Everything in Starter",
-      "Verified Badge (animated)",
-      "Monthly re-evaluation",
-      "Priority listing in directory",
-      "Detailed improvement roadmap",
-      "Dedicated account manager",
-      "Press release template",
-    ],
-    badge: "verified",
-    cta: "Get Verified",
-    popular: true,
-  },
-  {
-    id: "enterprise",
-    name: "Enterprise",
-    price: 9990,
-    priceYearly: 7990,
-    description: "For protocols and institutions requiring the highest standard",
-    features: [
-      "Everything in Verified",
-      "Enterprise Badge (premium)",
-      "Weekly monitoring & alerts",
-      "Custom scoring criteria",
-      "White-label reports",
-      "API access for integrations",
-      "Incident response support",
-      "Board-ready security reports",
-      "Multi-product discount",
-    ],
-    badge: "enterprise",
-    cta: "Contact Sales",
-    popular: false,
-  },
-];
-
-const BadgePreview = ({ type }) => {
+const BadgePreview = ({ type, t }) => {
   const badges = {
     starter: (
       <div className="flex items-center gap-2 px-3 py-2 bg-base-300 rounded-lg border border-base-content/10">
@@ -74,7 +17,7 @@ const BadgePreview = ({ type }) => {
             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
           </svg>
         </div>
-        <span className="text-sm font-medium">SAFE Evaluated</span>
+        <span className="text-sm font-medium">{t("certification.badgeEvaluated")}</span>
       </div>
     ),
     verified: (
@@ -85,8 +28,8 @@ const BadgePreview = ({ type }) => {
           </svg>
         </div>
         <div>
-          <span className="text-sm font-bold text-green-400">SAFE Verified</span>
-          <span className="text-xs text-base-content/50 ml-2">Score: 78%</span>
+          <span className="text-sm font-bold text-green-400">{t("certification.badgeVerified")}</span>
+          <span className="text-xs text-base-content/50 ml-2">{t("certification.badgeScore", { score: 78 })}</span>
         </div>
       </div>
     ),
@@ -98,8 +41,8 @@ const BadgePreview = ({ type }) => {
           </svg>
         </div>
         <div>
-          <span className="text-sm font-bold text-amber-400">SAFE Enterprise</span>
-          <span className="text-xs text-base-content/50 ml-2">Score: 85%</span>
+          <span className="text-sm font-bold text-amber-400">{t("certification.badgeEnterprise")}</span>
+          <span className="text-xs text-base-content/50 ml-2">{t("certification.badgeScore", { score: 85 })}</span>
         </div>
       </div>
     ),
@@ -107,28 +50,98 @@ const BadgePreview = ({ type }) => {
   return badges[type];
 };
 
-const stats = [
-  { value: "~50%", label: "of hacked projects had audits" },
-  { value: "916", label: "security norms evaluated" },
-  { value: "100+", label: "products already scored" },
-  { value: "0", label: "bias in our methodology" },
-];
-
-const testimonials = [
-  {
-    quote: "The SAFE certification gave our users confidence. Our TVL increased 40% after displaying the badge.",
-    author: "DeFi Protocol Founder",
-    role: "Series A, $50M TVL",
-  },
-  {
-    quote: "Finally, a security rating that covers both our hardware AND our companion app with the same rigor.",
-    author: "Hardware Wallet CEO",
-    role: "Top 10 Hardware Wallet",
-  },
-];
-
 export default function CertificationPage() {
   const [annual, setAnnual] = useState(true);
+  const { t } = useTranslation();
+  const normStats = useNormStats();
+  const totalNorms = normStats.totalNorms ?? "—";
+
+  const certificationTiers = [
+    {
+      id: "starter",
+      name: t("certification.tierStarterName"),
+      price: 990,
+      priceYearly: 790,
+      description: t("certification.tierStarterDesc"),
+      features: [
+        t("certification.tierStarterFeature1", { count: totalNorms }),
+        t("certification.tierStarterFeature2"),
+        t("certification.tierStarterFeature3"),
+        t("certification.tierStarterFeature4"),
+        t("certification.tierStarterFeature5"),
+      ],
+      badge: "starter",
+      cta: t("certification.tierStarterCta"),
+      popular: false,
+    },
+    {
+      id: "verified",
+      name: t("certification.tierVerifiedName"),
+      price: 2990,
+      priceYearly: 2490,
+      description: t("certification.tierVerifiedDesc"),
+      features: [
+        t("certification.tierVerifiedFeature1"),
+        t("certification.tierVerifiedFeature2"),
+        t("certification.tierVerifiedFeature3"),
+        t("certification.tierVerifiedFeature4"),
+        t("certification.tierVerifiedFeature5"),
+        t("certification.tierVerifiedFeature6"),
+        t("certification.tierVerifiedFeature7"),
+      ],
+      badge: "verified",
+      cta: t("certification.tierVerifiedCta"),
+      popular: true,
+    },
+    {
+      id: "enterprise",
+      name: t("certification.tierEnterpriseName"),
+      price: 9990,
+      priceYearly: 7990,
+      description: t("certification.tierEnterpriseDesc"),
+      features: [
+        t("certification.tierEnterpriseFeature1"),
+        t("certification.tierEnterpriseFeature2"),
+        t("certification.tierEnterpriseFeature3"),
+        t("certification.tierEnterpriseFeature4"),
+        t("certification.tierEnterpriseFeature5"),
+        t("certification.tierEnterpriseFeature6"),
+        t("certification.tierEnterpriseFeature7"),
+        t("certification.tierEnterpriseFeature8"),
+        t("certification.tierEnterpriseFeature9"),
+      ],
+      badge: "enterprise",
+      cta: t("certification.tierEnterpriseCta"),
+      popular: false,
+    },
+  ];
+
+  const stats = [
+    { value: "87%", label: t("certification.statsHackedAudited") },
+    { value: `${totalNorms}`, label: t("certification.statsNormsEvaluated") },
+    { value: "100+", label: t("certification.statsProductsScored") },
+    { value: "0", label: t("certification.statsZeroBias") },
+  ];
+
+  const howItWorks = [
+    { step: 1, title: t("certification.howStep1Title"), desc: t("certification.howStep1Desc") },
+    { step: 2, title: t("certification.howStep2Title"), desc: t("certification.howStep2Desc", { count: totalNorms }) },
+    { step: 3, title: t("certification.howStep3Title"), desc: t("certification.howStep3Desc") },
+    { step: 4, title: t("certification.howStep4Title"), desc: t("certification.howStep4Desc") },
+  ];
+
+  const testimonials = [
+    {
+      quote: t("certification.testimonial1Quote"),
+      author: t("certification.testimonial1Author"),
+      role: t("certification.testimonial1Role"),
+    },
+    {
+      quote: t("certification.testimonial2Quote"),
+      author: t("certification.testimonial2Author"),
+      role: t("certification.testimonial2Role"),
+    },
+  ];
 
   return (
     <>
@@ -141,13 +154,13 @@ export default function CertificationPage() {
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              For Crypto Projects & Protocols
+              {t("certification.heroBadge")}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Get <span className="text-primary">SAFE Certified</span>
+              {t("certification.heroTitle")} <span className="text-primary">{t("certification.heroTitleHighlight")}</span>
             </h1>
             <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-8">
-              Prove your security. Build user trust. Stand out from the many projects that got hacked despite having audits.
+              {t("certification.heroSubtitle")}
             </p>
 
             {/* Stats */}
@@ -165,7 +178,7 @@ export default function CertificationPage() {
         {/* Why Certification Section */}
         <section className="bg-base-200 py-16 mb-20">
           <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-2xl font-bold text-center mb-12">Why SAFE Certification?</h2>
+            <h2 className="text-2xl font-bold text-center mb-12">{t("certification.whyTitle")}</h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="bg-base-100 rounded-xl p-6 border border-base-300">
                 <div className="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center mb-4">
@@ -173,9 +186,9 @@ export default function CertificationPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">Audits Are Not Enough</h3>
+                <h3 className="text-lg font-semibold mb-2">{t("certification.whyAuditsTitle")}</h3>
                 <p className="text-base-content/70">
-                  Nearly half of hacked DeFi projects in 2024 had been audited. Audits check code, not operational security, backup procedures, or real-world resilience.
+                  {t("certification.whyAuditsDesc")}
                 </p>
               </div>
               <div className="bg-base-100 rounded-xl p-6 border border-base-300">
@@ -184,9 +197,9 @@ export default function CertificationPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">916 Security Norms</h3>
+                <h3 className="text-lg font-semibold mb-2">{t("certification.whyNormsTitle", { count: totalNorms })}</h3>
                 <p className="text-base-content/70">
-                  We evaluate cryptography, adversity resistance, reliability, AND usability. The most comprehensive security assessment in crypto.
+                  {t("certification.whyNormsDesc")}
                 </p>
               </div>
               <div className="bg-base-100 rounded-xl p-6 border border-base-300">
@@ -195,9 +208,9 @@ export default function CertificationPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">Build User Trust</h3>
+                <h3 className="text-lg font-semibold mb-2">{t("certification.whyTrustTitle")}</h3>
                 <p className="text-base-content/70">
-                  Display your SAFE score and badge on your website. Users check scores before depositing. Certified projects see higher TVL and user retention.
+                  {t("certification.whyTrustDesc")}
                 </p>
               </div>
             </div>
@@ -207,12 +220,12 @@ export default function CertificationPage() {
         {/* Pricing Section */}
         <section className="max-w-6xl mx-auto px-6 mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Certification Plans</h2>
-            <p className="text-base-content/70 mb-6">Choose the level that fits your project</p>
+            <h2 className="text-3xl font-bold mb-4">{t("certification.pricingTitle")}</h2>
+            <p className="text-base-content/70 mb-6">{t("certification.pricingSubtitle")}</p>
 
             {/* Annual/Monthly Toggle */}
             <div className="flex items-center justify-center gap-3">
-              <span className={`text-sm ${!annual ? 'text-base-content' : 'text-base-content/50'}`}>Monthly</span>
+              <span className={`text-sm ${!annual ? 'text-base-content' : 'text-base-content/50'}`}>{t("certification.monthly")}</span>
               <input
                 type="checkbox"
                 className="toggle toggle-primary"
@@ -220,7 +233,7 @@ export default function CertificationPage() {
                 onChange={() => setAnnual(!annual)}
               />
               <span className={`text-sm ${annual ? 'text-base-content' : 'text-base-content/50'}`}>
-                Annual <span className="text-green-500 font-medium">(Save 20%)</span>
+                {t("certification.annual")} <span className="text-green-500 font-medium">({t("certification.savePercent")})</span>
               </span>
             </div>
           </div>
@@ -238,7 +251,7 @@ export default function CertificationPage() {
                 {tier.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                     <span className="bg-primary text-primary-content px-4 py-1 rounded-full text-sm font-medium">
-                      Most Popular
+                      {t("certification.mostPopular")}
                     </span>
                   </div>
                 )}
@@ -250,18 +263,18 @@ export default function CertificationPage() {
                     <span className="text-4xl font-bold">
                       ${annual ? tier.priceYearly : tier.price}
                     </span>
-                    <span className="text-base-content/60 mb-1">/year</span>
+                    <span className="text-base-content/60 mb-1">{t("certification.perYear")}</span>
                   </div>
                   {annual && tier.price !== tier.priceYearly && (
                     <div className="text-sm text-green-500 mt-1">
-                      Save ${(tier.price - tier.priceYearly) * 12 / 12}/year
+                      {t("certification.saveAmount", { amount: (tier.price - tier.priceYearly) })}
                     </div>
                   )}
                 </div>
 
                 {/* Badge Preview */}
                 <div className="flex justify-center mb-6">
-                  <BadgePreview type={tier.badge} />
+                  <BadgePreview type={tier.badge} t={t} />
                 </div>
 
                 <ul className="space-y-3 mb-8">
@@ -289,14 +302,9 @@ export default function CertificationPage() {
         {/* How It Works */}
         <section className="bg-base-200 py-16 mb-20">
           <div className="max-w-4xl mx-auto px-6">
-            <h2 className="text-2xl font-bold text-center mb-12">How Certification Works</h2>
+            <h2 className="text-2xl font-bold text-center mb-12">{t("certification.howTitle")}</h2>
             <div className="space-y-8">
-              {[
-                { step: 1, title: "Apply", desc: "Submit your project details and choose your plan" },
-                { step: 2, title: "Evaluation", desc: "Our AI evaluates your product against 916 security norms" },
-                { step: 3, title: "Review", desc: "Our team verifies results and prepares your improvement roadmap" },
-                { step: 4, title: "Certification", desc: "Receive your badge, score, and public listing within 7 days" },
-              ].map((item, i) => (
+              {howItWorks.map((item, i) => (
                 <div key={i} className="flex items-start gap-6">
                   <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-primary-content font-bold shrink-0">
                     {item.step}
@@ -313,17 +321,17 @@ export default function CertificationPage() {
 
         {/* Testimonials */}
         <section className="max-w-4xl mx-auto px-6 mb-20">
-          <h2 className="text-2xl font-bold text-center mb-12">What Projects Say</h2>
+          <h2 className="text-2xl font-bold text-center mb-12">{t("certification.testimonialsTitle")}</h2>
           <div className="grid md:grid-cols-2 gap-8">
-            {testimonials.map((t, i) => (
+            {testimonials.map((testimonial, i) => (
               <div key={i} className="bg-base-200 rounded-xl p-6 border border-base-300">
                 <svg className="w-8 h-8 text-primary/30 mb-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                 </svg>
-                <p className="text-lg mb-4 italic">&ldquo;{t.quote}&rdquo;</p>
+                <p className="text-lg mb-4 italic">&ldquo;{testimonial.quote}&rdquo;</p>
                 <div>
-                  <div className="font-medium">{t.author}</div>
-                  <div className="text-sm text-base-content/60">{t.role}</div>
+                  <div className="font-medium">{testimonial.author}</div>
+                  <div className="text-sm text-base-content/60">{testimonial.role}</div>
                 </div>
               </div>
             ))}
@@ -333,16 +341,16 @@ export default function CertificationPage() {
         {/* CTA */}
         <section className="max-w-4xl mx-auto px-6">
           <div className="bg-gradient-to-r from-primary/20 to-base-200 rounded-2xl p-8 md:p-12 text-center border border-primary/20">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to Prove Your Security?</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">{t("certification.ctaTitle")}</h2>
             <p className="text-base-content/70 mb-8 max-w-xl mx-auto">
-              Join 100+ projects that display their SAFE score. Start your certification today.
+              {t("certification.ctaSubtitle")}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/claim" className="btn btn-primary btn-lg">
-                Start Certification
+                {t("certification.ctaStartCertification")}
               </Link>
               <Link href="/contact" className="btn btn-outline btn-lg">
-                Talk to Sales
+                {t("certification.ctaTalkToSales")}
               </Link>
             </div>
           </div>

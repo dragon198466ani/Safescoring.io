@@ -34,13 +34,13 @@ const securityHeaders = [
     key: 'Strict-Transport-Security',
     value: 'max-age=31536000; includeSubDomains',
   }] : []),
-  // Content Security Policy - Sécurisé (sans unsafe-eval)
+  // Content Security Policy - Sécurisé (unsafe-eval uniquement en dev pour React Refresh/HMR)
   {
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      // unsafe-inline requis pour Next.js, unsafe-eval RETIRÉ (risque XSS)
-      "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://js.stripe.com https://www.googletagmanager.com",
+      // unsafe-inline requis pour Next.js, unsafe-eval requis en dev pour React Refresh (HMR)
+      `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''} https://challenges.cloudflare.com https://js.stripe.com https://www.googletagmanager.com`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' data: https: blob:",
       "font-src 'self' https://fonts.gstatic.com data:",
@@ -169,6 +169,13 @@ const nextConfig = {
         })
       );
     }
+
+    // Ignore optional peer deps from MetaMask SDK / WalletConnect (client + server)
+    config.plugins.push(
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^(@react-native-async-storage\/async-storage|pino-pretty)$/,
+      })
+    );
 
     return config;
   },

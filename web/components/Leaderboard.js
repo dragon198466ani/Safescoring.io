@@ -3,6 +3,7 @@
 import { useState, useEffect, memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 const levelColors = {
   newcomer: "text-gray-400",
@@ -25,6 +26,7 @@ const levelBadges = {
  * Creates FOMO and engagement anticipation
  */
 function Leaderboard({ limit = 10, showTitle = true }) {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -91,9 +93,9 @@ function Leaderboard({ limit = 10, showTitle = true }) {
                 </svg>
               </div>
               <div>
-                <h2 className="text-lg font-semibold">Top Contributors</h2>
+                <h2 className="text-lg font-semibold">{t("leaderboardComponent.topContributors")}</h2>
                 <p className="text-sm text-base-content/60">
-                  {global.totalContributors} contributors earning points
+                  {t("leaderboardComponent.contributorsEarning", { count: global.totalContributors })}
                 </p>
               </div>
             </div>
@@ -101,7 +103,7 @@ function Leaderboard({ limit = 10, showTitle = true }) {
               href="/leaderboard"
               className="text-sm text-primary hover:underline"
             >
-              View all
+              {t("leaderboardComponent.viewAll")}
             </Link>
           </div>
         </div>
@@ -112,12 +114,12 @@ function Leaderboard({ limit = 10, showTitle = true }) {
         <table className="table w-full">
           <thead className="bg-base-300/50">
             <tr>
-              <th className="font-medium text-base-content/70 w-12">#</th>
-              <th className="font-medium text-base-content/70">Contributor</th>
-              <th className="font-medium text-base-content/70 text-center">Level</th>
-              <th className="font-medium text-base-content/70 text-right">Points</th>
+              <th className="font-medium text-base-content/70 w-12">{t("leaderboardComponent.rank")}</th>
+              <th className="font-medium text-base-content/70">{t("leaderboardComponent.contributor")}</th>
+              <th className="font-medium text-base-content/70 text-center">{t("leaderboardComponent.level")}</th>
+              <th className="font-medium text-base-content/70 text-right">{t("leaderboardComponent.points")}</th>
               <th className="font-medium text-base-content/70 text-right">
-                <span className="text-amber-400">Est. Airdrop</span>
+                <span className="text-amber-400">{t("leaderboardComponent.estAirdrop")}</span>
               </th>
             </tr>
           </thead>
@@ -154,7 +156,7 @@ function Leaderboard({ limit = 10, showTitle = true }) {
                     <div>
                       <span className="font-medium">{entry.name}</span>
                       <div className="text-xs text-base-content/50">
-                        {entry.stats.correctionsApproved} corrections
+                        {entry.stats.correctionsApproved} {t("leaderboardComponent.corrections")}
                       </div>
                     </div>
                   </div>
@@ -174,7 +176,7 @@ function Leaderboard({ limit = 10, showTitle = true }) {
                     <span className="font-mono font-bold text-amber-400">
                       {entry.airdrop.estimatedPoints.toLocaleString()}
                     </span>
-                    <span className="text-xs text-base-content/50">pts</span>
+                    <span className="text-xs text-base-content/50">{t("leaderboardComponent.pts")}</span>
                   </div>
                   <div className="text-xs text-base-content/40">
                     x{entry.airdrop.levelMultiplier} x{entry.seniority.multiplier}
@@ -204,8 +206,7 @@ function Leaderboard({ limit = 10, showTitle = true }) {
             />
           </svg>
           <span className="text-base-content/70">
-            Points count towards future <span className="text-amber-400 font-semibold">$SAFE</span> token airdrop.
-            Early contributors get bonus multipliers.
+            {t("leaderboardComponent.airdropNote")}
           </span>
         </div>
       </div>

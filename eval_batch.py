@@ -9,15 +9,17 @@ import requests
 from core.config import SUPABASE_URL, get_supabase_headers
 from core.smart_evaluator import SmartEvaluator
 
-def get_all_evaluated_ids():
-    """Get ALL evaluated product IDs with pagination."""
+def get_evaluation_counts():
+    """Get evaluation count per product (YES/NO/YESp only, excludes N/A/TBD).
+    Returns dict: { product_id: count_of_actual_evaluations }
+    """
     headers = get_supabase_headers()
-    evaluated_ids = set()
+    eval_counts = {}
     offset = 0
 
     while True:
         r = requests.get(
-            f"{SUPABASE_URL}/rest/v1/evaluations?select=product_id&offset={offset}&limit=1000",
+            f"{SUPABASE_URL}/rest/v1/evaluations?select=product_id,result&offset={offset}&limit=1000",
             headers=headers
         )
         if r.status_code != 200:
@@ -26,12 +28,20 @@ def get_all_evaluated_ids():
         if not data:
             break
         for e in data:
-            evaluated_ids.add(e['product_id'])
+            pid = e['product_id']
+            result = (e.get('result') or '').upper()
+            # Only count actual evaluations (YES/YESp/NO), not N/A or TBD
+            if result in ('YES', 'YESP', 'NO'):
+                eval_counts[pid] = eval_counts.get(pid, 0) + 1
         offset += 1000
         if offset > 100000:  # Safety limit
             break
 
-    return evaluated_ids
+    return eval_counts
+
+
+# Minimum number of actual evaluations (YES/NO) for a product to be considered "fully evaluated"
+MIN_EVAL_THRESHOLD = 20
 
 
 def main():
@@ -41,14 +51,17 @@ def main():
     evaluator = SmartEvaluator()
     evaluator.load_data()
 
-    # Get properly evaluated product IDs
-    print("\n[SCAN] Getting evaluated products...")
-    evaluated_ids = get_all_evaluated_ids()
-    print(f"   {len(evaluated_ids)} products already evaluated")
+    # Get evaluation counts per product (actual YES/NO, not N/A)
+    print("\n[SCAN] Getting evaluation counts per product...")
+    eval_counts = get_evaluation_counts()
+    fully_evaluated = {pid for pid, count in eval_counts.items() if count >= MIN_EVAL_THRESHOLD}
+    partially_evaluated = {pid for pid, count in eval_counts.items() if 0 < count < MIN_EVAL_THRESHOLD}
+    print(f"   {len(fully_evaluated)} products fully evaluated (>={MIN_EVAL_THRESHOLD} YES/NO)")
+    print(f"   {len(partially_evaluated)} products PARTIALLY evaluated (<{MIN_EVAL_THRESHOLD} YES/NO)")
 
-    # Find products to evaluate
-    products_to_eval = [p for p in evaluator.products if p['id'] not in evaluated_ids]
-    print(f"   {len(products_to_eval)} products to evaluate")
+    # Find products to evaluate: not fully evaluated (includes partial!)
+    products_to_eval = [p for p in evaluator.products if p['id'] not in fully_evaluated]
+    print(f"   {len(products_to_eval)} products to evaluate (including partial)")
 
     if not products_to_eval:
         print("\n=== ALL PRODUCTS EVALUATED! ===")
