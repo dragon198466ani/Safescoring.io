@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import config from "@/config";
+import { quickProtect } from "@/libs/api-protection";
 
 /**
  * Product Score API
@@ -14,9 +16,12 @@ import { supabase, isSupabaseConfigured } from "@/libs/supabase";
  */
 
 export async function GET(request, { params }) {
+  // Rate limit: public API used by third parties
+  const protection = await quickProtect(request, "public");
+  if (protection.blocked) return protection.response;
   const { slug } = await params;
 
-  // CORS headers for extension access
+  // CORS headers - wildcard required for Chrome extensions and badge widgets
   const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET",
@@ -95,7 +100,7 @@ export async function GET(request, { params }) {
           e: Math.round(latestScore.score_e || 0),
         },
         lastUpdated: latestScore.calculated_at,
-        detailsUrl: `https://safescoring.io/products/${product.slug}`,
+        detailsUrl: `https://${config.domainName}/products/${product.slug}`,
       },
       { headers }
     );

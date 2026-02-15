@@ -57,7 +57,7 @@ export default function AdminDashboard() {
 
       setRecentTasks(recent || []);
     } catch (error) {
-      console.error('Error loading stats:', error);
+      if (process.env.NODE_ENV === 'development') console.error('Error loading stats:', error);
     }
   }, [supabase]);
 
@@ -71,7 +71,7 @@ export default function AdminDashboard() {
         setClaimStats(data.stats || { pending: 0, dns_verified: 0 });
       }
     } catch (error) {
-      console.error('Error loading claims:', error);
+      if (process.env.NODE_ENV === 'development') console.error('Error loading claims:', error);
     }
   }, []);
 

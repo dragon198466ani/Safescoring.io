@@ -5,6 +5,8 @@ Centralized web scraping for product documentation.
 Supports: HTML sites, SPAs (Playwright), GitHub, external docs
 """
 
+import ipaddress
+import socket
 import requests
 from html.parser import HTMLParser
 from urllib.parse import urljoin, urlparse
@@ -66,6 +68,12 @@ class WebScraper:
         'architecture', 'protocol', 'smart-contract', 'governance'
     ]
 
+    # Blocked hostnames/patterns for SSRF protection
+    BLOCKED_HOSTS = {
+        'localhost', '127.0.0.1', '0.0.0.0', '::1',
+        'metadata.google.internal', 'metadata.google',
+    }
+
     def __init__(self):
         self.cache = {}  # Cache for scraped content
         self.headers = {
@@ -73,6 +81,35 @@ class WebScraper:
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Language': 'en-US,en;q=0.5'
         }
+
+    @staticmethod
+    def _is_safe_url(url):
+        """Validate URL to prevent SSRF attacks (internal network, cloud metadata, etc.)."""
+        try:
+            parsed = urlparse(url)
+            if parsed.scheme not in ('http', 'https'):
+                return False
+            hostname = parsed.hostname
+            if not hostname:
+                return False
+            # Block known dangerous hostnames
+            if hostname in WebScraper.BLOCKED_HOSTS:
+                return False
+            # Block AWS/GCP/Azure metadata endpoints
+            if hostname.startswith('169.254.') or hostname == '169.254.169.254':
+                return False
+            # Resolve hostname and check for private/reserved IPs
+            try:
+                resolved = socket.getaddrinfo(hostname, None, socket.AF_UNSPEC, socket.SOCK_STREAM)
+                for _, _, _, _, addr in resolved:
+                    ip = ipaddress.ip_address(addr[0])
+                    if ip.is_private or ip.is_loopback or ip.is_reserved or ip.is_link_local:
+                        return False
+            except (socket.gaierror, ValueError):
+                return False
+            return True
+        except (ValueError, socket.error):
+            return False
 
     def scrape_product(self, product, max_pages=12, max_chars=20000):
         """
@@ -90,6 +127,10 @@ class WebScraper:
         doc_urls = specs.get('doc_urls') or {}
 
         if not url:
+            return None
+
+        if not self._is_safe_url(url):
+            print(f"   Blocked unsafe URL: {url}")
             return None
 
         # Cache check
@@ -129,6 +170,9 @@ class WebScraper:
 
                 visited_urls.add(current_url)
 
+                if not self._is_safe_url(current_url):
+                    continue
+
                 try:
                     r = requests.get(current_url, timeout=10, headers=self.headers)
 
@@ -151,14 +195,17 @@ class WebScraper:
                                 if any(kw in link_lower for kw in self.IMPORTANT_KEYWORDS):
                                     urls_to_visit.append(link)
 
-                except Exception:
-                    pass
+                except (requests.RequestException, ValueError, UnicodeDecodeError) as e:
+                    print(f"   Scraping error: {e}")
 
             # 2. SCRAPE EXTERNAL DOCS
             for doc_url in list(docs_urls)[:3]:
                 if doc_url in visited_urls:
                     continue
                 visited_urls.add(doc_url)
+
+                if not self._is_safe_url(doc_url):
+                    continue
 
                 try:
                     r = requests.get(doc_url, timeout=10, headers=self.headers)
@@ -169,14 +216,17 @@ class WebScraper:
                         if page_content:
                             all_content.append(f"[DOCS] {page_content[:5000]}")
                             sources_count['docs'] += 1
-                except Exception:
-                    pass
+                except (requests.RequestException, ValueError, UnicodeDecodeError) as e:
+                    print(f"   Scraping error: {e}")
 
             # 3. SCRAPE GITHUB README
             for gh_url in list(github_urls)[:2]:
                 if gh_url in visited_urls:
                     continue
                 visited_urls.add(gh_url)
+
+                if not self._is_safe_url(gh_url):
+                    continue
 
                 try:
                     parsed = urlparse(gh_url)
@@ -202,8 +252,8 @@ class WebScraper:
                                     all_content.append(f"[GITHUB:{repo}] {page_content[:4000]}")
                                     sources_count['github'] += 1
 
-                except Exception:
-                    pass
+                except (requests.RequestException, ValueError, UnicodeDecodeError) as e:
+                    print(f"   Scraping error: {e}")
 
             # 4. USE DOC_URLS FROM SUPABASE
             if doc_urls:
@@ -237,8 +287,8 @@ class WebScraper:
                                 if page_content:
                                     all_content.append(f"[{url_type.upper()}] {page_content[:5000]}")
                                     sources_count['docs'] += 1
-                    except Exception:
-                        pass
+                    except (requests.RequestException, ValueError, UnicodeDecodeError) as e:
+                        print(f"   Scraping error: {e}")
 
             # Combine content
             content = '\n\n'.join(all_content)
@@ -273,7 +323,7 @@ class WebScraper:
             return content
 
         except Exception as e:
-            print(f"   Scraping error: {e}")
+            print(f"   Unexpected scraping error: {type(e).__name__}: {e}")
 
         return None
 

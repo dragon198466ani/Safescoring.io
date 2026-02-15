@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/libs/auth";
+import { requireAdmin, logAdminAction } from "@/libs/admin-auth";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 
 /**
@@ -8,12 +8,10 @@ import { supabase, isSupabaseConfigured } from "@/libs/supabase";
  */
 export async function GET(request) {
   try {
-    const session = await auth();
-
-    // Check admin access (you may want to add proper admin check)
-    if (!session?.user?.id) {
+    const admin = await requireAdmin();
+    if (!admin) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: "Unauthorized" },
         { status: 401 }
       );
     }
@@ -99,11 +97,10 @@ export async function GET(request) {
  */
 export async function PATCH(request) {
   try {
-    const session = await auth();
-
-    if (!session?.user?.id) {
+    const admin = await requireAdmin();
+    if (!admin) {
       return NextResponse.json(
-        { error: "Authentication required" },
+        { error: "Unauthorized" },
         { status: 401 }
       );
     }
@@ -128,6 +125,17 @@ export async function PATCH(request) {
         { status: 400 }
       );
     }
+
+    // Validate correctionId type
+    if (typeof correctionId !== "string" && typeof correctionId !== "number") {
+      return NextResponse.json(
+        { error: "Invalid correction ID" },
+        { status: 400 }
+      );
+    }
+
+    // Truncate reviewNotes to prevent abuse
+    const sanitizedReviewNotes = reviewNotes ? String(reviewNotes).substring(0, 2000) : null;
 
     const validStatuses = ["pending", "reviewing", "approved", "rejected", "partial"];
     if (!validStatuses.includes(status)) {
@@ -161,9 +169,9 @@ export async function PATCH(request) {
     // Update the correction
     const updateData = {
       status,
-      reviewed_by: session.user.id,
+      reviewed_by: admin.id,
       reviewed_at: new Date().toISOString(),
-      review_notes: reviewNotes || null,
+      review_notes: sanitizedReviewNotes,
       was_applied: applyCorrection || false,
     };
 
@@ -193,6 +201,14 @@ export async function PATCH(request) {
     } catch {
       // RPC might not exist
     }
+
+    // Audit log
+    await logAdminAction({
+      adminEmail: admin.email,
+      action: `correction_${status}`,
+      resource: `correction:${correctionId}`,
+      details: { applyCorrection: !!applyCorrection, reviewNotes: sanitizedReviewNotes?.substring(0, 100) },
+    });
 
     return NextResponse.json({
       success: true,
@@ -239,14 +255,26 @@ async function applyUserCorrection(correction) {
         // Update product information
         // Parse suggested_value as JSON if it contains multiple fields
         try {
-          const updates = JSON.parse(correction.suggested_value);
-          await supabase
-            .from("products")
-            .update(updates)
-            .eq("id", correction.product_id);
+          const rawUpdates = JSON.parse(correction.suggested_value);
+          // Whitelist safe product fields and validate value types
+          const ALLOWED_PRODUCT_FIELDS = ["description", "url", "logo_url", "category", "name"];
+          const safeUpdates = {};
+          for (const [key, value] of Object.entries(rawUpdates)) {
+            if (
+              ALLOWED_PRODUCT_FIELDS.includes(key) &&
+              (typeof value === "string" || typeof value === "number" || value === null)
+            ) {
+              safeUpdates[key] = value;
+            }
+          }
+          if (Object.keys(safeUpdates).length > 0) {
+            await supabase
+              .from("products")
+              .update(safeUpdates)
+              .eq("id", correction.product_id);
+          }
         } catch {
-          // If not JSON, it might be a single field update
-          console.log("Product info correction requires JSON format");
+          console.log("Product info correction requires valid JSON format");
         }
         break;
 

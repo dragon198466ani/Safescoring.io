@@ -53,6 +53,8 @@ const content = {
             list: [
               "Products viewed (for usage limits)",
               "Preferences and interests (onboarding)",
+              "Referral data: unique referral code, referral count, and referring user code (for the referral rewards program)",
+              "Email communication log: record of service emails sent (type and date, for compliance and to prevent duplicates)",
             ],
           },
         ],
@@ -85,6 +87,7 @@ const content = {
           "6.5 Restriction: Limit how we use your data",
           "6.6 Objection: Object to processing based on legitimate interests",
           "6.7 Withdraw consent: At any time for consent-based processing",
+          "6.8 Automated Decision-Making (Article 22): SafeScoring uses algorithmic methods to calculate security scores for crypto products. These scores are generated through automated processing of publicly available technical data (open-source code, security audits, protocol configurations) and do not involve profiling of individual users. You have the right not to be subject to a decision based solely on automated processing that produces legal effects concerning you or similarly significantly affects you. Product scores do not constitute decisions about individuals.",
         ],
         footer: "To exercise these rights, contact: support@safescoring.io",
       },
@@ -114,8 +117,12 @@ const content = {
           "Supabase (Database): EU servers, GDPR compliant",
           "LemonSqueezy (Fiat Payments): Merchant of Record, EU VAT compliant",
           "MoonPay (Crypto Payments): Licensed money service business, KYC/AML compliant",
-          "Google (OAuth): Privacy Shield certified",
+          "Google (OAuth): Standard Contractual Clauses (SCCs), GDPR compliant",
           "Resend (Email): GDPR compliant",
+          "Plausible Analytics (Website Analytics): Privacy-first, cookieless, no personal data collected, EU-hosted, GDPR compliant",
+          "Sentry (Error Monitoring): Used for application error tracking. Captures technical error data (stack traces, URLs) but not personal identifiers. Configured with sendDefaultPii: false",
+          "Cloudflare (Turnstile CAPTCHA): Used for bot protection on forms. Processes IP address and browser metadata to verify human users. Privacy policy: cloudflare.com/privacypolicy",
+          "Vercel (Hosting): Application hosting. Data routed via edge network. Standard Contractual Clauses in place for international transfers",
         ],
       },
       {
@@ -123,7 +130,7 @@ const content = {
         list: [
           "10.1 Essential cookies: Required for authentication (session management)",
           "10.2 We do NOT use advertising or tracking cookies",
-          "10.3 We do NOT use third-party analytics that track individual users",
+          "10.3 We use Plausible Analytics, a privacy-first, cookieless analytics service that does not track individual users, use cookies, or collect personally identifiable information",
         ],
       },
       {
@@ -141,7 +148,7 @@ const content = {
       {
         heading: "13. Updates to This Policy",
         paragraphs: [
-          "We may update this policy. Significant changes will be communicated via email. Continued use after changes constitutes acceptance.",
+          "We may update this policy periodically. For material changes, we will notify you via the email address associated with your account at least 30 days before the changes take effect. Minor, non-material changes may be posted on this page with an updated effective date. You may review changes and withdraw consent by deleting your account at any time. If you do not agree with updated terms, you should discontinue use of the service before the effective date.",
         ],
       },
       {
@@ -558,6 +565,8 @@ const content = {
             list: [
               "Produits consultés (pour les limites d'utilisation)",
               "Préférences et centres d'intérêt (onboarding)",
+              "Données de parrainage : code de parrainage unique, nombre de parrainages, et code du parrain (pour le programme de récompenses)",
+              "Journal des communications email : type et date des emails de service envoyés (conformité et prévention des doublons)",
             ],
           },
         ],
@@ -590,6 +599,7 @@ const content = {
           "6.5 Limitation : Limiter l'utilisation de vos données",
           "6.6 Opposition : S'opposer au traitement fondé sur des intérêts légitimes",
           "6.7 Retrait du consentement : À tout moment pour les traitements fondés sur le consentement",
+          "6.8 Prise de décision automatisée (Article 22) : SafeScoring utilise des méthodes algorithmiques pour calculer les scores de sécurité des produits crypto. Ces scores sont générés par un traitement automatisé de données techniques publiquement disponibles (code open-source, audits de sécurité, configurations de protocoles) et n'impliquent pas de profilage des utilisateurs individuels. Vous avez le droit de ne pas faire l'objet d'une décision fondée exclusivement sur un traitement automatisé produisant des effets juridiques vous concernant ou vous affectant de manière significative. Les scores de produits ne constituent pas des décisions concernant des individus.",
         ],
         footer:
           "Pour exercer ces droits, contactez : support@safescoring.io",
@@ -620,8 +630,12 @@ const content = {
           "Supabase (Base de données) : Serveurs UE, conforme au RGPD",
           "LemonSqueezy (Paiements fiat) : Merchant of Record, conforme TVA UE",
           "MoonPay (Paiements crypto) : Service financier agréé, conforme KYC/AML",
-          "Google (OAuth) : Certifié Privacy Shield",
+          "Google (OAuth) : Clauses Contractuelles Types (CCT), conforme au RGPD",
           "Resend (E-mail) : Conforme au RGPD",
+          "Plausible Analytics (Analyse web) : Service d'analyse respectueux de la vie privée, sans cookies, aucune donnée personnelle collectée, hébergé en UE, conforme au RGPD",
+          "Sentry (Surveillance des erreurs) : Utilisé pour le suivi des erreurs applicatives. Capture des données techniques (traces d'erreurs, URLs) mais pas d'identifiants personnels. Configuré avec sendDefaultPii: false",
+          "Cloudflare (Turnstile CAPTCHA) : Utilisé pour la protection contre les robots sur les formulaires. Traite l'adresse IP et les métadonnées du navigateur pour vérifier les utilisateurs humains. Politique de confidentialité : cloudflare.com/privacypolicy",
+          "Vercel (Hébergement) : Hébergement de l'application. Données acheminées via le réseau edge. Clauses Contractuelles Types en place pour les transferts internationaux",
         ],
       },
       {
@@ -629,7 +643,7 @@ const content = {
         list: [
           "10.1 Cookies essentiels : Nécessaires à l'authentification (gestion de session)",
           "10.2 Nous n'utilisons PAS de cookies publicitaires ou de suivi",
-          "10.3 Nous n'utilisons PAS d'outils d'analyse tiers qui suivent les utilisateurs individuellement",
+          "10.3 Nous utilisons Plausible Analytics, un service d'analyse respectueux de la vie privée qui ne suit pas les utilisateurs individuellement, n'utilise pas de cookies et ne collecte aucune donnée personnelle identifiable",
         ],
       },
       {
@@ -647,7 +661,7 @@ const content = {
       {
         heading: "13. Mises à jour de cette politique",
         paragraphs: [
-          "Nous pouvons mettre à jour cette politique. Les changements significatifs seront communiqués par e-mail. L'utilisation continue après les modifications vaut acceptation.",
+          "Nous pouvons mettre à jour cette politique périodiquement. Pour les modifications substantielles, nous vous notifierons par e-mail à l'adresse associée à votre compte au moins 30 jours avant l'entrée en vigueur des changements. Les modifications mineures et non substantielles pourront être publiées sur cette page avec une date de mise à jour. Vous pouvez consulter les changements et retirer votre consentement en supprimant votre compte à tout moment. Si vous n'acceptez pas les conditions mises à jour, vous devez cesser d'utiliser le service avant la date d'entrée en vigueur.",
         ],
       },
       {

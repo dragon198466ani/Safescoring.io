@@ -13,28 +13,11 @@ import hashlib
 import secrets
 from datetime import datetime, timedelta
 
-# Configuration
-def load_config():
-    config = {}
-    # Try multiple config file locations
-    config_paths = [
-        os.path.join(os.path.dirname(__file__), 'env_template_free.txt'),
-        os.path.join(os.path.dirname(__file__), '..', '..', 'config', '.env'),
-        os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'env_template_free.txt'),
-    ]
-    for config_path in config_paths:
-        if os.path.exists(config_path):
-            with open(config_path, 'r', encoding='utf-8') as f:
-                for line in f:
-                    line = line.strip()
-                    if line and not line.startswith('#') and '=' in line:
-                        key, value = line.split('=', 1)
-                        config[key.strip()] = value.strip()
-    return config
+# Add parent directory to path to access core/
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-CONFIG = load_config()
-SUPABASE_URL = CONFIG.get('NEXT_PUBLIC_SUPABASE_URL', '')
-SUPABASE_KEY = CONFIG.get('NEXT_PUBLIC_SUPABASE_ANON_KEY', '')
+from core.config import load_config, CONFIG, SUPABASE_URL, SUPABASE_KEY
 
 # Validate required configuration
 if not SUPABASE_URL or not SUPABASE_KEY:

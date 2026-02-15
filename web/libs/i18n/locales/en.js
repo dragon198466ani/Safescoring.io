@@ -72,14 +72,14 @@ export default {
 
   // Hero
   hero: {
-    tagline: "1110 norms. 0 opinion. 1 score.",
+    tagline: "{count} norms. Standards-based. 1 score.",
     taglineAlt: "Beyond the audit.",
-    title: "The first unified",
+    title: "A unified",
     titleHighlight: "crypto security rating",
     subtitle: "Hardware wallets. Software wallets. DeFi protocols.",
     subtitleStrong: "All evaluated with the same rigorous methodology.",
-    antiAudit: "87% of hacked projects in 2024 had been audited.",
-    antiAuditHighlight: "We measure real security.",
+    antiAudit: "Security evaluation goes beyond a single code review. We provide continuous, methodology-based assessments.",
+    antiAuditHighlight: "We evaluate security practices.",
     ctaPrimary: "Analyze Your Stack",
     ctaCompare: "Compare Products",
     ctaSecondary: "Explore Products",
@@ -87,7 +87,7 @@ export default {
     freeBadge: "Free",
     noCreditCard: "No credit card required",
     trustIndicators: {
-      independent: "100% independent scores",
+      independent: "Methodology-driven scores",
       productTypes: "product types",
       aiPowered: "AI-powered, reproducible",
       openMethodology: "Open methodology",
@@ -144,22 +144,22 @@ export default {
 
   // Why Not Audits
   whyNotAudits: {
-    title: "Beyond Traditional Audits",
-    subtitle: "Audits are essential, but they're just one piece of the security puzzle. Here's how SafeScoring complements traditional security assessments.",
+    title: "Audits + Continuous Monitoring",
+    subtitle: "Audits are essential. Continuous evaluation adds another dimension. Here's how SafeScoring complements traditional security assessments.",
     criteria: "Criteria",
     traditionalAudits: "Traditional Audits",
     safeScoring: "SafeScoring",
     rows: {
       coverage: { criteria: "Coverage", audit: "Primarily smart contracts", safe: "Wallets, Exchanges, DeFi, Cards & Custody" },
       frequency: { criteria: "Frequency", audit: "Point-in-time assessment", safe: "Monthly updates" },
-      methodology: { criteria: "Methodology", audit: "Varies by auditor", safe: "916 standardized norms" },
+      methodology: { criteria: "Methodology", audit: "Tailored per engagement", safe: "Standardized norms" },
       opSec: { criteria: "Operational security", audit: "Usually outside scope", safe: "Assessed (Adversity pillar)" },
       trackRecord: { criteria: "Track record", audit: "Typically not in scope", safe: "Fidelity pillar (F200-F204)" },
-      reproducibility: { criteria: "Reproducibility", audit: "Depends on team", safe: "Standardized methodology, highly reproducible" },
+      reproducibility: { criteria: "Reproducibility", audit: "Manual, expert-driven", safe: "Automated, standardized methodology" },
       cost: { criteria: "Cost", audit: "$50K - $500K+ (manual audit)", safe: "From $29/month (automated monitoring)*" },
-      independence: { criteria: "Independence", audit: "Commissioned by project", safe: "Scoring independent from affiliates" },
+      independence: { criteria: "Independence", audit: "Engaged by project team", safe: "Affiliate relationships disclosed, methodology-driven" },
     },
-    stat87: "of exploited DeFi projects had audits — showing audits alone aren't enough",
+    stat87: "of Top 100 DeFi hacks targeted audited projects — continuous monitoring adds value (Halborn)",
     stat916: "standardized norms across security, resilience, trust & usability",
     statMonthly: "Monthly",
     statMonthlyDesc: "continuous monitoring to catch changes between audits",
@@ -194,7 +194,7 @@ export default {
     pillarBreakdown: "Pillar Breakdown",
     scoreHistory: "Score History",
     relatedProducts: "Related Products",
-    verified: "Verified",
+    verified: "Scored",
     notEvaluated: "Not evaluated",
     updated: "Updated {date}",
     retry: "Retry",
@@ -216,11 +216,11 @@ export default {
     // Score types
     scoreTypes: {
       full: "Full",
-      fullDesc: "100% of norms",
+      fullDesc: "All norms",
       consumer: "Consumer",
-      consumerDesc: "38% of norms",
+      consumerDesc: "User-facing norms",
       essential: "Essential",
-      essentialDesc: "17% of norms",
+      essentialDesc: "Critical norms",
     },
     scoreTypeExplanations: {
       essential: "Critical norms for basic security - Non-negotiable criteria",
@@ -412,7 +412,7 @@ export default {
   // Stats
   stats: {
     securityNorms: "Security Norms",
-    securityNormsDesc: "Most comprehensive crypto security framework",
+    securityNormsDesc: "Broad crypto security evaluation framework",
     productTypes: "Product Types",
     productTypesDesc: "Hardware, software, DeFi - all unified",
     productsScored: "Products Scored",
@@ -431,11 +431,11 @@ export default {
     items: {
       whatIsSafeScore: {
         q: "What is a SAFE score? (Start here)",
-        a: "A SAFE score is a simple number from 0 to 100 that tells you how secure a crypto product is. Think of it like a safety rating for cars: 80+ means excellent security (green), 60-79 means good but with some gaps (amber), and below 60 means you should be careful (red). The higher the score, the safer the product.",
+        a: "A SAFE score is a simple number from 0 to 100 that tells you how secure a crypto product is. Think of it like a safety rating for cars: {excellent}+ means excellent security (green), {good}-{excellentMinus} means good but with some gaps (amber), and below {good} means you should be careful (red). The higher the score, the safer the product.",
       },
       howToUseScore: {
         q: "How do I use my score?",
-        a: "Use it to make decisions: For large holdings, pick products scoring 80+. For smaller amounts or testing, 60+ is usually fine. Compare similar products (e.g., two hardware wallets) and choose the higher score. Check which of the 4 pillars (Security, Adversity, Fidelity, Efficiency) is weakest to understand where the product could improve.",
+        a: "Use it to make decisions: For large holdings, pick products scoring {excellent}+. For smaller amounts or testing, {good}+ is usually fine. Compare similar products (e.g., two hardware wallets) and choose the higher score. Check which of the 4 pillars (Security, Adversity, Fidelity, Efficiency) is weakest to understand where the product could improve.",
       },
       howToImprove: {
         q: "How can a product improve its score?",
@@ -443,11 +443,11 @@ export default {
       },
       whatIsSafeScoring: {
         q: "What is SAFE Scoring?",
-        a: "SAFE Scoring is the first unified security rating for all crypto products. We evaluate hardware wallets, software wallets, and DeFi protocols with the same rigorous methodology: {count} security norms across 4 pillars - Security (cryptographic standards), Adversity (threat resistance), Fidelity (reliability & trust), and Efficiency (usability).",
+        a: "SAFE Scoring is a unified security rating for crypto products. We evaluate hardware wallets, software wallets, and DeFi protocols with the same methodology: {count} security norms across 4 pillars - Security (cryptographic standards), Adversity (threat resistance), Fidelity (reliability & trust), and Efficiency (usability).",
       },
       vsCertik: {
         q: "How is SafeScoring different from CertiK or other auditors?",
-        a: "Audits verify code at a single point in time. SafeScoring measures real-world security continuously. Key differences: (1) We cover ALL products - hardware, software, AND DeFi - with one methodology. CertiK only audits smart contracts. (2) We update monthly, not once. (3) 87% of hacked projects in 2024 had been audited. We go beyond code to evaluate operational security, track record, and resilience.",
+        a: "Traditional audits verify code at a point in time. SafeScoring provides continuous methodology-based evaluation. Key differences: (1) We cover hardware, software, AND DeFi with one methodology. Traditional audits typically focus on specific codebases. (2) We update evaluations regularly. (3) According to Halborn, 20% of Top 100 DeFi hacks hit audited projects. We complement code audits by also evaluating operational security, track record, and resilience.",
       },
       howEvaluated: {
         q: "How are products evaluated?",
@@ -459,7 +459,7 @@ export default {
       },
       independence: {
         q: "Is SafeScoring truly independent?",
-        a: "100%. While we may earn affiliate commissions from product links, this never influences our scores. Scores are calculated purely from our {count}-norm methodology - no exceptions. We've rated products poorly even when affiliates offered to pay for better scores. Independence is non-negotiable.",
+        a: "We maintain independence through documented processes. While we may earn affiliate commissions from product links, these are disclosed and do not influence scores. Scores are calculated from our {count}-norm methodology. We encourage users to independently verify any evaluation.",
       },
       fourPillars: {
         q: "What are the 4 SAFE pillars?",
@@ -475,7 +475,7 @@ export default {
       },
       planDifference: {
         q: "What's the difference between plans?",
-        a: "Explorer ($29/mo): All scores + methodology. Professional ($99/mo): Full evaluation details + API access + custom reports. Enterprise ($499/mo): White-label reports + custom integrations + on-demand evaluations + dedicated support.",
+        a: "Explorer ($19/mo): All scores + methodology. Professional ($49/mo): Full evaluation details + API access + custom reports. Enterprise ($299/mo): White-label reports + custom integrations + on-demand evaluations + dedicated support.",
       },
       refunds: {
         q: "Do you offer refunds?",
@@ -487,7 +487,7 @@ export default {
   // CTA
   cta: {
     title: "Ready to secure your crypto stack?",
-    subtitle: "Join thousands of users making informed security decisions.",
+    subtitle: "Make more informed security decisions for your crypto stack.",
     button: "Get Started Free",
     noCardRequired: "No credit card required",
   },
@@ -496,9 +496,9 @@ export default {
   achievements: {
     title: "Achievements",
     securityExpert: "Security Expert",
-    securityExpertDesc: "Stack score above 90",
+    securityExpertDesc: "Stack score above {expertStack}",
     researcher: "Researcher",
-    researcherDesc: "Compared 10+ products",
+    researcherDesc: "Compared {researcherProducts}+ products",
     pioneer: "Pioneer",
     pioneerDesc: "Among first to review a product",
     contributor: "Contributor",
@@ -640,6 +640,9 @@ export default {
     legal: "Legal",
     disclaimer: "Disclaimer",
     disclaimerText: "This website does not provide investment, financial, tax, or legal advice. Security scores and ratings are for informational and educational purposes only and should not be relied upon as a basis for any investment decision. Cryptocurrency investments carry significant risk, including the risk of total loss. Past performance is not indicative of future results. Always conduct your own research and consult a qualified financial advisor before making any investment.",
+    scoreDisclaimer: "Scores reflect SafeScoring's evaluation methodology based on publicly available information. They do not guarantee security, predict future incidents, or constitute financial advice.",
+    hacksDisclaimer: "Incident data is compiled from public reports and may be incomplete or contain inaccuracies. Contact us to report corrections.",
+    certDisclaimer: "SafeScoring is not a licensed security auditor or certifying body. Evaluations complement but do not replace professional security audits.",
     allRightsReserved: "All rights reserved",
     madeWith: "Made with",
     forCryptoSecurity: "for crypto security",
@@ -659,6 +662,7 @@ export default {
     privacyPolicy: "Privacy Policy",
     termsOfService: "Terms of Service",
     cookiePolicy: "Cookie Policy",
+    accessibilityStatement: "Accessibility",
   },
 
   // Errors
@@ -667,6 +671,61 @@ export default {
     notFound: "Not found",
     serverError: "Server error",
     tryAgain: "Please try again",
+    somethingWentWrong: "Something went wrong",
+    unexpectedError: "An unexpected error occurred. Please try again.",
+    errorDetails: "Error Details",
+    pageNotFound: "This page doesn't exist",
+    refresh: "Refresh",
+    home: "Home",
+  },
+
+  // Onboarding
+  onboarding: {
+    welcome: {
+      title: "Welcome to {appName}",
+      subtitle: "A unified security evaluation for crypto products.",
+      nameLabel: "What should we call you?",
+      namePlaceholder: "Enter your name",
+      nameRequired: "Please enter your name",
+      getStarted: "Get Started",
+      joinMessage: "You're joining {products}+ products evaluated with {norms} security norms.",
+    },
+    profile: {
+      title: "What best describes you?",
+      subtitle: "This helps us personalize your experience.",
+      investor: "Investor",
+      investorDesc: "I invest in crypto and want to evaluate products before using them",
+      developer: "Developer",
+      developerDesc: "I build crypto products and want to improve their security",
+      researcher: "Security Researcher",
+      researcherDesc: "I analyze crypto security and need detailed evaluation data",
+      institution: "Institution",
+      institutionDesc: "I represent an exchange, fund, or company evaluating crypto products",
+    },
+    interests: {
+      title: "What products interest you?",
+      subtitle: "Select all that apply. You can change this later.",
+      hardwareWallets: "Hardware Wallets",
+      hardwareWalletsDesc: "Ledger, Trezor, etc.",
+      softwareWallets: "Software Wallets",
+      softwareWalletsDesc: "MetaMask, Trust Wallet, etc.",
+      exchanges: "Exchanges",
+      exchangesDesc: "Centralized trading platforms",
+      defi: "DeFi Protocols",
+      defiDesc: "Uniswap, Aave, etc.",
+      cards: "Crypto Cards",
+      cardsDesc: "Payment cards with crypto",
+      custody: "Custody Solutions",
+      custodyDesc: "Institutional custody",
+      skipForNow: "Skip for now",
+    },
+    firstProduct: {
+      title: "Choose your first product to follow",
+      subtitle: "Select a product to start tracking. You can add more later.",
+      safeScore: "SAFE Score",
+    },
+    back: "Back",
+    continue: "Continue",
   },
 
   // Anonymous Catalog
@@ -772,5 +831,23 @@ export default {
     errorMessage: "Sorry, I encountered an error. Please try again in a moment.",
     connectionError: "Connection error",
     connectionErrorMessage: "Sorry, I'm having trouble connecting. Please check your connection and try again.",
+  },
+
+  // Referral System
+  referral: {
+    title: "Invite Friends",
+    subtitle: "Share SafeScoring and earn rewards. Community channels are in English.",
+    yourLink: "Your referral link",
+    code: "Code",
+    copy: "Copy",
+    copied: "Copied!",
+    friendsInvited: "Friends invited",
+    currentTier: "Current tier",
+    nextTier: "Next",
+    referrals: "referrals",
+    remaining: "remaining",
+    reward: "Reward",
+    rewardTiers: "Reward Tiers",
+    noData: "Unable to load referral data.",
   },
 };

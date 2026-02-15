@@ -30,7 +30,7 @@ export async function GET() {
 
     // If user has paid access, return unlimited
     if (user?.has_access && user?.price_id !== "free") {
-      const plan = config.stripe.plans.find(p => p.priceId === user.price_id);
+      const plan = config.lemonsqueezy.plans.find(p => p.variantId === user.price_id);
       return NextResponse.json({
         planType: plan?.name || "Paid",
         isPaid: true,

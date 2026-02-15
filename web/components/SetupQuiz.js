@@ -142,7 +142,7 @@ export default function SetupQuiz({ products, onComplete, onSkip }) {
           <div className="text-4xl mb-3">🎯</div>
           <h3 className="text-xl font-bold">Recommended for You</h3>
           <p className="text-base-content/60 text-sm mt-1">
-            Based on your answers, here are the best products for your stack
+            Based on your answers, here are the highest-rated products for your stack
           </p>
         </div>
 

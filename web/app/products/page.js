@@ -13,6 +13,7 @@ import ProductLogo from "@/components/ProductLogo";
 import config from "@/config";
 import { PILLARS } from "@/libs/design-tokens";
 import { useTranslation } from "@/libs/i18n/LanguageProvider";
+import { useNormStats } from "@/libs/NormStatsProvider";
 import dynamic from "next/dynamic";
 import { MiniScoreCircle as ScoreCircle } from "@/components/ScoreCircle";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -27,25 +28,25 @@ const FloatingStackBubble = dynamic(
   { loading: () => null, ssr: false }
 );
 
-const scoreTypes = [
-  { id: "full", label: "Full", description: "100% of norms" },
-  { id: "consumer", label: "Consumer", description: "38% of norms" },
-  { id: "essential", label: "Essential", description: "17% of norms" },
+const getScoreTypes = (t) => [
+  { id: "full", label: t("productsPage.scoreTypes.full"), description: t("productsPage.scoreTypes.fullDesc") },
+  { id: "consumer", label: t("productsPage.scoreTypes.consumer"), description: t("productsPage.scoreTypes.consumerDesc") },
+  { id: "essential", label: t("productsPage.scoreTypes.essential"), description: t("productsPage.scoreTypes.essentialDesc") },
 ];
 
-const sortOptions = [
-  { id: "score-desc", label: "Highest Score" },
-  { id: "score-asc", label: "Lowest Score" },
-  { id: "name-asc", label: "Name A-Z" },
-  { id: "name-desc", label: "Name Z-A" },
-  { id: "recent", label: "Recently Updated" },
+const getSortOptions = (t) => [
+  { id: "score-desc", label: t("productsPage.sortOptions.highestScore") },
+  { id: "score-asc", label: t("productsPage.sortOptions.lowestScore") },
+  { id: "name-asc", label: t("productsPage.sortOptions.nameAZ") },
+  { id: "name-desc", label: t("productsPage.sortOptions.nameZA") },
+  { id: "recent", label: t("productsPage.sortOptions.recentlyUpdated") },
 ];
 
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString(undefined, {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -238,7 +239,7 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-2.5 h-2.5">
                 <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
               </svg>
-              Verified
+              Scored
             </span>
           )}
         </div>
@@ -318,6 +319,9 @@ export default function ProductsPage() {
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const { t, locale } = useTranslation();
+  const scoreTypes = getScoreTypes(t);
+  const sortOptions = getSortOptions(t);
+  const normStats = useNormStats();
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
@@ -503,7 +507,8 @@ export default function ProductsPage() {
         setHasMore(products.length + moreProducts.length < (data.total || totalProducts));
       }
     } catch (err) {
-      console.error("Error loading more products:", err);
+      // Error logged only in development to avoid leaking info in production
+      if (process.env.NODE_ENV === "development") console.error("Error loading more products:", err);
       toast.error("Failed to load more products. Please try again.", {
         duration: 3000,
         position: "bottom-right",
@@ -597,8 +602,8 @@ export default function ProductsPage() {
             </h1>
             <p className="text-lg text-base-content/60 max-w-2xl">
               {hasMounted && totalProducts > 0
-                ? t("productsPage.description", { count: `${totalProducts}+`, norms: config.safe.stats.totalNorms })
-                : t("productsPage.descriptionFallback", { norms: config.safe.stats.totalNorms })}
+                ? t("productsPage.description", { count: `${totalProducts}+`, norms: normStats?.totalNorms || "2000+" })
+                : t("productsPage.descriptionFallback", { norms: normStats?.totalNorms || "2000+" })}
             </p>
             {/* Realtime sync indicator */}
             <div className="mt-3 flex items-center gap-2">
@@ -667,7 +672,7 @@ export default function ProductsPage() {
             <p className="mt-1.5 text-xs text-base-content/50">
               {scoreType === "essential" && t("productsPage.scoreTypeExplanations.essential")}
               {scoreType === "consumer" && t("productsPage.scoreTypeExplanations.consumer")}
-              {scoreType === "full" && t("productsPage.scoreTypeExplanations.full", { count: config.safe.stats.totalNorms })}
+              {scoreType === "full" && t("productsPage.scoreTypeExplanations.full", { count: normStats?.totalNorms || "2000+" })}
             </p>
           </div>
 

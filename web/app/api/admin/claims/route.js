@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/libs/supabase";
+import { sendEmail } from "@/libs/resend";
+import config from "@/config";
 import {
   requireAdmin,
   logAdminAction,
@@ -123,7 +125,25 @@ export async function PATCH(request) {
       return NextResponse.json({ error: "Failed to update claim" }, { status: 500 });
     }
 
-    // TODO: Send email notification to claimant about the decision
+    // Send email notification to claimant (non-blocking)
+    if (claim?.contact_email && process.env.RESEND_API_KEY) {
+      const isApproved = status === "approved";
+      sendEmail({
+        to: claim.contact_email,
+        subject: `SafeScoring - Your claim has been ${status}`,
+        text: isApproved
+          ? "Your product ownership claim has been approved. You can now manage your product on SafeScoring."
+          : `Your product ownership claim has been rejected.${admin_notes ? ` Reason: ${admin_notes}` : ""}`,
+        html: `<h2>Claim ${isApproved ? "Approved" : "Rejected"}</h2>
+          <p>${isApproved
+            ? "Your product ownership claim has been <strong>approved</strong>. You can now manage your product on SafeScoring."
+            : `Your product ownership claim has been <strong>rejected</strong>.${admin_notes ? `<br>Reason: ${admin_notes}` : ""}`
+          }</p>
+          <p><a href="https://${config.domainName}/dashboard">Go to your dashboard</a></p>`,
+      }).catch((err) => {
+        console.error("Claim notification email failed:", err.message);
+      });
+    }
 
     return NextResponse.json({
       success: true,
@@ -158,10 +178,15 @@ export async function DELETE(request) {
       return NextResponse.json({ error: "Claim ID is required" }, { status: 400 });
     }
 
+    const claimId = parseInt(id, 10);
+    if (isNaN(claimId)) {
+      return NextResponse.json({ error: "Invalid claim ID" }, { status: 400 });
+    }
+
     const { error } = await supabaseAdmin
       .from("claim_requests")
       .delete()
-      .eq("id", parseInt(id));
+      .eq("id", claimId);
 
     if (error) {
       console.error("Error deleting claim:", error);

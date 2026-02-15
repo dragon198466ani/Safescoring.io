@@ -62,23 +62,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
   callbacks: {
     jwt: async ({ token, user, trigger }) => {
-      // On sign in or update, fetch user data from database
-      if (user || trigger === "update") {
-        const userId = user?.id || token.sub;
-        if (userId && isSupabaseConfigured) {
-          const supabase = createClient(supabaseUrl, supabaseServiceKey);
-          const { data: userData } = await supabase
-            .from("users")
-            .select("onboarding_completed, plan_type, has_access, price_id")
-            .eq("id", userId)
-            .single();
+      const userId = user?.id || token.sub;
+      // On sign in, update trigger, or periodically (every 5 minutes), refresh user data
+      const shouldRefresh =
+        user ||
+        trigger === "update" ||
+        !token.lastRefreshed ||
+        Date.now() - token.lastRefreshed > 5 * 60 * 1000;
 
-          if (userData) {
-            token.onboardingCompleted = userData.onboarding_completed ?? false;
-            token.planType = userData.plan_type ?? "free";
-            token.hasAccess = userData.has_access ?? false;
-            token.priceId = userData.price_id;
-          }
+      if (shouldRefresh && userId && isSupabaseConfigured) {
+        const supabase = createClient(supabaseUrl, supabaseServiceKey);
+        const { data: userData } = await supabase
+          .from("users")
+          .select("onboarding_completed, plan_type, has_access, price_id")
+          .eq("id", userId)
+          .single();
+
+        if (userData) {
+          token.onboardingCompleted = userData.onboarding_completed ?? false;
+          token.planType = userData.plan_type ?? "free";
+          token.hasAccess = userData.has_access ?? false;
+          token.priceId = userData.price_id;
+          token.lastRefreshed = Date.now();
         }
       }
       return token;

@@ -59,8 +59,7 @@ export async function GET(request) {
         analyzed_at,
         analyzed_by
       `)
-      .or(`product_a_id.in.(${productIds.join(",")}),product_b_id.in.(${productIds.join(",")})`)
-      .or(`and(product_a_id.in.(${productIds.join(",")}),product_b_id.in.(${productIds.join(",")}))`);
+      .or(`product_a_id.in.(${productIds.join(",")}),product_b_id.in.(${productIds.join(",")})`);
 
     if (error) {
       console.error("Error fetching compatibility:", error);

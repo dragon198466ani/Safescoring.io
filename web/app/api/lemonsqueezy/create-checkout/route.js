@@ -2,12 +2,17 @@ import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { createCheckout } from "@/libs/lemonsqueezy";
 import { supabaseAdmin } from "@/libs/supabase";
+import { quickProtect } from "@/libs/api-protection";
 
 /**
  * POST /api/lemonsqueezy/create-checkout
  * Creates a Lemon Squeezy checkout session
  */
 export async function POST(req) {
+  // Rate limit: financial operation, prevent abuse
+  const protection = await quickProtect(req, "sensitive");
+  if (protection.blocked) return protection.response;
+
   try {
     let body;
     try {

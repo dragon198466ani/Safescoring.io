@@ -1,9 +1,28 @@
 import { NextResponse } from "next/server";
 import { validateUrl } from "@/libs/url-validator";
+import { quickProtect } from "@/libs/api-protection";
+import { auth } from "@/libs/auth";
 
-// API pour scraper les images d'un site web de produit
-// GET /api/scrape-images?url=https://example.com
+/**
+ * API to scrape images from a product website
+ * GET /api/scrape-images?url=https://example.com
+ *
+ * Restricted to authenticated users to prevent open proxy abuse.
+ */
 export async function GET(request) {
+  // Rate limit: this endpoint makes external requests, protect against abuse
+  const protection = await quickProtect(request, "sensitive");
+  if (protection.blocked) return protection.response;
+
+  // Require authentication — this endpoint acts as a proxy and must not be open
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json(
+      { error: "Authentication required" },
+      { status: 401 }
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const url = searchParams.get("url");
 
@@ -24,9 +43,18 @@ export async function GET(request) {
     );
   }
 
+  // Additional SSRF protection: only allow HTTP(S) schemes
+  const parsedUrl = validation.url;
+  if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+    return NextResponse.json(
+      { error: "Only HTTP and HTTPS URLs are allowed" },
+      { status: 400 }
+    );
+  }
+
   try {
-    // Utiliser Microlink pour extraire les métadonnées et images
-    const microlinkUrl = `https://api.microlink.io/?url=${encodeURIComponent(validation.url.toString())}&screenshots=true&video=true`;
+    // Use Microlink to extract metadata and images
+    const microlinkUrl = `https://api.microlink.io/?url=${encodeURIComponent(parsedUrl.toString())}&screenshots=true&video=true`;
     const response = await fetch(microlinkUrl, {
       headers: { "Accept": "application/json" },
       signal: AbortSignal.timeout(10000), // 10 second timeout
@@ -44,12 +72,12 @@ export async function GET(request) {
 
     const images = [];
 
-    // Image OG (principale du site)
+    // OG image (main site image)
     if (data.data?.image?.url) {
       images.push({
         url: data.data.image.url,
         type: "og_image",
-        label: "Image principale (OG)",
+        label: "Main image (OG)",
         width: data.data.image.width,
         height: data.data.image.height,
       });
@@ -64,21 +92,21 @@ export async function GET(request) {
       });
     }
 
-    // Screenshot du site
+    // Screenshot
     if (data.data?.screenshot?.url) {
       images.push({
         url: data.data.screenshot.url,
         type: "screenshot",
-        label: "Screenshot du site",
+        label: "Site screenshot",
       });
     }
 
-    // Vidéo si disponible
+    // Video if available
     if (data.data?.video?.url) {
       images.push({
         url: data.data.video.url,
         type: "video",
-        label: "Vidéo",
+        label: "Video",
       });
     }
 

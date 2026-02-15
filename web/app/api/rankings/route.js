@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { quickProtect } from "@/libs/api-protection";
+import config from "@/config";
 
 /**
  * Product Rankings API
@@ -9,13 +11,18 @@ import { supabase, isSupabaseConfigured } from "@/libs/supabase";
  */
 
 export async function GET(request) {
+  // Rate limiting
+  const protection = await quickProtect(request, "public");
+  if (protection.blocked) return protection.response;
+
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category");
   const limit = Math.min(parseInt(searchParams.get("limit")) || 10, 50);
 
-  // CORS headers
+  // CORS headers - restrict to allowed origins
+  const allowedOrigin = process.env.ALLOWED_ORIGINS || "https://safescoring.io";
   const headers = {
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Methods": "GET",
     "Cache-Control": "public, max-age=3600, s-maxage=3600",
   };
@@ -114,7 +121,7 @@ export async function GET(request) {
         name: p.name,
         type: p.product_types?.name || "Unknown",
         ...scoreMap[p.id],
-        detailsUrl: `https://safescoring.io/products/${p.slug}`,
+        detailsUrl: `https://${config.domainName}/products/${p.slug}`,
       }))
       .sort((a, b) => b.score - a.score) // Sort by score descending
       .slice(0, limit) // Apply limit
@@ -143,9 +150,10 @@ export async function GET(request) {
 
 // Handle CORS preflight
 export async function OPTIONS() {
+  const allowedOrigin = process.env.ALLOWED_ORIGINS || "https://safescoring.io";
   return new NextResponse(null, {
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": allowedOrigin,
       "Access-Control-Allow-Methods": "GET, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
     },

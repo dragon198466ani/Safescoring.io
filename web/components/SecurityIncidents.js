@@ -198,7 +198,7 @@ export default function SecurityIncidents({ slug }) {
                         </span>
                       </>
                     ) : (
-                      new Date(incident.date).toLocaleDateString("en-US", {
+                      new Date(incident.date).toLocaleDateString(undefined, {
                         year: "numeric",
                         month: "short",
                         day: "numeric",

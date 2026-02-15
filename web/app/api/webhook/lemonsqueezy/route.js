@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/libs/supabase";
 import { verifyWebhookSignature } from "@/libs/lemonsqueezy";
 import config from "@/config";
+import { isDuplicateWebhookEvent } from "@/libs/webhook-idempotency";
+import { captureServerError } from "@/libs/monitoring";
 
 /**
  * POST /api/webhook/lemonsqueezy
@@ -24,20 +26,35 @@ export async function POST(req) {
     const rawBody = await req.text();
     const signature = req.headers.get("x-signature");
 
-    // Verify webhook signature
-    if (process.env.LEMON_SQUEEZY_WEBHOOK_SECRET) {
-      if (!signature || !verifyWebhookSignature(rawBody, signature)) {
-        console.error("Invalid webhook signature");
-        return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
-      }
+    // Verify webhook signature (fail-closed: reject if secret not configured)
+    if (!process.env.LEMON_SQUEEZY_WEBHOOK_SECRET) {
+      console.error("LEMON_SQUEEZY_WEBHOOK_SECRET not configured — rejecting webhook");
+      return NextResponse.json({ error: "Webhook verification not configured" }, { status: 401 });
+    }
+    if (!signature || !verifyWebhookSignature(rawBody, signature)) {
+      console.error("Invalid webhook signature");
+      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
     const event = JSON.parse(rawBody);
     const eventName = event.meta?.event_name;
+    const eventId = event.meta?.webhook_id || event.data?.id;
     const customData = event.meta?.custom_data || {};
     const data = event.data?.attributes;
 
     console.log(`Lemon Squeezy webhook: ${eventName}`);
+
+    // Idempotency check: skip already-processed events (DB-backed)
+    if (eventId) {
+      const isDuplicate = await isDuplicateWebhookEvent(
+        `ls_${eventId}`,
+        "lemonsqueezy",
+        eventName
+      );
+      if (isDuplicate) {
+        return NextResponse.json({ received: true, duplicate: true });
+      }
+    }
 
     if (!supabaseAdmin) {
       console.error("Supabase not configured");
@@ -261,7 +278,10 @@ export async function POST(req) {
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error("Lemon Squeezy webhook error:", error);
+    captureServerError(error, {
+      route: "/api/webhook/lemonsqueezy",
+      tags: { source: "lemonsqueezy-webhook" },
+    });
     return NextResponse.json(
       { error: "Webhook processing failed" },
       { status: 500 }

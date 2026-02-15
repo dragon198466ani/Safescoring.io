@@ -27,7 +27,7 @@ export default function TokenTeaser({ variant = "full" }) {
           setUserStats(data.reputation);
         }
       } catch (err) {
-        console.error("Failed to fetch user stats:", err);
+        if (process.env.NODE_ENV === "development") console.error("Failed to fetch user stats:", err);
       } finally {
         setLoading(false);
       }

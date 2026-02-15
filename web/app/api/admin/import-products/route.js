@@ -23,9 +23,18 @@
 import { requireAdmin, unauthorizedResponse } from "@/libs/admin-auth";
 import { supabaseAdmin } from "@/libs/supabase";
 
+const MAX_CSV_SIZE = 1_000_000; // 1MB
+const MAX_PRODUCTS = 10_000;
+
 function parseCSV(csvText) {
+  if (csvText.length > MAX_CSV_SIZE) {
+    throw new Error(`CSV too large (${(csvText.length / 1_000_000).toFixed(1)}MB). Maximum: 1MB`);
+  }
   const lines = csvText.trim().split("\n");
   if (lines.length < 2) return [];
+  if (lines.length - 1 > MAX_PRODUCTS) {
+    throw new Error(`Too many products (${lines.length - 1}). Maximum: ${MAX_PRODUCTS}`);
+  }
 
   const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
   const products = [];

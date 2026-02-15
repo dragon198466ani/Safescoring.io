@@ -1,6 +1,7 @@
 "use client";
 
 import { Component } from "react";
+import { captureError } from "@/libs/monitoring";
 
 /**
  * Error Boundary Component
@@ -23,15 +24,16 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log error to console in development
-    console.error("ErrorBoundary caught an error:", error, errorInfo);
-
     this.setState({ errorInfo });
 
-    // TODO: Send to error tracking service (Sentry, etc.)
-    // if (typeof window !== 'undefined' && window.Sentry) {
-    //   window.Sentry.captureException(error, { extra: errorInfo });
-    // }
+    // Send to monitoring (Sentry + console)
+    captureError(error, {
+      tags: { source: "error-boundary" },
+      extra: {
+        componentStack: errorInfo?.componentStack,
+        url: typeof window !== "undefined" ? window.location?.href : undefined,
+      },
+    });
   }
 
   handleRetry = () => {

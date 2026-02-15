@@ -1,17 +1,8 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import { auth } from "@/libs/auth";
+import { requireAdmin } from "@/libs/admin-auth";
 
 export const dynamic = "force-dynamic";
-
-// Admin authentication check
-async function requireAdmin() {
-  const session = await auth();
-  if (!session?.user?.email || session.user.email !== "admin@safescoring.io") {
-    return false;
-  }
-  return true;
-}
 
 /**
  * POST /api/admin/init-history
@@ -83,7 +74,7 @@ export async function POST(request) {
     if (scoresError) {
       console.error("Error fetching scores:", scoresError);
       return NextResponse.json(
-        { error: "Failed to fetch scores", details: scoresError.message },
+        { error: "Failed to fetch scores" },
         { status: 500 }
       );
     }
@@ -294,7 +285,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("Error initializing history:", error);
     return NextResponse.json(
-      { error: "Internal server error", details: error.message },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

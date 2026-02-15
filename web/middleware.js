@@ -1,10 +1,8 @@
 import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
+import { NextResponse } from "next/server"
 
-// Edge-compatible configuration for middleware (without EmailProvider and MongoDB adapter)
-// When using NextAuth.js in middleware, you need to use the edge-compatible configuration
-// This is because the middleware runs in an edge environment, and the EmailProvider is not compatible with edge environments
-// The MongoDB adapter is also not compatible with edge environments, so we need to use the edge-compatible configuration
+// Edge-compatible configuration for middleware (without EmailProvider and Supabase adapter)
 const { auth } = NextAuth({
   providers: [
     GoogleProvider({
@@ -18,11 +16,34 @@ const { auth } = NextAuth({
   },
 })
 
+// Routes requiring authentication
+const protectedPaths = ["/dashboard", "/admin", "/onboarding"]
+
 export default auth(async function middleware(req) {
-  // Your custom middleware logic goes here if needed
+  const { pathname } = req.nextUrl
+  const isAuth = !!req.auth
+
+  // Protect dashboard, admin, and onboarding routes
+  const isProtected = protectedPaths.some((p) => pathname.startsWith(p))
+  if (isProtected && !isAuth) {
+    const signInUrl = new URL("/signin", req.url)
+    // Validate callbackUrl to prevent open redirects (only relative paths)
+    const safeCallback = pathname.startsWith("/") && !pathname.startsWith("//") ? pathname : "/dashboard"
+    signInUrl.searchParams.set("callbackUrl", safeCallback)
+    return NextResponse.redirect(signInUrl)
+  }
+
+  const response = NextResponse.next()
+
+  // Add security headers to every response
+  response.headers.set("X-Content-Type-Options", "nosniff")
+  response.headers.set("X-Frame-Options", "DENY")
+  response.headers.set("X-XSS-Protection", "1; mode=block")
+
+  return response
 })
 
-// Optionally, don't invoke Middleware on some paths
+// Match all routes except static assets and API routes
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
-} 
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|sw\\.js|manifest\\.json|.*\\.png$|.*\\.ico$).*)"],
+}

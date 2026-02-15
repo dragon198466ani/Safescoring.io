@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 /**
  * ScoreSecurityPanel - Unified component combining Score Evolution and Security Status
@@ -70,7 +71,7 @@ export default function ScoreSecurityPanel({ slug, productName }) {
           });
         }
       } catch (err) {
-        console.error("Failed to fetch data:", err);
+        if (process.env.NODE_ENV === "development") console.error("Failed to fetch data:", err);
       } finally {
         setLoading(false);
       }
@@ -177,8 +178,54 @@ export default function ScoreSecurityPanel({ slug, productName }) {
         </div>
       </div>
 
-      {/* Chart Section */}
-      {chartData.length > 0 ? (
+      {/* Auth / Plan paywall */}
+      {historyData?._authRequired && (
+        <div className="px-6 pb-4">
+          <div className="relative h-36 overflow-hidden rounded-lg">
+            {/* Blurred placeholder chart */}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 blur-sm select-none">
+              <svg className="w-full h-full opacity-30" preserveAspectRatio="none" viewBox="0 0 100 100">
+                <path d="M 0 60 L 15 55 L 30 58 L 45 45 L 60 42 L 75 38 L 90 35 L 100 30" fill="none" stroke="rgb(139, 92, 246)" strokeWidth="2" />
+              </svg>
+            </div>
+            {/* Overlay CTA */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-base-200/60 backdrop-blur-[2px]">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-primary mb-2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
+              <p className="text-sm font-medium mb-2">Sign in to track score evolution</p>
+              <Link href="/signin" className="btn btn-primary btn-sm">
+                Sign In Free
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Empty state for authenticated free users (no history data) */}
+      {!historyData?._authRequired && chartData.length === 0 && (
+        <div className="px-6 pb-4">
+          <div className="relative h-36 overflow-hidden rounded-lg">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 blur-sm select-none">
+              <svg className="w-full h-full opacity-30" preserveAspectRatio="none" viewBox="0 0 100 100">
+                <path d="M 0 60 L 15 55 L 30 58 L 45 45 L 60 42 L 75 38 L 90 35 L 100 30" fill="none" stroke="rgb(139, 92, 246)" strokeWidth="2" />
+              </svg>
+            </div>
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-base-200/60 backdrop-blur-[2px]">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-primary mb-2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+              </svg>
+              <p className="text-sm font-medium mb-2">Unlock score history</p>
+              <Link href="/#pricing" className="btn btn-primary btn-sm">
+                Upgrade to Pro
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Chart Section - only shows for users with actual data */}
+      {!historyData?._authRequired && chartData.length > 0 ? (
         <div className="px-6 pb-4">
           <div className="relative h-36">
             {/* Y-axis labels */}
@@ -255,11 +302,7 @@ export default function ScoreSecurityPanel({ slug, productName }) {
             <span>{chartData[chartData.length - 1]?.recorded_at ? new Date(chartData[chartData.length - 1].recorded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
           </div>
         </div>
-      ) : (
-        <div className="px-6 pb-4 text-center text-base-content/50 text-sm py-8">
-          No historical data available yet
-        </div>
-      )}
+      ) : null}
 
       {/* Stats Grid - Combined Score & Security */}
       <div className="px-6 pb-6">

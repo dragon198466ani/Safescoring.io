@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export const metadata = {
   title: "API Documentation | SafeScoring",
@@ -148,10 +150,30 @@ function SafeScoreBadge({ slug }) {
 
 export default function APIDocsPage() {
   return (
-    <main className="min-h-screen bg-base-200">
+    <>
+    <Header />
+    <main className="min-h-screen pt-24 pb-16 hero-bg">
+      {/* Legal Disclaimer */}
+      <section className="px-6 pt-28 pb-0">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-warning/10 border border-warning/30 rounded-lg p-4 text-sm text-base-content/70">
+            <p className="font-semibold text-warning mb-1">Important Notice</p>
+            <p>
+              SafeScoring scores reflect our evaluation methodology and do not constitute financial, investment, or security advice.
+              By using this API, you agree to our{" "}
+              <Link href="/tos" className="text-primary hover:underline">Terms of Service</Link>.
+              You must not present SafeScoring data as your own ratings or as guarantees of security.
+              Scores may change without notice. See our{" "}
+              <Link href="/privacy-policy" className="text-primary hover:underline">Privacy Policy</Link>{" "}
+              for data processing details.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary/20 to-secondary/20 py-16">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <section className="px-6 pb-12">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center">
             <div className="badge badge-primary mb-4">Developer API</div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -162,8 +184,11 @@ export default function APIDocsPage() {
               Free access for developers building safer crypto experiences.
             </p>
             <div className="flex gap-4 justify-center">
-              <a href="#endpoints" className="btn btn-primary">
-                View Endpoints
+              <a href="#auth" className="btn btn-primary">
+                Authentication
+              </a>
+              <a href="#endpoints" className="btn btn-outline">
+                Endpoints
               </a>
               <a href="#examples" className="btn btn-outline">
                 Code Examples
@@ -173,9 +198,87 @@ export default function APIDocsPage() {
         </div>
       </section>
 
+      {/* Authentication */}
+      <section id="auth" className="px-6 py-12">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-2xl font-bold mb-6">Authentication</h2>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="card bg-base-200 border border-base-300">
+              <div className="card-body">
+                <h3 className="card-title text-lg">Free Access (No Key)</h3>
+                <p className="text-sm text-base-content/70 mb-4">
+                  Basic endpoints work without authentication, with standard rate limits (100 req/hour).
+                </p>
+                <div className="mockup-code text-sm">
+                  <pre data-prefix="$"><code>curl https://safescoring.io/api/products/ledger-nano-x/score</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div className="card bg-base-200 border border-primary/30">
+              <div className="card-body">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="card-title text-lg">API Key Access</h3>
+                  <span className="badge badge-primary badge-sm">Pro+</span>
+                </div>
+                <p className="text-sm text-base-content/70 mb-4">
+                  Professional and Enterprise plans get API keys with higher rate limits (up to 10,000 req/hour).
+                </p>
+                <div className="mockup-code text-sm">
+                  <pre data-prefix="$"><code>{`curl -H "x-api-key: sk_live_your_key_here" \\
+  https://safescoring.io/api/products/ledger-nano-x/score`}</code></pre>
+                </div>
+                <div className="mt-4">
+                  <Link href="/dashboard/api-keys" className="btn btn-primary btn-sm">
+                    Manage API Keys
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-base-200 rounded-lg p-6 border border-base-300">
+            <h4 className="font-semibold mb-2">Rate Limits by Plan</h4>
+            <div className="overflow-x-auto">
+              <table className="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Plan</th>
+                    <th>Rate Limit</th>
+                    <th>API Keys</th>
+                    <th>Authentication</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Free</td>
+                    <td>100 req/hour</td>
+                    <td>-</td>
+                    <td>None required</td>
+                  </tr>
+                  <tr>
+                    <td>Professional ($49/mo)</td>
+                    <td>1,000 req/hour</td>
+                    <td>3 keys</td>
+                    <td><code className="text-xs bg-base-300 px-1 rounded">x-api-key</code> header</td>
+                  </tr>
+                  <tr>
+                    <td>Enterprise ($299/mo)</td>
+                    <td>10,000 req/hour</td>
+                    <td>10 keys</td>
+                    <td><code className="text-xs bg-base-300 px-1 rounded">x-api-key</code> header</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Quick Start */}
-      <section className="py-12 bg-base-100">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <section className="px-6 py-12">
+        <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl font-bold mb-6">Quick Start</h2>
           <div className="bg-base-200 rounded-lg p-6">
             <p className="text-base-content/70 mb-4">
@@ -219,8 +322,8 @@ export default function APIDocsPage() {
       </section>
 
       {/* Endpoints */}
-      <section id="endpoints" className="py-12 bg-base-200">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <section id="endpoints" className="px-6 py-12">
+        <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl font-bold mb-8">API Endpoints</h2>
 
           <div className="space-y-6">
@@ -298,8 +401,8 @@ export default function APIDocsPage() {
       </section>
 
       {/* Code Examples */}
-      <section id="examples" className="py-12 bg-base-100">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <section id="examples" className="px-6 py-12">
+        <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl font-bold mb-8">Code Examples</h2>
 
           <div className="tabs tabs-boxed mb-6 bg-base-200 p-1">
@@ -325,8 +428,8 @@ export default function APIDocsPage() {
       </section>
 
       {/* Embed Options */}
-      <section className="py-12 bg-base-200">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <section className="px-6 py-12">
+        <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl font-bold mb-8">Embed Options</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -377,13 +480,13 @@ export default function APIDocsPage() {
       </section>
 
       {/* Use Cases */}
-      <section className="py-12 bg-base-100">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <section className="px-6 py-12">
+        <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl font-bold mb-8">Use Cases</h2>
 
           <div className="grid md:grid-cols-3 gap-6">
             <div className="card bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20">
-              <div class="card-body">
+              <div className="card-body">
                 <h3 className="card-title text-green-400">Crypto Wallets</h3>
                 <p className="text-sm text-base-content/70">
                   Show security scores for DeFi protocols before users connect.
@@ -414,23 +517,25 @@ export default function APIDocsPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-r from-primary/20 to-secondary/20">
-        <div className="container mx-auto px-4 max-w-4xl text-center">
+      <section className="px-6 py-16">
+        <div className="max-w-4xl mx-auto text-center rounded-xl bg-gradient-to-br from-primary/20 to-base-200 border border-base-300 p-8">
           <h2 className="text-3xl font-bold mb-4">Need Higher Limits?</h2>
           <p className="text-base-content/70 mb-8">
-            Contact us for enterprise API access with higher rate limits,
+            Upgrade to Professional or Enterprise for API keys with higher rate limits,
             webhooks for score updates, and priority support.
           </p>
           <div className="flex gap-4 justify-center">
-            <a href="mailto:api@safescoring.io" className="btn btn-primary">
-              Contact for Enterprise
-            </a>
-            <Link href="/products" className="btn btn-outline">
-              Browse Products
+            <Link href="/dashboard/api-keys" className="btn btn-primary">
+              Get API Keys
+            </Link>
+            <Link href="/#pricing" className="btn btn-outline">
+              View Plans
             </Link>
           </div>
         </div>
       </section>
     </main>
+    <Footer />
+    </>
   );
 }

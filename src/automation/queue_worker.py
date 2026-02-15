@@ -2,12 +2,12 @@
 """
 SafeScoring Queue Worker
 ========================
-Traite automatiquement les tâches de la queue.
+Automatically processes tasks from the queue.
 
 Usage:
-    python queue_worker.py              # Mode normal
-    python queue_worker.py --once       # Traiter une seule tâche
-    python queue_worker.py --dry-run    # Mode test sans modification
+    python queue_worker.py              # Normal mode
+    python queue_worker.py --once       # Process a single task
+    python queue_worker.py --dry-run    # Test mode without modification
 """
 
 import os
@@ -18,7 +18,7 @@ import argparse
 from datetime import datetime, timedelta
 from pathlib import Path
 
-# Ajouter le dossier parent au path
+# Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from dotenv import load_dotenv
@@ -26,7 +26,7 @@ load_dotenv(Path(__file__).parent.parent.parent / 'config' / '.env')
 
 from supabase import create_client
 
-# Import des handlers
+# Import handlers
 from handlers.scrape_handler import handle_scrape_product, handle_scrape_norm
 from handlers.classify_handler import handle_classify_type
 from handlers.evaluate_handler import handle_evaluate_product, handle_evaluate_norm_all, handle_evaluate_single_norm
@@ -40,7 +40,7 @@ SUPABASE_URL = os.getenv('NEXT_PUBLIC_SUPABASE_URL') or os.getenv('SUPABASE_URL'
 SUPABASE_KEY = os.getenv('SUPABASE_SERVICE_ROLE_KEY') or os.getenv('SUPABASE_SERVICE_KEY')
 
 if not SUPABASE_URL or not SUPABASE_KEY:
-    print("❌ SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY requis")
+    print("❌ SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY required")
     sys.exit(1)
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -103,7 +103,7 @@ log = Logger()
 # ============================================
 
 def add_task(task_type: str, target_id: int, target_type: str, priority: int = 5, payload: dict = None):
-    """Ajoute une tâche à la queue."""
+    """Adds a task to the queue."""
     supabase.table('task_queue').insert({
         'task_type': task_type,
         'target_id': target_id,
@@ -111,11 +111,11 @@ def add_task(task_type: str, target_id: int, target_type: str, priority: int = 5
         'priority': priority,
         'payload': payload or {}
     }).execute()
-    log.info(f"Tâche ajoutée: {task_type} #{target_id}")
+    log.info(f"Task added: {task_type} #{target_id}")
 
 
 def get_next_task():
-    """Récupère la prochaine tâche à traiter."""
+    """Retrieves the next task to process."""
     result = supabase.table('task_queue').select('*') \
         .eq('status', 'pending') \
         .order('priority') \
@@ -127,7 +127,7 @@ def get_next_task():
 
 
 def mark_task_processing(task_id: str):
-    """Marque une tâche comme en cours de traitement."""
+    """Marks a task as processing."""
     supabase.table('task_queue').update({
         'status': 'processing',
         'started_at': datetime.now().isoformat()
@@ -135,7 +135,7 @@ def mark_task_processing(task_id: str):
 
 
 def mark_task_completed(task_id: str, result: dict = None):
-    """Marque une tâche comme terminée."""
+    """Marks a task as completed."""
     update_data = {
         'status': 'completed',
         'completed_at': datetime.now().isoformat()
@@ -147,7 +147,7 @@ def mark_task_completed(task_id: str, result: dict = None):
 
 
 def mark_task_failed(task_id: str, error: str, retries: int):
-    """Marque une tâche comme échouée."""
+    """Marks a task as failed."""
     new_status = 'pending' if retries < 3 else 'failed'
 
     supabase.table('task_queue').update({
@@ -158,7 +158,7 @@ def mark_task_failed(task_id: str, error: str, retries: int):
 
 
 def get_queue_stats():
-    """Récupère les statistiques de la queue."""
+    """Retrieves queue statistics."""
     result = supabase.table('task_queue').select('status').execute()
 
     stats = {'pending': 0, 'processing': 0, 'completed': 0, 'failed': 0}
@@ -174,7 +174,7 @@ def get_queue_stats():
 # ============================================
 
 def process_task(task: dict, dry_run: bool = False) -> bool:
-    """Traite une seule tâche."""
+    """Processes a single task."""
     task_id = task['id']
     task_type = task['task_type']
     target_id = task.get('target_id')
@@ -183,28 +183,28 @@ def process_task(task: dict, dry_run: bool = False) -> bool:
     log.task(f"Processing: {task_type} #{target_id}")
 
     if dry_run:
-        log.warning("DRY RUN - Pas de modification")
+        log.warning("DRY RUN - No modification")
         return True
 
-    # Marquer en cours
+    # Mark as processing
     mark_task_processing(task_id)
 
     try:
-        # Trouver le handler
+        # Find the handler
         handler = HANDLERS.get(task_type)
         if not handler:
             raise ValueError(f"Unknown task type: {task_type}")
 
-        # Exécuter
+        # Execute
         result = handler(supabase, task, add_task)
 
-        # Marquer terminé
+        # Mark as completed
         mark_task_completed(task_id, result)
         log.success(f"Completed: {task_type} → {result}")
         return True
 
     except Exception as e:
-        # Gérer l'erreur
+        # Handle the error
         retries = task.get('retries', 0) + 1
         mark_task_failed(task_id, str(e), retries)
 
@@ -217,14 +217,14 @@ def process_task(task: dict, dry_run: bool = False) -> bool:
 
 
 def process_queue(once: bool = False, dry_run: bool = False):
-    """Traite les tâches en attente."""
+    """Processes pending tasks."""
 
     print("\n" + "=" * 60)
     print("🚀 SAFESCORING QUEUE WORKER")
     print(f"📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 60)
 
-    # Stats initiales
+    # Initial stats
     stats = get_queue_stats()
     print(f"📊 Queue: {stats['pending']} pending, {stats['processing']} processing, {stats['failed']} failed\n")
 
@@ -232,34 +232,34 @@ def process_queue(once: bool = False, dry_run: bool = False):
     errors = 0
 
     while True:
-        # Récupérer prochaine tâche
+        # Retrieve next task
         task = get_next_task()
 
         if not task:
             if once:
-                log.info("Aucune tâche en attente")
+                log.info("No pending tasks")
                 break
             else:
-                print("⏳ Aucune tâche, attente 10s...", end='\r')
+                print("⏳ No tasks, waiting 10s...", end='\r')
                 time.sleep(10)
                 continue
 
-        # Traiter
+        # Process
         success = process_task(task, dry_run)
         tasks_processed += 1
         if not success:
             errors += 1
 
-        # Mode once: sortir après une tâche
+        # Once mode: exit after one task
         if once:
             break
 
-        # Petit délai entre tâches
+        # Small delay between tasks
         time.sleep(1)
 
-    # Résumé
+    # Summary
     print(f"\n{'=' * 60}")
-    print(f"📊 Résumé: {tasks_processed} tâches traitées, {errors} erreurs")
+    print(f"📊 Summary: {tasks_processed} tasks processed, {errors} errors")
     print("=" * 60)
 
 
@@ -276,19 +276,19 @@ def main():
     parser.add_argument(
         '--once',
         action='store_true',
-        help='Traiter une seule tâche puis quitter'
+        help='Process a single task then exit'
     )
 
     parser.add_argument(
         '--dry-run',
         action='store_true',
-        help='Mode test sans modification de la base'
+        help='Test mode without modifying the database'
     )
 
     parser.add_argument(
         '--stats',
         action='store_true',
-        help='Afficher les stats de la queue'
+        help='Display queue statistics'
     )
 
     args = parser.parse_args()
@@ -305,7 +305,7 @@ def main():
     try:
         process_queue(once=args.once, dry_run=args.dry_run)
     except KeyboardInterrupt:
-        print("\n⚠️ Interrompu par l'utilisateur")
+        print("\n⚠️ Interrupted by user")
         sys.exit(130)
 
 

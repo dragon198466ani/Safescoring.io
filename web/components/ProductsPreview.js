@@ -9,6 +9,12 @@ const getScoreColor = (score) => {
   return "text-red-400";
 };
 
+const getScoreLabel = (score) => {
+  if (score >= 80) return "Strong";
+  if (score >= 60) return "Moderate";
+  return "Developing";
+};
+
 const ScoreCircle = ({ score, size = 48, strokeWidth = 4 }) => {
   const validScore = score ?? 0;
   const radius = (size - strokeWidth) / 2;
@@ -16,8 +22,8 @@ const ScoreCircle = ({ score, size = 48, strokeWidth = 4 }) => {
   const offset = circumference - (validScore / 100) * circumference;
 
   return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg className="score-circle" width={size} height={size}>
+    <div className="relative" style={{ width: size, height: size }} role="img" aria-label={`Score: ${score != null ? Math.round(score) : "N/A"} — ${score != null ? getScoreLabel(score) : "Not evaluated"}`} title={score != null ? `${Math.round(score)}/100 — ${getScoreLabel(score)}` : "Not evaluated"}>
+      <svg className="score-circle" width={size} height={size} aria-hidden="true">
         <circle
           className="score-circle-bg"
           cx={size / 2}
@@ -49,7 +55,7 @@ const ScoreCircle = ({ score, size = 48, strokeWidth = 4 }) => {
 const formatDate = (dateString) => {
   if (!dateString) return "Not evaluated";
   const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString(undefined, {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -109,7 +115,7 @@ const ProductsPreview = () => {
         setProducts(validProducts.slice(0, 6));
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching products:", err);
+        if (process.env.NODE_ENV === "development") console.error("Error fetching products:", err);
       } finally {
         setLoading(false);
       }
@@ -120,7 +126,7 @@ const ProductsPreview = () => {
 
   return (
     <section className="py-24 px-6 bg-base-200/30">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Section header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
           <div>
@@ -199,11 +205,11 @@ const ProductsPreview = () => {
                   </div>
                 </div>
                 {product.verified && (
-                  <span className="badge badge-sm badge-verified">
+                  <span className="badge badge-sm badge-verified" title="This product has been evaluated using SafeScoring's methodology. This does not constitute an endorsement or security guarantee.">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 mr-1">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                     </svg>
-                    Verified
+                    Scored
                   </span>
                 )}
               </div>

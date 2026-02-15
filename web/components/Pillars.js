@@ -4,53 +4,21 @@ import { useState } from "react";
 import config from "@/config";
 import PillarInfoModal from "./PillarInfoModal";
 import PillarIllustrations, { ExampleIcons } from "./PillarIllustrations";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
+import { useNormStats } from "@/libs/NormStatsProvider";
 
-// Configuration des normes avec leurs icônes associées
-const pillarDetails = {
-  S: {
-    norms: [
-      { text: "AES-256 encryption", icon: "encryption" },
-      { text: "secp256k1 signatures", icon: "signature" },
-      { text: "Keccak-256 hashing", icon: "key" },
-      { text: "Multi-signature support", icon: "signature" },
-      { text: "HSM compatibility", icon: "encryption" },
-    ],
-    example: "Does the wallet use industry-standard cryptographic algorithms?",
-  },
-  A: {
-    norms: [
-      { text: "PIN duress protection", icon: "duress" },
-      { text: "Hidden wallets", icon: "hidden" },
-      { text: "Anti-coercion features", icon: "shield" },
-      { text: "Plausible deniability", icon: "hidden" },
-      { text: "Self-destruct options", icon: "shield" },
-    ],
-    example: "Can users protect themselves under physical threat?",
-  },
-  F: {
-    norms: [
-      { text: "Security audits", icon: "audit" },
-      { text: "Bug bounty programs", icon: "bug" },
-      { text: "Regular updates", icon: "update" },
-      { text: "Transparent development", icon: "audit" },
-      { text: "Long-term commitment", icon: "update" },
-    ],
-    example: "Has the product been independently audited?",
-  },
-  E: {
-    norms: [
-      { text: "Multi-chain support", icon: "multichain" },
-      { text: "Intuitive interface", icon: "mobile" },
-      { text: "Fast transactions", icon: "speed" },
-      { text: "Accessibility features", icon: "mobile" },
-      { text: "Mobile support", icon: "mobile" },
-    ],
-    example: "Is the product easy to use for all skill levels?",
-  },
+// Icon mappings per pillar norm index
+const pillarIcons = {
+  S: ["encryption", "signature", "key", "signature", "encryption"],
+  A: ["duress", "hidden", "shield", "hidden", "shield"],
+  F: ["audit", "bug", "update", "audit", "update"],
+  E: ["multichain", "mobile", "speed", "mobile", "mobile"],
 };
 
 const Pillars = () => {
   const [selectedPillar, setSelectedPillar] = useState(null);
+  const { t } = useTranslation();
+  const normStats = useNormStats();
 
   const openModal = (pillarCode) => {
     setSelectedPillar(pillarCode);
@@ -68,24 +36,29 @@ const Pillars = () => {
 
   return (
     <section id="pillars" className="py-24 px-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Section header */}
         <div className="text-center mb-16">
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
-            Methodology
+            {t("pillars.methodology")}
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-            The <span className="text-gradient-safe">SAFE</span> Framework
+            {t("pillars.frameworkTitle")} <span className="text-gradient-safe">SAFE</span> Framework
           </h2>
           <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
-            Four pillars of comprehensive security evaluation. Each product is scored against {config.safe.stats.totalNorms} norms across these dimensions.
+            {t("pillars.frameworkDesc", { count: normStats?.totalNorms || "2000+" })}
           </p>
         </div>
 
         {/* Pillars grid */}
         <div className="grid md:grid-cols-2 gap-8">
           {config.safe.pillars.map((pillar) => {
-            const details = pillarDetails[pillar.code];
+            const normItems = t(`pillars.norms.${pillar.code}.items`);
+            const normExample = t(`pillars.norms.${pillar.code}.example`);
+            const icons = pillarIcons[pillar.code] || [];
+            // normItems might be a key string if not found — fallback to array
+            const norms = Array.isArray(normItems) ? normItems : [];
+
             return (
               <div
                 key={pillar.code}
@@ -97,7 +70,7 @@ const Pillars = () => {
                   style={{ backgroundColor: pillar.color }}
                 />
 
-                {/* Illustration intégrée avec la lettre */}
+                {/* Illustration */}
                 <div className="relative flex justify-center mb-6">
                   {(() => {
                     const IllustrationComponent = PillarIllustrations[pillar.code];
@@ -107,16 +80,15 @@ const Pillars = () => {
                   })()}
                 </div>
 
-                {/* Header - titre et description */}
+                {/* Header */}
                 <div className="relative text-center mb-6">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <h3 className="text-2xl font-bold">{pillar.name}</h3>
-                    {/* Info button */}
                     <button
                       onClick={() => openModal(pillar.code)}
                       className="btn btn-ghost btn-xs btn-circle opacity-60 hover:opacity-100 transition-opacity"
-                      title={`Learn more about ${pillar.name}`}
-                      aria-label={`Learn more about ${pillar.name}`}
+                      title={t("pillars.learnMore", { name: pillar.name })}
+                      aria-label={t("pillars.learnMore", { name: pillar.name })}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -136,10 +108,10 @@ const Pillars = () => {
                   <p className="text-base-content/60">{pillar.description}</p>
                 </div>
 
-                {/* Example norms avec icônes */}
+                {/* Example norms */}
                 <div className="relative space-y-3 mb-6">
-                  {details.norms.map((norm, i) => {
-                    const IconComponent = ExampleIcons[norm.icon];
+                  {norms.map((normText, i) => {
+                    const IconComponent = ExampleIcons[icons[i]];
                     return (
                       <div key={i} className="flex items-center gap-3">
                         <div className="flex-shrink-0 w-6 h-6">
@@ -161,7 +133,7 @@ const Pillars = () => {
                             </svg>
                           )}
                         </div>
-                        <span className="text-base-content/80">{norm.text}</span>
+                        <span className="text-base-content/80">{normText}</span>
                       </div>
                     );
                   })}
@@ -173,7 +145,7 @@ const Pillars = () => {
                   style={{ borderColor: pillar.color, backgroundColor: `${pillar.color}10` }}
                 >
                   <p className="text-sm text-base-content/70 italic">
-                    &quot;{details.example}&quot;
+                    &quot;{normExample}&quot;
                   </p>
                 </div>
 
@@ -183,7 +155,7 @@ const Pillars = () => {
                   className="mt-4 text-sm font-medium flex items-center gap-1 opacity-70 hover:opacity-100 transition-opacity"
                   style={{ color: pillar.color }}
                 >
-                  <span>View standards & methodology</span>
+                  <span>{t("pillars.viewStandards")}</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
@@ -205,13 +177,13 @@ const Pillars = () => {
         {/* Bottom CTA */}
         <div className="text-center mt-12">
           <p className="text-base-content/60 mb-4">
-            Want to see the full methodology?
+            {t("pillars.wantFullMethodology")}
           </p>
           <a
             href="/methodology"
             className="btn btn-outline btn-primary"
           >
-            View All {config.safe.stats.totalNorms} Norms
+            {t("pillars.viewAllNorms", { count: normStats?.totalNorms || "2000+" })}
           </a>
         </div>
       </div>

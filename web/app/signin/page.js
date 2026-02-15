@@ -5,11 +5,13 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import config from "@/config";
+import { useNormStats } from "@/libs/NormStatsProvider";
 
 function SignInContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const normStats = useNormStats();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const error = searchParams.get("error");
 
@@ -70,11 +72,11 @@ function SignInContent() {
           </p>
           <div className="flex items-center gap-8 text-sm text-base-content/60">
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-primary">{config.safe.stats.totalNorms}</span>
+              <span className="text-2xl font-bold text-primary">{normStats?.totalNorms || "2000+"}</span>
               <span>security norms</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-primary">{config.safe.stats.totalProducts}+</span>
+              <span className="text-2xl font-bold text-primary">{normStats?.totalProducts || "1000+"}+</span>
               <span>products</span>
             </div>
           </div>

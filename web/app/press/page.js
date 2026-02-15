@@ -1,4 +1,11 @@
 import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import config from "@/config";
+import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { getNormStats } from "@/libs/norm-stats";
+
+export const revalidate = 3600; // Revalidate every hour
 
 export const metadata = {
   title: "Press Kit | SafeScoring",
@@ -6,18 +13,59 @@ export const metadata = {
   keywords: "SafeScoring press kit, crypto security news, blockchain security media",
 };
 
-const stats = [
-  { label: "Products Rated", value: "500+" },
-  { label: "Security Norms", value: "916" },
-  { label: "Product Categories", value: "15+" },
-  { label: "Monthly Visitors", value: "10K+" },
-];
+async function getPressStats(normStats) {
+  if (!isSupabaseConfigured()) {
+    return {
+      productsRated: normStats?.totalProducts || "\u2014",
+      securityNorms: normStats?.totalNorms || "\u2014",
+      productCategories: normStats?.totalProductTypes || "10+",
+      avgScore: null,
+    };
+  }
+
+  try {
+    // Get total products rated
+    const { count: productsRated } = await supabase
+      .from("products")
+      .select("id", { count: "exact", head: true });
+
+    // Get product type count
+    const { data: types } = await supabase
+      .from("product_types")
+      .select("id");
+
+    // Get average score
+    const { data: scores } = await supabase
+      .from("safe_scoring_results")
+      .select("note_finale")
+      .not("note_finale", "is", null);
+
+    const avgScore = scores && scores.length > 0
+      ? Math.round(scores.reduce((sum, s) => sum + (s.note_finale || 0), 0) / scores.length * 10) / 10
+      : null;
+
+    return {
+      productsRated: productsRated || normStats?.totalProducts || "\u2014",
+      securityNorms: normStats?.totalNorms || "\u2014",
+      productCategories: types?.length || normStats?.totalProductTypes || "10+",
+      avgScore,
+    };
+  } catch (error) {
+    console.error("Press stats error:", error);
+    return {
+      productsRated: normStats?.totalProducts || "\u2014",
+      securityNorms: normStats?.totalNorms || "\u2014",
+      productCategories: normStats?.totalProductTypes || "10+",
+      avgScore: null,
+    };
+  }
+}
 
 const pressReleases = [
   {
     date: "2025-01-15",
     title: "SafeScoring Launches Comprehensive Crypto Security Rating Platform",
-    excerpt: "New platform evaluates 500+ crypto products across 916 security norms to help users make safer choices.",
+    excerpt: "New platform evaluates crypto products across comprehensive security norms to help users make safer choices.",
   },
   {
     date: "2025-02-01",
@@ -37,12 +85,26 @@ const mediaContacts = [
   { name: "General", email: "hello@safescoring.io" },
 ];
 
-export default function PressPage() {
+export default async function PressPage() {
+  const normStats = await getNormStats();
+  const pressStats = await getPressStats(normStats);
+
+  const stats = [
+    { label: "Products Rated", value: `${pressStats.productsRated}+` },
+    { label: "Security Norms", value: String(pressStats.securityNorms) },
+    { label: "Product Categories", value: `${pressStats.productCategories}+` },
+    ...(pressStats.avgScore
+      ? [{ label: "Average Score", value: `${pressStats.avgScore}%` }]
+      : [{ label: "Methodology", value: "SAFE" }]),
+  ];
+
   return (
-    <main className="min-h-screen bg-base-200">
+    <>
+    <Header />
+    <main className="min-h-screen pt-24 pb-16 hero-bg">
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary/20 to-secondary/20 py-16">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <div className="badge badge-primary mb-4">Press & Media</div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -58,7 +120,7 @@ export default function PressPage() {
 
       {/* Stats */}
       <section className="py-12 bg-base-100">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-2xl font-bold mb-8 text-center">Key Statistics</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {stats.map((stat, idx) => (
@@ -77,15 +139,15 @@ export default function PressPage() {
 
       {/* About */}
       <section className="py-12 bg-base-200">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <h2 className="text-2xl font-bold mb-4">About SafeScoring</h2>
               <div className="prose prose-sm">
                 <p>
-                  SafeScoring is the first comprehensive security rating platform for crypto products.
+                  SafeScoring is a security evaluation platform for crypto products.
                   We evaluate wallets, exchanges, DeFi protocols, and blockchain services across
-                  916 security norms to provide objective, transparent security scores.
+                  {pressStats.securityNorms} security norms to provide objective, transparent security scores.
                 </p>
                 <p>
                   Our mission is to make crypto safer by helping users identify secure products
@@ -96,9 +158,9 @@ export default function PressPage() {
                 </p>
                 <ul>
                   <li><strong>S</strong>ecurity - Technical security measures and architecture</li>
-                  <li><strong>A</strong>udit - Third-party audits and vulnerability management</li>
-                  <li><strong>F</strong>unctionality - Feature completeness and reliability</li>
-                  <li><strong>E</strong>xperience - User experience and support quality</li>
+                  <li><strong>A</strong>dversity - Incident response and resilience under attack</li>
+                  <li><strong>F</strong>idelity - Transparency, audits, and trustworthiness</li>
+                  <li><strong>E</strong>fficiency - Performance, UX, and operational reliability</li>
                 </ul>
               </div>
             </div>
@@ -108,14 +170,14 @@ export default function PressPage() {
                 <p className="text-sm text-base-content/80 leading-relaxed">
                   <strong>Short (50 words):</strong><br />
                   SafeScoring is a crypto security rating platform that evaluates wallets, exchanges,
-                  and DeFi protocols across 916 security norms. Using the SAFE methodology (Security,
-                  Audit, Functionality, Experience), SafeScoring provides objective scores to help
+                  and DeFi protocols across {pressStats.securityNorms} security norms. Using the SAFE methodology (Security,
+                  Adversity, Fidelity, Efficiency), SafeScoring provides objective scores to help
                   users make informed decisions about crypto products.
                 </p>
                 <div className="divider"></div>
                 <p className="text-sm text-base-content/80 leading-relaxed">
                   <strong>Tweet-sized (280 chars):</strong><br />
-                  SafeScoring rates crypto security. 500+ products. 916 norms. One score.
+                  SafeScoring rates crypto security. {pressStats.productsRated}+ products. {pressStats.securityNorms} norms. One score.
                   Know if your wallet, exchange, or DeFi protocol is safe before you connect.
                   Free at safescoring.io
                 </p>
@@ -127,7 +189,7 @@ export default function PressPage() {
 
       {/* Brand Assets */}
       <section className="py-12 bg-base-100">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-2xl font-bold mb-8">Brand Assets</h2>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -155,10 +217,10 @@ export default function PressPage() {
                 <h3 className="card-title text-lg">Brand Colors</h3>
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded bg-[#00d4aa]"></div>
+                    <div className="w-10 h-10 rounded bg-[#6366f1]"></div>
                     <div>
-                      <div className="font-mono text-sm">#00d4aa</div>
-                      <div className="text-xs text-base-content/60">Primary / Safe</div>
+                      <div className="font-mono text-sm">#6366f1</div>
+                      <div className="text-xs text-base-content/60">Primary / Brand</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -209,19 +271,19 @@ export default function PressPage() {
               <div>
                 <h4 className="font-semibold text-success mb-2">Do</h4>
                 <ul className="space-y-1 text-base-content/70">
-                  <li>✓ Use "SafeScoring" as one word with capital S's</li>
-                  <li>✓ Reference our methodology as "SAFE score" or "SafeScore"</li>
-                  <li>✓ Link to product pages when citing scores</li>
-                  <li>✓ Use official colors and assets</li>
+                  <li>&#10003; Use &quot;SafeScoring&quot; as one word with capital S&apos;s</li>
+                  <li>&#10003; Reference our methodology as &quot;SAFE score&quot; or &quot;SafeScore&quot;</li>
+                  <li>&#10003; Link to product pages when citing scores</li>
+                  <li>&#10003; Use official colors and assets</li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-error mb-2">Don't</h4>
+                <h4 className="font-semibold text-error mb-2">Don&apos;t</h4>
                 <ul className="space-y-1 text-base-content/70">
-                  <li>✗ Alter logo colors or proportions</li>
-                  <li>✗ Imply endorsement without permission</li>
-                  <li>✗ Use outdated scores (refresh via API)</li>
-                  <li>✗ Misrepresent what scores mean</li>
+                  <li>&#10007; Alter logo colors or proportions</li>
+                  <li>&#10007; Imply endorsement without permission</li>
+                  <li>&#10007; Use outdated scores (refresh via API)</li>
+                  <li>&#10007; Misrepresent what scores mean</li>
                 </ul>
               </div>
             </div>
@@ -231,7 +293,7 @@ export default function PressPage() {
 
       {/* Press Releases */}
       <section className="py-12 bg-base-200">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-2xl font-bold mb-8">Press Releases</h2>
 
           <div className="space-y-4">
@@ -250,7 +312,7 @@ export default function PressPage() {
                       <h3 className="card-title text-lg">{pr.title}</h3>
                       <p className="text-sm text-base-content/70 mt-2">{pr.excerpt}</p>
                     </div>
-                    <button className="btn btn-sm btn-ghost">Read →</button>
+                    <button className="btn btn-sm btn-ghost">Read &rarr;</button>
                   </div>
                 </div>
               </div>
@@ -259,22 +321,17 @@ export default function PressPage() {
         </div>
       </section>
 
-      {/* Media Coverage */}
+      {/* Media Coverage CTA */}
       <section className="py-12 bg-base-100">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-2xl font-bold mb-8">Featured In</h2>
-
-          <div className="flex flex-wrap justify-center gap-8 opacity-50">
-            <div className="text-2xl font-bold">CoinDesk</div>
-            <div className="text-2xl font-bold">The Block</div>
-            <div className="text-2xl font-bold">Decrypt</div>
-            <div className="text-2xl font-bold">CoinTelegraph</div>
-            <div className="text-2xl font-bold">Bankless</div>
-          </div>
-
-          <p className="text-center text-sm text-base-content/60 mt-4">
-            (Your logo could be here - write about us!)
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h2 className="text-2xl font-bold mb-4">Write About Us</h2>
+          <p className="text-base-content/70 mb-6 max-w-lg mx-auto">
+            Are you a journalist or content creator covering crypto security?
+            We&apos;d love to be featured in your publication.
           </p>
+          <a href="mailto:press@safescoring.io" className="btn btn-primary">
+            Get in Touch
+          </a>
         </div>
       </section>
 
@@ -303,5 +360,7 @@ export default function PressPage() {
         </div>
       </section>
     </main>
+    <Footer />
+    </>
   );
 }

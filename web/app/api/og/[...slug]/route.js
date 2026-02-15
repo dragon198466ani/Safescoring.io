@@ -1,5 +1,7 @@
 import { ImageResponse } from 'next/og';
+import config from "@/config";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { getNormStats } from "@/libs/norm-stats";
 
 /**
  * Dynamic OG Image Generator
@@ -47,7 +49,8 @@ export async function GET(request, { params }) {
     }
 
     // Default OG image
-    return generateDefaultOG();
+    const normStats = await getNormStats();
+    return generateDefaultOG(normStats);
   } catch (error) {
     console.error('OG generation error:', error);
     return generateDefaultOG();
@@ -153,19 +156,19 @@ async function generateProductOG(slug) {
             {/* SAFE pillars */}
             <div style={{ display: 'flex', gap: 24 }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ fontSize: 32, fontWeight: 700, color: COLORS.primary }}>S</div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#22c55e' }}>S</div>
                 <div style={{ fontSize: 24, color: COLORS.muted }}>{scores.s}</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ fontSize: 32, fontWeight: 700, color: '#8b5cf6' }}>A</div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#f59e0b' }}>A</div>
                 <div style={{ fontSize: 24, color: COLORS.muted }}>{scores.a}</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ fontSize: 32, fontWeight: 700, color: COLORS.warning }}>F</div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#3b82f6' }}>F</div>
                 <div style={{ fontSize: 24, color: COLORS.muted }}>{scores.f}</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ fontSize: 32, fontWeight: 700, color: '#06b6d4' }}>E</div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#8b5cf6' }}>E</div>
                 <div style={{ fontSize: 24, color: COLORS.muted }}>{scores.e}</div>
               </div>
             </div>
@@ -332,7 +335,7 @@ async function generateLeaderboardOG() {
   );
 }
 
-function generateDefaultOG() {
+function generateDefaultOG(normStats) {
   return new ImageResponse(
     (
       <div
@@ -354,7 +357,7 @@ function generateDefaultOG() {
           Crypto Security Ratings You Can Trust
         </div>
         <div style={{ fontSize: 24, color: COLORS.text, marginTop: 24 }}>
-          916 norms • 500+ products • Objective scores
+          {normStats?.totalNorms || "2000+"} norms • {normStats?.totalProducts || "1000+"}+ products • Objective scores
         </div>
       </div>
     ),

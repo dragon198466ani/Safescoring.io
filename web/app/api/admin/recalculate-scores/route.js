@@ -1,17 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import { auth } from "@/libs/auth";
+import { requireAdmin } from "@/libs/admin-auth";
+import { dispatchWebhookEvent } from "@/libs/webhook-dispatch";
 
 export const dynamic = "force-dynamic";
-
-// Admin authentication check
-async function requireAdmin() {
-  const session = await auth();
-  if (!session?.user?.email || session.user.email !== "admin@safescoring.io") {
-    return false;
-  }
-  return true;
-}
 
 /**
  * POST /api/admin/recalculate-scores
@@ -59,6 +51,13 @@ export async function POST(request) {
         );
       }
 
+      // Dispatch webhook event (fire-and-forget, don't block response)
+      dispatchWebhookEvent("score_change", {
+        productId,
+        result: data,
+        scope: "single",
+      }).catch(() => {});
+
       return NextResponse.json({
         success: true,
         message: "Scores recalculated for product",
@@ -75,6 +74,12 @@ export async function POST(request) {
           { status: 500 }
         );
       }
+
+      // Dispatch webhook event (fire-and-forget)
+      dispatchWebhookEvent("score_change", {
+        scope: "all",
+        result: data,
+      }).catch(() => {});
 
       return NextResponse.json({
         success: true,

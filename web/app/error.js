@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import ButtonSupport from "@/components/ButtonSupport";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 // A simple error boundary to show a nice error page if something goes wrong (Error Boundary)
 // Users can contanct support, go to the main page or try to reset/refresh to fix the error
 export default function Error({ error, reset }) {
+  const { t } = useTranslation();
   return (
     <>
       <div className="h-screen w-full flex flex-col justify-center items-center text-center gap-6 p-6">
@@ -125,7 +127,7 @@ export default function Error({ error, reset }) {
         </div>
 
         <p className="font-medium md:text-xl md:font-semibold">
-          Something went wrong 🥲
+          {t("errors.somethingWentWrong")} 🥲
         </p>
 
         <p className="text-red-500">{error?.message}</p>
@@ -144,7 +146,7 @@ export default function Error({ error, reset }) {
                 clipRule="evenodd"
               />
             </svg>
-            Refresh
+            {t("errors.refresh")}
           </button>
 
           <ButtonSupport />
@@ -162,7 +164,7 @@ export default function Error({ error, reset }) {
                 clipRule="evenodd"
               />
             </svg>
-            Home
+            {t("errors.home")}
           </Link>
         </div>
       </div>

@@ -1,17 +1,8 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import { auth } from "@/libs/auth";
+import { requireAdmin } from "@/libs/admin-auth";
 
 export const dynamic = "force-dynamic";
-
-// Admin authentication check
-async function requireAdmin() {
-  const session = await auth();
-  if (!session?.user?.email || session.user.email !== "admin@safescoring.io") {
-    return false;
-  }
-  return true;
-}
 
 /**
  * POST /api/admin/seed-history
@@ -125,7 +116,7 @@ export async function POST(request) {
     if (insertError) {
       console.error("Error inserting history:", insertError);
       return NextResponse.json(
-        { error: "Failed to insert history", details: insertError.message },
+        { error: "Failed to insert history" },
         { status: 500 }
       );
     }

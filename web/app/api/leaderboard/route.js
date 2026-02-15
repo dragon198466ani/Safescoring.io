@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { quickProtect } from "@/libs/api-protection";
 
 // Cache leaderboard for 5 minutes (changes infrequently)
 export const revalidate = 300;
@@ -9,6 +10,10 @@ export const revalidate = 300;
  * Get top contributors leaderboard for future token airdrop
  */
 export async function GET(request) {
+  // Rate limiting
+  const protection = await quickProtect(request, "public");
+  if (protection.blocked) return protection.response;
+
   try {
     if (!isSupabaseConfigured()) {
       return NextResponse.json(

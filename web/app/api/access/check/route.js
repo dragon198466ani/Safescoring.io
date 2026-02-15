@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { checkUnifiedAccess, getPlanLimits } from "@/libs/access";
+import { quickProtect } from "@/libs/api-protection";
 
 /**
  * GET /api/access/check
@@ -10,6 +11,9 @@ import { checkUnifiedAccess, getPlanLimits } from "@/libs/access";
  *   - wallet: wallet address to check (optional, uses linked wallet if not provided)
  */
 export async function GET(req) {
+  // Rate limit: prevent enumeration/abuse
+  const protection = await quickProtect(req, "standard");
+  if (protection.blocked) return protection.response;
   try {
     const session = await auth();
     const { searchParams } = new URL(req.url);

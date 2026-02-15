@@ -1,6 +1,6 @@
 /**
  * Unified Access Control
- * Checks access from multiple sources: Supabase subscription, Stripe, LemonSqueezy, NFT
+ * Checks access from multiple sources: Supabase subscription, LemonSqueezy, MoonPay, NFT
  */
 
 import { createClient } from "@supabase/supabase-js";
@@ -26,7 +26,7 @@ const NFT_TIER_TO_PLAN = {
 
 /**
  * Check unified access for a user
- * Combines: Supabase subscription + Stripe + LemonSqueezy + NFT
+ * Combines: Supabase subscription + LemonSqueezy + MoonPay + NFT
  *
  * @param {Object} options
  * @param {string} options.userId - Supabase user ID
@@ -50,7 +50,7 @@ export async function checkUnifiedAccess({
 
   const requiredLevel = PLAN_HIERARCHY[requiredPlan] || 0;
 
-  // 1. Check Supabase/Stripe/LemonSqueezy subscription
+  // 1. Check Supabase/LemonSqueezy/MoonPay subscription
   if (userId && supabaseUrl && supabaseServiceKey) {
     try {
       const supabase = createClient(supabaseUrl, supabaseServiceKey);

@@ -2,9 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import config from "@/config";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import ProductLogo from "@/components/ProductLogo";
+import { getFaviconUrl } from "@/libs/logo-utils";
+import { getNormStats } from "@/libs/norm-stats";
 
 // SEO: Revalidate every hour for fresh data
 export const revalidate = 3600;
@@ -36,8 +39,9 @@ export async function generateMetadata({ params }) {
   const productA = products.find(p => p.slug === slugA);
   const productB = products.find(p => p.slug === slugB);
 
+  const normStats = await getNormStats();
   const title = `${productA.name} vs ${productB.name} - Security Comparison | SafeScoring`;
-  const description = `Compare ${productA.name} and ${productB.name} security scores. See which is safer based on 916 security criteria across Security, Adversity, Fidelity & Efficiency.`;
+  const description = `Compare ${productA.name} and ${productB.name} security scores. See which is safer based on ${normStats?.totalNorms || "comprehensive"} security criteria across Security, Adversity, Fidelity & Efficiency.`;
 
   return {
     title,
@@ -71,17 +75,6 @@ export async function generateMetadata({ params }) {
     },
   };
 }
-
-// Get logo URL helper
-const getLogoUrl = (url) => {
-  if (!url) return null;
-  try {
-    const domain = new URL(url).hostname;
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-  } catch {
-    return null;
-  }
-};
 
 // Fetch product data
 async function getProduct(slug) {
@@ -119,7 +112,7 @@ async function getProduct(slug) {
   return {
     ...product,
     type: typeName,
-    logoUrl: getLogoUrl(product.url),
+    logoUrl: getFaviconUrl(product.url),
     scores: {
       total: Math.round(scores.note_finale || 0),
       s: Math.round(scores.score_s || 0),
@@ -135,6 +128,12 @@ const getScoreColor = (score) => {
   if (score >= 80) return "text-green-400";
   if (score >= 60) return "text-amber-400";
   return "text-red-400";
+};
+
+const getScoreLabel = (score) => {
+  if (score >= 80) return "Strong";
+  if (score >= 60) return "Moderate";
+  return "Developing";
 };
 
 const getScoreBg = (score) => {
@@ -158,9 +157,10 @@ export default async function ComparePage({ params }) {
   }
 
   const [slugA, slugB] = slugs;
-  const [productA, productB] = await Promise.all([
+  const [productA, productB, normStats] = await Promise.all([
     getProduct(slugA),
-    getProduct(slugB)
+    getProduct(slugB),
+    getNormStats()
   ]);
 
   if (!productA || !productB) {
@@ -186,16 +186,14 @@ export default async function ComparePage({ params }) {
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-24 pb-16 px-6 hero-bg">
-        <div className="max-w-5xl mx-auto">
+      <main className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6 hero-bg">
+        <div className="max-w-7xl mx-auto">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-base-content/60 mb-8">
-            <Link href="/" className="hover:text-base-content">Home</Link>
-            <span>/</span>
-            <Link href="/products" className="hover:text-base-content">Products</Link>
-            <span>/</span>
-            <span className="text-base-content">Compare</span>
-          </div>
+          <Breadcrumbs items={[
+            { label: "Home", href: "/" },
+            { label: "Products", href: "/products" },
+            { label: `${productA.name} vs ${productB.name}` },
+          ]} />
 
           {/* Title */}
           <div className="text-center mb-12">
@@ -203,51 +201,57 @@ export default async function ComparePage({ params }) {
               {productA.name} vs {productB.name}
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              Security comparison based on 916 criteria across Security, Adversity, Fidelity & Efficiency pillars.
+              Security comparison based on {normStats?.totalNorms || "2000+"} criteria across Security, Adversity, Fidelity & Efficiency pillars.
+            </p>
+            <p className="text-xs text-base-content/40 mt-2 max-w-2xl mx-auto">
+              Comparisons reflect SafeScoring&apos;s opinion-based evaluation methodology. A higher score does not mean a product is &quot;safer&quot; or &quot;better&quot; — it indicates a higher rating under our specific criteria. Scores do not guarantee security, predict future incidents, or constitute a recommendation. Different methodologies may produce different results. Not financial or security advice.
+              {" "}<a href="/tos#5.8" className="text-primary/50 hover:text-primary hover:underline">Dispute a score</a>
             </p>
           </div>
 
           {/* Main comparison grid */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-12">
             {/* Product A */}
-            <div className={`rounded-xl border p-6 relative ${getScoreBg(productA.scores.total)}`}>
+            <div className={`rounded-xl border p-4 sm:p-6 relative ${getScoreBg(productA.scores.total)}`}>
               {winners.total === 'A' && <WinnerBadge />}
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                 <ProductLogo logoUrl={productA.logoUrl} name={productA.name} size="md" />
-                <div>
-                  <h2 className="font-bold text-lg">{productA.name}</h2>
-                  <p className="text-sm text-base-content/60">{productA.type}</p>
+                <div className="min-w-0">
+                  <h2 className="font-bold text-sm sm:text-lg truncate">{productA.name}</h2>
+                  <p className="text-xs sm:text-sm text-base-content/60">{productA.type}</p>
                 </div>
               </div>
-              <div className={`text-5xl font-bold text-center mb-2 ${getScoreColor(productA.scores.total)}`}>
+              <div className={`text-3xl sm:text-5xl font-bold text-center mb-1 sm:mb-2 ${getScoreColor(productA.scores.total)}`}>
                 {productA.scores.total}
               </div>
-              <div className="text-center text-sm text-base-content/60 mb-4">SAFE Score</div>
-              <Link href={`/products/${productA.slug}`} className="btn btn-sm btn-outline w-full">
+              <div className={`text-center text-xs sm:text-sm font-medium mb-1 ${getScoreColor(productA.scores.total)}`}>{getScoreLabel(productA.scores.total)}</div>
+              <div className="text-center text-xs text-base-content/60 mb-3 sm:mb-4">SAFE Score</div>
+              <Link href={`/products/${productA.slug}`} className="btn btn-sm btn-outline w-full min-h-[44px]">
                 View Details
               </Link>
             </div>
 
-            {/* VS */}
-            <div className="flex items-center justify-center">
+            {/* VS — visible only on tablet/desktop between the two cards */}
+            <div className="hidden md:flex items-center justify-center">
               <div className="text-4xl font-black text-base-content/20">VS</div>
             </div>
 
             {/* Product B */}
-            <div className={`rounded-xl border p-6 relative ${getScoreBg(productB.scores.total)}`}>
+            <div className={`rounded-xl border p-4 sm:p-6 relative ${getScoreBg(productB.scores.total)}`}>
               {winners.total === 'B' && <WinnerBadge />}
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                 <ProductLogo logoUrl={productB.logoUrl} name={productB.name} size="md" />
-                <div>
-                  <h2 className="font-bold text-lg">{productB.name}</h2>
-                  <p className="text-sm text-base-content/60">{productB.type}</p>
+                <div className="min-w-0">
+                  <h2 className="font-bold text-sm sm:text-lg truncate">{productB.name}</h2>
+                  <p className="text-xs sm:text-sm text-base-content/60">{productB.type}</p>
                 </div>
               </div>
-              <div className={`text-5xl font-bold text-center mb-2 ${getScoreColor(productB.scores.total)}`}>
+              <div className={`text-3xl sm:text-5xl font-bold text-center mb-1 sm:mb-2 ${getScoreColor(productB.scores.total)}`}>
                 {productB.scores.total}
               </div>
-              <div className="text-center text-sm text-base-content/60 mb-4">SAFE Score</div>
-              <Link href={`/products/${productB.slug}`} className="btn btn-sm btn-outline w-full">
+              <div className={`text-center text-xs sm:text-sm font-medium mb-1 ${getScoreColor(productB.scores.total)}`}>{getScoreLabel(productB.scores.total)}</div>
+              <div className="text-center text-xs text-base-content/60 mb-3 sm:mb-4">SAFE Score</div>
+              <Link href={`/products/${productB.slug}`} className="btn btn-sm btn-outline w-full min-h-[44px]">
                 View Details
               </Link>
             </div>
@@ -257,7 +261,49 @@ export default async function ComparePage({ params }) {
           <div className="rounded-xl bg-base-200 border border-base-300 p-6 mb-12">
             <h2 className="text-xl font-bold mb-6 text-center">Pillar-by-Pillar Comparison</h2>
 
-            <div className="space-y-4">
+            {/* Mobile + small tablet: card layout per pillar */}
+            <div className="space-y-3 md:hidden">
+              {config.safe.pillars.map((pillar) => {
+                const codeKey = pillar.code.toLowerCase();
+                const scoreA = productA.scores[codeKey];
+                const scoreB = productB.scores[codeKey];
+                const winner = winners[codeKey];
+
+                return (
+                  <div key={pillar.code} className="rounded-lg bg-base-300/50 p-4">
+                    {/* Pillar header */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xl font-black" style={{ color: pillar.color }}>{pillar.code}</span>
+                      <span className="text-sm font-semibold text-base-content/80">{pillar.name}</span>
+                    </div>
+                    {/* Scores side by side */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* Product A */}
+                      <div className={`text-center p-2 rounded-lg ${winner === 'A' ? 'bg-green-500/10 ring-1 ring-green-500/30' : ''}`}>
+                        <div className="text-xs text-base-content/50 mb-1 truncate">{productA.name}</div>
+                        <div className={`text-2xl font-bold ${getScoreColor(scoreA)}`}>{scoreA}</div>
+                        <div className="w-full h-1.5 bg-base-300 rounded-full overflow-hidden mt-2">
+                          <div className="h-full rounded-full" style={{ width: `${scoreA}%`, backgroundColor: pillar.color }} />
+                        </div>
+                        {winner === 'A' && <span className="text-xs text-green-400 font-semibold mt-1 inline-block">Winner</span>}
+                      </div>
+                      {/* Product B */}
+                      <div className={`text-center p-2 rounded-lg ${winner === 'B' ? 'bg-green-500/10 ring-1 ring-green-500/30' : ''}`}>
+                        <div className="text-xs text-base-content/50 mb-1 truncate">{productB.name}</div>
+                        <div className={`text-2xl font-bold ${getScoreColor(scoreB)}`}>{scoreB}</div>
+                        <div className="w-full h-1.5 bg-base-300 rounded-full overflow-hidden mt-2">
+                          <div className="h-full rounded-full" style={{ width: `${scoreB}%`, backgroundColor: pillar.color }} />
+                        </div>
+                        {winner === 'B' && <span className="text-xs text-green-400 font-semibold mt-1 inline-block">Winner</span>}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Tablet + desktop: horizontal bar comparison */}
+            <div className="hidden md:block space-y-4">
               {config.safe.pillars.map((pillar) => {
                 const codeKey = pillar.code.toLowerCase();
                 const scoreA = productA.scores[codeKey];
@@ -363,15 +409,15 @@ export default async function ComparePage({ params }) {
             <h2 className="text-xl font-bold mb-6">Frequently Asked Questions</h2>
             <div className="space-y-6">
               <div>
-                <h3 className="font-semibold mb-2">Which is safer: {productA.name} or {productB.name}?</h3>
+                <h3 className="font-semibold mb-2">Which scores higher in SAFE methodology: {productA.name} or {productB.name}?</h3>
                 <p className="text-base-content/70">
-                  Based on our 916-criteria security evaluation, {winners.total === 'tie' ? 'both products have similar security levels' : `${winners.total === 'A' ? productA.name : productB.name} has a higher security score (${winners.total === 'A' ? productA.scores.total : productB.scores.total}/100)`}.
+                  Based on our {normStats?.totalNorms || "\u2014"}-criteria security evaluation, {winners.total === 'tie' ? 'both products have similar security levels' : `${winners.total === 'A' ? productA.name : productB.name} has a higher security score (${winners.total === 'A' ? productA.scores.total : productB.scores.total}/100)`}.
                 </p>
               </div>
               <div>
                 <h3 className="font-semibold mb-2">What is the SAFE Score?</h3>
                 <p className="text-base-content/70">
-                  The SAFE Score evaluates crypto products across 4 pillars: Security, Adversity, Fidelity, and Efficiency. It's based on 916 security norms evaluated by AI and human experts.
+                  The SAFE Score evaluates crypto products across 4 pillars: Security, Adversity, Fidelity, and Efficiency. It&apos;s based on {normStats?.totalNorms || "\u2014"} security norms evaluated by AI and human experts.
                 </p>
               </div>
               <div>

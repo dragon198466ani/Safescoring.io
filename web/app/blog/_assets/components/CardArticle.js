@@ -65,7 +65,7 @@ const CardArticle = ({
             <Avatar article={article} />
 
             <span itemProp="datePublished">
-              {new Date(article.publishedAt).toLocaleDateString("en-US", {
+              {new Date(article.publishedAt).toLocaleDateString(undefined, {
                 month: "long",
                 day: "numeric",
               })}

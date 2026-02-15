@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 """
-SAFESCORING.IO - Mise à jour automatique des prix via IA
+SAFESCORING.IO - Automatic price update via AI
 =========================================================
 
-Utilise Gemini (recherche web) + Mistral pour trouver les prix des produits crypto.
+Uses Gemini (web search) + Mistral to find crypto product prices.
 
 Usage:
     python price_updater.py [--dry-run] [--force] [--product SLUG]
     python -m src.automation.price_updater --mode full
 
 Options:
-    --dry-run       : Simulation sans modifier la base de données
-    --force         : Force la mise à jour même si un prix existe déjà
-    --product SLUG  : Met à jour uniquement le produit spécifié
+    --dry-run       : Simulation without modifying the database
+    --force         : Force the update even if a price already exists
+    --product SLUG  : Updates only the specified product
     --mode          : test (1), partial (10), full (tous)
 
-Auteur: SafeScoring.io
+Author: SafeScoring.io
 """
 
 from __future__ import annotations
@@ -61,7 +61,7 @@ except ImportError:
 
 @dataclass
 class PriceResult:
-    """Résultat de recherche de prix."""
+    """Price search result."""
     price_eur: Optional[float] = None
     price_details: Optional[str] = None
     source: str = "unknown"
@@ -72,7 +72,7 @@ class PriceResult:
 
 @dataclass
 class Product:
-    """Représentation d'un produit."""
+    """Product representation."""
     id: int
     name: str
     slug: str
@@ -85,7 +85,7 @@ class Product:
 
 @dataclass
 class PipelineStats:
-    """Statistiques du pipeline."""
+    """Pipeline statistics."""
     total: int = 0
     updated: int = 0
     skipped: int = 0
@@ -108,7 +108,7 @@ DEFAULT_BTC_PRICE_USD = 95000.0
 AVG_TX_SIZE_VBYTES = 140
 
 def get_btc_price_usd() -> float:
-    """Récupère le prix actuel du BTC en USD via CoinGecko API (avec cache)."""
+    """Retrieves the current BTC price in USD via CoinGecko API (with cache)."""
     try:
         response = requests.get(
             'https://api.coingecko.com/api/v3/simple/price',
@@ -124,7 +124,7 @@ def get_btc_price_usd() -> float:
 
 
 def sat_to_usd(sats: float, btc_price_usd: float = None) -> float:
-    """Convertit des satoshis en USD."""
+    """Converts satoshis to USD."""
     if btc_price_usd is None:
         btc_price_usd = DEFAULT_BTC_PRICE_USD
     # 1 BTC = 100,000,000 sats
@@ -138,13 +138,13 @@ def sat_per_vb_to_usd_range(
     btc_price_usd: float = None
 ) -> Tuple[float, float]:
     """
-    Convertit une fourchette sat/vB en USD pour une transaction typique.
+    Converts a sat/vB range to USD for a typical transaction.
 
     Args:
-        min_sat_vb: Frais minimum en sat/vB
-        max_sat_vb: Frais maximum en sat/vB
-        tx_size_vb: Taille de transaction en vBytes (défaut: 140)
-        btc_price_usd: Prix BTC en USD (défaut: valeur cached)
+        min_sat_vb: Minimum fee in sat/vB
+        max_sat_vb: Maximum fee in sat/vB
+        tx_size_vb: Transaction size in vBytes (default: 140)
+        btc_price_usd: BTC price in USD (default: cached value)
 
     Returns:
         Tuple (min_usd, max_usd)
@@ -162,7 +162,7 @@ def sat_per_vb_to_usd_range(
 
 
 def usd_to_eur(usd: float, rate: float = 0.91) -> float:
-    """Convertit USD en EUR."""
+    """Converts USD to EUR."""
     return round(usd * rate, 2)
 
 
@@ -173,7 +173,7 @@ def format_btc_fee_with_conversion(
     btc_price_usd: float = None
 ) -> str:
     """
-    Formate les frais Bitcoin avec conversion USD/EUR.
+    Formats Bitcoin fees with USD/EUR conversion.
 
     Exemple: "1-20 sat/vB (~$0.13-$2.66 / ~€0.12-€2.42) + Lightning 0.1-1%"
     """
@@ -193,10 +193,10 @@ def format_btc_fee_with_conversion(
 # ============================================
 
 def load_config() -> Dict[str, str]:
-    """Charge la configuration depuis env_template_free.txt ou .env."""
+    """Loads configuration from env_template_free.txt or .env."""
     config: Dict[str, str] = {}
 
-    # Essayer plusieurs chemins
+    # Try multiple paths
     possible_paths = [
         Path(__file__).parent / 'env_template_free.txt',
         Path(__file__).parent / '.env',
@@ -210,7 +210,7 @@ def load_config() -> Dict[str, str]:
             break
 
     if not config_path:
-        print(f"   Fichier de configuration non trouve")
+        print(f"   Configuration file not found")
         return config
 
     with open(config_path, 'r', encoding='utf-8') as f:
@@ -229,7 +229,7 @@ SUPABASE_KEY: str = CONFIG.get('NEXT_PUBLIC_SUPABASE_ANON_KEY', '')
 MISTRAL_API_KEY: str = CONFIG.get('MISTRAL_API_KEY', '')
 GOOGLE_API_KEY: str = CONFIG.get('GOOGLE_API_KEY', '')
 
-# Support pour plusieurs cles Gemini (rotation)
+# Support for multiple Gemini keys (rotation)
 # Format: GOOGLE_API_KEY_1, GOOGLE_API_KEY_2, etc.
 GOOGLE_API_KEYS: List[str] = []
 if GOOGLE_API_KEY:
@@ -239,7 +239,7 @@ for i in range(1, 10):
     if key and key not in GOOGLE_API_KEYS:
         GOOGLE_API_KEYS.append(key)
 
-# Configuration Gemini (premiere cle)
+# Gemini configuration (first key)
 if GOOGLE_API_KEYS and GENAI_AVAILABLE and google_genai and not GENAI_NEW:
     google_genai.configure(api_key=GOOGLE_API_KEYS[0])
 
@@ -249,7 +249,7 @@ if GOOGLE_API_KEYS and GENAI_AVAILABLE and google_genai and not GENAI_NEW:
 # ============================================
 
 class SupabaseClient:
-    """Client simplifie pour Supabase REST API."""
+    """Simplified client for Supabase REST API."""
 
     def __init__(self, url: str, key: str) -> None:
         self.url: str = url.rstrip('/')
@@ -262,7 +262,7 @@ class SupabaseClient:
         }
 
     def test_connection(self) -> bool:
-        """Teste la connexion à Supabase."""
+        """Tests the connection to Supabase."""
         try:
             response = requests.get(
                 f"{self.url}/rest/v1/",
@@ -279,7 +279,7 @@ class SupabaseClient:
         select: str = "*",
         filters: Optional[Dict[str, str]] = None
     ) -> List[Dict[str, Any]]:
-        """Récupère des données depuis une table."""
+        """Retrieves data from a table."""
         params: Dict[str, str] = {'select': select}
         if filters:
             params.update(filters)
@@ -293,7 +293,7 @@ class SupabaseClient:
             )
             if response.status_code == 200:
                 return response.json()
-            print(f"      Erreur GET {table}: {response.status_code}")
+            print(f"      Error GET {table}: {response.status_code}")
             return []
         except Exception as e:
             print(f"      Exception GET {table}: {e}")
@@ -305,7 +305,7 @@ class SupabaseClient:
         data: Dict[str, Any],
         filters: Dict[str, str]
     ) -> bool:
-        """Met à jour des données dans une table."""
+        """Updates data in a table."""
         try:
             response = requests.patch(
                 f"{self.url}/rest/v1/{table}",
@@ -316,12 +316,12 @@ class SupabaseClient:
             )
             return response.status_code in [200, 204]
         except Exception as e:
-            print(f"      Erreur PATCH {table}: {e}")
+            print(f"      Error PATCH {table}: {e}")
             return False
 
 
 # ============================================
-# BASE DE PRIX CONNUS
+# KNOWN PRICE DATABASE
 # ============================================
 
 KNOWN_PRICES: Dict[str, Tuple[float, str]] = {
@@ -475,7 +475,7 @@ KNOWN_PRICES: Dict[str, Tuple[float, str]] = {
     "coinstats": (0.0, "Frais: Pro 3.49-13.99 EUR/mois"),
 
     # ============================================
-    # PRODUITS AJOUTES MANUELLEMENT (24 restants)
+    # MANUALLY ADDED PRODUCTS (24 remaining)
     # ============================================
 
     # Metal Backups
@@ -520,11 +520,11 @@ KNOWN_PRICES: Dict[str, Tuple[float, str]] = {
 
 
 # ============================================
-# RECHERCHE DE PRIX VIA IA
+# PRICE SEARCH VIA AI
 # ============================================
 
 class PriceFinder:
-    """Trouve les prix des produits crypto via IA."""
+    """Finds crypto product prices via AI."""
 
     def __init__(self) -> None:
         self.gemini_model: Optional[Any] = None
@@ -534,7 +534,7 @@ class PriceFinder:
         if GOOGLE_API_KEYS and GENAI_AVAILABLE and google_genai:
             try:
                 if GENAI_NEW:
-                    # New google.genai package - creer un client par cle
+                    # New google.genai package - create one client per key
                     for api_key in GOOGLE_API_KEYS:
                         try:
                             client = google_genai.Client(api_key=api_key)
@@ -542,18 +542,18 @@ class PriceFinder:
                         except Exception:
                             pass
                     if self.genai_clients:
-                        print(f"   Gemini: {len(self.genai_clients)} cle(s) API configuree(s)")
+                        print(f"   Gemini: {len(self.genai_clients)} API key(s) configured")
                 else:
-                    # Old google.generativeai package (une seule cle)
+                    # Old google.generativeai package (single key)
                     try:
                         self.gemini_model = google_genai.GenerativeModel('gemini-2.0-flash-exp')
                     except Exception:
                         self.gemini_model = google_genai.GenerativeModel('gemini-1.5-flash')
             except Exception as e:
-                print(f"   Erreur init Gemini: {e}")
+                print(f"   Gemini init error: {e}")
 
     def _get_next_client(self) -> Optional[Any]:
-        """Retourne le prochain client Gemini (rotation)."""
+        """Returns the next Gemini client (rotation)."""
         if not self.genai_clients:
             return None
         client = self.genai_clients[self.current_key_index]
@@ -561,10 +561,10 @@ class PriceFinder:
         return client
 
     def check_known_prices(self, product_name: str) -> Optional[PriceResult]:
-        """Vérifie si le prix est dans la base de connaissances."""
+        """Checks if the price is in the knowledge base."""
         name_lower = product_name.lower().strip()
 
-        # Chercher correspondance exacte ou partielle
+        # Look for exact or partial match
         for known_name, (price, details) in KNOWN_PRICES.items():
             if known_name in name_lower or name_lower in known_name:
                 return PriceResult(
@@ -583,7 +583,7 @@ class PriceFinder:
         product_url: str = "",
         product_type: str = ""
     ) -> PriceResult:
-        """Recherche le prix via Gemini avec grounding Google Search."""
+        """Searches for price via Gemini with Google Search grounding."""
         if not self.gemini_model and not self.genai_clients:
             return PriceResult(source="gemini_unavailable")
 
@@ -598,7 +598,7 @@ IMPORTANT:
 - Cherche le prix sur le site officiel du produit ou des revendeurs autorises
 - Pour les hardware wallets: prix d'achat du dispositif en EUR
 - Pour les exchanges/services: indique les frais principaux
-- Pour les logiciels gratuits: indique "Gratuit" avec details sur les frais eventuels
+- Pour les logiciels gratuits: indique "Free" avec details sur les frais eventuels
 
 Reponds UNIQUEMENT en JSON valide, sans markdown ni commentaires:
 {{"price_eur": 149.00, "price_details": "Description courte", "confidence": "high", "is_free": false}}
@@ -621,7 +621,7 @@ Si prix inconnu: price_eur = null"""
                         )
                         content = response.text.strip()
                     except Exception as e:
-                        # Essayer avec un autre modele ou une autre cle
+                        # Try with another model or another key
                         try:
                             client = self._get_next_client()
                             if client:
@@ -667,7 +667,7 @@ Si prix inconnu: price_eur = null"""
                     )
 
         except Exception as e:
-            print(f"      Erreur Gemini: {e}")
+            print(f"      Gemini error: {e}")
 
         return PriceResult(source="gemini_error")
 
@@ -677,11 +677,11 @@ Si prix inconnu: price_eur = null"""
         product_url: str = "",
         product_type: str = ""
     ) -> PriceResult:
-        """Recherche le prix via Mistral API."""
+        """Searches for price via Mistral API."""
         if not MISTRAL_API_KEY:
             return PriceResult(source="mistral_unavailable")
 
-        # Detecter le type pour adapter le prompt
+        # Detect the type to adapt the prompt
         type_lower = product_type.lower() if product_type else ""
         is_defi = any(x in type_lower for x in ['dex', 'defi', 'swap', 'exchange decentralized', 'lending', 'bridge', 'aggregator', 'protocol'])
         is_software = any(x in type_lower for x in ['wallet', 'software', 'mobile', 'browser', 'desktop', 'extension'])
@@ -751,14 +751,14 @@ Regles:
                     )
 
         except Exception as e:
-            print(f"      Erreur Mistral: {e}")
+            print(f"      Mistral error: {e}")
 
         return PriceResult(source="mistral_error")
 
     def _parse_json_response(self, content: str) -> Optional[Dict[str, Any]]:
-        """Parse une réponse JSON depuis le contenu IA."""
+        """Parses a JSON response from AI content."""
         try:
-            # Nettoyer le markdown
+            # Clean the markdown
             if '```' in content:
                 parts = content.split('```')
                 for part in parts:
@@ -769,7 +769,7 @@ Regles:
                         content = part
                         break
 
-            # Extraire le JSON
+            # Extract the JSON
             start = content.find('{')
             end = content.rfind('}') + 1
             if start != -1 and end > start:
@@ -781,16 +781,16 @@ Regles:
             return None
 
     def find_price(self, product: Product) -> PriceResult:
-        """Trouve le prix d'un produit (pipeline complet)."""
+        """Finds the price of a product (full pipeline)."""
 
-        # 1. Vérifier la base de connaissances
+        # 1. Check the knowledge base
         known = self.check_known_prices(product.name)
         if known and known.price_eur is not None:
-            print(f"      [DB] Prix connu trouve")
+            print(f"      [DB] Known price found")
             return known
 
-        # 2. Essayer Gemini
-        print(f"      [IA] Recherche via Gemini...")
+        # 2. Try Gemini
+        print(f"      [IA] Searching via Gemini...")
         result = self.search_price_gemini(
             product.name,
             product.url or "",
@@ -804,7 +804,7 @@ Regles:
 
         # 3. Fallback Mistral
         if MISTRAL_API_KEY:
-            print(f"      [IA] Fallback Mistral...")
+            print(f"      [AI] Fallback Mistral...")
             result = self.search_price_mistral(
                 product.name,
                 product.url or "",
@@ -818,11 +818,11 @@ Regles:
 
 
 # ============================================
-# PIPELINE DE MISE A JOUR
+# UPDATE PIPELINE
 # ============================================
 
 class PriceUpdater:
-    """Pipeline de mise à jour des prix."""
+    """Price update pipeline."""
 
     def __init__(self, dry_run: bool = False) -> None:
         self.db = SupabaseClient(SUPABASE_URL, SUPABASE_KEY)
@@ -836,14 +836,14 @@ class PriceUpdater:
         force: bool = False,
         limit: Optional[int] = None
     ) -> List[Product]:
-        """Récupère les produits à mettre à jour."""
+        """Retrieves products to update."""
 
-        # Construire filtres
+        # Build filters
         filters: Dict[str, str] = {}
         if slug:
             filters['slug'] = f'eq.{slug}'
 
-        # Récupérer produits
+        # Retrieve products
         raw_products = self.db.get(
             'products',
             'id, name, slug, url, price_eur, price_details, type_id',
@@ -853,15 +853,15 @@ class PriceUpdater:
         if not raw_products:
             return []
 
-        # Filtrer ceux sans prix (sauf si force)
+        # Filter those without price (unless force)
         if not force:
             raw_products = [p for p in raw_products if p.get('price_eur') is None]
 
-        # Limiter si demandé
+        # Limit if requested
         if limit:
             raw_products = raw_products[:limit]
 
-        # Récupérer les noms des types
+        # Retrieve type names
         type_ids = list(set([p.get('type_id') for p in raw_products if p.get('type_id')]))
         types_map: Dict[int, str] = {}
 
@@ -873,7 +873,7 @@ class PriceUpdater:
             )
             types_map = {t['id']: t['name'] for t in types_data}
 
-        # Convertir en objets Product
+        # Convert to Product objects
         products: List[Product] = []
         for p in raw_products:
             products.append(Product(
@@ -890,10 +890,10 @@ class PriceUpdater:
         return products
 
     def update_price(self, product: Product, result: PriceResult) -> bool:
-        """Met à jour le prix d'un produit dans Supabase."""
+        """Updates a product price in Supabase."""
         if self.dry_run:
-            price_display = "Gratuit" if result.is_free else f"{result.price_eur} EUR"
-            print(f"      [DRY-RUN] Mettrait: {price_display} - {result.price_details}")
+            price_display = "Free" if result.is_free else f"{result.price_eur} EUR"
+            print(f"      [DRY-RUN] Would set: {price_display} - {result.price_details}")
             return True
 
         data: Dict[str, Any] = {
@@ -910,21 +910,21 @@ class PriceUpdater:
         slug: Optional[str] = None,
         force: bool = False
     ) -> bool:
-        """Exécute le pipeline de mise à jour des prix."""
+        """Executes the price update pipeline."""
 
         self._print_banner()
 
         if self.dry_run:
             print("   MODE: Simulation (dry-run)\n")
 
-        # Test connexion
+        # Test connection
         if not self.db.test_connection():
-            print("   ERREUR: Connexion Supabase impossible")
+            print("   ERROR: Supabase connection impossible")
             return False
 
-        print("   Connexion Supabase: OK")
+        print("   Supabase connection: OK")
 
-        # Déterminer la limite selon le mode
+        # Determine the limit according to the mode
         limit: Optional[int] = None
         if not slug:
             if mode == 'test':
@@ -932,43 +932,43 @@ class PriceUpdater:
             elif mode == 'partial':
                 limit = 10
 
-        # Récupérer produits
+        # Retrieve products
         products = self.get_products(slug=slug, force=force, limit=limit)
         self.stats.total = len(products)
 
         if not products:
-            print("\n   Aucun produit a mettre a jour")
+            print("\n   No products to update")
             if not force:
-                print("   (Utilisez --force pour forcer la mise a jour)")
+                print("   (Use --force to force the update)")
             return True
 
-        print(f"   Produits a traiter: {len(products)}")
+        print(f"   Products to process: {len(products)}")
         print(f"   Mode: {mode.upper()}")
         print("\n" + "=" * 60 + "\n")
 
-        # Traiter chaque produit
+        # Process each product
         for i, product in enumerate(products, 1):
             print(f"   [{i}/{len(products)}] {product.name}")
             print(f"      Type: {product.type_name or 'N/A'}")
             print(f"      URL: {product.url or 'N/A'}")
 
             try:
-                # Rechercher le prix
+                # Search for the price
                 result = self.finder.find_price(product)
 
                 if result.price_eur is not None:
-                    # Mettre à jour
+                    # Update
                     if self.update_price(product, result):
                         if result.is_free or result.price_eur == 0:
-                            print(f"      => GRATUIT - {result.price_details} [{result.source}]")
+                            print(f"      => FREE - {result.price_details} [{result.source}]")
                         else:
                             print(f"      => {result.price_eur} EUR - {result.price_details} [{result.source}]")
                         self.stats.updated += 1
                     else:
-                        print(f"      => ERREUR: Mise a jour DB echouee")
+                        print(f"      => ERROR: DB update failed")
                         self.stats.errors += 1
                 else:
-                    print(f"      => Prix non trouve [{result.source}]")
+                    print(f"      => Price not found [{result.source}]")
                     self.stats.not_found += 1
 
             except Exception as e:
@@ -979,33 +979,33 @@ class PriceUpdater:
             time.sleep(1.5)
             print()
 
-        # Résumé
+        # Summary
         self._print_summary()
         return True
 
     def _print_banner(self) -> None:
-        """Affiche la banniere."""
+        """Displays the banner."""
         print("""
 ========================================================================
      SAFESCORING.IO - PRICE UPDATER
 ========================================================================
-     Mise a jour automatique des prix via IA
-     Sources: Base de connaissances + Gemini + Mistral
+     Automatic price update via AI
+     Sources: Knowledge base + Gemini + Mistral
 ========================================================================
 """)
 
     def _print_summary(self) -> None:
-        """Affiche le résumé final."""
+        """Displays the final summary."""
         print(f"""
 {'=' * 60}
-   RESUME
+   SUMMARY
 {'=' * 60}
 
-   Duree:             {self.stats.duration:.1f} secondes
-   Total produits:    {self.stats.total}
-   Mis a jour:        {self.stats.updated}
-   Prix non trouves:  {self.stats.not_found}
-   Erreurs:           {self.stats.errors}
+   Duration:             {self.stats.duration:.1f} secondes
+   Total products:    {self.stats.total}
+   Updated:        {self.stats.updated}
+   Price not founds:  {self.stats.not_found}
+   Errors:           {self.stats.errors}
 
 {'=' * 60}
 """)
@@ -1017,29 +1017,29 @@ class PriceUpdater:
 
 def update_btc_fee_conversions(db: SupabaseClient, dry_run: bool = False, force: bool = False) -> None:
     """
-    Met à jour les produits Bitcoin avec la conversion sat/vB -> USD/EUR.
+    Updates Bitcoin products with sat/vB -> USD/EUR conversion.
 
-    Cette fonction recherche les produits dont price_details contient "sat/vB"
-    et ajoute/met à jour la conversion USD/EUR basée sur le prix BTC actuel.
+    This function searches for products whose price_details contains "sat/vB"
+    and adds/updates the USD/EUR conversion based on the current BTC price.
 
     Args:
         db: Client Supabase
-        dry_run: Si True, ne modifie pas la base de données
-        force: Si True, met à jour même les produits déjà convertis
+        dry_run: If True, does not modify the database
+        force: If True, updates even already converted products
     """
     import re
 
     print("\n" + "=" * 60)
-    print("   MISE A JOUR DES CONVERSIONS BITCOIN (sat/vB -> USD/EUR)")
+    print("   BITCOIN CONVERSION UPDATE (sat/vB -> USD/EUR)")
     print("=" * 60 + "\n")
 
-    # Récupérer le prix BTC actuel
+    # Retrieve the current BTC price
     btc_price = get_btc_price_usd()
-    print(f"   Prix BTC actuel: ${btc_price:,.0f}")
-    print(f"   Taille tx moyenne: {AVG_TX_SIZE_VBYTES} vBytes")
-    print(f"   Mode force: {'OUI' if force else 'NON'}\n")
+    print(f"   Current BTC price: ${btc_price:,.0f}")
+    print(f"   Average tx size: {AVG_TX_SIZE_VBYTES} vBytes")
+    print(f"   Force mode: {'YES' if force else 'NO'}\n")
 
-    # Récupérer tous les produits avec price_details contenant sat/vB
+    # Retrieve all products with price_details containing sat/vB
     products = db.get(
         'products',
         'id, name, slug, price_details',
@@ -1047,13 +1047,13 @@ def update_btc_fee_conversions(db: SupabaseClient, dry_run: bool = False, force:
     )
 
     if not products:
-        print("   Aucun produit avec frais sat/vB trouve")
+        print("   No products with sat/vB fees found")
         return
 
-    print(f"   Produits trouves: {len(products)}\n")
+    print(f"   Products found: {len(products)}\n")
 
-    # Pattern pour detecter sat/vB avec ou sans conversion existante
-    # Capture: "X-Y sat/vB" ou "X sat/vB" avec optional "(~$... | ~€...)"
+    # Pattern to detect sat/vB with or without existing conversion
+    # Capture: "X-Y sat/vB" or "X sat/vB" with optional "(~$... | ~€...)"
     sat_vb_with_conversion = re.compile(
         r'(\d+)(?:-(\d+))?\s*sat/vB(?:\s*\([^)]+\))?'
     )
@@ -1064,15 +1064,15 @@ def update_btc_fee_conversions(db: SupabaseClient, dry_run: bool = False, force:
     for product in products:
         details = product.get('price_details', '')
 
-        # Verifier si deja converti (contient $ ou €)
+        # Check if already converted (contient $ ou €)
         already_converted = '$' in details or '€' in details
 
         if already_converted and not force:
-            print(f"   [SKIP] {product['name']}: deja converti (utiliser --force)")
+            print(f"   [SKIP] {product['name']}: already converted (use --force)")
             skipped += 1
             continue
 
-        # Chercher le pattern sat/vB
+        # Look for sat/vB pattern
         match = sat_vb_with_conversion.search(details)
         if not match:
             continue
@@ -1080,14 +1080,14 @@ def update_btc_fee_conversions(db: SupabaseClient, dry_run: bool = False, force:
         min_sat = int(match.group(1))
         max_sat = int(match.group(2)) if match.group(2) else min_sat
 
-        # Calculer la conversion
+        # Calculate the conversion
         min_usd, max_usd = sat_per_vb_to_usd_range(min_sat, max_sat, btc_price_usd=btc_price)
         min_eur, max_eur = usd_to_eur(min_usd), usd_to_eur(max_usd)
 
-        # Format de la conversion
+        # Conversion format
         conversion = f"(~${min_usd:.2f}-${max_usd:.2f} | ~€{min_eur:.2f}-€{max_eur:.2f})"
 
-        # Remplacer dans le texte original (preservant le reste)
+        # Replace in original text (preserving the rest)
         def replace_sat_vb(m):
             base = f"{min_sat}-{max_sat} sat/vB" if max_sat != min_sat else f"{min_sat} sat/vB"
             return f"{base} {conversion}"
@@ -1095,8 +1095,8 @@ def update_btc_fee_conversions(db: SupabaseClient, dry_run: bool = False, force:
         new_details = sat_vb_with_conversion.sub(replace_sat_vb, details, count=1)
 
         print(f"   [{product['slug']}] {product['name']}")
-        print(f"      Ancien: {details}")
-        print(f"      Nouveau: {new_details}")
+        print(f"      Previous: {details}")
+        print(f"      New: {new_details}")
 
         if not dry_run:
             success = db.patch(
@@ -1105,25 +1105,25 @@ def update_btc_fee_conversions(db: SupabaseClient, dry_run: bool = False, force:
                 {'id': f"eq.{product['id']}"}
             )
             if success:
-                print(f"      => MIS A JOUR")
+                print(f"      => UPDATED")
                 updated += 1
             else:
-                print(f"      => ERREUR")
+                print(f"      => ERROR")
         else:
-            print(f"      => [DRY-RUN] Non modifie")
+            print(f"      => [DRY-RUN] Not modified")
             updated += 1
 
         print()
 
-    print(f"\n   Resume:")
-    print(f"   - Mis a jour: {updated}")
-    print(f"   - Ignores: {skipped}")
+    print(f"\n   Summary:")
+    print(f"   - Updated: {updated}")
+    print(f"   - Skipped: {skipped}")
     print(f"   - Total: {len(products)}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description='SafeScoring - Mise a jour automatique des prix'
+        description='SafeScoring - Automatic price update'
     )
     parser.add_argument(
         '--mode',
@@ -1134,50 +1134,50 @@ def main() -> None:
     parser.add_argument(
         '--dry-run',
         action='store_true',
-        help='Simulation sans modification'
+        help='Simulation without modification'
     )
     parser.add_argument(
         '--force',
         action='store_true',
-        help='Forcer mise a jour meme si prix existe'
+        help='Force update even if price exists'
     )
     parser.add_argument(
         '--product',
         type=str,
-        help='Slug du produit specifique'
+        help='Slug of the specific product'
     )
     parser.add_argument(
         '--update-btc-fees',
         action='store_true',
-        help='Met a jour les conversions sat/vB -> USD/EUR pour les produits Bitcoin'
+        help='Updates sat/vB -> USD/EUR conversions for Bitcoin products'
     )
 
     args = parser.parse_args()
 
-    # Afficher configuration
+    # Display configuration
     print("\n   Configuration:")
-    print(f"   - Supabase: {'OK' if SUPABASE_URL else 'MANQUANT'}")
-    print(f"   - Gemini:   {'OK' if GOOGLE_API_KEY else 'MANQUANT'}")
-    print(f"   - Mistral:  {'OK' if MISTRAL_API_KEY else 'MANQUANT'}")
+    print(f"   - Supabase: {'OK' if SUPABASE_URL else 'MISSING'}")
+    print(f"   - Gemini:   {'OK' if GOOGLE_API_KEY else 'MISSING'}")
+    print(f"   - Mistral:  {'OK' if MISTRAL_API_KEY else 'MISSING'}")
 
     if not SUPABASE_URL or not SUPABASE_KEY:
-        print("\n   ERREUR: Configuration Supabase requise!")
+        print("\n   ERROR: Supabase configuration required!")
         sys.exit(1)
 
-    # Mode mise a jour des conversions Bitcoin
+    # Bitcoin conversions update mode
     if args.update_btc_fees:
         db = SupabaseClient(SUPABASE_URL, SUPABASE_KEY)
         if not db.test_connection():
-            print("\n   ERREUR: Connexion Supabase impossible")
+            print("\n   ERROR: Supabase connection impossible")
             sys.exit(1)
         update_btc_fee_conversions(db, dry_run=args.dry_run, force=args.force)
         sys.exit(0)
 
     if not GOOGLE_API_KEY and not MISTRAL_API_KEY:
-        print("\n   ERREUR: Au moins une cle API IA requise (Gemini ou Mistral)")
+        print("\n   ERROR: At least one AI API key required (Gemini or Mistral)")
         sys.exit(1)
 
-    # Lancer le pipeline
+    # Launch the pipeline
     updater = PriceUpdater(dry_run=args.dry_run)
     success = updater.run(
         mode=args.mode,

@@ -29,22 +29,22 @@ export default function NewsletterPopup() {
     // Trigger conditions
     let hasTriggered = false;
 
-    // Trigger 1: Time on page (30 seconds)
+    // Trigger 1: Time on page (60 seconds — give user time to read)
     const timeoutId = setTimeout(() => {
       if (!hasTriggered && !dismissed) {
         setIsVisible(true);
         hasTriggered = true;
       }
-    }, 30000);
+    }, 60000);
 
-    // Trigger 2: Scroll depth (50%)
+    // Trigger 2: Scroll depth (90% — near bottom, after reading content)
     const handleScroll = () => {
       if (hasTriggered || dismissed) return;
 
       const scrollPercent =
         (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
 
-      if (scrollPercent > 50) {
+      if (scrollPercent > 90) {
         setIsVisible(true);
         hasTriggered = true;
       }
@@ -171,7 +171,7 @@ export default function NewsletterPopup() {
           {/* Social proof */}
           <div className="mt-6 pt-4 border-t border-base-300 text-center">
             <p className="text-sm text-base-content/60">
-              Join <span className="font-semibold text-primary">2,500+</span> crypto enthusiasts
+              Join crypto enthusiasts
               who trust SafeScoring for security insights.
             </p>
           </div>

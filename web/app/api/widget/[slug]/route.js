@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import config from "@/config";
+import { quickProtect } from "@/libs/api-protection";
 
 /**
  * Embeddable Widget API
@@ -18,6 +20,10 @@ import { supabase, isSupabaseConfigured } from "@/libs/supabase";
  */
 
 export async function GET(request, { params }) {
+  // Rate limit: public embeddable endpoint
+  const protection = await quickProtect(request, "public");
+  if (protection.blocked) return protection.response;
+
   const { slug } = await params;
   const { searchParams } = new URL(request.url);
 
@@ -91,7 +97,7 @@ export async function GET(request, { params }) {
 (function() {
   var container = document.currentScript.parentNode;
   var iframe = document.createElement('iframe');
-  iframe.src = 'https://safescoring.io/api/widget/${slug}?theme=${theme}&size=${size}';
+  iframe.src = 'https://${config.domainName}/api/widget/${slug}?theme=${theme}&size=${size}';
   iframe.style.border = 'none';
   iframe.style.width = '${size === 'small' ? '200px' : size === 'large' ? '400px' : '300px'}';
   iframe.style.height = '${size === 'small' ? '150px' : size === 'large' ? '250px' : '200px'}';
@@ -227,28 +233,28 @@ function generateWidgetHTML({ slug, productName, productType, score, scores, ver
     ${size !== 'small' ? `
     <div class="pillars">
       <div class="pillar">
-        <div class="pillar-code" style="color: #00d4aa">S</div>
+        <div class="pillar-code" style="color: #22c55e">S</div>
         <div class="pillar-score">${scores.s}</div>
       </div>
       <div class="pillar">
-        <div class="pillar-code" style="color: #8b5cf6">A</div>
+        <div class="pillar-code" style="color: #f59e0b">A</div>
         <div class="pillar-score">${scores.a}</div>
       </div>
       <div class="pillar">
-        <div class="pillar-code" style="color: #f59e0b">F</div>
+        <div class="pillar-code" style="color: #3b82f6">F</div>
         <div class="pillar-score">${scores.f}</div>
       </div>
       <div class="pillar">
-        <div class="pillar-code" style="color: #06b6d4">E</div>
+        <div class="pillar-code" style="color: #8b5cf6">E</div>
         <div class="pillar-score">${scores.e}</div>
       </div>
     </div>
     ` : ''}
-    <a href="https://safescoring.io/products/${slug}" target="_blank" class="cta">
+    <a href="https://${config.domainName}/products/${slug}" target="_blank" rel="noopener noreferrer" class="cta">
       View Full Report →
     </a>
     <div class="powered">
-      Powered by <a href="https://safescoring.io" target="_blank">SafeScoring</a>
+      Powered by <a href="https://${config.domainName}" target="_blank" rel="noopener noreferrer">SafeScoring</a>
     </div>
   </div>
 </body>

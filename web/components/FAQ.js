@@ -1,62 +1,41 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
+import { useNormStats } from "@/libs/NormStatsProvider";
+import config from "@/config";
 
-const faqs = [
-  {
-    question: "What is SAFE Scoring?",
-    answer:
-      "SAFE Scoring is the first unified security rating for all crypto products. We evaluate hardware wallets, software wallets, and DeFi protocols with the same rigorous methodology: 916 security norms across 4 pillars - Security (cryptographic standards), Adversity (threat resistance), Fidelity (reliability & trust), and Efficiency (usability).",
-  },
-  {
-    question: "How is SafeScoring different from CertiK or other auditors?",
-    answer:
-      "Audits verify code at a single point in time. SafeScoring measures real-world security continuously. Key differences: (1) We cover ALL products - hardware, software, AND DeFi - with one methodology. CertiK only audits smart contracts. (2) We update monthly, not once. (3) 87% of hacked projects in 2024 had been audited. We go beyond code to evaluate operational security, track record, and resilience.",
-  },
-  {
-    question: "How are products evaluated?",
-    answer:
-      "Our AI-powered system evaluates products against 916 norms using official documentation, security audits, technical specifications, and on-chain data. Each norm is marked YES (compliant), NO (non-compliant), or N/A (not applicable). The process is automated and reproducible - no subjective opinions.",
-  },
-  {
-    question: "How often are scores updated?",
-    answer:
-      "All products are re-evaluated monthly. Major security events (hacks, critical vulnerabilities, major updates) trigger immediate re-evaluation. Unlike one-time audits, SafeScoring tracks security over time.",
-  },
-  {
-    question: "Is SafeScoring truly independent?",
-    answer:
-      "100%. While we may earn affiliate commissions from product links, this never influences our scores. Scores are calculated purely from our 916-norm methodology - no exceptions. We've rated products poorly even when affiliates offered to pay for better scores. Independence is non-negotiable.",
-  },
-  {
-    question: "What are the 4 SAFE pillars?",
-    answer:
-      "S (Security, 25%): Cryptographic standards, key management, encryption. A (Adversity, 25%): Duress protection, anti-coercion, physical security. F (Fidelity, 25%): Audits, uptime, update frequency, track record. E (Efficiency, 25%): UX, multi-chain support, accessibility. Each pillar contributes equally to the final score.",
-  },
-  {
-    question: "Can I request a product evaluation?",
-    answer:
-      "Yes! Professional and Enterprise subscribers can request priority evaluations. Free users can suggest products through our community system. We prioritize based on market relevance and user demand.",
-  },
-  {
-    question: "How is the final score calculated?",
-    answer:
-      "The SAFE score is calculated as: (S + A + F + E) / 4, where each pillar score = (compliant norms / applicable norms) × 100. Products with many N/A norms are not penalized - only applicable norms count.",
-  },
-  {
-    question: "What's the difference between plans?",
-    answer:
-      "Explorer ($29/mo): All scores + methodology. Professional ($99/mo): Full evaluation details + API access + custom reports. Enterprise ($499/mo): White-label reports + custom integrations + on-demand evaluations + dedicated support.",
-  },
-  {
-    question: "Do you offer refunds?",
-    answer:
-      "Yes, 14-day money-back guarantee on all plans. No questions asked. If SafeScoring doesn't meet your expectations, we'll refund you in full.",
-  },
+const faqKeys = [
+  "whatIsSafeScore",
+  "howToUseScore",
+  "howToImprove",
+  "whatIsSafeScoring",
+  "vsCertik",
+  "howEvaluated",
+  "updateFrequency",
+  "independence",
+  "fourPillars",
+  "requestEvaluation",
+  "scoreCalculation",
+  "planDifference",
+  "refunds",
 ];
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
+  const { t } = useTranslation();
+  const normStats = useNormStats();
+
+  const th = config.safe.thresholds;
+  const faqs = faqKeys.map((key) => ({
+    question: t(`faq.items.${key}.q`),
+    answer: t(`faq.items.${key}.a`, {
+      count: normStats?.totalNorms || "2000+",
+      excellent: th.excellent,
+      excellentMinus: th.excellent - 1,
+      good: th.good,
+    }),
+  }));
 
   return (
     <section className="py-24 px-6 bg-base-200/30" id="faq">
@@ -67,10 +46,10 @@ const FAQ = () => {
             FAQ
           </span>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
-            Frequently Asked Questions
+            {t("faq.title")}
           </h2>
           <p className="text-lg text-base-content/60">
-            Everything you need to know about SafeScoring
+            {t("faq.subtitle")}
           </p>
         </div>
 
@@ -82,8 +61,11 @@ const FAQ = () => {
               className="rounded-xl border border-base-300 bg-base-200/50 overflow-hidden"
             >
               <button
-                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-base-300/30 transition-colors"
+                id={`faq-trigger-${index}`}
+                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-base-300/30 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                aria-expanded={openIndex === index}
+                aria-controls={`faq-panel-${index}`}
               >
                 <span className="font-semibold pr-4">{faq.question}</span>
                 <svg
@@ -95,6 +77,7 @@ const FAQ = () => {
                   className={`w-5 h-5 flex-shrink-0 transition-transform ${
                     openIndex === index ? "rotate-180" : ""
                   }`}
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -104,6 +87,9 @@ const FAQ = () => {
                 </svg>
               </button>
               <div
+                id={`faq-panel-${index}`}
+                role="region"
+                aria-labelledby={`faq-trigger-${index}`}
                 className={`overflow-hidden transition-all duration-300 ${
                   openIndex === index ? "max-h-96" : "max-h-0"
                 }`}
@@ -119,13 +105,13 @@ const FAQ = () => {
         {/* Contact CTA */}
         <div className="text-center mt-12">
           <p className="text-base-content/60 mb-4">
-            Still have questions?
+            {t("faq.stillQuestions")}
           </p>
           <a
             href="mailto:support@safescoring.io"
             className="btn btn-outline btn-sm"
           >
-            Contact Support
+            {t("faq.contactSupport")}
           </a>
         </div>
       </div>

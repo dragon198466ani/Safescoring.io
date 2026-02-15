@@ -20,7 +20,7 @@ export default function UsageBanner() {
         setUsage(data);
       }
     } catch (error) {
-      console.error("Error fetching usage:", error);
+      if (process.env.NODE_ENV === "development") console.error("Error fetching usage:", error);
     }
     setLoading(false);
   };

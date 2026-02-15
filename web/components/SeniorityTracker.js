@@ -26,7 +26,7 @@ export default function SeniorityTracker() {
           setStats(data.reputation);
         }
       } catch (err) {
-        console.error("Failed to fetch stats:", err);
+        if (process.env.NODE_ENV === "development") console.error("Failed to fetch stats:", err);
       } finally {
         setLoading(false);
       }
@@ -171,7 +171,7 @@ export default function SeniorityTracker() {
 
         {/* Join date */}
         <div className="text-center text-xs text-base-content/40 pt-2 border-t border-base-300">
-          Member since {new Date(joinDate).toLocaleDateString("en-US", {
+          Member since {new Date(joinDate).toLocaleDateString(undefined, {
             month: "long",
             year: "numeric"
           })}

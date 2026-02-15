@@ -30,11 +30,14 @@ export default function CookieConsent() {
   const handleAcceptAll = () => {
     setConsent("all");
     setVisible(false);
+    // Notify same-tab listeners (storage event only fires cross-tab)
+    window.dispatchEvent(new Event("cookie-consent-update"));
   };
 
   const handleEssentialOnly = () => {
     setConsent("essential");
     setVisible(false);
+    window.dispatchEvent(new Event("cookie-consent-update"));
   };
 
   if (!visible) return null;
@@ -67,7 +70,7 @@ export default function CookieConsent() {
             </button>
             <button
               onClick={handleAcceptAll}
-              className="btn btn-sm btn-outline btn-primary"
+              className="btn btn-sm btn-outline"
             >
               {t("cookies.acceptAll")}
             </button>

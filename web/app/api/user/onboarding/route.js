@@ -15,17 +15,44 @@ export async function GET() {
       return NextResponse.json({ error: "Database not configured" }, { status: 500 });
     }
 
-    const { data: user, error } = await supabaseAdmin
+    // Try full onboarding columns first; fallback to basic if columns don't exist
+    let user = null;
+    const { data, error } = await supabaseAdmin
       .from("users")
       .select("onboarding_completed, onboarding_step, name, user_type, interests")
       .eq("id", session.user.id)
       .single();
 
     if (error) {
+      // Column-not-found errors (code 42703 / message contains "column") → fallback to basic query
+      const isColumnError =
+        error.code === "42703" ||
+        error.message?.toLowerCase().includes("column") ||
+        error.message?.toLowerCase().includes("does not exist");
+
+      if (isColumnError) {
+        console.warn("Onboarding columns not found, returning defaults. Run migration to add them.");
+        const { data: basicUser } = await supabaseAdmin
+          .from("users")
+          .select("name")
+          .eq("id", session.user.id)
+          .single();
+
+        return NextResponse.json({
+          onboardingCompleted: false,
+          currentStep: 0,
+          name: basicUser?.name || null,
+          userType: null,
+          interests: null,
+          _migrationNeeded: true,
+        });
+      }
+
       console.error("Error fetching onboarding state:", error);
       return NextResponse.json({ error: "Failed to fetch onboarding state" }, { status: 500 });
     }
 
+    user = data;
     return NextResponse.json({
       onboardingCompleted: user?.onboarding_completed ?? false,
       currentStep: user?.onboarding_step ?? 0,
@@ -88,6 +115,28 @@ export async function POST(req) {
       .eq("id", session.user.id);
 
     if (error) {
+      // Column-not-found → strip unknown columns and retry with only known ones
+      const isColumnError =
+        error.code === "42703" ||
+        error.message?.toLowerCase().includes("column") ||
+        error.message?.toLowerCase().includes("does not exist");
+
+      if (isColumnError) {
+        console.warn("Some onboarding columns missing. Saving only basic fields (name).");
+        // Retry with only universally-available columns
+        const safeUpdate = {};
+        if (updateData.name) safeUpdate.name = updateData.name;
+
+        if (Object.keys(safeUpdate).length > 0) {
+          await supabaseAdmin
+            .from("users")
+            .update(safeUpdate)
+            .eq("id", session.user.id);
+        }
+
+        return NextResponse.json({ success: true, _migrationNeeded: true });
+      }
+
       console.error("Error updating onboarding:", error);
       return NextResponse.json({ error: "Failed to save onboarding progress" }, { status: 500 });
     }

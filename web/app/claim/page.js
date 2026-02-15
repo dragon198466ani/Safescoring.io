@@ -240,7 +240,7 @@ function ClaimForm() {
         <div className="grid md:grid-cols-3 gap-4 mb-6">
           <div className="p-4 bg-base-200 rounded-lg">
             <div className="text-2xl mb-2">✓</div>
-            <div className="font-medium">Verified Badge</div>
+            <div className="font-medium">Claimed Badge</div>
             <div className="text-sm text-base-content/60">Show users your listing is official</div>
           </div>
           <div className="p-4 bg-base-200 rounded-lg">

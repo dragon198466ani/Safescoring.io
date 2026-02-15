@@ -1,44 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
-const INTEREST_CATEGORIES = [
-  {
-    id: "hardware_wallets",
-    title: "Hardware Wallets",
-    description: "Ledger, Trezor, etc.",
-    icon: "shield",
-  },
-  {
-    id: "software_wallets",
-    title: "Software Wallets",
-    description: "MetaMask, Trust Wallet, etc.",
-    icon: "device",
-  },
-  {
-    id: "exchanges",
-    title: "Exchanges",
-    description: "Centralized trading platforms",
-    icon: "exchange",
-  },
-  {
-    id: "defi",
-    title: "DeFi Protocols",
-    description: "Uniswap, Aave, etc.",
-    icon: "cube",
-  },
-  {
-    id: "cards",
-    title: "Crypto Cards",
-    description: "Payment cards with crypto",
-    icon: "card",
-  },
-  {
-    id: "custody",
-    title: "Custody Solutions",
-    description: "Institutional custody",
-    icon: "lock",
-  },
+const INTEREST_IDS = [
+  { id: "hardware_wallets", key: "hardwareWallets", icon: "shield" },
+  { id: "software_wallets", key: "softwareWallets", icon: "device" },
+  { id: "exchanges", key: "exchanges", icon: "exchange" },
+  { id: "defi", key: "defi", icon: "cube" },
+  { id: "cards", key: "cards", icon: "card" },
+  { id: "custody", key: "custody", icon: "lock" },
 ];
 
 const ICONS = {
@@ -76,6 +47,7 @@ const ICONS = {
 
 export default function StepInterests({ data, onNext, onBack, saving }) {
   const [selected, setSelected] = useState(data.interests || []);
+  const { t } = useTranslation();
 
   const toggleInterest = (id) => {
     setSelected((prev) =>
@@ -90,14 +62,14 @@ export default function StepInterests({ data, onNext, onBack, saving }) {
   return (
     <div>
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">What products interest you?</h2>
+        <h2 className="text-2xl font-bold mb-2">{t("onboarding.interests.title")}</h2>
         <p className="text-base-content/60">
-          Select all that apply. You can change this later.
+          {t("onboarding.interests.subtitle")}
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-8">
-        {INTEREST_CATEGORIES.map((category) => (
+        {INTEREST_IDS.map((category) => (
           <button
             key={category.id}
             onClick={() => toggleInterest(category.id)}
@@ -123,15 +95,15 @@ export default function StepInterests({ data, onNext, onBack, saving }) {
                 </svg>
               )}
             </div>
-            <div className="font-medium text-sm">{category.title}</div>
-            <div className="text-xs text-base-content/50">{category.description}</div>
+            <div className="font-medium text-sm">{t(`onboarding.interests.${category.key}`)}</div>
+            <div className="text-xs text-base-content/50">{t(`onboarding.interests.${category.key}Desc`)}</div>
           </button>
         ))}
       </div>
 
       <div className="flex gap-3">
         <button onClick={onBack} className="btn btn-ghost">
-          Back
+          {t("onboarding.back")}
         </button>
         <button
           onClick={handleSubmit}
@@ -141,9 +113,9 @@ export default function StepInterests({ data, onNext, onBack, saving }) {
           {saving ? (
             <span className="loading loading-spinner loading-sm"></span>
           ) : selected.length === 0 ? (
-            "Skip for now"
+            t("onboarding.interests.skipForNow")
           ) : (
-            "Continue"
+            t("onboarding.continue")
           )}
         </button>
       </div>

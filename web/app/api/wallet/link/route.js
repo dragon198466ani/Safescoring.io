@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { createPublicClient, http } from "viem";
 import { polygon } from "viem/chains";
 import { verifyMessage } from "viem";
+import { quickProtect } from "@/libs/api-protection";
 
 // Lazy initialization to avoid build-time errors
 function getSupabase() {
@@ -18,6 +19,10 @@ function getSupabase() {
  * Link a wallet address to user account (with signature verification)
  */
 export async function POST(req) {
+  // Rate limit: sensitive account modification
+  const protection = await quickProtect(req, "sensitive");
+  if (protection.blocked) return protection.response;
+
   try {
     const session = await auth();
 

@@ -18,21 +18,7 @@ from core.smart_evaluator import SmartEvaluator
 from core.product_scraper import ProductScraper
 from core.score_calculator import ScoreCalculator
 
-# Configuration
-def load_config():
-    config = {}
-    config_path = os.path.join(os.path.dirname(__file__), 'env_template_free.txt')
-    with open(config_path, 'r', encoding='utf-8') as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith('#') and '=' in line:
-                key, value = line.split('=', 1)
-                config[key.strip()] = value.strip()
-    return config
-
-CONFIG = load_config()
-SUPABASE_URL = CONFIG.get('NEXT_PUBLIC_SUPABASE_URL', '')
-SUPABASE_KEY = CONFIG.get('NEXT_PUBLIC_SUPABASE_ANON_KEY', '')
+from core.config import load_config, CONFIG, SUPABASE_URL, SUPABASE_KEY
 
 
 class MonthlyCron:
