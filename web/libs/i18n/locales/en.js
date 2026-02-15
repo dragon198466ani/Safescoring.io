@@ -58,7 +58,7 @@ export default {
     titleHighlight: "crypto security rating",
     subtitle: "Hardware wallets. Software wallets. DeFi protocols.",
     subtitleStrong: "All evaluated with the same rigorous methodology.",
-    antiAudit: "87% of hacked projects in 2024 had been audited.",
+    antiAudit: "Nearly half of hacked projects in 2024 had been audited.",
     antiAuditHighlight: "We measure real security.",
     ctaPrimary: "Analyze Your Stack",
     ctaCompare: "Compare Products",
@@ -379,7 +379,7 @@ export default {
       },
       vsCertik: {
         q: "How is SafeScoring different from CertiK or other auditors?",
-        a: "Audits verify code at a single point in time. SafeScoring measures real-world security continuously. Key differences: (1) We cover ALL products - hardware, software, AND DeFi - with one methodology. CertiK only audits smart contracts. (2) We update monthly, not once. (3) 87% of hacked projects in 2024 had been audited. We go beyond code to evaluate operational security, track record, and resilience.",
+        a: "Audits verify code at a single point in time. SafeScoring measures real-world security continuously. Key differences: (1) We cover ALL products - hardware, software, AND DeFi - with one methodology. CertiK only audits smart contracts. (2) We update monthly, not once. (3) Nearly half of hacked projects in 2024 had been audited. We go beyond code to evaluate operational security, track record, and resilience.",
       },
       howEvaluated: {
         q: "How are products evaluated?",

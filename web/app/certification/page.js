@@ -109,7 +109,7 @@ const BadgePreview = ({ type }) => {
 };
 
 const stats = [
-  { value: "87%", label: "of hacked projects had audits" },
+  { value: "~50%", label: "of hacked projects had audits" },
   { value: "916", label: "security norms evaluated" },
   { value: "100+", label: "products already scored" },
   { value: "0", label: "bias in our methodology" },
@@ -148,7 +148,7 @@ export default function CertificationPage() {
               Get <span className="text-primary">SAFE Certified</span>
             </h1>
             <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-8">
-              Prove your security. Build user trust. Stand out from 87% of projects that got hacked despite having audits.
+              Prove your security. Build user trust. Stand out from the many projects that got hacked despite having audits.
             </p>
 
             {/* Stats */}
@@ -176,7 +176,7 @@ export default function CertificationPage() {
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Audits Are Not Enough</h3>
                 <p className="text-base-content/70">
-                  87% of hacked DeFi projects in 2024 had been audited. Audits check code, not operational security, backup procedures, or real-world resilience.
+                  Nearly half of hacked DeFi projects in 2024 had been audited. Audits check code, not operational security, backup procedures, or real-world resilience.
                 </p>
               </div>
               <div className="bg-base-100 rounded-xl p-6 border border-base-300">
