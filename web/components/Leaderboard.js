@@ -140,6 +140,8 @@ function Leaderboard({ limit = 10, showTitle = true }) {
                       <img
                         src={entry.avatar}
                         alt={entry.name}
+                        width={32}
+                        height={32}
                         className="w-8 h-8 rounded-full"
                       />
                     ) : (

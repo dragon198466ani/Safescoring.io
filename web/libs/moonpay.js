@@ -151,7 +151,12 @@ export function parseTransactionId(externalTransactionId) {
     const payload = `ss_${planName}_${userId}_${parts[3]}`;
     const secret = process.env.MOONPAY_WEBHOOK_SECRET || process.env.NEXTAUTH_SECRET || "";
     const expectedHmac = crypto.createHmac("sha256", secret).update(payload).digest("hex").slice(0, 8);
-    if (receivedHmac !== expectedHmac) {
+    try {
+      if (!crypto.timingSafeEqual(Buffer.from(receivedHmac), Buffer.from(expectedHmac))) {
+        console.error("MoonPay transactionId HMAC verification failed");
+        return null;
+      }
+    } catch {
       console.error("MoonPay transactionId HMAC verification failed");
       return null;
     }

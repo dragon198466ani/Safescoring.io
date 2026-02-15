@@ -67,7 +67,7 @@ export default function NewsletterPopup() {
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [dismissed]);
+  }, []);
 
   const handleDismiss = () => {
     setIsVisible(false);
