@@ -55,9 +55,12 @@ const securityHeaders = [
   },
 ];
 
+const isVercel = !!process.env.VERCEL;
+
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
+  // standalone is for self-hosted Docker; Vercel uses its own output mode
+  ...(isVercel ? {} : { output: 'standalone' }),
 
   // Enable gzip/brotli compression
   compress: true,
@@ -67,11 +70,6 @@ const nextConfig = {
 
   // Power optimizations
   poweredByHeader: false,
-
-  // Don't fail build on ESLint warnings (only errors)
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
 
   // Experimental optimizations (disabled - requires additional packages)
   // experimental: {
