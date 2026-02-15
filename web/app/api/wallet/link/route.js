@@ -110,6 +110,9 @@ export async function POST(req) {
  */
 export async function DELETE(req) {
   try {
+    const protection = await quickProtect(req, "sensitive");
+    if (protection.blocked) return protection.response;
+
     const session = await auth();
 
     if (!session?.user?.id) {

@@ -666,6 +666,23 @@ export default {
   },
 
   // Errors
+  // Dashboard Navigation
+  dashboard: {
+    nav: {
+      dashboard: "Dashboard",
+      setups: "Setups",
+      favorites: "Favorites",
+      analytics: "Analytics",
+      account: "Account",
+      corrections: "Corrections",
+      referrals: "Referrals",
+      apiKeys: "API Keys",
+      webhooks: "Webhooks",
+      products: "Products",
+      more: "More",
+    },
+  },
+
   errors: {
     unauthorized: "Unauthorized",
     notFound: "Not found",

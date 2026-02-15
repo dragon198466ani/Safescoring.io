@@ -35,6 +35,12 @@ export async function GET(request, { params }) {
   const slugParts = params.slug || [];
   const type = slugParts[0]; // 'products', 'compare', 'leaderboard', etc.
 
+  // Reject excessively long slugs to prevent timeout
+  const fullSlug = slugParts.join("/");
+  if (fullSlug.length > 128) {
+    return generateDefaultOG();
+  }
+
   try {
     if (type === 'products' && slugParts[1]) {
       return await generateProductOG(slugParts[1]);

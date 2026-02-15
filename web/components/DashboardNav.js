@@ -3,27 +3,29 @@
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
-const primaryLinks = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/dashboard/setups", label: "Setups" },
-  { href: "/dashboard/favorites", label: "Favorites" },
-  { href: "/dashboard/analytics", label: "Analytics" },
-  { href: "/dashboard/account", label: "Account" },
+const primaryKeys = [
+  { href: "/dashboard", key: "dashboard" },
+  { href: "/dashboard/setups", key: "setups" },
+  { href: "/dashboard/favorites", key: "favorites" },
+  { href: "/dashboard/analytics", key: "analytics" },
+  { href: "/dashboard/account", key: "account" },
 ];
 
-const moreLinks = [
-  { href: "/dashboard/corrections", label: "Corrections" },
-  { href: "/dashboard/referrals", label: "Referrals" },
-  { href: "/dashboard/api-keys", label: "API Keys" },
-  { href: "/dashboard/webhooks", label: "Webhooks" },
-  { href: "/products", label: "Products" },
+const moreKeys = [
+  { href: "/dashboard/corrections", key: "corrections" },
+  { href: "/dashboard/referrals", key: "referrals" },
+  { href: "/dashboard/api-keys", key: "apiKeys" },
+  { href: "/dashboard/webhooks", key: "webhooks" },
+  { href: "/products", key: "products" },
 ];
 
 export default function DashboardNav() {
   const pathname = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef(null);
+  const { t } = useTranslation();
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -47,11 +49,11 @@ export default function DashboardNav() {
   };
 
   // Check if any "more" link is active
-  const isMoreActive = moreLinks.some((link) => isActive(link.href));
+  const isMoreActive = moreKeys.some((link) => isActive(link.href));
 
   return (
     <nav className="hidden md:flex items-center gap-1 lg:gap-2" aria-label="Dashboard navigation">
-      {primaryLinks.map((link) => (
+      {primaryKeys.map((link) => (
         <Link
           key={link.href}
           href={link.href}
@@ -61,7 +63,7 @@ export default function DashboardNav() {
               : "text-base-content/70 hover:text-base-content hover:bg-base-200"
           }`}
         >
-          {link.label}
+          {t(`dashboard.nav.${link.key}`)}
         </Link>
       ))}
 
@@ -77,7 +79,7 @@ export default function DashboardNav() {
           aria-expanded={moreOpen}
           aria-haspopup="true"
         >
-          More
+          {t("dashboard.nav.more")}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -92,7 +94,7 @@ export default function DashboardNav() {
 
         {moreOpen && (
           <div className="absolute top-full left-0 mt-1 w-48 bg-base-100 border border-base-300 rounded-xl shadow-xl p-1.5 z-50">
-            {moreLinks.map((link) => (
+            {moreKeys.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -103,7 +105,7 @@ export default function DashboardNav() {
                 }`}
                 onClick={() => setMoreOpen(false)}
               >
-                {link.label}
+                {t(`dashboard.nav.${link.key}`)}
               </Link>
             ))}
           </div>

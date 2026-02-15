@@ -17,9 +17,9 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    if (!body.returnUrl) {
+    if (!body.returnUrl || !body.returnUrl.startsWith("/") || body.returnUrl.startsWith("//")) {
       return NextResponse.json(
-        { error: "Return URL is required" },
+        { error: "Invalid return URL" },
         { status: 400 }
       );
     }
@@ -62,7 +62,7 @@ export async function POST(req) {
 
     return NextResponse.json({ url: portalUrl });
   } catch (e) {
-    console.error("LemonSqueezy portal error:", e);
-    return NextResponse.json({ error: e?.message }, { status: 500 });
+    if (process.env.NODE_ENV === "development") console.error("LemonSqueezy portal error:", e);
+    return NextResponse.json({ error: "Failed to create billing portal" }, { status: 500 });
   }
 }

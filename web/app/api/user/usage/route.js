@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { supabaseAdmin } from "@/libs/supabase";
+import { quickProtect } from "@/libs/api-protection";
 import config from "@/config";
 
 // GET - Get user's current usage stats
-export async function GET() {
+export async function GET(request) {
   try {
+    const protection = await quickProtect(request, "standard");
+    if (protection.blocked) return protection.response;
+
     const session = await auth();
 
     if (!session?.user?.id) {
