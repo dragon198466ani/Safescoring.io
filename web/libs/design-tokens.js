@@ -1,7 +1,10 @@
 import config from "@/config";
 
-// Re-export pillars with design-token compatible property names
-export const PILLARS = config.safe.pillars.map((pillar) => ({
-  ...pillar,
-  primary: pillar.color,
+export const PILLARS = config.safe.pillars.map((p) => ({
+  code: p.code,
+  name: p.name,
+  primary: p.color,
+  description: p.description,
+  shortDesc: p.shortDesc,
+  normCount: p.normCount,
 }));
