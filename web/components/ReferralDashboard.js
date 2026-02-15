@@ -110,7 +110,7 @@ export default function ReferralDashboard() {
         <ul className="text-sm text-base-content/70 space-y-1">
           <li>✨ <strong>1 confirmed referral</strong> = 1 month free Explorer tier</li>
           <li>✨ <strong>5 referrals</strong> = 1 month free Professional tier</li>
-          <li>✨ <strong>10+ referrals</strong> = Priority for future $SAFE airdrop</li>
+          <li>✨ <strong>10+ referrals</strong> = Lifetime free Professional tier</li>
         </ul>
       </div>
 

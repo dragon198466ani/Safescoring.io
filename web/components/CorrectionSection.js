@@ -45,7 +45,7 @@ export default function CorrectionSection({ productId, productSlug, productName 
           <div className="text-left">
             <h3 className="font-semibold">Help Improve This Evaluation</h3>
             <p className="text-sm text-base-content/60">
-              Found inaccurate data? Submit a correction and earn reputation points.
+              Found inaccurate data? Submit a correction and help improve this evaluation.
             </p>
           </div>
         </div>
@@ -119,7 +119,7 @@ export default function CorrectionSection({ productId, productSlug, productName 
                         <li>1. Submit a correction with evidence</li>
                         <li>2. When 3 users suggest the same fix, it auto-approves</li>
                         <li>3. The evaluation updates automatically</li>
-                        <li>4. All contributors earn reputation points</li>
+                        <li>4. The community benefits from better data</li>
                       </ul>
                     </div>
                   </div>
