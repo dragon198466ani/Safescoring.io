@@ -57,7 +57,6 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
 
   // Enable gzip/brotli compression
   compress: true,
