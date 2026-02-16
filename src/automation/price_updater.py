@@ -36,6 +36,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 # APIs
 import requests
 
+from src.utils.fee_parser import parse_fees
+
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -68,6 +70,7 @@ class PriceResult:
     confidence: str = "low"
     is_free: bool = False
     raw_response: Optional[Dict[str, Any]] = None
+    fees_breakdown: Optional[Dict[str, Any]] = None
 
 
 @dataclass
@@ -567,13 +570,15 @@ class PriceFinder:
         # Chercher correspondance exacte ou partielle
         for known_name, (price, details) in KNOWN_PRICES.items():
             if known_name in name_lower or name_lower in known_name:
-                return PriceResult(
+                result = PriceResult(
                     price_eur=price,
                     price_details=details,
                     source="known_database",
                     confidence="high",
                     is_free=(price == 0)
                 )
+                result.fees_breakdown = parse_fees(price, details, source="known_database")
+                return result
 
         return None
 
@@ -798,6 +803,8 @@ Regles:
         )
 
         if result.price_eur is not None:
+            if not result.fees_breakdown:
+                result.fees_breakdown = parse_fees(result.price_eur, result.price_details, source=result.source)
             return result
 
         time.sleep(1)
@@ -812,6 +819,8 @@ Regles:
             )
 
             if result.price_eur is not None:
+                if not result.fees_breakdown:
+                    result.fees_breakdown = parse_fees(result.price_eur, result.price_details, source=result.source)
                 return result
 
         return PriceResult(source="not_found")
@@ -901,6 +910,9 @@ class PriceUpdater:
             'price_details': result.price_details or '',
             'updated_at': datetime.now().isoformat()
         }
+
+        if result.fees_breakdown:
+            data['fees_breakdown'] = json.dumps(result.fees_breakdown)
 
         return self.db.patch('products', data, {'id': f'eq.{product.id}'})
 

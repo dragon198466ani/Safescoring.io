@@ -1,9 +1,15 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useId } from "react";
+import Link from "next/link";
 import ProductLogo from "@/components/ProductLogo";
 import SetupQuiz from "@/components/SetupQuiz";
 import SetupAssistant from "@/components/SetupAssistant";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
+import config from "@/config";
+import PillarContributionChart from "@/components/charts/PillarContributionChart";
+import WeakestPillarHighlight from "@/components/charts/WeakestPillarHighlight";
+import RadarChart from "@/components/charts/RadarChart";
 
 /**
  * Setups Dashboard - Split view with catalog + setup builder
@@ -11,19 +17,19 @@ import SetupAssistant from "@/components/SetupAssistant";
  */
 
 const PRODUCT_TYPES = [
-  { id: "all", label: "All Products" },
-  { id: "hardware_wallet", label: "Hardware Wallets" },
-  { id: "software_wallet", label: "Software Wallets" },
-  { id: "exchange", label: "Exchanges" },
-  { id: "defi", label: "DeFi" },
-  { id: "custody", label: "Custody" },
+  { id: "all", labelKey: "dashboardSetups.allProducts" },
+  { id: "hardware_wallet", labelKey: "dashboardSetups.hardwareWallets" },
+  { id: "software_wallet", labelKey: "dashboardSetups.softwareWallets" },
+  { id: "exchange", labelKey: "dashboardSetups.exchanges" },
+  { id: "defi", labelKey: "dashboardSetups.defi" },
+  { id: "custody", labelKey: "dashboardSetups.custody" },
 ];
 
 const ROLES = [
-  { id: "wallet", label: "Primary Wallet", weight: "2x", color: "text-purple-400" },
-  { id: "exchange", label: "Exchange", weight: "1x", color: "text-blue-400" },
-  { id: "defi", label: "DeFi", weight: "1x", color: "text-green-400" },
-  { id: "other", label: "Other", weight: "1x", color: "text-base-content/60" },
+  { id: "wallet", labelKey: "dashboardSetups.primaryWallet", weight: "2x", color: "text-purple-400" },
+  { id: "exchange", labelKey: "dashboardSetups.exchange", weight: "1x", color: "text-blue-400" },
+  { id: "defi", labelKey: "dashboardSetups.defiRole", weight: "1x", color: "text-green-400" },
+  { id: "other", labelKey: "dashboardSetups.other", weight: "1x", color: "text-base-content/60" },
 ];
 
 const getScoreColor = (score) => {
@@ -76,6 +82,7 @@ function useAnimatedCounter(targetValue, duration = 500) {
 // Score circle component with animation
 function ScoreCircle({ score, size = 120, label = "SAFE", isAnimating = false }) {
   const animatedScore = useAnimatedCounter(score, 800);
+  const gradId = useId();
   const radius = (size - 12) / 2;
   const circumference = 2 * Math.PI * radius;
   const progress = (animatedScore / 100) * circumference;
@@ -96,7 +103,7 @@ function ScoreCircle({ score, size = 120, label = "SAFE", isAnimating = false })
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="url(#scoreGradient)"
+          stroke={`url(#${gradId})`}
           strokeWidth="6"
           fill="none"
           strokeLinecap="round"
@@ -105,7 +112,7 @@ function ScoreCircle({ score, size = 120, label = "SAFE", isAnimating = false })
           className="transition-all duration-700 ease-out"
         />
         <defs>
-          <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#22c55e" />
             <stop offset="50%" stopColor="#f59e0b" />
             <stop offset="100%" stopColor="#8b5cf6" />
@@ -160,6 +167,7 @@ function AnimatedPillarScore({ value, code, color, delta }) {
 
 // Product card in catalog
 function ProductCard({ product, onAdd, isAdded }) {
+  const { t } = useTranslation();
   return (
     <div
       className={`p-3 rounded-xl border transition-all cursor-pointer ${
@@ -182,7 +190,7 @@ function ProductCard({ product, onAdd, isAdded }) {
             </span>
           )}
           {isAdded ? (
-            <span className="text-xs text-primary">Added</span>
+            <span className="text-xs text-primary">{t("dashboardSetups.added")}</span>
           ) : (
             <button className="btn btn-ghost btn-xs btn-circle">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
@@ -198,7 +206,8 @@ function ProductCard({ product, onAdd, isAdded }) {
 
 // Setup product item
 function SetupProductItem({ product, role, onRemove, onRoleChange }) {
-  const _roleInfo = ROLES.find(r => r.id === role) || ROLES[3];
+  const { t } = useTranslation();
+  const roleInfo = ROLES.find(r => r.id === role) || ROLES[3];
 
   return (
     <div className="flex items-center gap-3 p-3 rounded-xl bg-base-300/50 border border-base-300">
@@ -211,7 +220,7 @@ function SetupProductItem({ product, role, onRemove, onRoleChange }) {
           className="select select-ghost select-xs mt-1 -ml-2"
         >
           {ROLES.map(r => (
-            <option key={r.id} value={r.id}>{r.label} ({r.weight})</option>
+            <option key={r.id} value={r.id}>{t(r.labelKey)} ({r.weight})</option>
           ))}
         </select>
       </div>
@@ -233,6 +242,7 @@ function SetupProductItem({ product, role, onRemove, onRoleChange }) {
 }
 
 export default function SetupsPage() {
+  const { t } = useTranslation();
   // Catalog state
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
@@ -240,7 +250,7 @@ export default function SetupsPage() {
   const [selectedType, setSelectedType] = useState("all");
 
   // Setup state
-  const [setupName, setSetupName] = useState("My Crypto Stack");
+  const [setupName, setSetupName] = useState(() => t("dashboardSetups.myCryptoStack"));
   const [setupProducts, setSetupProducts] = useState([]); // { product, role }
   const [saving, setSaving] = useState(false);
 
@@ -250,6 +260,9 @@ export default function SetupsPage() {
   // Quiz and assistant state
   const [showQuiz, setShowQuiz] = useState(false);
   const [showAssistant, setShowAssistant] = useState(false);
+
+  // Market average for benchmark comparison
+  const [marketAverage, setMarketAverage] = useState(null);
 
   // Previous score for delta tracking
   const prevScoreRef = useRef(null);
@@ -283,8 +296,28 @@ export default function SetupsPage() {
       }
     };
 
+    const fetchMarketAverage = async () => {
+      try {
+        const res = await fetch("/api/stats");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.pillars) {
+            setMarketAverage({
+              S: Math.round(data.pillars.S?.avg || 0),
+              A: Math.round(data.pillars.A?.avg || 0),
+              F: Math.round(data.pillars.F?.avg || 0),
+              E: Math.round(data.pillars.E?.avg || 0),
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch market stats:", err);
+      }
+    };
+
     fetchProducts();
     fetchLimits();
+    fetchMarketAverage();
   }, []);
 
   // Filter products
@@ -354,6 +387,18 @@ export default function SetupsPage() {
     };
   }, [setupProducts]);
 
+  // Identify the weakest pillar for improvement advice
+  const weakestPillar = useMemo(() => {
+    if (!combinedScore) return null;
+    const pillars = [
+      { code: "S", score: combinedScore.S },
+      { code: "A", score: combinedScore.A },
+      { code: "F", score: combinedScore.F },
+      { code: "E", score: combinedScore.E },
+    ];
+    return pillars.reduce((min, p) => p.score < min.score ? p : min, pillars[0]);
+  }, [combinedScore]);
+
   // Track score changes for delta display
   useEffect(() => {
     if (combinedScore && prevScoreRef.current) {
@@ -392,7 +437,7 @@ export default function SetupsPage() {
     }
 
     if (setupProducts.length === 0) {
-      alert("Add at least one product to your setup");
+      alert(t("dashboardSetups.addAtLeastOne"));
       return;
     }
 
@@ -417,8 +462,8 @@ export default function SetupsPage() {
 
       // Reset and show success
       setSetupProducts([]);
-      setSetupName("My Crypto Stack");
-      alert("Setup saved successfully!");
+      setSetupName(t("dashboardSetups.myCryptoStack"));
+      alert(t("dashboardSetups.setupSaved"));
     } catch (err) {
       alert(err.message);
     }
@@ -432,9 +477,9 @@ export default function SetupsPage() {
         <div className="sticky top-24 space-y-4">
           {/* Header */}
           <div>
-            <h1 className="text-2xl font-bold">Build Your Stack</h1>
+            <h1 className="text-2xl font-bold">{t("dashboardSetups.buildYourStack")}</h1>
             <p className="text-base-content/60 text-sm">
-              Select products to analyze your combined security score
+              {t("dashboardSetups.selectProductsDesc")}
             </p>
           </div>
 
@@ -451,8 +496,8 @@ export default function SetupsPage() {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-semibold text-sm">Not sure where to start?</p>
-                  <p className="text-xs text-base-content/60">Take our 30-second quiz for personalized recommendations</p>
+                  <p className="font-semibold text-sm">{t("dashboardSetups.notSureWhereToStart")}</p>
+                  <p className="text-xs text-base-content/60">{t("dashboardSetups.quizDesc")}</p>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-primary ml-auto">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -481,7 +526,7 @@ export default function SetupsPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
+                placeholder={t("dashboardSetups.searchProducts")}
                 className="input input-bordered w-full pl-10 bg-base-200"
               />
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40">
@@ -496,7 +541,7 @@ export default function SetupsPage() {
               className="select select-bordered bg-base-200"
             >
               {PRODUCT_TYPES.map(type => (
-                <option key={type.id} value={type.id}>{type.label}</option>
+                <option key={type.id} value={type.id}>{t(type.labelKey)}</option>
               ))}
             </select>
           </div>
@@ -511,7 +556,7 @@ export default function SetupsPage() {
               </div>
             ) : filteredProducts.length === 0 ? (
               <div className="text-center py-8 text-base-content/50">
-                No products found
+                {t("dashboardSetups.noProductsFound")}
               </div>
             ) : (
               filteredProducts.map(product => (
@@ -538,10 +583,10 @@ export default function SetupsPage() {
                 value={setupName}
                 onChange={(e) => setSetupName(e.target.value)}
                 className="input input-ghost text-lg font-semibold p-0 h-auto focus:bg-transparent"
-                placeholder="Setup name..."
+                placeholder={t("dashboardSetups.setupNamePlaceholder")}
               />
               <span className="text-xs text-base-content/50">
-                {setupProducts.length} products
+                {setupProducts.length} {t("dashboardSetups.products")}
               </span>
             </div>
 
@@ -550,7 +595,7 @@ export default function SetupsPage() {
               <div className={`rounded-xl p-4 bg-gradient-to-br border transition-all duration-500 ${getScoreBg(combinedScore.total)} ${isScoreAnimating ? "ring-2 ring-primary ring-opacity-50 scale-[1.02]" : ""}`}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-base-content/60 mb-1">Combined Score</p>
+                    <p className="text-sm text-base-content/60 mb-1">{t("dashboardSetups.combinedScore")}</p>
                     <div className="flex items-baseline gap-3">
                       <ScoreCircle score={combinedScore.total} size={90} isAnimating={isScoreAnimating} />
                       {scoreDeltas?.total !== 0 && scoreDeltas?.total && (
@@ -561,7 +606,7 @@ export default function SetupsPage() {
                             {scoreDeltas.total > 0 ? "+" : ""}{scoreDeltas.total}
                           </span>
                           <span className="text-xs opacity-80">
-                            {scoreDeltas.total > 0 ? "Better!" : "Lower"}
+                            {scoreDeltas.total > 0 ? t("dashboardSetups.better") : t("dashboardSetups.lower")}
                           </span>
                         </div>
                       )}
@@ -571,12 +616,7 @@ export default function SetupsPage() {
 
                 {/* SAFE breakdown with animated pillars */}
                 <div className="grid grid-cols-4 gap-3 mt-4 pt-4 border-t border-base-content/10">
-                  {[
-                    { code: "S", name: "Security", color: "#22c55e" },
-                    { code: "A", name: "Adversity", color: "#f59e0b" },
-                    { code: "F", name: "Fidelity", color: "#3b82f6" },
-                    { code: "E", name: "Efficiency", color: "#8b5cf6" },
-                  ].map(pillar => (
+                  {config.safe.pillars.map(pillar => (
                     <AnimatedPillarScore
                       key={pillar.code}
                       value={combinedScore[pillar.code]}
@@ -593,28 +633,39 @@ export default function SetupsPage() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                   </span>
-                  Live calculation
+                  {t("dashboardSetups.liveCalculation")}
                 </div>
               </div>
             ) : (
               <div className="rounded-xl p-6 bg-base-300/50 border border-dashed border-base-content/20 text-center">
                 <p className="text-base-content/50 text-sm">
-                  Add products to calculate your combined score
+                  {t("dashboardSetups.addProductsToCalculate")}
                 </p>
               </div>
             )}
           </div>
 
+          {/* Radar Chart for current setup */}
+          {combinedScore && (
+            <div className="bg-base-200 rounded-2xl border border-base-300 p-5">
+              <RadarChart
+                scores={{ S: combinedScore.S, A: combinedScore.A, F: combinedScore.F, E: combinedScore.E }}
+                benchmark={marketAverage}
+                size={240}
+              />
+            </div>
+          )}
+
           {/* Selected products */}
           <div className="bg-base-200 rounded-2xl border border-base-300 p-5">
-            <h3 className="font-semibold mb-3">Products in Stack</h3>
+            <h3 className="font-semibold mb-3">{t("dashboardSetups.productsInStack")}</h3>
 
             {setupProducts.length === 0 ? (
               <div className="text-center py-6 text-base-content/50">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 mx-auto mb-2 opacity-50">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
-                <p className="text-sm">Click products to add them</p>
+                <p className="text-sm">{t("dashboardSetups.clickProductsToAdd")}</p>
               </div>
             ) : (
               <div className="space-y-2 max-h-[300px] overflow-y-auto">
@@ -631,6 +682,34 @@ export default function SetupsPage() {
             )}
           </div>
 
+          {/* Pillar Contribution Breakdown */}
+          {setupProducts.length > 1 && combinedScore && (
+            <div className="bg-base-200 rounded-2xl border border-base-300 p-5">
+              <h3 className="font-semibold mb-3">{t("charts.contribution.title")}</h3>
+              <PillarContributionChart
+                products={setupProducts.map(({ product, role }) => ({
+                  name: product.name,
+                  role,
+                  score_s: product.score_s || product.score || 0,
+                  score_a: product.score_a || product.score || 0,
+                  score_f: product.score_f || product.score || 0,
+                  score_e: product.score_e || product.score || 0,
+                  score: product.score || 0,
+                }))}
+                combinedScore={combinedScore}
+              />
+            </div>
+          )}
+
+          {/* Weakest Pillar Highlight */}
+          {combinedScore && weakestPillar && (
+            <WeakestPillarHighlight
+              weakestPillar={weakestPillar}
+              allScores={{ S: combinedScore.S, A: combinedScore.A, F: combinedScore.F, E: combinedScore.E }}
+              benchmark={marketAverage}
+            />
+          )}
+
           {/* Save button */}
           <button
             onClick={handleSave}
@@ -644,14 +723,14 @@ export default function SetupsPage() {
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                 </svg>
-                Sign In to Save
+                {t("dashboardSetups.signInToSave")}
               </>
             ) : (
               <>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Save Setup
+                {t("dashboardSetups.saveSetup")}
               </>
             )}
           </button>
@@ -659,8 +738,8 @@ export default function SetupsPage() {
           {/* Info */}
           <p className="text-xs text-base-content/40 text-center">
             {limits.isAnonymous
-              ? "Free account includes 1 setup"
-              : `${limits.used}/${limits.max} setups used`}
+              ? t("dashboardSetups.freeAccountIncludes")
+              : t("dashboardSetups.setupsUsed", { used: limits.used, max: limits.max })}
           </p>
         </div>
       </div>

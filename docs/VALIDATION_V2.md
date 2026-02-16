@@ -141,7 +141,7 @@ for app in sorted(r_app.json(), key=lambda x: x['norm_id']):
 ```
 
 **Résultat attendu**:
-- Total: 912 normes ✅
+- Total: 912 normes dans norm_applicability pour DEX (2159 normes totales en base) ✅
 - Applicables: 506 ✅
 - N/A: 406 ✅
 - F200-F204: Toutes APPLICABLE pour DEX ✅
@@ -173,7 +173,7 @@ print(f'  S (Security):   {counts.get(\"S\", 0):3d} (attendu: 269)')
 print(f'  A (Adversity):  {counts.get(\"A\", 0):3d} (attendu: 193)')
 print(f'  F (Fidelity):   {counts.get(\"F\", 0):3d} (attendu: 195)')
 print(f'  E (Efficiency): {counts.get(\"E\", 0):3d} (attendu: 259)')
-print(f'  TOTAL:          {sum(counts.values()):3d} (attendu: 916)')
+print(f'  TOTAL:          {sum(counts.values()):3d} (attendu: 2159)')
 "
 ```
 
@@ -182,7 +182,7 @@ print(f'  TOTAL:          {sum(counts.values()):3d} (attendu: 916)')
 - A: 193 (+1 vs v1.0)
 - F: 195 (+5 vs v1.0) ✨
 - E: 259 (inchangé)
-- **Total: 916** (+5 vs v1.0)
+- **Total: 2159** (+5 vs v1.0)
 
 ---
 
@@ -233,7 +233,7 @@ python monitor_1inch_v2.py
 - [x] 7 normes reclassifiées correctement
 - [x] 5 normes F créées avec bons flags
 - [x] 110 règles applicability créées
-- [x] Distribution piliers cohérente (916 total)
+- [x] Distribution piliers cohérente (2159 total)
 
 ### Validation Fonctionnelle ⏳
 

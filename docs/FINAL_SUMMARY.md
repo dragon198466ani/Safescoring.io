@@ -48,7 +48,7 @@ python src/core/smart_evaluator.py --type 39
 
 **Maintenant (en cours):**
 - Score: **62% (69/110)** ⬆️ +22 points!
-- Évaluations: 568/911
+- Évaluations: 568/2159
   - AI évaluées: 158/501
   - N/A auto: 410/410 ✅
 - **Statut:** ⏳ Évaluation IA en cours (32% complété)
@@ -182,7 +182,7 @@ Tous les DEX bénéficieront des mêmes corrections:
 
 **Bon:** Les classifications Essential/Consumer sont correctes!
 
-### Normes manquantes: 907 vs 911
+### Normes manquantes: 907 vs 2159
 
 **Découvert:** 4 normes ne sont pas dans `norm_applicability`
 - Probablement des normes ajoutées récemment

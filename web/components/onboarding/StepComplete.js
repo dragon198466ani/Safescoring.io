@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 import config from "@/config";
 
 export default function StepComplete({ data, onComplete, onBack, saving }) {
+  const { t } = useTranslation();
   const freePlan = config.stripe.plans.find((p) => p.priceId === "free");
   const proPlan = config.stripe.plans.find((p) => p.isFeatured);
 
@@ -15,9 +17,9 @@ export default function StepComplete({ data, onComplete, onBack, saving }) {
             <path fillRule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clipRule="evenodd" />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold mb-2">You&apos;re all set, {data.name}!</h2>
+        <h2 className="text-2xl font-bold mb-2">{t("onboarding.youreAllSet", { name: data.name })}</h2>
         <p className="text-base-content/60">
-          Your account is ready. You have access to {freePlan?.limits?.monthlyProductViews || 5} detailed product evaluations per month.
+          {t("onboarding.accountReady", { limit: freePlan?.limits?.monthlyProductViews || 5 })}
         </p>
       </div>
 
@@ -25,10 +27,10 @@ export default function StepComplete({ data, onComplete, onBack, saving }) {
       <div className="rounded-xl border border-base-300 p-6 mb-6 text-left">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <div className="font-semibold">Free Plan</div>
-            <div className="text-sm text-base-content/60">Your current plan</div>
+            <div className="font-semibold">{t("onboarding.freePlan")}</div>
+            <div className="text-sm text-base-content/60">{t("onboarding.yourCurrentPlan")}</div>
           </div>
-          <div className="badge badge-success">Active</div>
+          <div className="badge badge-success">{t("onboarding.active")}</div>
         </div>
         <ul className="space-y-2">
           {freePlan?.features?.map((feature, i) => (
@@ -51,17 +53,17 @@ export default function StepComplete({ data, onComplete, onBack, saving }) {
             </svg>
           </div>
           <div className="flex-1">
-            <div className="font-semibold mb-1">Want unlimited access?</div>
+            <div className="font-semibold mb-1">{t("onboarding.wantUnlimitedAccess")}</div>
             <p className="text-sm text-base-content/60 mb-3">
-              Upgrade to {proPlan?.name} for unlimited product evaluations, API access, and more.
+              {t("onboarding.upgradeDesc", { plan: proPlan?.name })}
             </p>
             <div className="flex items-baseline gap-2 mb-3">
               <span className="text-2xl font-bold">${proPlan?.price}</span>
               <span className="text-base-content/60">/month</span>
-              <span className="badge badge-primary badge-sm">14-day free trial</span>
+              <span className="badge badge-primary badge-sm">{t("onboarding.freeTrialDays")}</span>
             </div>
             <Link href="/#pricing" className="btn btn-primary btn-sm">
-              Start Free Trial
+              {t("onboarding.startFreeTrial")}
             </Link>
           </div>
         </div>
@@ -69,7 +71,7 @@ export default function StepComplete({ data, onComplete, onBack, saving }) {
 
       <div className="flex gap-3">
         <button onClick={onBack} className="btn btn-ghost">
-          Back
+          {t("onboarding.back")}
         </button>
         <button
           onClick={onComplete}
@@ -79,7 +81,7 @@ export default function StepComplete({ data, onComplete, onBack, saving }) {
           {saving ? (
             <span className="loading loading-spinner loading-sm"></span>
           ) : (
-            "Go to Dashboard"
+            t("onboarding.goToDashboard")
           )}
         </button>
       </div>

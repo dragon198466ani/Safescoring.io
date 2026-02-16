@@ -89,8 +89,7 @@ export async function GET(request, { params }) {
       );
     }
 
-    // Fetch incidents from security_incidents via incident_product_impact junction table
-    // UNIFIED: Utiliser la même source de données que /api/incidents
+    // Fetch incidents from incident_product_impact junction table (primary)
     const { data: impactData, error: impactError } = await supabase
       .from("incident_product_impact")
       .select(`
@@ -116,27 +115,55 @@ export async function GET(request, { params }) {
       `)
       .eq("product_id", product.id);
 
-    // Filter only published incidents and transform
-    const incidentsData = (impactData || [])
-      .filter(item => item.security_incidents?.is_published)
-      .map(item => ({
-        id: item.security_incidents.id,
-        title: item.security_incidents.title,
-        description: item.security_incidents.description,
-        type: item.security_incidents.incident_type,
-        severity: item.security_incidents.severity,
-        date: item.security_incidents.incident_date,
-        date_is_estimated: item.security_incidents.date_is_estimated || false,
-        funds_lost: item.funds_lost_usd || item.security_incidents.funds_lost_usd || 0,
-        funds_recovered: 0, // Not tracked in security_incidents
-        status: item.security_incidents.status,
-        response_quality: item.security_incidents.response_quality,
-        source_url: item.security_incidents.source_urls?.[0] || null,
-        impact_level: item.impact_level,
-      }))
-      .sort((a, b) => new Date(b.date) - new Date(a.date));
+    let incidentsData;
+    let incidentsError = impactError;
 
-    const _incidentsError = impactError;
+    if ((impactData || []).length > 0) {
+      // Primary path: use junction table
+      incidentsData = impactData
+        .filter(item => item.security_incidents?.is_published)
+        .map(item => ({
+          id: item.security_incidents.id,
+          title: item.security_incidents.title,
+          description: item.security_incidents.description,
+          type: item.security_incidents.incident_type,
+          severity: item.security_incidents.severity,
+          date: item.security_incidents.incident_date,
+          date_is_estimated: item.security_incidents.date_is_estimated || false,
+          funds_lost: item.funds_lost_usd || item.security_incidents.funds_lost_usd || 0,
+          funds_recovered: 0,
+          status: item.security_incidents.status,
+          response_quality: item.security_incidents.response_quality,
+          source_url: item.security_incidents.source_urls?.[0] || null,
+          impact_level: item.impact_level,
+        }))
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    } else {
+      // Fallback: query security_incidents directly via affected_product_ids array
+      const { data: directIncidents, error: directError } = await supabase
+        .from("security_incidents")
+        .select("id, incident_id, title, description, incident_type, severity, incident_date, funds_lost_usd, status, response_quality, source_urls, date_is_estimated, is_published")
+        .contains("affected_product_ids", [product.id])
+        .eq("is_published", true)
+        .order("incident_date", { ascending: false });
+
+      incidentsError = directError;
+      incidentsData = (directIncidents || []).map(inc => ({
+        id: inc.id,
+        title: inc.title,
+        description: inc.description,
+        type: inc.incident_type,
+        severity: inc.severity,
+        date: inc.incident_date,
+        date_is_estimated: inc.date_is_estimated || false,
+        funds_lost: inc.funds_lost_usd || 0,
+        funds_recovered: 0,
+        status: inc.status,
+        response_quality: inc.response_quality,
+        source_url: inc.source_urls?.[0] || null,
+        impact_level: "direct",
+      }));
+    }
 
     // Transform incidents data
     const incidents = (incidentsData || []).map((incident) => {

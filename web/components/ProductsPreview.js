@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 const getScoreColor = (score) => {
   if (score >= 80) return "text-green-400";
@@ -45,17 +46,6 @@ const ScoreCircle = ({ score, size = 48, strokeWidth = 4 }) => {
   );
 };
 
-// Format the update date
-const formatDate = (dateString) => {
-  if (!dateString) return "Not evaluated";
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-};
-
 // Skeleton loader for product cards
 const ProductCardSkeleton = () => (
   <div className="p-6 rounded-xl bg-base-200 border border-base-300 animate-pulse">
@@ -90,6 +80,18 @@ const ProductsPreview = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
+
+  // Format the update date
+  const formatDate = (dateString) => {
+    if (!dateString) return t("productsPreview.notEvaluated");
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -125,17 +127,17 @@ const ProductsPreview = () => {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
           <div>
             <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
-              Latest Evaluations
+              {t("productsPreview.badge")}
             </span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-              Top Rated Products
+              {t("productsPreview.title")}
             </h2>
           </div>
           <Link
             href="/products"
             className="btn btn-outline btn-sm gap-2"
           >
-            View All Products
+            {t("productsPreview.viewAll")}
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
@@ -150,7 +152,7 @@ const ProductsPreview = () => {
               onClick={() => window.location.reload()}
               className="btn btn-outline btn-sm"
             >
-              Retry
+              {t("productsPreview.retry")}
             </button>
           </div>
         )}
@@ -162,7 +164,7 @@ const ProductsPreview = () => {
             [...Array(6)].map((_, i) => <ProductCardSkeleton key={i} />)
           ) : products.length === 0 && !error ? (
             <div className="col-span-full text-center py-12 text-base-content/50">
-              No evaluated products yet
+              {t("productsPreview.noProducts")}
             </div>
           ) : (
             products.map((product) => (
@@ -183,16 +185,16 @@ const ProductsPreview = () => {
                       {product.name}
                     </h3>
                     <div className="flex flex-wrap gap-1 mt-0.5">
-                      {(product.types && product.types.length > 0 ? product.types : [{ name: product.type }]).map((t, idx) => (
+                      {(product.types && product.types.length > 0 ? product.types : [{ name: product.type }]).map((tp, idx) => (
                         <span
-                          key={t.code || idx}
+                          key={tp.code || idx}
                           className={`text-xs px-1.5 py-0.5 rounded ${
-                            t.isPrimary || idx === 0
+                            tp.isPrimary || idx === 0
                               ? 'bg-primary/20 text-primary'
                               : 'bg-base-300 text-base-content/60'
                           }`}
                         >
-                          {t.name}
+                          {tp.name}
                         </span>
                       ))}
                     </div>
@@ -203,7 +205,7 @@ const ProductsPreview = () => {
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 mr-1">
                       <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                     </svg>
-                    Verified
+                    {t("productsPreview.verified")}
                   </span>
                 )}
               </div>
@@ -235,9 +237,9 @@ const ProductsPreview = () => {
 
               {/* Footer */}
               <div className="mt-4 pt-4 border-t border-base-300 flex items-center justify-between text-xs text-base-content/50">
-                <span>Updated {formatDate(product.lastUpdate)}</span>
+                <span>{t("productsPreview.updated", { date: formatDate(product.lastUpdate) })}</span>
                 <span className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                  View details
+                  {t("productsPreview.viewDetails")}
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                   </svg>

@@ -32,14 +32,34 @@ const COLUMNS = {
     updated_at
   `,
 
-  // Scores (actual columns are score_s, score_a, score_f, score_e)
+  // Scores (actual columns are score_s, score_a, score_f, score_e + consumer/essential variants)
   scores: `
     note_finale,
     score_s,
     score_a,
     score_f,
     score_e,
-    calculated_at
+    note_consumer,
+    s_consumer,
+    a_consumer,
+    f_consumer,
+    e_consumer,
+    note_essential,
+    s_essential,
+    a_essential,
+    f_essential,
+    e_essential,
+    total_norms_evaluated,
+    total_yes,
+    total_no,
+    total_na,
+    total_tbd,
+    calculated_at,
+    insight_s,
+    insight_a,
+    insight_f,
+    insight_e,
+    insights_generated_at
   `,
 
   // Product types

@@ -2,9 +2,11 @@ import { auth } from "@/libs/auth";
 import Link from "next/link";
 import ButtonAccount from "@/components/ButtonAccount";
 import UsageBanner from "@/components/UsageBanner";
+import { getT } from "@/libs/i18n/server";
 
 // Dashboard layout with sidebar - Freemium accessible
 export default async function LayoutPrivate({ children }) {
+  const t = getT();
   const session = await auth();
 
   // No redirect - allow anonymous access for freemium dashboard
@@ -30,25 +32,25 @@ export default async function LayoutPrivate({ children }) {
                 href="/dashboard"
                 className="text-sm font-medium text-base-content/70 hover:text-base-content transition-colors"
               >
-                Dashboard
+                {t("dashboardLayout.dashboard")}
               </Link>
               <Link
                 href="/dashboard/setups"
                 className="text-sm font-medium text-base-content/70 hover:text-base-content transition-colors"
               >
-                Setups
+                {t("dashboardLayout.setups")}
               </Link>
               <Link
                 href="/products"
                 className="text-sm font-medium text-base-content/70 hover:text-base-content transition-colors"
               >
-                Products
+                {t("dashboardLayout.products")}
               </Link>
               <Link
                 href="/dashboard/favorites"
                 className="text-sm font-medium text-base-content/70 hover:text-base-content transition-colors"
               >
-                Favorites
+                {t("dashboardLayout.favorites")}
               </Link>
             </nav>
           </div>
@@ -57,7 +59,7 @@ export default async function LayoutPrivate({ children }) {
               <ButtonAccount />
             ) : (
               <Link href="/signin" className="btn btn-primary btn-sm">
-                Sign In
+                {t("dashboardLayout.signIn")}
               </Link>
             )}
           </div>

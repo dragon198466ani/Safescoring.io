@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import apiClient from "@/libs/api";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 // This component is used to create Stripe Checkout Sessions
 // It calls the /api/stripe/create-checkout route with the priceId, successUrl and cancelUrl
 const ButtonCheckout = ({ priceId, mode = "subscription", className = "" }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation();
 
   const handlePayment = async () => {
     setIsLoading(true);
@@ -37,7 +39,7 @@ const ButtonCheckout = ({ priceId, mode = "subscription", className = "" }) => {
         <span className="loading loading-spinner loading-xs"></span>
       ) : (
         <>
-          Get Started
+          {t("buttonCheckout.getStarted")}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

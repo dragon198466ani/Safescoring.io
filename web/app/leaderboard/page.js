@@ -2,12 +2,14 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { getNormStats } from "@/libs/getNormStats";
+import { getT } from "@/libs/i18n/server";
 
 export const revalidate = 3600; // Revalidate every hour
 
 export const metadata = {
   title: "Security Leaderboard - Top Rated Crypto Products | SafeScoring",
-  description: "See the most secure crypto wallets, exchanges, and DeFi protocols ranked by SafeScore. Updated monthly based on 916 security criteria.",
+  description: "See the most secure crypto wallets, exchanges, and DeFi protocols ranked by SafeScore. Updated monthly based on comprehensive security criteria.",
 };
 
 async function getLeaderboardData() {
@@ -68,7 +70,12 @@ const getRankBadge = (rank) => {
 };
 
 export default async function LeaderboardPage() {
-  const { products } = await getLeaderboardData();
+  const [{ products }, normStats] = await Promise.all([
+    getLeaderboardData(),
+    getNormStats(),
+  ]);
+  const t = await getT();
+  const totalNorms = normStats?.totalNorms ?? "—";
 
   // Group by category
   const byCategory = {
@@ -86,32 +93,31 @@ export default async function LeaderboardPage() {
           {/* Hero */}
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              Security Leaderboard
+              {t("leaderboardPage.title")}
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              The most secure crypto products ranked by SafeScore.
-              Updated monthly based on 916 security criteria.
+              {t("leaderboardPage.subtitle", { norms: totalNorms })}
             </p>
           </div>
 
           {/* Overall Top 10 */}
           <div className="rounded-xl bg-base-200 border border-base-300 p-6 mb-12">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <span>🏆</span> Top 10 Most Secure Products
+              <span>🏆</span> {t("leaderboardPage.top10")}
             </h2>
 
             <div className="overflow-x-auto">
               <table className="table w-full">
                 <thead>
                   <tr>
-                    <th className="w-16">Rank</th>
-                    <th>Product</th>
-                    <th>Type</th>
+                    <th className="w-16">{t("leaderboardPage.rank")}</th>
+                    <th>{t("leaderboardPage.product")}</th>
+                    <th>{t("leaderboardPage.type")}</th>
                     <th className="text-center">S</th>
                     <th className="text-center">A</th>
                     <th className="text-center">F</th>
                     <th className="text-center">E</th>
-                    <th className="text-right">Score</th>
+                    <th className="text-right">{t("leaderboardPage.score")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -149,7 +155,7 @@ export default async function LeaderboardPage() {
             {/* Hardware Wallets */}
             <div className="rounded-xl bg-base-200 border border-base-300 p-6">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <span>🔐</span> Hardware Wallets
+                <span>🔐</span> {t("leaderboardPage.hardwareWallets")}
               </h2>
               <div className="space-y-2">
                 {byCategory.hardware.slice(0, 5).map((p, i) => (
@@ -171,7 +177,7 @@ export default async function LeaderboardPage() {
             {/* Software Wallets */}
             <div className="rounded-xl bg-base-200 border border-base-300 p-6">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <span>📱</span> Software Wallets
+                <span>📱</span> {t("leaderboardPage.softwareWallets")}
               </h2>
               <div className="space-y-2">
                 {byCategory.software.slice(0, 5).map((p, i) => (
@@ -193,7 +199,7 @@ export default async function LeaderboardPage() {
             {/* Exchanges */}
             <div className="rounded-xl bg-base-200 border border-base-300 p-6">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <span>🏦</span> Exchanges
+                <span>🏦</span> {t("leaderboardPage.exchanges")}
               </h2>
               <div className="space-y-2">
                 {byCategory.exchange.slice(0, 5).map((p, i) => (
@@ -215,7 +221,7 @@ export default async function LeaderboardPage() {
             {/* DeFi */}
             <div className="rounded-xl bg-base-200 border border-base-300 p-6">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <span>🌐</span> DeFi Protocols
+                <span>🌐</span> {t("leaderboardPage.defiProtocols")}
               </h2>
               <div className="space-y-2">
                 {byCategory.defi.slice(0, 5).map((p, i) => (
@@ -238,10 +244,10 @@ export default async function LeaderboardPage() {
           {/* Methodology note */}
           <div className="mt-12 text-center">
             <p className="text-sm text-base-content/50 mb-4">
-              Rankings based on SafeScore methodology: 916 security norms across Security, Adversity, Fidelity & Efficiency.
+              {t("leaderboardPage.methodologyNote", { norms: totalNorms })}
             </p>
             <Link href="/methodology" className="text-primary hover:underline text-sm">
-              Learn about our methodology →
+              {t("leaderboardPage.learnMethodology")}
             </Link>
           </div>
         </div>

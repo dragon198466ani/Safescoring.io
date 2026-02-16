@@ -1,13 +1,19 @@
 import Link from "next/link";
 import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
+import { getNormStats } from "@/libs/getNormStats";
+import { getT } from "@/libs/i18n/server";
 
 export const metadata = getSEOTags({
   title: `Terms and Conditions | ${config.appName}`,
   canonicalUrlRelative: "/tos",
 });
 
-const TOS = () => {
+const TOS = async () => {
+  const t = await getT();
+  const normStats = await getNormStats();
+  const totalNorms = normStats?.totalNorms ?? "—";
+
   return (
     <main className="max-w-xl mx-auto">
       <div className="p-5">
@@ -24,10 +30,10 @@ const TOS = () => {
               clipRule="evenodd"
             />
           </svg>
-          Back
+          {t("tosPage.back")}
         </Link>
         <h1 className="text-3xl font-extrabold pb-6">
-          Terms and Conditions for {config.appName}
+          {t("tosPage.title", { appName: config.appName })}
         </h1>
 
         <pre
@@ -42,7 +48,7 @@ These Terms of Service ("Terms") govern your use of the SafeScoring website at h
 
 1. Description of SafeScoring
 
-SafeScoring is a platform providing unified security ratings for cryptocurrency products including hardware wallets, software wallets, exchanges, and DeFi protocols. We evaluate products using 916 security norms across four pillars: Security, Adversity, Fidelity, and Efficiency (SAFE).
+SafeScoring is a platform providing unified security ratings for cryptocurrency products including hardware wallets, software wallets, exchanges, and DeFi protocols. We evaluate products using ${totalNorms} security norms across four pillars: Security, Adversity, Fidelity, and Efficiency (SAFE).
 
 2. Service Tiers
 

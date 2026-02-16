@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { useSession, signOut } from "next-auth/react";
 import apiClient from "@/libs/api";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 // A button to show user some account actions
 //  1. Billing: open a Stripe Customer Portal to manage their billing (cancel subscription, update payment method, etc.).
@@ -15,6 +16,7 @@ import apiClient from "@/libs/api";
 const ButtonAccount = () => {
 	const { data: session, status } = useSession();
 	const [isLoading, setIsLoading] = useState(false);
+	const { t } = useTranslation();
 
 	const handleSignOut = () => {
 		signOut({ callbackUrl: "/" });
@@ -46,7 +48,7 @@ const ButtonAccount = () => {
 						{session?.user?.image ? (
 							<img
 								src={session?.user?.image}
-								alt={session?.user?.name || "Account"}
+								alt={session?.user?.name || t("buttonAccount.account")}
 								className="w-6 h-6 rounded-full shrink-0"
 								referrerPolicy="no-referrer"
 								width={24}
@@ -59,7 +61,7 @@ const ButtonAccount = () => {
 							</span>
 						)}
 
-						{session?.user?.name || "Account"}
+						{session?.user?.name || t("buttonAccount.account")}
 
 						{isLoading ? (
 							<span className="loading loading-spinner loading-xs"></span>
@@ -107,7 +109,7 @@ const ButtonAccount = () => {
 												clipRule="evenodd"
 											/>
 										</svg>
-										Billing
+										{t("buttonAccount.billing")}
 									</button>
 									<button
 										className="flex items-center gap-2 hover:bg-error/20 hover:text-error duration-200 py-1.5 px-4 w-full rounded-lg font-medium cursor-pointer"
@@ -130,7 +132,7 @@ const ButtonAccount = () => {
 												clipRule="evenodd"
 											/>
 										</svg>
-										Logout
+										{t("buttonAccount.logout")}
 									</button>
 								</div>
 							</div>

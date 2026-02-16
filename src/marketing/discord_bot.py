@@ -146,7 +146,7 @@ class SafeScoringBot:
                 value="hardware-wallets, exchanges, defi, mobile-wallets",
                 inline=False
             )
-            embed.set_footer(text="safescoring.io | 916 security norms")
+            embed.set_footer(text="safescoring.io | 2159 security norms")
             await interaction.response.send_message(embed=embed)
 
         @tasks.loop(minutes=30)
@@ -280,7 +280,7 @@ class SafeScoringBot:
             inline=True
         )
 
-        embed.set_footer(text="SafeScoring | 916 security norms")
+        embed.set_footer(text="SafeScoring | 2159 security norms")
         return embed
 
     def _create_comparison_embed(self, a: dict, b: dict) -> discord.Embed:

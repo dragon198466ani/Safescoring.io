@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * ScoreSecurityPanel - Unified component combining Score Evolution and Security Status
@@ -8,10 +9,10 @@ import { useState, useEffect } from "react";
  */
 
 const PERIODS = [
-  { id: 'month', label: '1 Month', limit: 30 },
-  { id: 'year', label: '1 Year', limit: 12 },
-  { id: '5y', label: '5 Years', limit: 60 },
-  { id: 'all', label: 'All', limit: 120 },
+  { id: 'month', key: 'scorePanel.periods.month', limit: 30 },
+  { id: 'year', key: 'scorePanel.periods.year', limit: 12 },
+  { id: '5y', key: 'scorePanel.periods.fiveYears', limit: 60 },
+  { id: 'all', key: 'scorePanel.periods.all', limit: 120 },
 ];
 
 export default function ScoreSecurityPanel({ slug, productName: _productName }) {
@@ -19,6 +20,9 @@ export default function ScoreSecurityPanel({ slug, productName: _productName }) 
   const [securityData, setSecurityData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState('year');
+
+  const { t } = useTranslation();
+  const dateLocale = t("lang") === "fr" ? "fr-FR" : "en-GB";
 
   useEffect(() => {
     async function fetchData() {
@@ -56,7 +60,7 @@ export default function ScoreSecurityPanel({ slug, productName: _productName }) 
           setSecurityData({
             hasAlert: hasActiveAlert,
             recentIncidents,
-            lastCheck: new Date().toLocaleDateString('en-US', {
+            lastCheck: new Date().toLocaleDateString(dateLocale, {
               month: 'short',
               day: 'numeric',
               year: 'numeric',
@@ -102,9 +106,9 @@ export default function ScoreSecurityPanel({ slug, productName: _productName }) 
   const getTrendBadge = () => {
     if (!stats.trend) return null;
     const config = {
-      improving: { icon: "↗", color: "text-green-400", label: "Improving" },
-      declining: { icon: "↘", color: "text-red-400", label: "Declining" },
-      stable: { icon: "→", color: "text-base-content/60", label: "Stable" }
+      improving: { icon: "↗", color: "text-green-400", label: t("scorePanel.improving") },
+      declining: { icon: "↘", color: "text-red-400", label: t("scorePanel.declining") },
+      stable: { icon: "→", color: "text-base-content/60", label: t("scorePanel.stable") }
     };
     const trend = config[stats.trend] || config.stable;
     return (
@@ -121,7 +125,7 @@ export default function ScoreSecurityPanel({ slug, productName: _productName }) 
       <div className="p-6 pb-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <h3 className="font-semibold text-lg">Score & Security</h3>
+            <h3 className="font-semibold text-lg">{t("scorePanel.title")}</h3>
             {getTrendBadge()}
           </div>
 
@@ -137,14 +141,14 @@ export default function ScoreSecurityPanel({ slug, productName: _productName }) 
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
-                  Alert Active
+                  {t("scorePanel.alertActive")}
                 </>
               ) : (
                 <>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  Secure
+                  {t("scorePanel.secure")}
                 </>
               )}
             </div>
@@ -163,7 +167,7 @@ export default function ScoreSecurityPanel({ slug, productName: _productName }) 
                   : 'bg-base-300 text-base-content/60 hover:text-base-content hover:bg-base-content/10'
               }`}
             >
-              {period.label}
+              {t(period.key)}
             </button>
           ))}
         </div>
@@ -230,7 +234,7 @@ export default function ScoreSecurityPanel({ slug, productName: _productName }) 
                         <div className="bg-base-100 shadow-lg rounded-lg px-2 py-1 text-xs whitespace-nowrap border border-base-content/10">
                           <div className="font-semibold text-primary">{record.safe_score?.toFixed(1)}%</div>
                           <div className="text-base-content/50">
-                            {new Date(record.recorded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            {new Date(record.recorded_at).toLocaleDateString(dateLocale, { month: 'short', day: 'numeric' })}
                           </div>
                         </div>
                       </div>
@@ -243,13 +247,13 @@ export default function ScoreSecurityPanel({ slug, productName: _productName }) 
 
           {/* X-axis labels */}
           <div className="flex justify-between text-xs text-base-content/40 mt-2 ml-10">
-            <span>{chartData[0]?.recorded_at ? new Date(chartData[0].recorded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
-            <span>{chartData[chartData.length - 1]?.recorded_at ? new Date(chartData[chartData.length - 1].recorded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
+            <span>{chartData[0]?.recorded_at ? new Date(chartData[0].recorded_at).toLocaleDateString(dateLocale, { month: 'short', day: 'numeric' }) : ''}</span>
+            <span>{chartData[chartData.length - 1]?.recorded_at ? new Date(chartData[chartData.length - 1].recorded_at).toLocaleDateString(dateLocale, { month: 'short', day: 'numeric' }) : ''}</span>
           </div>
         </div>
       ) : (
         <div className="px-6 pb-4 text-center text-base-content/50 text-sm py-8">
-          No historical data available yet
+          {t("scorePanel.noHistory")}
         </div>
       )}
 
@@ -261,19 +265,19 @@ export default function ScoreSecurityPanel({ slug, productName: _productName }) 
             <div className="text-xl font-bold text-primary">
               {stats.highestScore?.toFixed(1) || '—'}%
             </div>
-            <div className="text-xs text-base-content/50">Highest</div>
+            <div className="text-xs text-base-content/50">{t("scorePanel.highest")}</div>
           </div>
           <div className="bg-base-100 rounded-lg p-3 text-center">
             <div className="text-xl font-bold">
               {stats.averageScore || '—'}%
             </div>
-            <div className="text-xs text-base-content/50">Average</div>
+            <div className="text-xs text-base-content/50">{t("scorePanel.average")}</div>
           </div>
           <div className="bg-base-100 rounded-lg p-3 text-center">
             <div className="text-xl font-bold text-red-400">
               {stats.lowestScore?.toFixed(1) || '—'}%
             </div>
-            <div className="text-xs text-base-content/50">Lowest</div>
+            <div className="text-xs text-base-content/50">{t("scorePanel.lowest")}</div>
           </div>
 
           {/* Security Stats */}
@@ -281,7 +285,7 @@ export default function ScoreSecurityPanel({ slug, productName: _productName }) 
             <div className={`text-xl font-bold ${securityData?.totalIncidents > 0 ? 'text-amber-400' : 'text-green-400'}`}>
               {securityData?.totalIncidents || 0}
             </div>
-            <div className="text-xs text-base-content/50">Incidents</div>
+            <div className="text-xs text-base-content/50">{t("scorePanel.incidents")}</div>
           </div>
         </div>
       </div>
@@ -291,11 +295,11 @@ export default function ScoreSecurityPanel({ slug, productName: _productName }) 
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-            24/7 Monitoring
+            {t("scorePanel.monitoring")}
           </span>
-          <span>{stats.dataPoints || 0} records</span>
+          <span>{t("scorePanel.records", { count: stats.dataPoints || 0 })}</span>
         </div>
-        <span>Last check: {securityData?.lastCheck || '—'}</span>
+        <span>{t("scorePanel.lastCheck", { time: securityData?.lastCheck || '—' })}</span>
       </div>
     </div>
   );

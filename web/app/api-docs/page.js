@@ -1,5 +1,6 @@
 import Link from "next/link";
 /* eslint-disable @next/next/no-img-element */
+import { getT } from "@/libs/i18n/server";
 
 export const metadata = {
   title: "API Documentation | SafeScoring",
@@ -148,6 +149,8 @@ function SafeScoreBadge({ slug }) {
 };
 
 export default function APIDocsPage() {
+  const t = getT();
+
   return (
     <main className="min-h-screen bg-base-200">
       {/* Hero */}
@@ -156,18 +159,17 @@ export default function APIDocsPage() {
           <div className="text-center">
             <div className="badge badge-primary mb-4">Developer API</div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              SafeScoring API
+              {t("apiDocs.heroTitle")}
             </h1>
             <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-8">
-              Integrate crypto security ratings into your application.
-              Free access for developers building safer crypto experiences.
+              {t("apiDocs.heroSubtitle")}
             </p>
             <div className="flex gap-4 justify-center">
               <a href="#endpoints" className="btn btn-primary">
-                View Endpoints
+                {t("apiDocs.viewEndpoints")}
               </a>
               <a href="#examples" className="btn btn-outline">
-                Code Examples
+                {t("apiDocs.codeExamples")}
               </a>
             </div>
           </div>
@@ -177,10 +179,10 @@ export default function APIDocsPage() {
       {/* Quick Start */}
       <section className="py-12 bg-base-100">
         <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-2xl font-bold mb-6">Quick Start</h2>
+          <h2 className="text-2xl font-bold mb-6">{t("apiDocs.quickStart")}</h2>
           <div className="bg-base-200 rounded-lg p-6">
             <p className="text-base-content/70 mb-4">
-              No authentication required for basic endpoints. Just make a request:
+              {t("apiDocs.quickStartDesc")}
             </p>
             <div className="mockup-code">
               <pre data-prefix="$"><code>curl https://safescoring.io/api/products/ledger-nano-x/score</code></pre>
@@ -191,27 +193,27 @@ export default function APIDocsPage() {
             <div className="card bg-base-100 border border-base-300">
               <div className="card-body">
                 <div className="text-3xl mb-2">🆓</div>
-                <h3 className="card-title text-lg">Free Tier</h3>
+                <h3 className="card-title text-lg">{t("apiDocs.freeTier")}</h3>
                 <p className="text-sm text-base-content/70">
-                  100 requests/hour for score API. No signup required.
+                  {t("apiDocs.freeTierDesc")}
                 </p>
               </div>
             </div>
             <div className="card bg-base-100 border border-base-300">
               <div className="card-body">
                 <div className="text-3xl mb-2">⚡</div>
-                <h3 className="card-title text-lg">Low Latency</h3>
+                <h3 className="card-title text-lg">{t("apiDocs.lowLatency")}</h3>
                 <p className="text-sm text-base-content/70">
-                  Cached responses. Average response time under 100ms.
+                  {t("apiDocs.lowLatencyDesc")}
                 </p>
               </div>
             </div>
             <div className="card bg-base-100 border border-base-300">
               <div className="card-body">
                 <div className="text-3xl mb-2">🔒</div>
-                <h3 className="card-title text-lg">CORS Enabled</h3>
+                <h3 className="card-title text-lg">{t("apiDocs.corsEnabled")}</h3>
                 <p className="text-sm text-base-content/70">
-                  Full CORS support for browser-based applications.
+                  {t("apiDocs.corsEnabledDesc")}
                 </p>
               </div>
             </div>
@@ -222,7 +224,7 @@ export default function APIDocsPage() {
       {/* Endpoints */}
       <section id="endpoints" className="py-12 bg-base-200">
         <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-2xl font-bold mb-8">API Endpoints</h2>
+          <h2 className="text-2xl font-bold mb-8">{t("apiDocs.endpoints")}</h2>
 
           <div className="space-y-6">
             {endpoints.map((endpoint, idx) => (
@@ -239,7 +241,7 @@ export default function APIDocsPage() {
 
                   {/* Parameters */}
                   <div className="mb-4">
-                    <h4 className="font-semibold mb-2">Parameters</h4>
+                    <h4 className="font-semibold mb-2">{t("apiDocs.parameters")}</h4>
                     <div className="overflow-x-auto">
                       <table className="table table-sm">
                         <thead>
@@ -266,7 +268,7 @@ export default function APIDocsPage() {
 
                   {/* Response */}
                   <div className="mb-4">
-                    <h4 className="font-semibold mb-2">Response</h4>
+                    <h4 className="font-semibold mb-2">{t("apiDocs.response")}</h4>
                     {endpoint.response.includes('{') ? (
                       <div className="mockup-code text-sm">
                         <pre><code>{endpoint.response}</code></pre>
@@ -288,7 +290,7 @@ export default function APIDocsPage() {
 
                   {/* Rate Limit */}
                   <div className="flex items-center gap-2 text-sm text-base-content/60">
-                    <span>Rate Limit:</span>
+                    <span>{t("apiDocs.rateLimit")}:</span>
                     <span className="badge badge-outline">{endpoint.rateLimit}</span>
                   </div>
                 </div>
@@ -301,7 +303,7 @@ export default function APIDocsPage() {
       {/* Code Examples */}
       <section id="examples" className="py-12 bg-base-100">
         <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-2xl font-bold mb-8">Code Examples</h2>
+          <h2 className="text-2xl font-bold mb-8">{t("apiDocs.codeExamples")}</h2>
 
           <div className="tabs tabs-boxed mb-6 bg-base-200 p-1">
             <input type="radio" name="code_tabs" className="tab" aria-label="JavaScript" defaultChecked />
@@ -328,7 +330,7 @@ export default function APIDocsPage() {
       {/* Embed Options */}
       <section className="py-12 bg-base-200">
         <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-2xl font-bold mb-8">Embed Options</h2>
+          <h2 className="text-2xl font-bold mb-8">{t("apiDocs.embedTitle")}</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Badge */}
@@ -336,7 +338,7 @@ export default function APIDocsPage() {
               <div className="card-body">
                 <h3 className="card-title">SVG Badge</h3>
                 <p className="text-sm text-base-content/70 mb-4">
-                  Perfect for README files, documentation, or anywhere you need a simple score indicator.
+                  {t("apiDocs.embedDesc")}
                 </p>
                 <div className="mockup-code text-sm">
                   <pre><code>{`![SafeScore](https://safescoring.io/api/badge/your-product)`}</code></pre>
@@ -380,7 +382,7 @@ export default function APIDocsPage() {
       {/* Use Cases */}
       <section className="py-12 bg-base-100">
         <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-2xl font-bold mb-8">Use Cases</h2>
+          <h2 className="text-2xl font-bold mb-8">{t("apiDocs.useCasesTitle")}</h2>
 
           <div className="grid md:grid-cols-3 gap-6">
             <div className="card bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20">
@@ -417,17 +419,16 @@ export default function APIDocsPage() {
       {/* CTA */}
       <section className="py-16 bg-gradient-to-r from-primary/20 to-secondary/20">
         <div className="container mx-auto px-4 max-w-4xl text-center">
-          <h2 className="text-3xl font-bold mb-4">Need Higher Limits?</h2>
+          <h2 className="text-3xl font-bold mb-4">{t("apiDocs.ctaTitle")}</h2>
           <p className="text-base-content/70 mb-8">
-            Contact us for enterprise API access with higher rate limits,
-            webhooks for score updates, and priority support.
+            {t("apiDocs.ctaDesc")}
           </p>
           <div className="flex gap-4 justify-center">
             <a href="mailto:api@safescoring.io" className="btn btn-primary">
-              Contact for Enterprise
+              {t("apiDocs.getStarted")}
             </a>
             <Link href="/products" className="btn btn-outline">
-              Browse Products
+              {t("apiDocs.viewDocs")}
             </Link>
           </div>
         </div>

@@ -9,6 +9,7 @@ import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "react-hot-toast";
 import { Tooltip } from "react-tooltip";
 import config from "@/config";
+import { LanguageProvider } from "@/libs/i18n/LanguageProvider";
 // import Web3Provider from "@/components/Web3Provider"; // Disabled - wagmi not installed
 
 // Crisp customer chat support:
@@ -57,6 +58,7 @@ const ClientLayout = ({ children }) => {
   return (
     <>
       <SessionProvider>
+        <LanguageProvider>
         {/* Show a progress bar at the top when navigating between pages */}
         <NextTopLoader color={config.colors.main} showSpinner={false} />
 
@@ -78,6 +80,7 @@ const ClientLayout = ({ children }) => {
 
         {/* Set Crisp customer chat support */}
         <CrispChat />
+        </LanguageProvider>
       </SessionProvider>
     </>
   );

@@ -1,13 +1,16 @@
 import Link from "next/link";
 import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
+import { getT } from "@/libs/i18n/server";
 
 export const metadata = getSEOTags({
   title: `Legal Notice | ${config.appName}`,
   canonicalUrlRelative: "/legal",
 });
 
-const Legal = () => {
+const Legal = async () => {
+  const t = await getT();
+
   return (
     <main className="max-w-xl mx-auto">
       <div className="p-5">
@@ -24,9 +27,9 @@ const Legal = () => {
               clipRule="evenodd"
             />
           </svg>
-          Back
+          {t("legalPage.back")}
         </Link>
-        <h1 className="text-3xl font-extrabold pb-6">Legal Notice</h1>
+        <h1 className="text-3xl font-extrabold pb-6">{t("legalPage.title")}</h1>
 
         <pre
           className="leading-relaxed whitespace-pre-wrap"

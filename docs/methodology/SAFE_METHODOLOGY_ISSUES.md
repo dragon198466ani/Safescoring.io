@@ -181,7 +181,7 @@
 
 ## 📋 PROCHAINES ÉTAPES SUGGÉRÉES
 
-1. ✅ **Audit complet** des 911 normes avec leur classification actuelle
+1. ✅ **Audit complet** des 2159 normes avec leur classification actuelle
 2. ⏳ **Identifier** toutes les normes mal classifiées
 3. ⏳ **Proposer** une nouvelle définition pour chaque pilier
 4. ⏳ **Valider** avec vous la nouvelle méthodologie

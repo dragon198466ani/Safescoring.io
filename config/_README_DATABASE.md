@@ -113,7 +113,7 @@ CREATE TABLE users (
 - `brands` - Product manufacturers
 - `products` - Central product table
 - `product_type_mapping` - Multi-type support (M:N)
-- `norms` - 911 SAFE norms
+- `norms` - 2159 SAFE norms
 
 **Scoring (5 tables)**
 - `safe_methodology` - SAFE framework config

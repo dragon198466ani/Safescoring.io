@@ -3,8 +3,10 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import config from "@/config";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 export default function UpgradeModal({ isOpen, onClose, remaining = 0, limit = 5 }) {
+  const { t } = useTranslation();
   const proPlan = config.stripe.plans.find((p) => p.isFeatured);
   const explorerPlan = config.stripe.plans.find((p) => p.name === "Explorer");
 
@@ -53,13 +55,15 @@ export default function UpgradeModal({ isOpen, onClose, remaining = 0, limit = 5
           </div>
           <h3 className="text-xl font-bold mb-2">
             {remaining === 0
-              ? "You've reached your monthly limit"
-              : `Only ${remaining} product${remaining > 1 ? "s" : ""} left this month`}
+              ? t("upgradeModal.limitReached")
+              : remaining > 1
+                ? t("upgradeModal.productsLeftPlural", { count: remaining })
+                : t("upgradeModal.productsLeft", { count: remaining })}
           </h3>
           <p className="text-base-content/60">
             {remaining === 0
-              ? `You've viewed ${limit} products this month. Upgrade for unlimited access.`
-              : "Upgrade now to get unlimited access to all product evaluations."}
+              ? t("upgradeModal.limitReachedDesc", { limit })
+              : t("upgradeModal.upgradeDesc")}
           </p>
         </div>
 
@@ -70,24 +74,24 @@ export default function UpgradeModal({ isOpen, onClose, remaining = 0, limit = 5
             <div className="font-semibold mb-1">{explorerPlan?.name}</div>
             <div className="flex items-baseline gap-1 mb-3">
               <span className="text-2xl font-bold">${explorerPlan?.price}</span>
-              <span className="text-sm text-base-content/60">/mo</span>
+              <span className="text-sm text-base-content/60">{t("upgradeModal.perMonth")}</span>
             </div>
             <ul className="space-y-2 text-sm mb-4">
               <li className="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-green-500">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                 </svg>
-                Unlimited products
+                {t("upgradeModal.unlimitedProducts")}
               </li>
               <li className="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-green-500">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                 </svg>
-                Email support
+                {t("upgradeModal.emailSupport")}
               </li>
             </ul>
             <Link href="/#pricing" className="btn btn-outline btn-sm w-full">
-              Choose
+              {t("upgradeModal.choose")}
             </Link>
           </div>
 
@@ -95,28 +99,28 @@ export default function UpgradeModal({ isOpen, onClose, remaining = 0, limit = 5
           <div className="rounded-xl border-2 border-primary bg-primary/10 p-4">
             <div className="flex items-center gap-2 mb-1">
               <span className="font-semibold">{proPlan?.name}</span>
-              <span className="badge badge-primary badge-xs">Popular</span>
+              <span className="badge badge-primary badge-xs">{t("upgradeModal.popular")}</span>
             </div>
             <div className="flex items-baseline gap-1 mb-3">
               <span className="text-2xl font-bold">${proPlan?.price}</span>
-              <span className="text-sm text-base-content/60">/mo</span>
+              <span className="text-sm text-base-content/60">{t("upgradeModal.perMonth")}</span>
             </div>
             <ul className="space-y-2 text-sm mb-4">
               <li className="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-green-500">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                 </svg>
-                Everything in Explorer
+                {t("upgradeModal.everythingIn")}
               </li>
               <li className="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-green-500">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                 </svg>
-                API access
+                {t("upgradeModal.apiAccess")}
               </li>
             </ul>
             <Link href="/#pricing" className="btn btn-primary btn-sm w-full">
-              Start Trial
+              {t("upgradeModal.startTrial")}
             </Link>
           </div>
         </div>
@@ -127,7 +131,7 @@ export default function UpgradeModal({ isOpen, onClose, remaining = 0, limit = 5
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
             </svg>
-            14-day free trial with card
+            {t("upgradeModal.trialNote")}
           </div>
         </div>
       </div>

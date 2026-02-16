@@ -2,12 +2,14 @@
 
 import { useState, useRef } from "react";
 /* eslint-disable @next/next/no-img-element */
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * ProductHeroGallery - Galerie intégrée au hero de la page produit
  * Design immersif avec thumbnails et lightbox
  */
 export default function ProductHeroGallery({ media = [], productName = "Product" }) {
+  const { t } = useTranslation();
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [mediaErrors, setMediaErrors] = useState({});
@@ -113,14 +115,14 @@ export default function ProductHeroGallery({ media = [], productName = "Product"
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9m11.25-5.25v4.5m0-4.5h-4.5m4.5 0L15 9m-11.25 11.25v-4.5m0 4.5h4.5m-4.5 0L9 15m11.25 5.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
               </svg>
-              View
+              {t("productGallery.view")}
             </div>
           </div>
 
           {/* Media count badge */}
           {validMedia.length > 1 && (
             <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 text-white text-sm font-medium">
-              {validMedia.length} {validMedia.some(m => isVideo(m)) ? "media" : "photos"}
+              {validMedia.length} {validMedia.some(m => isVideo(m)) ? t("productGallery.media") : t("productGallery.photos")}
             </div>
           )}
         </button>

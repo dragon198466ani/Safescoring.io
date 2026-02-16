@@ -54,7 +54,7 @@
 - A (Adversity): 192 → 193 normes
 - F (Fidelity): 190 → 195 normes (+5 nouvelles!)
 - E (Efficiency): 259 normes (inchangé)
-- **Total: 911 → 916 normes**
+- **Total: 2159 normes**
 
 ---
 
@@ -104,7 +104,7 @@
 - **Avant**: 501 normes applicables
 - **Après**: 506 normes applicables (+5)
 - N/A: 406 normes (inchangé)
-- **Total: 912 normes** dans norm_applicability
+- **Total: 912 normes** dans norm_applicability pour DEX (sur 2159 normes totales en base)
 
 ---
 
@@ -188,7 +188,7 @@
 | A | 193 | +1 |
 | F | 195 | +5 ✨ |
 | E | 259 | 0 |
-| **Total** | **916** | **+5** |
+| **Total** | **2159** | **+5** |
 
 ### Applicabilité DEX (type_id=39)
 
@@ -414,7 +414,7 @@ print('🎉 TOUS LES TESTS PASSENT - Implémentation v2.0 validée!')
 ✅ **Définitions cohérentes** pour hardware ET software
 ✅ **Critères objectifs** pour F (Fidelity) software
 ✅ **Classification claire** S vs A
-✅ **Normes bien catégorisées** (916 normes)
+✅ **Normes bien catégorisées** (2159 normes)
 ✅ **Applicabilité précise** par type de produit
 ✅ **Documentation complète** pour évaluateurs et IA
 ✅ **Système automatique** ready to use

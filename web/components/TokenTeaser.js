@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * TokenTeaser - Teasing message for future $SAFE token
@@ -12,6 +13,7 @@ export default function TokenTeaser({ variant = "full" }) {
   const { data: session } = useSession();
   const [userStats, setUserStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     async function fetchUserStats() {
@@ -73,9 +75,9 @@ export default function TokenTeaser({ variant = "full" }) {
         <div className="flex items-center gap-3">
           <div className="text-2xl">$SAFE</div>
           <div className="flex-1">
-            <p className="text-sm font-medium">Token Coming Soon</p>
+            <p className="text-sm font-medium">{t("tokenTeaser.tokenComingSoon")}</p>
             <p className="text-xs text-base-content/60">
-              {session ? `${airdrop.estimated} pts estimated` : "Earn points now"}
+              {session ? t("tokenTeaser.estimatedPts", { pts: airdrop.estimated }) : t("tokenTeaser.earnNow")}
             </p>
           </div>
         </div>
@@ -100,11 +102,11 @@ export default function TokenTeaser({ variant = "full" }) {
               <h3 className="font-bold text-lg flex items-center gap-2">
                 $SAFE Token
                 <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">
-                  Coming Soon
+                  {t("tokenTeaser.comingSoon")}
                 </span>
               </h3>
               <p className="text-sm text-base-content/60">
-                Earn points now, get rewarded later
+                {t("tokenTeaser.earnPoints")}
               </p>
             </div>
           </div>
@@ -126,33 +128,33 @@ export default function TokenTeaser({ variant = "full" }) {
                 <span className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-purple-400">
                   {airdrop.estimated.toLocaleString()}
                 </span>
-                <span className="text-base-content/60 mb-1">estimated points</span>
+                <span className="text-base-content/60 mb-1">{t("tokenTeaser.estimatedPoints")}</span>
               </div>
 
               {/* Breakdown */}
               <div className="grid grid-cols-3 gap-3 text-center">
                 <div className="p-3 rounded-lg bg-base-300/50">
                   <div className="text-lg font-bold">{airdrop.points}</div>
-                  <div className="text-xs text-base-content/50">Base Points</div>
+                  <div className="text-xs text-base-content/50">{t("tokenTeaser.basePoints")}</div>
                 </div>
                 <div className="p-3 rounded-lg bg-base-300/50">
                   <div className="text-lg font-bold text-purple-400">x{airdrop.levelMultiplier}</div>
-                  <div className="text-xs text-base-content/50">Level Bonus</div>
+                  <div className="text-xs text-base-content/50">{t("tokenTeaser.levelBonus")}</div>
                 </div>
                 <div className="p-3 rounded-lg bg-base-300/50">
                   <div className="text-lg font-bold text-blue-400">x{airdrop.seniorityMultiplier}</div>
-                  <div className="text-xs text-base-content/50">Seniority</div>
+                  <div className="text-xs text-base-content/50">{t("tokenTeaser.seniority")}</div>
                 </div>
               </div>
 
               {/* Level info */}
               <div className="flex items-center justify-between p-3 rounded-lg bg-base-300/30">
                 <div>
-                  <span className="text-sm text-base-content/60">Your level: </span>
+                  <span className="text-sm text-base-content/60">{t("tokenTeaser.yourLevel")} </span>
                   <span className="font-medium capitalize">{userStats?.reputation_level || "newcomer"}</span>
                 </div>
                 <div className="text-sm text-base-content/50">
-                  {userStats?.corrections_approved || 0} corrections approved
+                  {t("tokenTeaser.correctionsApproved", { count: userStats?.corrections_approved || 0 })}
                 </div>
               </div>
 
@@ -175,28 +177,28 @@ export default function TokenTeaser({ variant = "full" }) {
                     d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                   />
                 </svg>
-                Earn More Points
+                {t("tokenTeaser.earnMorePoints")}
               </Link>
             </div>
           )
         ) : (
           <div className="space-y-4">
             <p className="text-base-content/70">
-              Early contributors will receive <span className="text-amber-400 font-semibold">$SAFE tokens</span> based on their accumulated points.
+              {t("tokenTeaser.earlyContributors")} <span className="text-amber-400 font-semibold">{t("tokenTeaser.safeTokens")}</span> {t("tokenTeaser.basedOnPoints")}
             </p>
 
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-green-400">+50</span>
-                <span className="text-base-content/60">points per approved correction</span>
+                <span className="text-base-content/60">{t("tokenTeaser.pointsPerCorrection")}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-purple-400">x3</span>
-                <span className="text-base-content/60">multiplier for Oracle level</span>
+                <span className="text-base-content/60">{t("tokenTeaser.oracleMultiplier")}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-blue-400">x2</span>
-                <span className="text-base-content/60">multiplier for 1-year seniority</span>
+                <span className="text-base-content/60">{t("tokenTeaser.seniorityMultiplier")}</span>
               </div>
             </div>
 
@@ -204,7 +206,7 @@ export default function TokenTeaser({ variant = "full" }) {
               href="/api/auth/signin"
               className="btn btn-primary btn-block gap-2"
             >
-              Sign In to Start Earning
+              {t("tokenTeaser.signInToEarn")}
             </Link>
           </div>
         )}
@@ -228,8 +230,7 @@ export default function TokenTeaser({ variant = "full" }) {
             />
           </svg>
           <p className="text-xs text-base-content/50">
-            Points are tracked automatically. The earlier you contribute, the higher your seniority multiplier.
-            Snapshot date will be announced before the token launch.
+            {t("tokenTeaser.footerNote")}
           </p>
         </div>
       </div>

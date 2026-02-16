@@ -8,7 +8,7 @@
 - Description: Non-custodial trading platform using smart contracts. Users maintain full control of their funds with no KYC requirements.
 
 **Current Applicability Stats:**
-- Total norms: 911
+- Total norms: 2159
 - Applicable: 495 (54%)
 - N/A: 412 (46%)
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, memo, useCallback, useMemo } from "react";
 import Image from "next/image";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * CommunityStats - Product Links & Data
@@ -12,6 +13,7 @@ import Image from "next/image";
  * - Community reviews (Trustpilot, Reddit)
  */
 function CommunityStats({ productName, productSlug }) {
+  const { t } = useTranslation();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -69,7 +71,7 @@ function CommunityStats({ productName, productSlug }) {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold flex items-center gap-2">
           <span className="text-xl">🔗</span>
-          Links & Resources
+          {t("communityStats.linksTitle")}
         </h2>
       </div>
 
@@ -83,13 +85,13 @@ function CommunityStats({ productName, productSlug }) {
           {/* 1. OFFICIAL CHANNELS - Always first */}
           <div>
             <div className="text-xs text-base-content/50 mb-3 flex items-center gap-2">
-              <span>Official Channels</span>
+              <span>{t("communityStats.officialChannels")}</span>
               {stats?.verified && (
                 <span className="badge badge-xs badge-success gap-1">
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Verified
+                  {t("product.verified")}
                 </span>
               )}
             </div>
@@ -102,7 +104,7 @@ function CommunityStats({ productName, productSlug }) {
                   rel="noopener noreferrer"
                   className="btn btn-sm gap-2 bg-base-300 hover:bg-primary hover:text-primary-content border-0"
                 >
-                  🌐 Website
+                  🌐 {t("product.website")}
                 </a>
               )}
 
@@ -181,7 +183,7 @@ function CommunityStats({ productName, productSlug }) {
               {/* No official links message */}
               {!hasOfficialLinks && (
                 <span className="text-sm text-base-content/40 italic">
-                  No official links available yet
+                  {t("communityStats.noOfficialLinks")}
                 </span>
               )}
             </div>
@@ -190,7 +192,7 @@ function CommunityStats({ productName, productSlug }) {
           {/* 2. TECHNICAL DATA - GitHub & DefiLlama */}
           {hasTechnicalData && (
             <div className="pt-4 border-t border-base-300">
-              <div className="text-xs text-base-content/50 mb-3">Technical Data</div>
+              <div className="text-xs text-base-content/50 mb-3">{t("communityStats.technicalData")}</div>
               <div className="space-y-3">
 
                 {/* GitHub Stats */}
@@ -220,7 +222,7 @@ function CommunityStats({ productName, productSlug }) {
                         rel="noopener noreferrer"
                         className="text-xs text-primary hover:underline"
                       >
-                        View →
+                        {t("communityStats.view") + " →"}
                       </a>
                     </div>
                   </div>
@@ -242,7 +244,7 @@ function CommunityStats({ productName, productSlug }) {
                             unoptimized
                           />
                         )}
-                        <span className="text-sm font-medium">DeFi Protocol</span>
+                        <span className="text-sm font-medium">{t("communityStats.defiProtocol")}</span>
                       </div>
                       <a
                         href={stats.defillama.url}
@@ -255,7 +257,7 @@ function CommunityStats({ productName, productSlug }) {
                     </div>
                     <div className="flex items-center gap-4">
                       <div>
-                        <div className="text-[10px] text-base-content/50">TVL</div>
+                        <div className="text-[10px] text-base-content/50">{t("communityStats.tvl")}</div>
                         <div className="text-lg font-bold text-primary">{stats.defillama.tvl}</div>
                       </div>
                       {stats.defillama.change7d && (
@@ -284,7 +286,7 @@ function CommunityStats({ productName, productSlug }) {
 
           {/* 3. COMMUNITY & REVIEWS - External search links */}
           <div className="pt-4 border-t border-base-300">
-            <div className="text-xs text-base-content/50 mb-3">Community & Reviews</div>
+            <div className="text-xs text-base-content/50 mb-3">{t("communityStats.communityReviews")}</div>
             <div className="flex flex-wrap gap-2">
               {/* Trustpilot */}
               <a
@@ -317,7 +319,7 @@ function CommunityStats({ productName, productSlug }) {
           {/* Attribution & Affiliate CTA */}
           <div className="text-[10px] text-center pt-2 space-y-1">
             <div className="text-base-content/40">
-              Links to third-party sites • Not affiliated
+              {t("communityStats.thirdPartyDisclaimer")}
             </div>
             {!stats?.verified && (
               <a
@@ -327,7 +329,7 @@ function CommunityStats({ productName, productSlug }) {
                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
-                Are you the creator? Claim this product
+                {t("communityStats.claimProduct")}
               </a>
             )}
           </div>

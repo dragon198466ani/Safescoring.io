@@ -2,6 +2,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { getT } from "@/libs/i18n/server";
 
 export const revalidate = 3600;
 
@@ -132,6 +133,7 @@ function getAccuracyBadge(accuracy) {
 
 export default async function PredictionsPage() {
   const { predictions, stats } = await getPredictions();
+  const t = await getT();
 
   const accuracy = stats.overall_accuracy_percent || 0;
 
@@ -143,57 +145,56 @@ export default async function PredictionsPage() {
           {/* Hero */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-black mb-4">
-              Verified <span className="text-primary">Predictions</span>
+              {t("predictionsPage.title")} <span className="text-primary">{t("predictionsPage.titleHighlight")}</span>
             </h1>
             <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-8">
-              Every prediction is cryptographically committed to blockchain BEFORE events happen.
-              This is immutable proof of SafeScoring methodology accuracy.
+              {t("predictionsPage.subtitle")}
             </p>
 
             {/* Accuracy Hero Stat */}
             <div className="inline-flex items-center gap-6 bg-base-200 rounded-2xl p-6 border border-base-300">
               <div>
                 <div className="text-5xl font-black text-success">{accuracy.toFixed(1)}%</div>
-                <div className="text-sm text-base-content/60">Overall Accuracy</div>
+                <div className="text-sm text-base-content/60">{t("predictionsPage.overallAccuracy")}</div>
               </div>
               <div className="h-16 w-px bg-base-300" />
               <div className="text-left">
                 <div className="text-2xl font-bold">{stats.completed_predictions || 0}</div>
-                <div className="text-sm text-base-content/60">Validated Predictions</div>
+                <div className="text-sm text-base-content/60">{t("predictionsPage.validatedPredictions")}</div>
               </div>
             </div>
           </div>
 
           {/* How It Works */}
           <div className="bg-base-200 rounded-xl p-6 mb-10 border border-base-300">
-            <h2 className="font-bold text-lg mb-4">How Verified Predictions Work</h2>
+            <h2 className="font-bold text-lg mb-4">{t("predictionsPage.howItWorksTitle")}</h2>
             <div className="grid md:grid-cols-4 gap-4">
               <div className="text-center">
                 <div className="text-3xl mb-2">1</div>
-                <div className="font-semibold">Analyze</div>
+                <div className="font-semibold">{t("predictionsPage.stepAnalyze")}</div>
                 <div className="text-sm text-base-content/60">
-                  We evaluate products on 1110 security criteria
+                  {t("predictionsPage.stepAnalyzeDesc")}
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-3xl mb-2">2</div>
-                <div className="font-semibold">Predict</div>
+                <div className="font-semibold">{t("predictionsPage.stepPredict")}</div>
                 <div className="text-sm text-base-content/60">
-                  Generate risk assessment with probability
+                  {t("predictionsPage.stepPredictDesc")}
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-3xl mb-2">3</div>
-                <div className="font-semibold">Commit</div>
+                <div className="font-semibold">{t("predictionsPage.stepCommit")}</div>
                 <div className="text-sm text-base-content/60">
-                  Hash published to blockchain BEFORE event
+                  {t("predictionsPage.stepCommitDesc")}
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-3xl mb-2">4</div>
-                <div className="font-semibold">Verify</div>
+                <div className="font-semibold">{t("predictionsPage.stepVerify")}</div>
                 <div className="text-sm text-base-content/60">
-                  Anyone can verify prediction was made in advance
+                  {t("predictionsPage.stepVerifyDesc")}
                 </div>
               </div>
             </div>
@@ -203,29 +204,29 @@ export default async function PredictionsPage() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
             <div className="bg-base-200 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold">{stats.total_predictions || 0}</div>
-              <div className="text-xs text-base-content/60">Total Predictions</div>
+              <div className="text-xs text-base-content/60">{t("predictionsPage.totalPredictions")}</div>
             </div>
             <div className="bg-base-200 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-success">{stats.correct_positive || 0}</div>
-              <div className="text-xs text-base-content/60">Correct (High Risk)</div>
+              <div className="text-xs text-base-content/60">{t("predictionsPage.correctHighRisk")}</div>
             </div>
             <div className="bg-base-200 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-success">{stats.correct_negative || 0}</div>
-              <div className="text-xs text-base-content/60">Correct (Low Risk)</div>
+              <div className="text-xs text-base-content/60">{t("predictionsPage.correctLowRisk")}</div>
             </div>
             <div className="bg-base-200 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-warning">{stats.false_positive || 0}</div>
-              <div className="text-xs text-base-content/60">False Positives</div>
+              <div className="text-xs text-base-content/60">{t("predictionsPage.falsePositives")}</div>
             </div>
             <div className="bg-base-200 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-error">{stats.false_negative || 0}</div>
-              <div className="text-xs text-base-content/60">Missed</div>
+              <div className="text-xs text-base-content/60">{t("predictionsPage.missed")}</div>
             </div>
           </div>
 
           {/* Predictions List */}
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold">Recent Predictions</h2>
+            <h2 className="text-2xl font-bold">{t("predictionsPage.recentPredictions")}</h2>
 
             {predictions.map((pred) => {
               const badge = getAccuracyBadge(pred.accuracy);
@@ -260,15 +261,15 @@ export default async function PredictionsPage() {
 
                       <div className="text-sm text-base-content/60 space-x-4">
                         <span>
-                          Predicted:{" "}
+                          {t("predictionsPage.predicted")}{" "}
                           {new Date(pred.prediction_date).toLocaleDateString("en-US", {
                             year: "numeric",
                             month: "short",
                             day: "numeric",
                           })}
                         </span>
-                        <span>SafeScore: {pred.safe_score_at_prediction}</span>
-                        <span>Probability: {(pred.incident_probability * 100).toFixed(0)}%</span>
+                        <span>{t("predictionsPage.safeScoreLabel")} {pred.safe_score_at_prediction}</span>
+                        <span>{t("predictionsPage.probability")} {(pred.incident_probability * 100).toFixed(0)}%</span>
                       </div>
                     </div>
 
@@ -281,17 +282,17 @@ export default async function PredictionsPage() {
                               pred.incident_occurred ? "text-error" : "text-success"
                             }`}
                           >
-                            {pred.incident_occurred ? "Incident" : "No Incident"}
+                            {pred.incident_occurred ? t("predictionsPage.incident") : t("predictionsPage.noIncident")}
                           </div>
-                          <div className="text-xs text-base-content/50">Outcome</div>
+                          <div className="text-xs text-base-content/50">{t("predictionsPage.outcome")}</div>
                         </div>
                       )}
 
                       {isActive && (
                         <div className="text-center px-4 py-2 bg-primary/10 rounded-lg">
-                          <div className="text-sm font-semibold text-primary">Active</div>
+                          <div className="text-sm font-semibold text-primary">{t("predictionsPage.active")}</div>
                           <div className="text-xs text-base-content/50">
-                            Expires{" "}
+                            {t("predictionsPage.expires")}{" "}
                             {new Date(pred.expires_at).toLocaleDateString("en-US", {
                               month: "short",
                               day: "numeric",
@@ -309,7 +310,7 @@ export default async function PredictionsPage() {
                           className="btn btn-sm btn-outline"
                           title="View on blockchain"
                         >
-                          Verify
+                          {t("predictionsPage.verify")}
                         </a>
                       )}
                     </div>
@@ -319,7 +320,7 @@ export default async function PredictionsPage() {
                   {pred.commitment_hash && (
                     <div className="mt-3 pt-3 border-t border-base-300">
                       <div className="text-xs text-base-content/40 font-mono">
-                        Commitment: {pred.commitment_hash}
+                        {t("predictionsPage.commitment")} {pred.commitment_hash}
                       </div>
                     </div>
                   )}
@@ -330,13 +331,12 @@ export default async function PredictionsPage() {
 
           {/* CTA */}
           <div className="mt-12 rounded-xl bg-gradient-to-br from-primary/20 to-base-200 border border-base-300 p-8 text-center">
-            <h2 className="text-2xl font-bold mb-3">AI Can&apos;t Fake History</h2>
+            <h2 className="text-2xl font-bold mb-3">{t("predictionsPage.ctaTitle")}</h2>
             <p className="text-base-content/70 mb-6 max-w-lg mx-auto">
-              These predictions were committed to blockchain months or years before outcomes.
-              This is proof that SafeScoring methodology works - not just marketing claims.
+              {t("predictionsPage.ctaSubtitle")}
             </p>
             <Link href="/methodology" className="btn btn-primary">
-              Learn Our Methodology
+              {t("predictionsPage.learnMethodology")}
             </Link>
           </div>
         </div>

@@ -1,46 +1,23 @@
+"use client";
+
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import Script from "next/script";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 import { articles } from "../_assets/content";
 import BadgeCategory from "../_assets/components/BadgeCategory";
 import Avatar from "../_assets/components/Avatar";
-import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
 
-export async function generateMetadata({ params }) {
-  const resolvedParams = await params;
-  const article = articles.find((article) => article.slug === resolvedParams.articleId);
-
-  return getSEOTags({
-    title: article.title,
-    description: article.description,
-    canonicalUrlRelative: `/blog/${article.slug}`,
-    extraTags: {
-      openGraph: {
-        title: article.title,
-        description: article.description,
-        url: `/blog/${article.slug}`,
-        images: [
-          {
-            url: article.image.urlRelative,
-            width: 1200,
-            height: 660,
-          },
-        ],
-        locale: "en_US",
-        type: "website",
-      },
-    },
-  });
-}
-
-export default async function Article({ params }) {
-  const resolvedParams = await params;
-  const article = articles.find((article) => article.slug === resolvedParams.articleId);
+export default function Article() {
+  const { t } = useTranslation();
+  const params = useParams();
+  const article = articles.find((article) => article.slug === params.articleId);
   const articleCategorySlugs = (article.categories || []).filter(Boolean).map((c) => c.slug);
   const articlesRelated = articles
     .filter(
       (a) =>
-        a.slug !== resolvedParams.articleId &&
+        a.slug !== params.articleId &&
         (a.categories || []).filter(Boolean).some((c) =>
           articleCategorySlugs.includes(c.slug)
         )
@@ -81,7 +58,7 @@ export default async function Article({ params }) {
         <Link
           href="/blog"
           className="link !no-underline text-base-content/80 hover:text-base-content inline-flex items-center gap-1"
-          title="Back to Blog"
+          title={t("blog.backToBlog")}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +72,7 @@ export default async function Article({ params }) {
               clipRule="evenodd"
             />
           </svg>
-          Back to Blog
+          {t("blog.backToBlog")}
         </Link>
       </div>
 
@@ -132,14 +109,14 @@ export default async function Article({ params }) {
           {/* SIDEBAR WITH AUTHORS AND 3 RELATED ARTICLES */}
           <section className="max-md:pb-4 md:pl-12 max-md:border-b md:border-l md:order-last md:w-72 shrink-0 border-base-content/10">
             <p className="text-base-content/80 text-sm mb-2 md:mb-3">
-              Posted by
+              {t("blog.postedBy")}
             </p>
             <Avatar article={article} />
 
             {articlesRelated.length > 0 && (
               <div className="hidden md:block mt-12">
                 <p className=" text-base-content/80 text-sm  mb-2 md:mb-3">
-                  Related reading
+                  {t("blog.relatedReading")}
                 </p>
                 <div className="space-y-2 md:space-y-5">
                   {articlesRelated.map((article) => (

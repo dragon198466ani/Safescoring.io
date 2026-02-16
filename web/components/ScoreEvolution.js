@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 /**
  * ScoreEvolution - Displays score history evolution for a product
@@ -10,6 +11,8 @@ export default function ScoreEvolution({ slug, showChart = true }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
+  const dateLocale = t("lang") === "fr" ? "fr-FR" : "en-GB";
 
   useEffect(() => {
     async function fetchHistory() {
@@ -43,10 +46,10 @@ export default function ScoreEvolution({ slug, showChart = true }) {
     return (
       <div className="bg-base-200 rounded-lg p-6 text-center">
         <p className="text-base-content/60">
-          No historical data available yet.
+          {t("scoreEvolution.noDataAvailable")}
         </p>
         <p className="text-sm text-base-content/40 mt-2">
-          Score history will be tracked over time.
+          {t("scoreEvolution.historyTracked")}
         </p>
       </div>
     );
@@ -74,7 +77,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
                 d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
               />
             </svg>
-            Improving
+            {t("scoreEvolution.improving")}
           </span>
         );
       case "declining":
@@ -91,7 +94,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
                 d="M12 13a1 1 0 100 2h5a1 1 0 001-1V9a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586 3.707 5.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z"
               />
             </svg>
-            Declining
+            {t("scoreEvolution.declining")}
           </span>
         );
       default:
@@ -108,7 +111,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
                 d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z"
               />
             </svg>
-            Stable
+            {t("scoreEvolution.stable")}
           </span>
         );
     }
@@ -120,10 +123,10 @@ export default function ScoreEvolution({ slug, showChart = true }) {
   return (
     <div className="bg-base-200 rounded-lg p-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="font-semibold text-lg">Score Evolution</h3>
+        <h3 className="font-semibold text-lg">{t("scoreEvolution.title")}</h3>
         <div className="flex items-center gap-4">
           {getTrendIcon()}
-          <span className="badge badge-ghost">{stats.dataPoints} records</span>
+          <span className="badge badge-ghost">{t("scoreEvolution.records", { count: stats.dataPoints })}</span>
         </div>
       </div>
 
@@ -207,7 +210,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
                             {record.safe_score?.toFixed(1)}%
                           </div>
                           <div className="text-base-content/60">
-                            {new Date(record.recorded_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                            {new Date(record.recorded_at).toLocaleDateString(dateLocale, { day: 'numeric', month: 'short' })}
                           </div>
                           {record.score_change && (
                             <div
@@ -235,7 +238,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
             <span>
               {chartData[0]?.recorded_at
                 ? new Date(chartData[0].recorded_at).toLocaleDateString(
-                    "fr-FR",
+                    dateLocale,
                     { day: "numeric", month: "short" }
                   )
                 : ""}
@@ -244,7 +247,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
               {chartData[chartData.length - 1]?.recorded_at
                 ? new Date(
                     chartData[chartData.length - 1].recorded_at
-                  ).toLocaleDateString("fr-FR", {
+                  ).toLocaleDateString(dateLocale, {
                     day: "numeric",
                     month: "short",
                   })
@@ -260,24 +263,24 @@ export default function ScoreEvolution({ slug, showChart = true }) {
           <div className="text-xl font-bold text-primary">
             {stats.highestScore?.toFixed(1)}%
           </div>
-          <div className="text-xs text-base-content/60">Highest</div>
+          <div className="text-xs text-base-content/60">{t("scoreEvolution.highest")}</div>
         </div>
         <div className="bg-base-100 rounded-lg p-3">
           <div className="text-xl font-bold">{stats.averageScore}%</div>
-          <div className="text-xs text-base-content/60">Average</div>
+          <div className="text-xs text-base-content/60">{t("scoreEvolution.average")}</div>
         </div>
         <div className="bg-base-100 rounded-lg p-3">
           <div className="text-xl font-bold text-error">
             {stats.lowestScore?.toFixed(1)}%
           </div>
-          <div className="text-xs text-base-content/60">Lowest</div>
+          <div className="text-xs text-base-content/60">{t("scoreEvolution.lowest")}</div>
         </div>
       </div>
 
       {/* Unique data badge */}
       <div className="mt-4 text-center">
         <span className="badge badge-outline badge-sm">
-          Unique historical data - Cannot be replicated
+          {t("scoreEvolution.uniqueData")}
         </span>
       </div>
     </div>
