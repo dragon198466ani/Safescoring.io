@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { quickProtect } from "@/libs/api-protection";
 
 /**
  * SafeScore Badge API
@@ -14,6 +15,9 @@ import { supabase, isSupabaseConfigured } from "@/libs/supabase";
  */
 
 export async function GET(request, { params }) {
+  // Rate limit: public embeddable endpoint, protect against abuse
+  const protection = await quickProtect(request, "public");
+  if (protection.blocked) return protection.response;
   const { slug } = await params;
   const { searchParams } = new URL(request.url);
 
@@ -88,10 +92,16 @@ function generateBadgeSVG({ productName, score, verified, style, theme }) {
   const height = style === "minimal" ? 30 : 50;
   const borderRadius = style === "flat" ? 0 : style === "minimal" ? 4 : 8;
 
+  // Attribution comment included in all SVG badges
+  const attribution = `
+  <!-- SafeScoring Badge — https://safescoring.io -->
+  <!-- Score reflects SafeScoring's evaluation methodology. Not financial or security advice. -->
+  <!-- Terms of use: https://safescoring.io/tos — Do not alter or misrepresent this badge. -->`;
+
   if (style === "minimal") {
     // Minimal style: just score
     return `
-<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${attribution}
   <rect width="100%" height="100%" fill="${colors.bg}" rx="${borderRadius}" stroke="${colors.border}" stroke-width="1"/>
   <text x="10" y="20" font-family="system-ui, sans-serif" font-size="12" fill="${colors.muted}">SafeScore</text>
   <text x="75" y="21" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="${scoreColor}">${score}</text>
@@ -100,7 +110,7 @@ function generateBadgeSVG({ productName, score, verified, style, theme }) {
 
   // Standard badge
   return `
-<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${attribution}
   <defs>
     <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:${colors.bg};stop-opacity:1" />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 // Top products to suggest
 const SUGGESTED_PRODUCTS = [
@@ -22,6 +23,7 @@ export default function StepFirstProduct({ data, onNext, onBack, saving }) {
   const [selected, setSelected] = useState(data.firstProduct || null);
   const [products, setProducts] = useState(SUGGESTED_PRODUCTS);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchTopProducts();
@@ -44,7 +46,7 @@ export default function StepFirstProduct({ data, onNext, onBack, saving }) {
         }
       }
     } catch (error) {
-      console.error("Error fetching products:", error);
+      if (process.env.NODE_ENV === "development") console.error("Error fetching products:", error);
     }
     setLoading(false);
   };
@@ -56,9 +58,9 @@ export default function StepFirstProduct({ data, onNext, onBack, saving }) {
   return (
     <div>
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-2">Choose your first product to follow</h2>
+        <h2 className="text-2xl font-bold mb-2">{t("onboarding.firstProduct.title")}</h2>
         <p className="text-base-content/60">
-          Select a product to start tracking. You can add more later.
+          {t("onboarding.firstProduct.subtitle")}
         </p>
       </div>
 
@@ -90,7 +92,7 @@ export default function StepFirstProduct({ data, onNext, onBack, saving }) {
                   <div className={`text-2xl font-bold ${getScoreColor(product.score)}`}>
                     {product.score}
                   </div>
-                  <div className="text-xs text-base-content/50">SAFE Score</div>
+                  <div className="text-xs text-base-content/50">{t("onboarding.firstProduct.safeScore")}</div>
                 </div>
                 {selected === product.id && (
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-primary">
@@ -105,7 +107,7 @@ export default function StepFirstProduct({ data, onNext, onBack, saving }) {
 
       <div className="flex gap-3">
         <button onClick={onBack} className="btn btn-ghost">
-          Back
+          {t("onboarding.back")}
         </button>
         <button
           onClick={handleSubmit}
@@ -115,9 +117,9 @@ export default function StepFirstProduct({ data, onNext, onBack, saving }) {
           {saving ? (
             <span className="loading loading-spinner loading-sm"></span>
           ) : selected ? (
-            "Continue"
+            t("onboarding.continue")
           ) : (
-            "Skip for now"
+            t("onboarding.interests.skipForNow")
           )}
         </button>
       </div>

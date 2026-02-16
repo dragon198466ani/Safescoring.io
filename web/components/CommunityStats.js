@@ -24,7 +24,7 @@ function CommunityStats({ productName, productSlug }) {
           setStats(data);
         }
       } catch (err) {
-        console.error("Failed to fetch community stats:", err);
+        if (process.env.NODE_ENV === "development") console.error("Failed to fetch community stats:", err);
       } finally {
         setLoading(false);
       }
@@ -89,7 +89,7 @@ function CommunityStats({ productName, productSlug }) {
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Verified
+                  Scored
                 </span>
               )}
             </div>

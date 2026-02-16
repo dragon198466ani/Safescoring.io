@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+import { quickProtect } from "@/libs/api-protection";
 
 // Lazy initialization to avoid build-time errors
 function getSupabase() {
@@ -11,7 +12,11 @@ function getSupabase() {
 
 export const revalidate = 3600; // Cache 1 hour
 
-export async function GET() {
+export async function GET(request) {
+  // Rate limiting
+  const protection = await quickProtect(request, "public");
+  if (protection.blocked) return protection.response;
+
   try {
     // Get all products with scores
     const { data: products, error } = await getSupabase()

@@ -1,14 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import { requireAdmin as requireAdminAuth } from "@/libs/admin-auth";
+import { requireAdmin } from "@/libs/admin-auth";
 
 export const dynamic = "force-dynamic";
 
-// Admin authentication check using centralized RBAC
-async function requireAdmin() {
-  const admin = await requireAdminAuth();
-  return !!admin;
-}
 
 /**
  * POST /api/admin/init-history

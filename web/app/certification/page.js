@@ -4,8 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import config from "@/config";
+import { useNormStats } from "@/libs/NormStatsProvider";
 
-const certificationTiers = [
+const monitoringTiers = [
   {
     id: "starter",
     name: "Starter",
@@ -13,7 +15,7 @@ const certificationTiers = [
     priceYearly: 790,
     description: "For emerging projects seeking credibility",
     features: [
-      "Full SAFE evaluation (916 norms)",
+      "Full SAFE evaluation (all security norms)",
       "Public score on SafeScoring.io",
       "Starter Badge for your website",
       "Quarterly re-evaluation",
@@ -24,22 +26,22 @@ const certificationTiers = [
     popular: false,
   },
   {
-    id: "verified",
-    name: "Verified",
+    id: "assessed",
+    name: "Assessed",
     price: 2990,
     priceYearly: 2490,
-    description: "For established projects ready to prove security",
+    description: "For established projects ready to demonstrate security",
     features: [
       "Everything in Starter",
-      "Verified Badge (animated)",
+      "Assessed Badge (animated)",
       "Monthly re-evaluation",
-      "Priority listing in directory",
+      "Assessed badge in directory listing",
       "Detailed improvement roadmap",
       "Dedicated account manager",
       "Press release template",
     ],
-    badge: "verified",
-    cta: "Get Verified",
+    badge: "assessed",
+    cta: "Get Assessed",
     popular: true,
   },
   {
@@ -49,14 +51,14 @@ const certificationTiers = [
     priceYearly: 7990,
     description: "For protocols and institutions requiring the highest standard",
     features: [
-      "Everything in Verified",
+      "Everything in Assessed",
       "Enterprise Badge (premium)",
       "Weekly monitoring & alerts",
       "Custom scoring criteria",
       "White-label reports",
       "API access for integrations",
       "Incident response support",
-      "Board-ready security reports",
+      "Detailed evaluation reports",
       "Multi-product discount",
     ],
     badge: "enterprise",
@@ -77,7 +79,7 @@ const BadgePreview = ({ type }) => {
         <span className="text-sm font-medium">SAFE Evaluated</span>
       </div>
     ),
-    verified: (
+    assessed: (
       <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-lg border border-green-500/30">
         <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center animate-pulse">
           <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -85,8 +87,8 @@ const BadgePreview = ({ type }) => {
           </svg>
         </div>
         <div>
-          <span className="text-sm font-bold text-green-400">SAFE Verified</span>
-          <span className="text-xs text-base-content/50 ml-2">Score: 78%</span>
+          <span className="text-sm font-bold text-green-400">SAFE Assessed</span>
+          <span className="text-xs text-base-content/50 ml-2">SAFE Scored</span>
         </div>
       </div>
     ),
@@ -99,7 +101,7 @@ const BadgePreview = ({ type }) => {
         </div>
         <div>
           <span className="text-sm font-bold text-amber-400">SAFE Enterprise</span>
-          <span className="text-xs text-base-content/50 ml-2">Score: 85%</span>
+          <span className="text-xs text-base-content/50 ml-2">SAFE Scored</span>
         </div>
       </div>
     ),
@@ -107,35 +109,24 @@ const BadgePreview = ({ type }) => {
   return badges[type];
 };
 
-const stats = [
-  { value: "~50%", label: "of hacked projects had audits" },
-  { value: "916", label: "security norms evaluated" },
-  { value: "100+", label: "products already scored" },
-  { value: "0", label: "bias in our methodology" },
-];
-
-const testimonials = [
-  {
-    quote: "The SAFE certification gave our users confidence. Our TVL increased 40% after displaying the badge.",
-    author: "DeFi Protocol Founder",
-    role: "Series A, $50M TVL",
-  },
-  {
-    quote: "Finally, a security rating that covers both our hardware AND our companion app with the same rigor.",
-    author: "Hardware Wallet CEO",
-    role: "Top 10 Hardware Wallet",
-  },
-];
+const testimonials = [];
 
 export default function CertificationPage() {
   const [annual, setAnnual] = useState(true);
+  const normStats = useNormStats();
+
+  const stats = [
+    { value: "20%", label: "of Top 100 DeFi hacks hit audited projects (Halborn)" },
+    { value: String(normStats?.totalNorms || "\u2014"), label: "security norms evaluated" },
+    { value: `${normStats?.totalProducts || "\u2014"}+`, label: "products already scored" },
+    { value: "Open", label: "transparent methodology" },
+  ];
 
   return (
     <>
       <Header />
-      <main className="min-h-screen pt-24 pb-16">
-        {/* Hero Section */}
-        <section className="max-w-6xl mx-auto px-6 mb-20">
+      <main className="min-h-screen pt-24 pb-16 hero-bg">
+        <section className="max-w-7xl mx-auto px-6 mb-20">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary text-sm font-medium mb-6">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -144,13 +135,16 @@ export default function CertificationPage() {
               For Crypto Projects & Protocols
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Get <span className="text-primary">SAFE Certified</span>
+              Get <span className="text-primary">SAFE Monitored</span>
             </h1>
             <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-8">
-              Prove your security. Build user trust. Stand out from the many projects that got hacked despite having audits.
+              Showcase your security evaluation. Build transparency with continuous monitoring that complements traditional audits.
             </p>
-
-            {/* Stats */}
+            <div className="bg-warning/10 border border-warning/30 rounded-lg p-3 max-w-2xl mx-auto mb-4">
+              <p className="text-xs text-base-content/60">
+                <span className="font-semibold text-warning">Important:</span> SAFE Monitoring is a continuous evaluation service, not a security guarantee, endorsement, or accredited certification. Badges indicate ongoing evaluation by SafeScoring, not that a product is safe from all threats. Evaluations complement but do not replace professional security audits. SafeScoring is not a licensed security auditor or accredited certifying body (COFRAC/ISO 17021). Monitoring has no influence on SAFE scores — monitored and non-monitored products are evaluated with identical methodology and criteria.
+              </p>
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
               {stats.map((stat, i) => (
                 <div key={i} className="text-center">
@@ -162,10 +156,9 @@ export default function CertificationPage() {
           </div>
         </section>
 
-        {/* Why Certification Section */}
         <section className="bg-base-200 py-16 mb-20">
-          <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-2xl font-bold text-center mb-12">Why SAFE Certification?</h2>
+          <div className="max-w-7xl mx-auto px-6">
+            <h2 className="text-2xl font-bold text-center mb-12">Why SAFE Monitoring?</h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="bg-base-100 rounded-xl p-6 border border-base-300">
                 <div className="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center mb-4">
@@ -173,9 +166,9 @@ export default function CertificationPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">Audits Are Not Enough</h3>
+                <h3 className="text-lg font-semibold mb-2">Audits + Continuous Monitoring</h3>
                 <p className="text-base-content/70">
-                  Nearly half of hacked DeFi projects in 2024 had been audited. Audits check code, not operational security, backup procedures, or real-world resilience.
+                  According to Halborn, 20% of the Top 100 DeFi hacks hit audited projects. Audits check code, not operational security, backup procedures, or real-world resilience.
                 </p>
               </div>
               <div className="bg-base-100 rounded-xl p-6 border border-base-300">
@@ -184,9 +177,9 @@ export default function CertificationPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">916 Security Norms</h3>
+                <h3 className="text-lg font-semibold mb-2">{normStats?.totalNorms || "\u2014"} Security Norms</h3>
                 <p className="text-base-content/70">
-                  We evaluate cryptography, adversity resistance, reliability, AND usability. The most comprehensive security assessment in crypto.
+                  We evaluate cryptography, adversity resistance, reliability, AND usability across a broad set of security norms.
                 </p>
               </div>
               <div className="bg-base-100 rounded-xl p-6 border border-base-300">
@@ -197,28 +190,20 @@ export default function CertificationPage() {
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Build User Trust</h3>
                 <p className="text-base-content/70">
-                  Display your SAFE score and badge on your website. Users check scores before depositing. Certified projects see higher TVL and user retention.
+                  Display your SAFE score and badge on your website. Users increasingly look for security evaluations before depositing funds.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Pricing Section */}
-        <section className="max-w-6xl mx-auto px-6 mb-20">
+        <section className="max-w-7xl mx-auto px-6 mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Certification Plans</h2>
+            <h2 className="text-3xl font-bold mb-4">Monitoring Plans</h2>
             <p className="text-base-content/70 mb-6">Choose the level that fits your project</p>
-
-            {/* Annual/Monthly Toggle */}
             <div className="flex items-center justify-center gap-3">
               <span className={`text-sm ${!annual ? 'text-base-content' : 'text-base-content/50'}`}>Monthly</span>
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                checked={annual}
-                onChange={() => setAnnual(!annual)}
-              />
+              <input type="checkbox" className="toggle toggle-primary" checked={annual} onChange={() => setAnnual(!annual)} />
               <span className={`text-sm ${annual ? 'text-base-content' : 'text-base-content/50'}`}>
                 Annual <span className="text-green-500 font-medium">(Save 20%)</span>
               </span>
@@ -226,44 +211,25 @@ export default function CertificationPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {certificationTiers.map((tier) => (
-              <div
-                key={tier.id}
-                className={`relative rounded-2xl p-8 ${
-                  tier.popular
-                    ? 'bg-gradient-to-b from-primary/10 to-base-100 border-2 border-primary shadow-lg shadow-primary/10'
-                    : 'bg-base-200 border border-base-300'
-                }`}
-              >
+            {monitoringTiers.map((tier) => (
+              <div key={tier.id} className={`relative rounded-2xl p-8 ${tier.popular ? 'bg-gradient-to-b from-primary/10 to-base-100 border-2 border-primary shadow-lg shadow-primary/10' : 'bg-base-200 border border-base-300'}`}>
                 {tier.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="bg-primary text-primary-content px-4 py-1 rounded-full text-sm font-medium">
-                      Most Popular
-                    </span>
+                    <span className="bg-primary text-primary-content px-4 py-1 rounded-full text-sm font-medium">Most Popular</span>
                   </div>
                 )}
-
                 <div className="text-center mb-6">
                   <h3 className="text-xl font-bold mb-2">{tier.name}</h3>
                   <p className="text-sm text-base-content/60 mb-4">{tier.description}</p>
                   <div className="flex items-end justify-center gap-1">
-                    <span className="text-4xl font-bold">
-                      ${annual ? tier.priceYearly : tier.price}
-                    </span>
+                    <span className="text-4xl font-bold">${annual ? tier.priceYearly : tier.price}</span>
                     <span className="text-base-content/60 mb-1">/year</span>
                   </div>
                   {annual && tier.price !== tier.priceYearly && (
-                    <div className="text-sm text-green-500 mt-1">
-                      Save ${(tier.price - tier.priceYearly) * 12 / 12}/year
-                    </div>
+                    <div className="text-sm text-green-500 mt-1">Save ${(tier.price - tier.priceYearly) * 12 / 12}/year</div>
                   )}
                 </div>
-
-                {/* Badge Preview */}
-                <div className="flex justify-center mb-6">
-                  <BadgePreview type={tier.badge} />
-                </div>
-
+                <div className="flex justify-center mb-6"><BadgePreview type={tier.badge} /></div>
                 <ul className="space-y-3 mb-8">
                   {tier.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-2">
@@ -274,33 +240,25 @@ export default function CertificationPage() {
                     </li>
                   ))}
                 </ul>
-
-                <Link
-                  href={tier.id === 'enterprise' ? '/contact?plan=enterprise' : `/claim?plan=${tier.id}`}
-                  className={`btn w-full ${tier.popular ? 'btn-primary' : 'btn-outline'}`}
-                >
-                  {tier.cta}
-                </Link>
+                <a href={`mailto:partners@safescoring.io?subject=SAFE%20Monitoring%20${encodeURIComponent(tier.name)}%20—%20Application`} className={`btn w-full ${tier.popular ? 'btn-primary' : 'btn-outline'}`}>{tier.cta}</a>
+                <p className="text-xs text-base-content/40 mt-2 text-center">Apply via email — we&apos;ll get back within 48h</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* How It Works */}
         <section className="bg-base-200 py-16 mb-20">
           <div className="max-w-4xl mx-auto px-6">
-            <h2 className="text-2xl font-bold text-center mb-12">How Certification Works</h2>
+            <h2 className="text-2xl font-bold text-center mb-12">How SAFE Monitoring Works</h2>
             <div className="space-y-8">
               {[
                 { step: 1, title: "Apply", desc: "Submit your project details and choose your plan" },
-                { step: 2, title: "Evaluation", desc: "Our AI evaluates your product against 916 security norms" },
-                { step: 3, title: "Review", desc: "Our team verifies results and prepares your improvement roadmap" },
-                { step: 4, title: "Certification", desc: "Receive your badge, score, and public listing within 7 days" },
+                { step: 2, title: "Evaluation", desc: `Our AI evaluates your product against ${normStats?.totalNorms || "all"} security norms` },
+                { step: 3, title: "Review", desc: "Our team reviews results and prepares your improvement roadmap" },
+                { step: 4, title: "Monitoring", desc: "Receive your badge, score, and public listing within 7 days" },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-6">
-                  <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-primary-content font-bold shrink-0">
-                    {item.step}
-                  </div>
+                  <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-primary-content font-bold shrink-0">{item.step}</div>
                   <div>
                     <h3 className="text-lg font-semibold mb-1">{item.title}</h3>
                     <p className="text-base-content/70">{item.desc}</p>
@@ -311,39 +269,26 @@ export default function CertificationPage() {
           </div>
         </section>
 
-        {/* Testimonials */}
         <section className="max-w-4xl mx-auto px-6 mb-20">
-          <h2 className="text-2xl font-bold text-center mb-12">What Projects Say</h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {testimonials.map((t, i) => (
-              <div key={i} className="bg-base-200 rounded-xl p-6 border border-base-300">
-                <svg className="w-8 h-8 text-primary/30 mb-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                </svg>
-                <p className="text-lg mb-4 italic">&ldquo;{t.quote}&rdquo;</p>
-                <div>
-                  <div className="font-medium">{t.author}</div>
-                  <div className="text-sm text-base-content/60">{t.role}</div>
-                </div>
-              </div>
-            ))}
+          <div className="rounded-2xl bg-base-200 border border-base-300 p-8 md:p-12 text-center">
+            <div className="badge badge-primary badge-lg mb-4">Coming Soon</div>
+            <h2 className="text-2xl font-bold mb-4">Monitoring Program Launching Soon</h2>
+            <p className="text-base-content/70 mb-6 max-w-lg mx-auto">
+              We&apos;re finalizing the monitoring process. Be among the first projects to get SAFE monitored and display your security badge.
+            </p>
+            <a href="mailto:partners@safescoring.io" className="btn btn-outline btn-primary">Get Notified at Launch</a>
           </div>
         </section>
 
-        {/* CTA */}
         <section className="max-w-4xl mx-auto px-6">
           <div className="bg-gradient-to-r from-primary/20 to-base-200 rounded-2xl p-8 md:p-12 text-center border border-primary/20">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to Prove Your Security?</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to Showcase Your Evaluation?</h2>
             <p className="text-base-content/70 mb-8 max-w-xl mx-auto">
-              Join 100+ projects that display their SAFE score. Start your certification today.
+              Be among the first projects to get SAFE monitored. Get in touch to discuss your needs.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/claim" className="btn btn-primary btn-lg">
-                Start Certification
-              </Link>
-              <Link href="/contact" className="btn btn-outline btn-lg">
-                Talk to Sales
-              </Link>
+              <a href="mailto:partners@safescoring.io" className="btn btn-primary btn-lg">Contact Us</a>
+              <Link href="/methodology" className="btn btn-outline btn-lg">Learn About SAFE</Link>
             </div>
           </div>
         </section>

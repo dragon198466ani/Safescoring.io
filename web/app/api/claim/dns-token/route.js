@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import { quickProtect } from "@/libs/api-protection";
 
 /**
  * POST /api/claim/dns-token
  * Generate a unique verification token for DNS TXT record verification
  */
 export async function POST(request) {
+  // Rate limit: token generation, prevent abuse
+  const protection = await quickProtect(request, "sensitive");
+  if (protection.blocked) return protection.response;
+
   try {
     let body;
     try {

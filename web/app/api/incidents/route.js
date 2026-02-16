@@ -222,7 +222,7 @@ export async function GET(request) {
       responseData._note = isAuthenticated
         ? "Upgrade to Professional for full incident database access"
         : "Full incident database requires Professional subscription";
-      responseData._totalIncidents = "100+ incidents tracked";
+      responseData._totalIncidents = `${responseData.incidents?.length || 0}+ incidents tracked`;
     }
 
     return NextResponse.json(responseData, {

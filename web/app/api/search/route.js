@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { quickProtect } from "@/libs/api-protection";
 import { searchQuerySchema, validateSearchParams } from "@/libs/validations";
+import config from "@/config";
 
 /**
  * Product Search API
@@ -8,9 +10,13 @@ import { searchQuerySchema, validateSearchParams } from "@/libs/validations";
  */
 
 export async function GET(request) {
+  // Rate limiting
+  const protection = await quickProtect(request, "public");
+  if (protection.blocked) return protection.response;
+
   const { searchParams } = new URL(request.url);
 
-  // CORS headers
+  // CORS headers - restrict to allowed origins
   const allowedOrigin = process.env.ALLOWED_ORIGINS?.split(",")[0]?.trim() || "https://safescoring.io";
   const headers = {
     "Access-Control-Allow-Origin": allowedOrigin,
@@ -76,20 +82,22 @@ export async function GET(request) {
 
     // Get scores for found products
     const productIds = products.map(p => p.id);
-
-    const { data: scores } = await supabase
-      .from("safe_scoring_results")
-      .select("product_id, note_finale")
-      .in("product_id", productIds)
-      .order("calculated_at", { ascending: false });
-
-    // Create score map (latest score per product)
     const scoreMap = {};
-    scores?.forEach(s => {
-      if (!scoreMap[s.product_id]) {
-        scoreMap[s.product_id] = Math.round(s.note_finale || 0);
-      }
-    });
+
+    if (productIds.length > 0) {
+      const { data: scores } = await supabase
+        .from("safe_scoring_results")
+        .select("product_id, note_finale")
+        .in("product_id", productIds)
+        .order("calculated_at", { ascending: false });
+
+      // Create score map (latest score per product)
+      scores?.forEach(s => {
+        if (!scoreMap[s.product_id]) {
+          scoreMap[s.product_id] = Math.round(s.note_finale || 0);
+        }
+      });
+    }
 
     // Format results
     const results = products.map(p => ({
@@ -98,7 +106,7 @@ export async function GET(request) {
       type: p.product_types?.name || "Unknown",
       url: p.url,
       score: scoreMap[p.id] || null,
-      detailsUrl: `https://safescoring.io/products/${p.slug}`,
+      detailsUrl: `https://${config.domainName}/products/${p.slug}`,
     }));
 
     // Sort by score (highest first), then by name

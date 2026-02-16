@@ -1,9 +1,7 @@
-import config from "@/config";
-
 // SEO Metadata for products section
 export const metadata = {
   title: "Crypto Products Security Database | SafeScoring",
-  description: `Browse security scores for 100+ crypto products. Each product is evaluated against ${config.safe?.stats?.totalNorms || 916} security norms across Security, Adversity, Fidelity & Efficiency pillars. Compare wallets, exchanges, DeFi protocols and more.`,
+  description: "Browse security scores for crypto products. Each product is evaluated against comprehensive security norms across Security, Adversity, Fidelity & Efficiency pillars. Compare wallets, exchanges, DeFi protocols and more.",
   keywords: [
     "crypto security",
     "hardware wallet security",
@@ -22,7 +20,7 @@ export const metadata = {
   ],
   openGraph: {
     title: "Crypto Products Security Database | SafeScoring",
-    description: "Browse and compare security scores for 100+ crypto products. Find the safest wallets, exchanges, and DeFi protocols.",
+    description: "Browse and compare security scores for crypto products. Explore security evaluations for wallets, exchanges, and DeFi protocols.",
     url: "https://safescoring.io/products",
     siteName: "SafeScoring",
     type: "website",
@@ -38,7 +36,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Crypto Products Security Database | SafeScoring",
-    description: "Browse and compare security scores for 100+ crypto products.",
+    description: "Browse and compare security scores for crypto products.",
     images: ["/og-products.png"],
   },
   alternates: {

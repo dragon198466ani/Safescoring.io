@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import ShareButtons from "@/components/ShareButtons";
 
@@ -32,7 +33,9 @@ export async function generateMetadata({ params }) {
 
   const amount = formatAmount(hack.amount_usd);
   const title = `${hack.title}: ${amount} Stolen - Security Analysis | SafeScoring`;
-  const description = `${hack.summary} Pre-hack SafeScore: ${hack.safescore_before || "N/A"}/100. Learn what went wrong and how to protect yourself.`;
+  const description = hack.safescore_before
+    ? `${hack.summary} Pre-hack SafeScore: ${hack.safescore_before}/100. Learn what went wrong and how to protect yourself.`
+    : `${hack.summary} Learn what went wrong and how to protect yourself.`;
 
   return {
     title,
@@ -94,7 +97,6 @@ function getSampleHacks() {
       date: "2023-06-03",
       category: "WALLET",
       summary: "Private keys compromised through supply chain attack. Over $100M stolen from users.",
-      safescore_before: 52,
       product_slug: "atomic-wallet",
       content: `
 ## What Happened
@@ -116,23 +118,23 @@ The exact attack vector remains unclear, but evidence points to:
 2. **Server-side vulnerability** - User data may have been exposed through backend systems
 3. **Encryption weakness** - Private keys may not have been properly secured
 
-### Why SafeScoring Rated It 52/100 BEFORE the Hack
+### Areas Noted in Retrospective Analysis
 
-Our pre-incident evaluation identified several red flags:
+Based on publicly available information at the time:
 
-- **Closed source** - No way to audit security practices
-- **Centralized key generation** - Keys partially derived server-side
-- **Limited bug bounty** - Below industry standard
-- **No hardware wallet support** - Single point of failure
-- **Lack of transparency** - Minimal security documentation
+- **Closed source** - Code not publicly auditable
+- **Key generation architecture** - Questions about server-side involvement
+- **Bug bounty program** - Scope below some industry benchmarks
+- **Self-custody only** - No hardware wallet integration
+- **Limited documentation** - Minimal public security documentation
 
-### Lessons Learned
+### General Lessons
 
-1. Never store large amounts in software wallets
+1. Consider hardware wallets for larger amounts
 2. Prefer open-source wallets with audited code
 3. Use hardware wallets for significant holdings
 4. Diversify across multiple wallets
-5. Check SafeScoring ratings before trusting a wallet
+5. Check security ratings before trusting a wallet
       `,
       attack_vector: "Supply Chain / Unknown",
       funds_recovered: 0,
@@ -147,7 +149,6 @@ Our pre-incident evaluation identified several red flags:
       date: "2022-03-23",
       category: "BRIDGE",
       summary: "Validator keys compromised in largest DeFi hack to date. $625M stolen by Lazarus Group.",
-      safescore_before: 45,
       product_slug: "ronin-bridge",
       content: `
 ## What Happened
@@ -170,23 +171,23 @@ The attacker compromised 5 of 9 validator keys:
 
 With 5/9 keys, the attacker could sign any transaction.
 
-### Why SafeScoring Rated It 45/100 BEFORE the Hack
+### Areas Noted in Retrospective Analysis
 
-Critical vulnerabilities we identified:
+Based on publicly available information:
 
-- **Low validator count** - Only 9 validators (too few)
-- **Centralization risk** - Sky Mavis controlled 4/9 validators
-- **Poor key management** - Validator keys not properly secured
-- **No monitoring** - Attack went undetected for 6 days
-- **Trusted third-party access** - Axie DAO key should have been revoked
+- **Validator count** - 9 validators at the time of the incident
+- **Validator distribution** - Sky Mavis operated 4 of 9 validators
+- **Key management** - Validator key security was a factor
+- **Monitoring gaps** - Attack reportedly went undetected for 6 days
+- **Access management** - Previously authorized access was not revoked
 
-### Lessons Learned
+### General Lessons
 
-1. Bridge security requires true decentralization
-2. Validator key management is critical
-3. Real-time monitoring is essential
-4. Revoke access when no longer needed
-5. More validators = more security
+1. Bridge security benefits from broader decentralization
+2. Validator key management is an important security consideration
+3. Real-time monitoring can help detect incidents faster
+4. Access should be revoked when no longer needed
+5. More validators can distribute risk
       `,
       attack_vector: "Social Engineering / Key Compromise",
       funds_recovered: 30000000,
@@ -201,7 +202,6 @@ Critical vulnerabilities we identified:
       date: "2022-11-11",
       category: "EXCHANGE",
       summary: "Exchange insolvency and alleged fraud. $8B+ in customer funds missing.",
-      safescore_before: 38,
       product_slug: "ftx",
       content: `
 ## What Happened
@@ -218,33 +218,33 @@ FTX, once the world's second-largest crypto exchange, collapsed in spectacular f
 
 ### What Went Wrong
 
-FTX wasn't hacked in the traditional sense - it was fraud:
+According to court proceedings and public reports, FTX's collapse involved alleged mismanagement of customer funds:
 
-1. **Customer funds misused** - Lent to sister company Alameda
-2. **No segregation** - Customer and company funds mixed
-3. **Fake accounting** - Billions unaccounted for
-4. **No oversight** - Zero internal controls
-5. **Centralized control** - SBF controlled everything
+1. **Customer funds commingled** - Allegedly lent to sister company Alameda Research
+2. **Lack of fund segregation** - Customer and company funds reportedly mixed
+3. **Accounting concerns** - Billions reportedly unaccounted for
+4. **Governance gaps** - Limited internal controls reported
+5. **Concentrated decision-making** - Key decisions made by a small group
 
-### Why SafeScoring Rated It 38/100 BEFORE the Collapse
+### Areas Noted in Retrospective Analysis
 
-Our evaluation flagged serious issues:
+Based on publicly available information at the time:
 
-- **Offshore jurisdiction** - No regulatory oversight
-- **Opaque ownership** - Complex corporate structure
-- **No proof of reserves** - Refused to provide attestation
-- **Key person risk** - Excessive reliance on SBF
-- **Related party transactions** - Alameda relationship undisclosed
+- **Offshore jurisdiction** - Limited regulatory oversight
+- **Complex corporate structure** - Opaque ownership reported
+- **Proof of reserves** - Not provided prior to collapse
+- **Key person dependency** - Concentrated decision-making authority
+- **Related party relationships** - Alameda relationship insufficiently disclosed
 
-### Lessons Learned
+### General Lessons
 
-1. Not your keys, not your crypto
-2. Exchanges are not banks - no FDIC
-3. Proof of reserves is minimum requirement
-4. Offshore = less protection
-5. If it seems too good to be true, it is
+1. Consider self-custody for long-term holdings
+2. Exchanges are not insured like banks
+3. Proof of reserves is an important transparency measure
+4. Regulatory jurisdiction matters for user protection
+5. Diversification across platforms can reduce concentration risk
       `,
-      attack_vector: "Fraud / Insolvency",
+      attack_vector: "Alleged Mismanagement / Insolvency",
       funds_recovered: 0,
       attacker_identified: true,
     },
@@ -300,31 +300,18 @@ export default async function HackPage({ params }) {
     },
   };
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://safescoring.io" },
-      { "@type": "ListItem", position: 2, name: "Hacks", item: "https://safescoring.io/hacks" },
-      { "@type": "ListItem", position: 3, name: hack.title, item: `https://safescoring.io/hacks/${slug}` },
-    ],
-  };
-
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <Header />
       <main className="min-h-screen pt-24 pb-16 px-6 hero-bg">
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb */}
-          <nav className="text-sm breadcrumbs mb-6">
-            <ul>
-              <li><Link href="/">Home</Link></li>
-              <li><Link href="/hacks">Hacks</Link></li>
-              <li className="text-base-content/70">{hack.project}</li>
-            </ul>
-          </nav>
+          <Breadcrumbs items={[
+            { label: "Home", href: "/" },
+            { label: "Hacks", href: "/hacks" },
+            { label: hack.project },
+          ]} />
 
           {/* Hero */}
           <div className="bg-base-200 rounded-2xl p-8 mb-8 border border-base-300">
@@ -334,7 +321,7 @@ export default async function HackPage({ params }) {
                 <div className="flex items-center gap-3 mb-4">
                   <span className={`badge ${getCategoryColor(hack.category)}`}>{hack.category}</span>
                   <span className="text-base-content/50">
-                    {new Date(hack.date).toLocaleDateString("en-US", {
+                    {new Date(hack.date).toLocaleDateString(undefined, {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -370,7 +357,7 @@ export default async function HackPage({ params }) {
                       <span className="text-base text-base-content/40">/100</span>
                     </div>
                     <div className="text-xs text-base-content/40 mt-1">
-                      {hack.safescore_before < 50 ? "We warned about this" : "Red flags identified"}
+                      {hack.safescore_before < 50 ? "Score below average pre-incident" : "Retrospective assessment"}
                     </div>
                   </div>
                 )}
@@ -417,12 +404,25 @@ export default async function HackPage({ params }) {
             </article>
           )}
 
+          {/* Disclaimer */}
+          <div className="bg-base-200/50 border border-base-300 rounded-xl p-4 mb-8">
+            <p className="text-xs text-base-content/50 text-center">
+              Incident data is compiled from public reports and may be incomplete or contain inaccuracies. SafeScoring does not guarantee the accuracy of incident details.
+              Product evaluations reflect our methodology at a point in time and do not predict future security outcomes.
+              If you believe any information is incorrect, contact us at{" "}
+              <a href="mailto:legal@safescoring.io" className="underline">legal@safescoring.io</a>.
+            </p>
+          </div>
+
           {/* CTA Box */}
           <div className="bg-gradient-to-br from-primary/20 to-base-200 border border-primary/30 rounded-xl p-8 text-center mb-8">
-            <h2 className="text-2xl font-bold mb-3">Don&apos;t trust. Verify.</h2>
+            <h2 className="text-2xl font-bold mb-3">Evaluate before you trust.</h2>
             <p className="text-base-content/70 mb-6 max-w-lg mx-auto">
-              Check the SafeScore of any crypto tool before trusting it with your funds.
-              Our ratings identified red flags in {hack.project} before this incident.
+              Review the security evaluation of any crypto tool before using it.
+              {hack.safescore_before
+                ? ` ${hack.project} had a below-average evaluation prior to this incident based on publicly available data.`
+                : ` Regular security evaluation helps identify areas for improvement.`
+              }
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link href="/products" className="btn btn-primary">
@@ -478,8 +478,8 @@ function parseMarkdown(md) {
   return escapeHtml(md)
     .replace(/^## (.+)$/gm, '<h2 class="text-2xl font-bold mt-8 mb-4">$1</h2>')
     .replace(/^### (.+)$/gm, '<h3 class="text-xl font-semibold mt-6 mb-3">$1</h3>')
-    .replace(/^- \*\*(.+?)\*\* - (.+)$/gm, '<li class="mb-2"><strong>$1</strong> - $2</li>')
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
+    .replace(/^\- \*\*(.+?)\*\* - (.+)$/gm, '<li class="mb-2"><strong>$1</strong> - $2</li>')
+    .replace(/^\- (.+)$/gm, "<li>$1</li>")
     .replace(/^\d+\. \*\*(.+?)\*\* - (.+)$/gm, '<li class="mb-2"><strong>$1</strong> - $2</li>')
     .replace(/^\d+\. (.+)$/gm, "<li>$1</li>")
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")

@@ -1,22 +1,25 @@
 import Link from "next/link";
 import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
-import { createClient } from "@supabase/supabase-js";
+import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { getNormStats } from "@/libs/norm-stats";
 
 export const metadata = getSEOTags({
   title: `Score Transparency | ${config.appName}`,
-  description: "See real score distribution across all crypto products. We rate objectively - some products score high, others don't. No pay-to-play, just data.",
+  description: "See real score distribution across all crypto products. We rate using a standardized methodology - some products score high, others don't. Scores are not influenced by commercial relationships.",
   canonicalUrlRelative: "/transparency",
 });
 
 // Fetch stats at build time
 async function getStats() {
-  try {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!url || !key) return null;
-    const supabase = createClient(url, key);
+  if (!isSupabaseConfigured()) {
+    return null;
+  }
 
+  try {
     const { data: scores } = await supabase
       .from("safe_scoring_results")
       .select("product_id, note_finale, score_s, score_a, score_f, score_e")
@@ -109,28 +112,26 @@ const ProductCard = ({ product, rank }) => (
 );
 
 export default async function TransparencyPage() {
-  const stats = await getStats();
+  const [stats, normStats] = await Promise.all([getStats(), getNormStats()]);
 
   const categories = [
-    { key: 'excellent', label: 'Excellent', range: '90-100%', color: 'bg-success', textColor: 'text-success', description: 'Top-tier security across all pillars' },
-    { key: 'good', label: 'Good', range: '70-89%', color: 'bg-info', textColor: 'text-info', description: 'Strong security with minor gaps' },
-    { key: 'average', label: 'Average', range: '50-69%', color: 'bg-warning', textColor: 'text-warning', description: 'Moderate security, room for improvement' },
-    { key: 'poor', label: 'Poor', range: '30-49%', color: 'bg-orange-500', textColor: 'text-orange-500', description: 'Significant security concerns' },
-    { key: 'critical', label: 'Critical', range: '0-29%', color: 'bg-error', textColor: 'text-error', description: 'Major security risks identified' },
+    { key: 'excellent', label: 'Strong', range: '90-100%', color: 'bg-success', textColor: 'text-success', description: 'High evaluation across all pillars' },
+    { key: 'good', label: 'Good', range: '70-89%', color: 'bg-info', textColor: 'text-info', description: 'Solid evaluation with minor areas for improvement' },
+    { key: 'average', label: 'Average', range: '50-69%', color: 'bg-warning', textColor: 'text-warning', description: 'Moderate evaluation, opportunities for improvement' },
+    { key: 'poor', label: 'Below Average', range: '30-49%', color: 'bg-orange-500', textColor: 'text-orange-500', description: 'Below average evaluation, improvement recommended' },
+    { key: 'critical', label: 'Low', range: '0-29%', color: 'bg-error', textColor: 'text-error', description: 'Low evaluation, significant improvement needed' },
   ];
 
   return (
-    <main className="min-h-screen bg-base-100">
-      {/* Header */}
-      <div className="bg-base-200/50 border-b border-base-300">
-        <div className="max-w-6xl mx-auto px-6 py-6">
-          <Link href="/" className="btn btn-ghost btn-sm gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-              <path fillRule="evenodd" d="M15 10a.75.75 0 01-.75.75H7.612l2.158 1.96a.75.75 0 11-1.04 1.08l-3.5-3.25a.75.75 0 010-1.08l3.5-3.25a.75.75 0 111.04 1.08L7.612 9.25h6.638A.75.75 0 0115 10z" clipRule="evenodd" />
-            </svg>
-            Back
-          </Link>
-        </div>
+    <>
+    <Header />
+    <main className="min-h-screen pt-24 pb-16 px-6 hero-bg">
+      {/* Breadcrumbs */}
+      <div className="max-w-7xl mx-auto">
+        <Breadcrumbs items={[
+          { label: "Home", href: "/" },
+          { label: "Score Transparency" },
+        ]} />
       </div>
 
       {/* Hero */}
@@ -140,11 +141,11 @@ export default async function TransparencyPage() {
             Transparency Report
           </span>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-            Real Scores. <span className="text-gradient-safe">No Bias.</span>
+            Real Scores. <span className="text-gradient-safe">Methodology-Driven.</span>
           </h1>
           <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
-            We don&apos;t give everyone a gold star. Our ratings are based on {config.safe.stats.totalNorms} security
-            norms - some products excel, others don&apos;t. That&apos;s what makes our ratings trustworthy.
+            We don&apos;t give everyone a gold star. Our evaluations are based on {normStats?.totalNorms || "\u2014"} security
+            norms — some products score high, others don&apos;t. Scores are not influenced by commercial relationships.
           </p>
         </div>
       </section>
@@ -152,7 +153,7 @@ export default async function TransparencyPage() {
       {/* Key Stats */}
       {stats && (
         <section className="py-8 px-6">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-base-200/50 rounded-2xl p-6 text-center border border-base-300">
                 <div className="text-4xl font-bold text-primary">{stats.total}</div>
@@ -197,7 +198,7 @@ export default async function TransparencyPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-error">✗</span>
-                  <span><strong>Closed source code</strong> - Can&apos;t verify security claims without code review</span>
+                  <span><strong>Closed source code</strong> - Can't verify security claims without code review</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-error">✗</span>
@@ -213,7 +214,7 @@ export default async function TransparencyPage() {
                 </li>
               </ul>
               <p className="text-sm text-base-content/60 mt-4">
-                We evaluate all products against the same {config.safe.stats.totalNorms} norms.
+                We evaluate all products against the same {normStats?.totalNorms || "\u2014"} norms.
                 No exceptions, no paid placements.
               </p>
             </div>
@@ -224,7 +225,7 @@ export default async function TransparencyPage() {
       {/* Score Distribution */}
       {stats && (
         <section className="py-12 px-6">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <h2 className="text-2xl font-bold mb-8 text-center">Score Distribution</h2>
 
             <div className="grid md:grid-cols-5 gap-4 mb-12">
@@ -295,7 +296,7 @@ export default async function TransparencyPage() {
               AI for Speed. Humans for Judgment.
             </h2>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              We combine the scale of AI with the nuance of human expertise. Here&apos;s how we avoid the pitfalls of pure automation.
+              We combine the scale of AI with the nuance of human expertise. Here's how we avoid the pitfalls of pure automation.
             </p>
           </div>
 
@@ -306,7 +307,7 @@ export default async function TransparencyPage() {
               <div>
                 <h3 className="font-bold text-lg mb-2">AI Analyzes at Scale</h3>
                 <p className="text-base-content/60">
-                  Our AI system evaluates each product against {config.safe.stats.totalNorms} security norms in minutes, not weeks.
+                  Our AI system evaluates each product against {normStats?.totalNorms || "\u2014"} security norms in minutes, not weeks.
                   Same criteria applied consistently to every product.
                 </p>
                 <div className="flex gap-4 mt-3 text-sm">
@@ -321,7 +322,7 @@ export default async function TransparencyPage() {
               <div>
                 <h3 className="font-bold text-lg mb-2">Humans Verify Critical Scores</h3>
                 <p className="text-base-content/60">
-                  When the AI says &quot;I&apos;m not sure&quot; (TBD), human experts review. Critical security norms
+                  When the AI says "I'm not sure" (TBD), human experts review. Critical security norms
                   get a second-pass verification. New product types require manual validation.
                 </p>
                 <div className="flex gap-4 mt-3 text-sm">
@@ -379,16 +380,16 @@ export default async function TransparencyPage() {
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-base-100 rounded-xl p-6 border border-base-300">
               <div className="text-success text-2xl mb-3">✓</div>
-              <h3 className="font-bold mb-2">No Pay-to-Play</h3>
+              <h3 className="font-bold mb-2">Scores Independent of Commercial Relationships</h3>
               <p className="text-sm text-base-content/60">
-                Companies cannot pay for better scores. Our ratings are based solely on security data.
+                Monitoring and partnership programs do not influence scores. Evaluations are based on our standardized methodology.
               </p>
             </div>
             <div className="bg-base-100 rounded-xl p-6 border border-base-300">
               <div className="text-success text-2xl mb-3">✓</div>
               <h3 className="font-bold mb-2">Same Standards for All</h3>
               <p className="text-sm text-base-content/60">
-                Every product is evaluated against the same {config.safe.stats.totalNorms} security norms.
+                Every product is evaluated against the same {normStats?.totalNorms || "\u2014"} security norms.
               </p>
             </div>
             <div className="bg-base-100 rounded-xl p-6 border border-base-300">
@@ -402,7 +403,7 @@ export default async function TransparencyPage() {
               <div className="text-success text-2xl mb-3">✓</div>
               <h3 className="font-bold mb-2">Regular Updates</h3>
               <p className="text-sm text-base-content/60">
-                Scores are recalculated when products update their security. Past performance doesn&apos;t lock in a score.
+                Scores are recalculated when products update their security. Past performance doesn't lock in a score.
               </p>
             </div>
           </div>
@@ -412,9 +413,9 @@ export default async function TransparencyPage() {
       {/* CTA */}
       <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-bold mb-4">Check Any Product&apos;s Score</h2>
+          <h2 className="text-2xl font-bold mb-4">Check Any Product's Score</h2>
           <p className="text-base-content/60 mb-8">
-            Search our database of {stats?.total || config.safe.stats.totalProducts}+ rated products.
+            Search our database of {stats?.total || normStats?.totalProducts || "\u2014"}+ rated products.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/products" className="btn btn-primary btn-lg">
@@ -427,5 +428,7 @@ export default async function TransparencyPage() {
         </div>
       </section>
     </main>
+    <Footer />
+    </>
   );
 }

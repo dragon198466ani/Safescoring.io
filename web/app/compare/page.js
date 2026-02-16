@@ -1,14 +1,19 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import config from "@/config";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import ProductLogo from "@/components/ProductLogo";
+import CompareProductPicker from "@/components/CompareProductPicker";
+import { getFaviconUrl } from "@/libs/logo-utils";
+import { getNormStats } from "@/libs/norm-stats";
 
 export const revalidate = 3600; // Revalidate every hour
 
 export const metadata = {
   title: "Compare Crypto Products - Security Comparison Tool | SafeScoring",
-  description: "Compare security scores of crypto wallets, exchanges, and DeFi protocols. See side-by-side SAFE Score analysis based on 916 security criteria.",
+  description: "Compare security scores of crypto wallets, exchanges, and DeFi protocols. See side-by-side SAFE Score analysis based on comprehensive security criteria.",
   keywords: [
     "crypto comparison",
     "wallet comparison",
@@ -18,17 +23,6 @@ export const metadata = {
     "security comparison",
     "SAFE score",
   ],
-};
-
-// Get logo URL helper
-const getLogoUrl = (url) => {
-  if (!url) return null;
-  try {
-    const domain = new URL(url).hostname;
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-  } catch {
-    return null;
-  }
 };
 
 // Popular comparisons (SEO gold)
@@ -73,7 +67,7 @@ async function getTopProducts() {
     id: p.id,
     name: p.name,
     slug: p.slug,
-    logoUrl: getLogoUrl(p.url),
+    logoUrl: getFaviconUrl(p.url),
     type: typesMap[p.type_id]?.name || "Product",
     category: typesMap[p.type_id]?.category || "other",
     score: Math.round(p.safe_scoring_results?.[0]?.note_finale || 0),
@@ -81,7 +75,7 @@ async function getTopProducts() {
 }
 
 export default async function CompareLandingPage() {
-  const products = await getTopProducts();
+  const [products, normStats] = await Promise.all([getTopProducts(), getNormStats()]);
 
   // Group by category
   const byCategory = {};
@@ -102,14 +96,19 @@ export default async function CompareLandingPage() {
     <>
       <Header />
       <main className="min-h-screen pt-24 pb-16 px-6 hero-bg">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto">
+          <Breadcrumbs items={[
+            { label: "Home", href: "/" },
+            { label: "Compare" },
+          ]} />
+
           {/* Hero */}
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
               Compare Crypto Security Scores
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              Side-by-side comparison of wallets, exchanges, and DeFi protocols based on 916 security criteria.
+              Side-by-side comparison of wallets, exchanges, and DeFi protocols based on {normStats?.totalNorms || "2000+"} security criteria.
             </p>
           </div>
 
@@ -130,50 +129,8 @@ export default async function CompareLandingPage() {
             </div>
           </div>
 
-          {/* Custom comparison */}
-          <div className="rounded-xl bg-base-200 border border-base-300 p-8 mb-12">
-            <h2 className="text-xl font-bold mb-6 text-center">Create Custom Comparison</h2>
-            <p className="text-center text-base-content/60 mb-6">
-              Select two products from the lists below to compare their security scores.
-            </p>
-
-            {Object.entries(byCategory).map(([category, prods]) => (
-              prods.length > 0 && (
-                <div key={category} className="mb-8">
-                  <h3 className="font-semibold mb-4 text-base-content/80">
-                    {categoryLabels[category] || category}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {prods.map((product) => (
-                      <Link
-                        key={product.slug}
-                        href={`/products/${product.slug}`}
-                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-base-300 hover:bg-primary/20 transition-colors text-sm"
-                      >
-                        <ProductLogo logoUrl={product.logoUrl} name={product.name} size="xs" />
-                        <span>{product.name}</span>
-                        <span className={`text-xs font-bold ${
-                          product.score >= 80 ? 'text-green-400' :
-                          product.score >= 60 ? 'text-amber-400' : 'text-red-400'
-                        }`}>
-                          {product.score}
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )
-            ))}
-
-            <div className="text-center mt-6 p-4 bg-base-300/50 rounded-lg">
-              <p className="text-sm text-base-content/60">
-                <strong>Tip:</strong> To compare two products, use the URL format:{' '}
-                <code className="bg-base-300 px-2 py-0.5 rounded text-xs">
-                  /compare/product-a/product-b
-                </code>
-              </p>
-            </div>
-          </div>
+          {/* Interactive product picker */}
+          <CompareProductPicker products={products} categoryLabels={categoryLabels} />
 
           {/* SEO content */}
           <div className="prose prose-invert max-w-none">
@@ -195,7 +152,7 @@ export default async function CompareLandingPage() {
               <strong>Is Ledger or Trezor more secure?</strong> Both are industry leaders, but they have different strengths. Use our <Link href="/compare/ledger-nano-x/trezor-model-t">Ledger vs Trezor comparison</Link> to see the detailed breakdown.
             </p>
             <p>
-              <strong>Which software wallet is safest?</strong> Security varies significantly between hot wallets. Compare MetaMask, Trust Wallet, and others to find the best fit for your needs.
+              <strong>Which software wallet scores highest?</strong> Security evaluations vary significantly between hot wallets. Compare MetaMask, Trust Wallet, and others to find the right fit for your needs.
             </p>
           </div>
         </div>

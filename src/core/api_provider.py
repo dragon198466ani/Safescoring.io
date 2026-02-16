@@ -14,6 +14,7 @@ STRATEGIC MODEL SELECTION:
 - call_for_compatibility(): Select model for product compatibility
 """
 
+import threading
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -60,6 +61,9 @@ class AIProvider:
     GEMINI_QUOTA_FILE = 'config/.gemini_quota_exhausted'
 
     def __init__(self):
+        # Thread lock for key rotation (prevents race conditions in multi-threaded use)
+        self._lock = threading.Lock()
+
         # HTTP Connection Pooling - reuse connections for better performance
         self.session = requests.Session()
         retry_strategy = Retry(
@@ -90,14 +94,18 @@ class AIProvider:
         self.cerebras_key_index = 0
         self.cerebras_disabled_keys = set()  # Keys with rate limit
         self.cerebras_invalid_keys = set()  # Invalid keys (401/403 - permanent)
+        self._cerebras_rate_limited_until = 0  # Timestamp when cooldown expires
         # Groq key rotation (5 keys = 72,000 req/day!)
         self.groq_key_index = 0
         self.groq_disabled_keys = set()  # Keys with rate limit
         self.groq_invalid_keys = set()  # Invalid keys (401/403 - permanent)
         self.groq_rate_limit_time = 0  # Time when all keys were rate-limited
+        self._groq_rate_limited_until = 0  # Timestamp when cooldown expires
         # Global Groq rate limiter: 30 req/min per key = 150 req/min for 5 keys
         self.groq_request_times = []  # List of request timestamps
         self.groq_max_rpm = 25 * len(GROQ_API_KEYS) if GROQ_API_KEYS else 100  # Leave some buffer
+        # Gemini rate-limit cooldown timestamp
+        self._gemini_rate_limited_until = 0
 
     def _check_gemini_quota_file(self):
         """Check if Gemini quota was exhausted recently (within 20h)"""
@@ -114,8 +122,8 @@ class AIProvider:
                 else:
                     # File is old, remove it
                     os.remove(self.GEMINI_QUOTA_FILE)
-        except Exception:
-            pass
+        except (OSError, IOError) as e:
+            print(f"      [GEMINI] Error reading quota file: {e}")
         return False
 
     def _mark_gemini_quota_exhausted(self):
@@ -126,9 +134,9 @@ class AIProvider:
             with open(self.GEMINI_QUOTA_FILE, 'w') as f:
                 f.write(str(time.time()))
             self.gemini_quota_exhausted = True
-            print("      [GEMINI] Quota journalier epuise - skip Gemini pour cette session")
-        except Exception:
-            pass
+            print("      [GEMINI] Daily quota exhausted - skipping Gemini for this session")
+        except (OSError, IOError) as e:
+            print(f"      [GEMINI] Error writing quota file: {e}")
 
     def call(self, prompt=None, max_tokens=4000, temperature=0.1, system_prompt=None, user_prompt=None, model='flash'):
         """
@@ -690,80 +698,106 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
 
         return None
 
-    def _call_groq_rotation(self, prompt, max_tokens=4000, temperature=0.1):
+    def _call_with_key_rotation(self, provider_name, api_keys, disabled_keys,
+                                invalid_keys, key_index_attr, rate_limit_attr,
+                                call_single_fn, prompt, max_tokens, temperature,
+                                **kwargs):
         """
-        Groq API call with multi-key rotation.
-        5 keys = 72,000 req/day (14,400 × 5)!
-        Uses Llama 3.3 70B - quality comparable to GPT-4
+        Generic multi-key rotation with rate-limit cooldown.
 
-        If all keys are rate-limited, falls back to next provider (Cerebras).
-        Rate-limited keys reset after 60 seconds.
+        Instead of blocking with time.sleep(), sets a cooldown timestamp and
+        returns None immediately so the fallback chain can proceed.
+
+        Args:
+            provider_name: Display name for logging (e.g. "Groq", "Cerebras", "Gemini")
+            api_keys: List of API keys for this provider
+            disabled_keys: Set of currently disabled keys (rate-limited)
+            invalid_keys: Set of permanently invalid keys (401/403)
+            key_index_attr: Attribute name for key rotation index (e.g. "groq_key_index")
+            rate_limit_attr: Attribute name for cooldown timestamp (e.g. "_groq_rate_limited_until")
+            call_single_fn: Function(prompt, api_key, max_tokens, temperature, **kw) -> result
+            prompt: The prompt text
+            max_tokens: Max tokens for response
+            temperature: Model temperature
+            **kwargs: Extra args forwarded to call_single_fn (e.g. model for Gemini)
+
+        Returns:
+            AI response text or None
         """
-        if not GROQ_API_KEYS:
+        if not api_keys:
+            return None
+
+        # Check if still in cooldown from a previous rate-limit
+        if time.time() < getattr(self, rate_limit_attr, 0):
+            remaining = int(getattr(self, rate_limit_attr) - time.time())
+            print(f"      [{provider_name}] Still in cooldown ({remaining}s left) - skipping", flush=True)
             return None
 
         # Get valid keys (exclude permanently invalid ones)
-        valid_keys = [k for k in GROQ_API_KEYS if k not in self.groq_invalid_keys]
+        valid_keys = [k for k in api_keys if k not in invalid_keys]
         if not valid_keys:
-            print("      All Groq keys invalid - DISABLED", flush=True)
-            self.disabled_apis.add('Groq')
+            print(f"      All {provider_name} keys invalid - DISABLED", flush=True)
+            self.disabled_apis.add(provider_name)
             return None
 
-        # Check if we should reset rate-limited keys (after 60 seconds)
-        if self.groq_rate_limit_time > 0:
-            elapsed = time.time() - self.groq_rate_limit_time
-            if elapsed >= 60:
-                # Reset rate-limited keys
-                self.groq_disabled_keys = self.groq_invalid_keys.copy()
-                self.groq_rate_limit_time = 0
-                print("      Groq rate limit reset - retrying keys", flush=True)
-
         # Get available keys (exclude rate-limited ones)
-        available_keys = [k for k in valid_keys if k not in self.groq_disabled_keys]
+        available_keys = [k for k in valid_keys if k not in disabled_keys]
 
         if not available_keys:
-            # All keys rate-limited - wait 60s and retry instead of falling back to poor quality models
-            elapsed = time.time() - self.groq_rate_limit_time if self.groq_rate_limit_time > 0 else 0
-            wait_time = max(1, 60 - int(elapsed))
+            # All keys rate-limited - set cooldown and return None for fallback
+            wait_time = 60
+            setattr(self, rate_limit_attr, time.time() + wait_time)
+            print(f"      [{provider_name}] All keys rate-limited - cooldown {wait_time}s set, returning None for fallback", flush=True)
+            # Reset disabled keys so they can be retried after cooldown expires
+            disabled_keys.clear()
+            disabled_keys.update(invalid_keys)
+            return None
 
-            if self.groq_rate_limit_time == 0:
-                self.groq_rate_limit_time = time.time()
-                wait_time = 60
-
-            print(f"      Groq all keys rate-limited - waiting {wait_time}s...", flush=True)
-            time.sleep(wait_time)
-
-            # Reset rate-limited keys and retry
-            self.groq_disabled_keys = self.groq_invalid_keys.copy()
-            self.groq_rate_limit_time = 0
-            available_keys = [k for k in valid_keys if k not in self.groq_disabled_keys]
-
-        # Try each available key
+        # Try each available key (thread-safe rotation)
         attempts = 0
-        while attempts < len(GROQ_API_KEYS):
-            if self.groq_key_index >= len(GROQ_API_KEYS):
-                self.groq_key_index = 0
+        while attempts < len(api_keys):
+            with self._lock:
+                current_index = getattr(self, key_index_attr)
+                if current_index >= len(api_keys):
+                    current_index = 0
+                    setattr(self, key_index_attr, 0)
+                current_key = api_keys[current_index]
+                if current_key in disabled_keys:
+                    setattr(self, key_index_attr, current_index + 1)
+                    attempts += 1
+                    continue
 
-            current_key = GROQ_API_KEYS[self.groq_key_index]
-
-            # Skip disabled keys
-            if current_key in self.groq_disabled_keys:
-                self.groq_key_index += 1
-                attempts += 1
-                continue
-
-            result = self._call_groq_single(prompt, current_key, max_tokens, temperature)
+            result = call_single_fn(prompt, current_key, max_tokens, temperature, **kwargs)
             if result:
-                # Success - rotate to next key for load balancing
-                self.groq_key_index += 1
+                with self._lock:
+                    setattr(self, key_index_attr, getattr(self, key_index_attr) + 1)
                 return result
 
-            # Key failed, try next
-            self.groq_key_index += 1
+            with self._lock:
+                setattr(self, key_index_attr, getattr(self, key_index_attr) + 1)
             attempts += 1
 
-        # All keys tried and rate-limited - return None to fallback
+        # All keys tried and failed - return None to fallback
         return None
+
+    def _call_groq_rotation(self, prompt, max_tokens=4000, temperature=0.1):
+        """
+        Groq API call with multi-key rotation.
+        5 keys = 72,000 req/day (14,400 x 5)!
+        Uses Llama 3.3 70B - quality comparable to GPT-4
+        """
+        return self._call_with_key_rotation(
+            provider_name="Groq",
+            api_keys=GROQ_API_KEYS,
+            disabled_keys=self.groq_disabled_keys,
+            invalid_keys=self.groq_invalid_keys,
+            key_index_attr="groq_key_index",
+            rate_limit_attr="_groq_rate_limited_until",
+            call_single_fn=self._call_groq_single,
+            prompt=prompt,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
 
     def _call_groq_single(self, prompt, api_key, max_tokens=4000, temperature=0.1):
         """Single Groq API call with specific key"""
@@ -844,53 +878,18 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
         Cerebras API call with multi-key rotation.
         Ultra-fast inference with Llama 3.3 70B
         """
-        if not CEREBRAS_API_KEYS:
-            return None
-
-        # Get valid keys (exclude permanently invalid ones)
-        valid_keys = [k for k in CEREBRAS_API_KEYS if k not in self.cerebras_invalid_keys]
-        if not valid_keys:
-            print("      All Cerebras keys invalid - DISABLED")
-            self.disabled_apis.add('Cerebras')
-            return None
-
-        # Get available keys (exclude rate-limited ones)
-        available_keys = [k for k in valid_keys if k not in self.cerebras_disabled_keys]
-
-        if not available_keys:
-            # All keys rate-limited - wait briefly then reset
-            print("      Cerebras all keys rate-limited - waiting 30s...")
-            time.sleep(30)
-            self.cerebras_disabled_keys = self.cerebras_invalid_keys.copy()
-            available_keys = [k for k in valid_keys if k not in self.cerebras_disabled_keys]
-            if not available_keys:
-                return None
-
-        # Try each available key
-        attempts = 0
-        while attempts < len(CEREBRAS_API_KEYS):
-            if self.cerebras_key_index >= len(CEREBRAS_API_KEYS):
-                self.cerebras_key_index = 0
-
-            current_key = CEREBRAS_API_KEYS[self.cerebras_key_index]
-
-            # Skip disabled keys
-            if current_key in self.cerebras_disabled_keys:
-                self.cerebras_key_index += 1
-                attempts += 1
-                continue
-
-            result = self._call_cerebras_single(prompt, current_key, max_tokens, temperature)
-            if result:
-                # Success - rotate to next key for load balancing
-                self.cerebras_key_index += 1
-                return result
-
-            # Key failed, try next
-            self.cerebras_key_index += 1
-            attempts += 1
-
-        return None
+        return self._call_with_key_rotation(
+            provider_name="Cerebras",
+            api_keys=CEREBRAS_API_KEYS,
+            disabled_keys=self.cerebras_disabled_keys,
+            invalid_keys=self.cerebras_invalid_keys,
+            key_index_attr="cerebras_key_index",
+            rate_limit_attr="_cerebras_rate_limited_until",
+            call_single_fn=self._call_cerebras_single,
+            prompt=prompt,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
 
     def _call_cerebras_single(self, prompt, api_key, max_tokens=4000, temperature=0.1):
         """Single Cerebras API call with specific key"""
@@ -991,10 +990,18 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
         Gemini API call with multi-key rotation.
         Returns None on quota exhaustion to allow fallback to other APIs (Ollama, etc.)
 
+        Handles Gemini-specific daily quota logic on top of the generic rotation.
+
         Args:
             model: 'flash' (default, fast, high quota) or 'pro' (gemini-2.5-pro, expert)
         """
         if not GEMINI_API_KEYS:
+            return None
+
+        # Check if still in cooldown from a previous rate-limit
+        if time.time() < self._gemini_rate_limited_until:
+            remaining = int(self._gemini_rate_limited_until - time.time())
+            print(f"      [Gemini] Still in cooldown ({remaining}s left) - skipping", flush=True)
             return None
 
         # Get valid keys (exclude permanently invalid ones)
@@ -1016,45 +1023,43 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
                 self._mark_gemini_quota_exhausted()
                 return None  # Let the main call() fallback to next provider
 
-            # Only rate limited (per minute) - wait briefly then retry once
-            if self.retry_count < 1:
-                print(f"      [GEMINI] Rate limit - attente 60s puis retry...")
-                time.sleep(60)  # Wait 1 minute instead of 1h05
-                # Reset rate-limited keys (but keep daily quota keys)
-                self.gemini_disabled_keys = self.gemini_invalid_keys | self.gemini_daily_quota_keys
-                self.retry_count += 1
-            else:
-                # Already retried - fallback to other APIs
-                print("      [GEMINI] Rate limit persiste - fallback vers Ollama...")
-                return None
+            # Only rate limited (per minute) - set cooldown and return None for fallback
+            wait_time = 60
+            self._gemini_rate_limited_until = time.time() + wait_time
+            print(f"      [GEMINI] All keys rate-limited - cooldown {wait_time}s set, returning None for fallback", flush=True)
+            # Reset rate-limited keys (but keep daily quota keys) for retry after cooldown
+            self.gemini_disabled_keys = self.gemini_invalid_keys | self.gemini_daily_quota_keys
+            self.retry_count += 1
+            return None
 
-        # Find next available key
+        # Find next available key (thread-safe rotation)
         attempts = 0
         while attempts < len(GEMINI_API_KEYS):
-            if self.gemini_key_index >= len(GEMINI_API_KEYS):
-                self.gemini_key_index = 0
-
-            current_key = GEMINI_API_KEYS[self.gemini_key_index]
-
-            # Skip disabled keys
-            if current_key in self.gemini_disabled_keys:
-                self.gemini_key_index += 1
-                attempts += 1
-                continue
+            with self._lock:
+                if self.gemini_key_index >= len(GEMINI_API_KEYS):
+                    self.gemini_key_index = 0
+                current_key = GEMINI_API_KEYS[self.gemini_key_index]
+                # Skip disabled keys
+                if current_key in self.gemini_disabled_keys:
+                    self.gemini_key_index += 1
+                    attempts += 1
+                    continue
 
             result, quota_type = self._call_gemini_single(prompt, current_key, max_tokens, temperature, model=model)
             if result:
-                # Success - reset retry count
-                self.retry_count = 0
-                # Rotate to next key for next call (spread load)
-                self.gemini_request_count += 1
-                if self.gemini_request_count >= 50:  # Rotate every 50 requests
-                    self.gemini_key_index += 1
-                    self.gemini_request_count = 0
+                with self._lock:
+                    # Success - reset retry count
+                    self.retry_count = 0
+                    # Rotate to next key for next call (spread load)
+                    self.gemini_request_count += 1
+                    if self.gemini_request_count >= 50:  # Rotate every 50 requests
+                        self.gemini_key_index += 1
+                        self.gemini_request_count = 0
                 return result
 
             # Key failed, try next
-            self.gemini_key_index += 1
+            with self._lock:
+                self.gemini_key_index += 1
             attempts += 1
 
         # All keys exhausted after trying - check if it's daily quota
@@ -1072,16 +1077,16 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
         import sys
         wait_seconds = self.GEMINI_COOLDOWN_SECONDS
         print(f"\n{'='*60}")
-        print(f"   RATE LIMIT GEMINI - Attente 1h05")
-        print(f"   Toutes les cles ont atteint la limite par minute")
-        print(f"   Reprise dans {wait_seconds//60} minutes")
-        print(f"   (Tentative {self.retry_count + 1}/2 avant passage a 24h)")
+        print(f"   GEMINI RATE LIMIT - cooldown set for 1h05")
+        print(f"   All keys hit per-minute limit")
+        print(f"   Resuming in {wait_seconds//60} minutes")
+        print(f"   (Attempt {self.retry_count + 1}/2 before switching to 24h cooldown)")
         print(f"{'='*60}")
 
         self._countdown(wait_seconds)
 
         print(f"\n{'='*60}")
-        print(f"   REPRISE DES ANALYSES")
+        print(f"   RESUMING ANALYSIS")
         print(f"{'='*60}\n")
 
     def _wait_for_daily_reset(self):
@@ -1091,15 +1096,15 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
         hours = wait_seconds // 3600
         mins = (wait_seconds % 3600) // 60
         print(f"\n{'='*60}")
-        print(f"   QUOTA JOURNALIER GEMINI ATTEINT - Attente 24h")
-        print(f"   Toutes les cles ont depasse leur quota quotidien")
-        print(f"   Reprise dans {hours}h{mins:02d}")
+        print(f"   GEMINI DAILY QUOTA REACHED - 24h cooldown set")
+        print(f"   All keys exceeded their daily quota")
+        print(f"   Resuming in {hours}h{mins:02d}")
         print(f"{'='*60}")
 
         self._countdown(wait_seconds)
 
         print(f"\n{'='*60}")
-        print(f"   REPRISE DES ANALYSES APRES 24H")
+        print(f"   RESUMING ANALYSIS AFTER 24H")
         print(f"{'='*60}\n")
 
     def _countdown(self, wait_seconds):
@@ -1117,9 +1122,9 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
             secs = int(remaining % 60)
 
             if hours > 0:
-                print(f"\r   Attente: {hours:02d}:{mins:02d}:{secs:02d} restant...   ", end='')
+                print(f"\r   Waiting: {hours:02d}:{mins:02d}:{secs:02d} remaining...   ", end='')
             else:
-                print(f"\r   Attente: {mins:02d}:{secs:02d} restant...   ", end='')
+                print(f"\r   Waiting: {mins:02d}:{secs:02d} remaining...   ", end='')
             sys.stdout.flush()
             time.sleep(10)  # Update every 10 seconds
 
@@ -1163,7 +1168,7 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
 
                 if 'quota' in response_text and ('day' in response_text or 'daily' in response_text or 'per day' in response_text):
                     # Daily quota exceeded
-                    print(f"      Gemini QUOTA JOURNALIER (key {key_idx}) - marque pour 24h")
+                    print(f"      Gemini DAILY QUOTA (key {key_idx}) - marked for 24h cooldown")
                     self.gemini_disabled_keys.add(api_key)
                     self.gemini_daily_quota_keys.add(api_key)
                     return None, 'daily_quota'

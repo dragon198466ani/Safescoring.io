@@ -111,7 +111,7 @@ export default async function Article({ params }) {
               />
             ))}
             <span className="text-base-content/80" itemProp="datePublished">
-              {new Date(article.publishedAt).toLocaleDateString("en-US", {
+              {new Date(article.publishedAt).toLocaleDateString(undefined, {
                 month: "long",
                 day: "numeric",
                 year: "numeric",

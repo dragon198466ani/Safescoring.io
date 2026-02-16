@@ -8,7 +8,7 @@ import { useState, useRef, useEffect } from "react";
 
 const INITIAL_MESSAGE = {
   role: "assistant",
-  content: "Hi! 👋 I'm your crypto security assistant. I can help you build a secure setup based on your needs. Tell me about your crypto usage, and I'll recommend the best products for you.\n\nFor example, you can ask:\n• \"I'm new to crypto, what do I need?\"\n• \"What's the best hardware wallet for Bitcoin?\"\n• \"I have $50k, how should I secure it?\"\n• \"Compare Ledger vs Trezor\"",
+  content: "Hi! 👋 I'm your crypto security assistant. I can help you explore products based on their SAFE scores. Tell me about your crypto usage, and I'll suggest highly-rated options.\n\nFor example, you can ask:\n• \"I'm new to crypto, what do I need?\"\n• \"Which hardware wallets have the highest SAFE scores?\"\n• \"What should I consider to secure my crypto?\"\n• \"Compare Ledger vs Trezor\"\n\n⚠️ This is not financial or investment advice. Always do your own research.",
 };
 
 // Pre-defined responses based on keywords (local AI simulation)
@@ -19,7 +19,7 @@ function getAIResponse(message, products) {
   if (lowerMsg.includes("beginner") || lowerMsg.includes("new to crypto") || lowerMsg.includes("getting started")) {
     const softwareWallets = products.filter(p => p.type_code?.includes("software")).slice(0, 2);
     return {
-      text: "Welcome to crypto! 🎉 For beginners, I recommend starting with:\n\n1. **A software wallet** for small amounts and learning\n2. **A hardware wallet** once you have more than $500\n\nHere are some beginner-friendly options:",
+      text: "Welcome to crypto! 🎉 For beginners, I recommend starting with:\n\n1. **A software wallet** for small amounts and learning\n2. **A hardware wallet** when you feel ready to increase security\n\nHere are some beginner-friendly options based on SAFE scores (not financial advice):",
       recommendations: softwareWallets,
     };
   }
@@ -28,7 +28,7 @@ function getAIResponse(message, products) {
   if (lowerMsg.includes("hardware wallet") || lowerMsg.includes("cold storage") || lowerMsg.includes("ledger") || lowerMsg.includes("trezor")) {
     const hardwareWallets = products.filter(p => p.type_code?.includes("hardware")).slice(0, 3);
     return {
-      text: "Hardware wallets are the gold standard for securing crypto! 🔐 They keep your private keys offline, protecting you from hackers.\n\nTop hardware wallets by SAFE score:",
+      text: "Hardware wallets keep your private keys offline, which is widely considered a strong security practice. 🔐\n\nHighest-rated hardware wallets by SAFE score:",
       recommendations: hardwareWallets,
     };
   }
@@ -39,7 +39,7 @@ function getAIResponse(message, products) {
     if (amount >= 10000) {
       const hardware = products.filter(p => p.type_code?.includes("hardware") && p.score >= 80).slice(0, 2);
       return {
-        text: `With significant holdings, security is critical! 💎 I recommend:\n\n1. **Hardware wallet** for cold storage (90% of funds)\n2. **Software wallet** for active use (10%)\n3. Consider a **multisig setup** for extra security\n\nTop secure options:`,
+        text: `For larger holdings, many users prioritize stronger security measures. 💎 Common approaches include:\n\n1. **Hardware wallet** for long-term storage\n2. **Software wallet** for active use\n3. Consider a **multisig setup** for additional security\n\nConsult a qualified advisor for allocation decisions. Highest-rated options:`,
         recommendations: hardware,
       };
     }
@@ -62,7 +62,7 @@ function getAIResponse(message, products) {
       p.type_code?.includes("hardware")
     ).slice(0, 3);
     return {
-      text: "Bitcoin-only? Great choice for security! ₿\n\nBitcoin-focused wallets often have stronger security because they do one thing well. Look for:\n• Open-source firmware\n• Air-gapped signing\n• PSBT support\n\nTop Bitcoin wallets:",
+      text: "Bitcoin-focused wallets tend to have a narrower attack surface. ₿\n\nFeatures to look for:\n• Open-source firmware\n• Air-gapped signing\n• PSBT support\n\nHighest-rated Bitcoin-compatible wallets:",
       recommendations: btcWallets,
     };
   }
@@ -71,7 +71,7 @@ function getAIResponse(message, products) {
   if (lowerMsg.includes("exchange") || lowerMsg.includes("trading") || lowerMsg.includes("buy")) {
     const exchanges = products.filter(p => p.type_code === "exchange").slice(0, 3);
     return {
-      text: "For trading, you'll need an exchange, but remember: \"Not your keys, not your coins!\" 🔑\n\nTips:\n• Only keep trading amounts on exchanges\n• Enable 2FA and withdrawal whitelists\n• Move long-term holdings to self-custody\n\nSafest exchanges by SAFE score:",
+      text: "For trading, you'll need an exchange. Common security practices include: 🔑\n\n• Only keep trading amounts on exchanges\n• Enable 2FA and withdrawal whitelists\n• Consider self-custody for long-term holdings\n\nHighest-rated exchanges by SAFE score:",
       recommendations: exchanges,
     };
   }
@@ -254,7 +254,7 @@ export default function SetupAssistant({ products, onAddProduct, isOpen, onToggl
           </button>
         </div>
         <p className="text-xs text-base-content/40 mt-2 text-center">
-          AI recommendations based on SAFE methodology
+          Based on SAFE methodology. Not financial or investment advice.
         </p>
       </div>
     </div>

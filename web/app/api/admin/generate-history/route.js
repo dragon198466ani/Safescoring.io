@@ -1,14 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import { requireAdmin as requireAdminAuth } from "@/libs/admin-auth";
+import { requireAdmin } from "@/libs/admin-auth";
 
 export const dynamic = "force-dynamic";
 
-// Admin authentication check using centralized RBAC
-async function requireAdmin() {
-  const admin = await requireAdminAuth();
-  return !!admin;
-}
 
 /**
  * POST /api/admin/generate-history
@@ -161,7 +156,7 @@ export async function POST(request) {
     if (insertError) {
       console.error("Error inserting history:", insertError);
       return NextResponse.json(
-        { error: "Failed to insert history", details: insertError.message },
+        { error: "Failed to insert history" },
         { status: 500 }
       );
     }

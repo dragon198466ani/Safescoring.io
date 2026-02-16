@@ -1,4 +1,7 @@
 import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import PartnerForm from "@/components/PartnerForm";
 
 export const metadata = {
   title: "Partners & Integrations | SafeScoring",
@@ -51,7 +54,7 @@ const partnerTypes = [
       "Featured auditor profile",
       "Direct client referrals",
       "Audit verification badges",
-      "Priority listing for clients"
+      "Featured listing for clients"
     ],
     cta: "Apply Now",
   },
@@ -100,10 +103,12 @@ const affiliateProgram = {
 
 export default function PartnersPage() {
   return (
-    <main className="min-h-screen bg-base-200">
+    <>
+    <Header />
+    <main className="min-h-screen pt-24 pb-16 hero-bg">
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary/20 to-secondary/20 py-16">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <div className="badge badge-primary mb-4">Partnership Program</div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -126,7 +131,7 @@ export default function PartnersPage() {
 
       {/* Partner Types */}
       <section className="py-16 bg-base-100">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-center mb-4">Partner Programs</h2>
           <p className="text-center text-base-content/70 mb-12 max-w-2xl mx-auto">
             Whether you&apos;re a wallet, exchange, media outlet, or auditor, we have a partnership program for you.
@@ -168,7 +173,7 @@ export default function PartnersPage() {
 
       {/* Integration Options */}
       <section className="py-16 bg-base-200">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-center mb-4">Integration Options</h2>
           <p className="text-center text-base-content/70 mb-12">
             Multiple ways to integrate SafeScoring into your product.
@@ -203,7 +208,7 @@ export default function PartnersPage() {
 
       {/* Affiliate Program */}
       <section className="py-16 bg-base-100">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <div className="badge badge-secondary mb-4">Affiliate Program</div>
@@ -251,22 +256,17 @@ export default function PartnersPage() {
         </div>
       </section>
 
-      {/* Current Partners */}
+      {/* Become a Partner CTA */}
       <section className="py-16 bg-base-200">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <h2 className="text-2xl font-bold text-center mb-8">Trusted By</h2>
-
-          <div className="flex flex-wrap justify-center items-center gap-12 opacity-60">
-            <div className="text-2xl font-bold">DeFiSafety</div>
-            <div className="text-2xl font-bold">CertiK</div>
-            <div className="text-2xl font-bold">SlowMist</div>
-            <div className="text-2xl font-bold">PeckShield</div>
-            <div className="text-2xl font-bold">Hacken</div>
-          </div>
-
-          <p className="text-center text-sm text-base-content/50 mt-6">
-            (Join these industry leaders)
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h2 className="text-2xl font-bold mb-4">Become a Partner</h2>
+          <p className="text-base-content/70 mb-6 max-w-lg mx-auto">
+            Join our growing ecosystem of wallets, exchanges, auditors, and media partners
+            helping make crypto safer for everyone.
           </p>
+          <a href="#become-partner" className="btn btn-primary">
+            Apply Now
+          </a>
         </div>
       </section>
 
@@ -279,73 +279,13 @@ export default function PartnersPage() {
                 Apply to Partner
               </h2>
 
-              <form className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">Company Name</span>
-                    </label>
-                    <input type="text" className="input input-bordered" required />
-                  </div>
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">Website</span>
-                    </label>
-                    <input type="url" className="input input-bordered" placeholder="https://" />
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">Your Name</span>
-                    </label>
-                    <input type="text" className="input input-bordered" required />
-                  </div>
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text">Email</span>
-                    </label>
-                    <input type="email" className="input input-bordered" required />
-                  </div>
-                </div>
-
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Partnership Type</span>
-                  </label>
-                  <select className="select select-bordered">
-                    <option>API Integration</option>
-                    <option>Affiliate / Referral</option>
-                    <option>White Label Solution</option>
-                    <option>Media Partnership</option>
-                    <option>Auditor Partnership</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Tell us about your project</span>
-                  </label>
-                  <textarea
-                    className="textarea textarea-bordered h-24"
-                    placeholder="How would you like to integrate SafeScoring?"
-                  ></textarea>
-                </div>
-
-                <button type="submit" className="btn btn-primary w-full">
-                  Submit Application
-                </button>
-
-                <p className="text-xs text-center text-base-content/50">
-                  We typically respond within 24-48 hours.
-                </p>
-              </form>
+              <PartnerForm />
             </div>
           </div>
         </div>
       </section>
     </main>
+    <Footer />
+    </>
   );
 }

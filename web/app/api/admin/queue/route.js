@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { requireAdmin as requireAdminAuth } from "@/libs/admin-auth";
+import { requireAdmin } from "@/libs/admin-auth";
 
 /**
  * API Routes pour la gestion de la queue
@@ -15,12 +15,6 @@ function getSupabase() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return null;
   return createClient(url, key);
-}
-
-// Admin authentication check using centralized RBAC
-async function requireAdmin() {
-  const admin = await requireAdminAuth();
-  return !!admin;
 }
 
 // GET - Stats de la queue
@@ -133,14 +127,39 @@ export async function POST(request) {
         }
 
         case "retry_failed": {
+          const MAX_RETRIES = 5;
+
+          // Only retry tasks that haven't exceeded max retries
+          const { data: retryable } = await getSupabase()
+            .from("task_queue")
+            .select("id, retries")
+            .eq("status", "failed")
+            .lt("retries", MAX_RETRIES);
+
+          // Move permanently failed tasks to dead letter status
           await getSupabase()
             .from("task_queue")
-            .update({ status: "pending", retries: 0, error: null })
-            .eq("status", "failed");
+            .update({ status: "dead_letter" })
+            .eq("status", "failed")
+            .gte("retries", MAX_RETRIES);
+
+          // Retry eligible tasks (increment retries instead of resetting)
+          if (retryable?.length > 0) {
+            for (const task of retryable) {
+              await getSupabase()
+                .from("task_queue")
+                .update({
+                  status: "pending",
+                  retries: (task.retries || 0) + 1,
+                  error: null,
+                })
+                .eq("id", task.id);
+            }
+          }
 
           return NextResponse.json({
             success: true,
-            message: "Tâches échouées remises en queue",
+            message: `${retryable?.length || 0} tâches remises en queue`,
           });
         }
 

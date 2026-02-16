@@ -27,29 +27,40 @@ const securityHeaders = [
   // Permissions Policy (formerly Feature-Policy)
   {
     key: 'Permissions-Policy',
-    value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+    value: 'camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=(*), usb=(), bluetooth=(), serial=()',
   },
   // Force HTTPS (enable in production)
   ...(process.env.NODE_ENV === 'production' ? [{
     key: 'Strict-Transport-Security',
-    value: 'max-age=31536000; includeSubDomains',
+    value: 'max-age=63072000; includeSubDomains; preload',
   }] : []),
-  // Content Security Policy - Sécurisé (sans unsafe-eval)
+  // Cross-Origin isolation headers
+  {
+    key: 'Cross-Origin-Opener-Policy',
+    value: 'same-origin',
+  },
+  {
+    key: 'Cross-Origin-Resource-Policy',
+    value: 'same-origin',
+  },
+  // Content Security Policy - Strict (sans unsafe-eval)
   {
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
       // unsafe-inline requis pour Next.js, unsafe-eval RETIRÉ (risque XSS)
-      "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://js.stripe.com https://www.googletagmanager.com",
+      "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' data: https: blob:",
       "font-src 'self' https://fonts.gstatic.com data:",
-      "connect-src 'self' https://*.supabase.co https://api.stripe.com https://api.microlink.io wss://*.supabase.co https://www.google-analytics.com https://*.ingest.sentry.io",
-      "frame-src 'self' https://challenges.cloudflare.com https://js.stripe.com",
+      "connect-src 'self' https://*.supabase.co https://api.lemonsqueezy.com https://api.moonpay.com https://api.stripe.com https://api.microlink.io wss://*.supabase.co https://www.google-analytics.com https://*.ingest.sentry.io",
+      "frame-src 'self' https://challenges.cloudflare.com https://app.lemonsqueezy.com https://buy.moonpay.com https://js.stripe.com",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
       "frame-ancestors 'none'",
+      "worker-src 'self' blob:",
+      "manifest-src 'self'",
       "upgrade-insecure-requests",
     ].join('; '),
   },
@@ -73,11 +84,8 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  // Experimental optimizations (disabled - requires additional packages)
-  // experimental: {
-  //   optimizeCss: true,  // requires 'critters' package
-  //   scrollRestoration: true,
-  // },
+  // Disable source maps in production builds (saves ~30-50% bundle size)
+  productionBrowserSourceMaps: false,
 
   // Add security headers to all routes
   async headers() {
@@ -102,7 +110,7 @@ const nextConfig = {
           },
           {
             key: 'Access-Control-Allow-Headers',
-            value: 'Content-Type, Authorization, X-Requested-With',
+            value: 'Content-Type, Authorization, X-Requested-With, X-Api-Key',
           },
           {
             key: 'Access-Control-Max-Age',
@@ -161,11 +169,15 @@ const nextConfig = {
     ],
   },
   webpack: (config, { webpack, isServer }) => {
-    // Ignore MongoDB's optional dependencies to prevent build warnings
     if (isServer) {
       config.plugins.push(
+        // Ignore MongoDB's optional dependencies to prevent build warnings
         new webpack.IgnorePlugin({
           resourceRegExp: /^(kerberos|@mongodb-js\/zstd|@aws-sdk\/credential-providers|gcp-metadata|snappy|socks|aws4|mongodb-client-encryption)$/,
+        }),
+        // Ignore ioredis — optional Redis dependency for rate-limiting (loaded dynamically at runtime)
+        new webpack.IgnorePlugin({
+          resourceRegExp: /^ioredis$/,
         })
       );
     }

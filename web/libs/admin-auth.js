@@ -4,6 +4,7 @@
  */
 
 import { auth } from "@/libs/auth";
+import { supabaseAdmin } from "@/libs/supabase";
 
 // Get admin emails from environment variable (comma-separated)
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "admin@safescoring.io")
@@ -107,10 +108,10 @@ export async function requireAdmin(options = {}) {
  * @param {string} params.resource - Resource affected
  * @param {Object} params.details - Additional details
  */
-export function logAdminAction({ adminEmail, action, resource, details = {} }) {
+export async function logAdminAction({ adminEmail, action, resource, details = {} }) {
   const logEntry = {
     timestamp: new Date().toISOString(),
-    adminEmail,
+    admin_email: adminEmail,
     action,
     resource,
     details,
@@ -118,10 +119,18 @@ export function logAdminAction({ adminEmail, action, resource, details = {} }) {
 
   // Log admin action (structured for log aggregation)
   if (process.env.NODE_ENV === "production") {
-    // Structured JSON log for production log aggregators (Datadog, CloudWatch, etc.)
     console.log(JSON.stringify({ level: "info", type: "admin_audit", ...logEntry }));
   } else {
     console.log("[ADMIN AUDIT]", JSON.stringify(logEntry));
+  }
+
+  // Persist to database if available (non-blocking)
+  if (supabaseAdmin) {
+    try {
+      await supabaseAdmin.from("admin_audit_logs").insert(logEntry);
+    } catch (err) {
+      console.error("[ADMIN AUDIT] Failed to persist log:", err.message);
+    }
   }
 
   return logEntry;

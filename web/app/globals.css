@@ -61,9 +61,78 @@
   }
 }
 
+/* ========================================
+   iOS & Android Native Adaptations
+   ======================================== */
+
 html,
 body {
   scroll-behavior: smooth !important;
+  /* Prevent iOS rubber-band overscroll on body */
+  overscroll-behavior-y: none;
+  /* Remove iOS tap highlight (blue flash) */
+  -webkit-tap-highlight-color: transparent;
+  /* Prevent text size adjustment on orientation change */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* iOS: Prevent input zoom when font-size < 16px */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="number"],
+textarea,
+select {
+  font-size: 16px !important;
+}
+@media (min-width: 640px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="url"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: inherit !important;
+  }
+}
+
+/* Touch: remove 300ms tap delay on all clickable elements */
+a, button, [role="button"], input, select, textarea, label {
+  touch-action: manipulation;
+}
+
+/* iOS Safari: fix 100vh not accounting for address bar */
+.min-h-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* iOS PWA standalone: safe area insets for notch/Dynamic Island/home bar */
+@supports (padding: env(safe-area-inset-top)) {
+  /* Top fixed headers need notch padding */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* Bottom fixed elements need home bar padding */
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
 }
 
 progress::-webkit-progress-value {
@@ -165,11 +234,18 @@ progress::-webkit-progress-value {
   animation: var(--animate-score-fill);
 }
 
-/* Pillar colors */
-.pillar-s { --pillar-color: #22c55e; }
-.pillar-a { --pillar-color: #f59e0b; }
-.pillar-f { --pillar-color: #3b82f6; }
-.pillar-e { --pillar-color: #8b5cf6; }
+/* Pillar colors - centralized CSS custom properties */
+:root {
+  --color-pillar-s: #22c55e;
+  --color-pillar-a: #f59e0b;
+  --color-pillar-f: #3b82f6;
+  --color-pillar-e: #8b5cf6;
+}
+
+.pillar-s { --pillar-color: var(--color-pillar-s); }
+.pillar-a { --pillar-color: var(--color-pillar-a); }
+.pillar-f { --pillar-color: var(--color-pillar-f); }
+.pillar-e { --pillar-color: var(--color-pillar-e); }
 
 /* Glow effects */
 .glow-green { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
@@ -241,12 +317,48 @@ progress::-webkit-progress-value {
   @apply bg-base-300/30;
 }
 
-/* Hide scrollbar but keep scroll functionality */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* Touch feedback for interactive elements */
+.btn-touch {
+  @apply active:scale-95 transition-transform duration-100;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+/* Scroll padding for sticky headers */
+html {
+  scroll-padding-top: 5rem;
+}
+
+/* iOS/Android: fixed bottom elements need safe-area offset */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  /* Floating widgets auto-offset for home bar */
+  .fixed[class*="bottom-"] {
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* iOS Safari: prevent content jump when keyboard opens */
+body.keyboard-open {
+  position: fixed;
+  width: 100%;
+}
+
+/* Android Chrome: smoother momentum scrolling */
+.overflow-y-auto,
+.overflow-x-auto,
+.overflow-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Focus-visible for keyboard navigation only */
+*:focus-visible {
+  @apply outline-2 outline-offset-2 outline-primary;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

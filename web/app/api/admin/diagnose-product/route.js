@@ -1,14 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import { requireAdmin as requireAdminAuth } from "@/libs/admin-auth";
+import { requireAdmin } from "@/libs/admin-auth";
 
 export const dynamic = "force-dynamic";
 
-// Admin authentication check using centralized RBAC
-async function requireAdmin() {
-  const admin = await requireAdminAuth();
-  return !!admin;
-}
 
 /**
  * GET /api/admin/diagnose-product?slug=eigenlayer
@@ -45,10 +40,10 @@ export async function GET(request) {
       .maybeSingle();
 
     if (productError || !product) {
+      if (productError) console.error("Product lookup error:", productError.message);
       return NextResponse.json({
         error: "Product not found",
         slug,
-        details: productError?.message,
       }, { status: 404 });
     }
 
@@ -149,17 +144,17 @@ export async function GET(request) {
         total: evaluations?.length || 0,
         byResult: resultCounts,
         byPillar: pillarCounts,
-        error: evalError?.message,
+        hasError: !!evalError,
       },
       scoringResults: {
         exists: !!scoringResults,
         data: scoringResults,
-        error: scoringError?.message,
+        hasError: !!scoringError,
       },
       definitions: {
         sampleCount: definitions?.length || 0,
         sample: definitions?.slice(0, 3),
-        error: defError?.message,
+        hasError: !!defError,
       },
       issues: [],
     };

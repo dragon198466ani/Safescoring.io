@@ -1,0 +1,38 @@
+# Dependabot - Automated dependency vulnerability scanning
+# Runs weekly to detect CVEs in npm and pip packages
+
+version: 2
+updates:
+  # JavaScript/Node.js (web/)
+  - package-ecosystem: "npm"
+    directory: "/web"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "security"
+    reviewers:
+      - "safescoring"
+
+  # Python (src/automation/)
+  - package-ecosystem: "pip"
+    directory: "/src/automation"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "security"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "ci"

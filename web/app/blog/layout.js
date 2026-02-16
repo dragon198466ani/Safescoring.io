@@ -9,9 +9,7 @@ export default async function LayoutBlog({ children }) {
         <HeaderBlog />
       </Suspense>
 
-      <main className="min-h-screen max-w-6xl mx-auto p-8">{children}</main>
-
-      <div className="h-24" />
+      <main className="min-h-screen max-w-7xl mx-auto pt-24 pb-16 px-6">{children}</main>
 
       <Footer />
     </div>

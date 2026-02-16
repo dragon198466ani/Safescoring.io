@@ -1,10 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import config from "@/config";
 import ButtonCheckout from "./ButtonCheckout";
+import ButtonCryptoCheckout from "./ButtonCryptoCheckout";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 const Pricing = () => {
-  // Use lemonsqueezy plans (stripe.plans is deprecated/empty)
-  const allPlans = config?.lemonsqueezy?.plans || config?.stripe?.plans || [];
+  const { t } = useTranslation();
+  const allPlans = config?.lemonsqueezy?.plans || [];
 
   return (
     <section className="py-24 px-6" id="pricing">
@@ -12,21 +16,20 @@ const Pricing = () => {
         {/* Section header */}
         <div className="text-center mb-16">
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
-            Pricing
+            {t("pricing.title")}
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-            Start free, upgrade when ready
+            {t("pricing.subtitle")}
           </h2>
           <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
-            Explore SafeScoring for free with 5 products per month.
-            Upgrade for unlimited access and advanced features.
+            {t("pricing.subtitleDesc")}
           </p>
         </div>
 
         {/* Show message if no plans */}
         {allPlans.length === 0 && (
           <div className="text-center py-12 bg-base-200 rounded-lg">
-            <p className="text-base-content/60">No pricing plans found</p>
+            <p className="text-base-content/60">{t("pricing.noPlans")}</p>
             <p className="text-xs text-base-content/40 mt-2">
               Try restarting the dev server (npm run dev)
             </p>
@@ -36,8 +39,7 @@ const Pricing = () => {
         {/* All plans in unified grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {allPlans.map((plan) => {
-            // Support both priceId (stripe) and variantId (lemonsqueezy)
-            const planId = plan.priceId || plan.variantId;
+            const planId = plan.variantId;
             const isFreemium = planId === "free";
             const isFeatured = plan.isFeatured;
 
@@ -56,14 +58,14 @@ const Pricing = () => {
                 {isFeatured && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span className="px-3 py-1 text-xs font-semibold bg-primary text-primary-content rounded-full whitespace-nowrap">
-                      Most Popular
+                      {t("pricing.mostPopular")}
                     </span>
                   </div>
                 )}
                 {isFreemium && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span className="px-3 py-1 text-xs font-semibold bg-success text-success-content rounded-full whitespace-nowrap">
-                      Freemium
+                      {t("pricing.freemium")}
                     </span>
                   </div>
                 )}
@@ -77,13 +79,8 @@ const Pricing = () => {
                 {/* Price */}
                 <div className="mb-6">
                   <div className="flex items-baseline gap-2">
-                    {plan.priceAnchor && (
-                      <span className="text-lg text-base-content/40 line-through">
-                        ${plan.priceAnchor}
-                      </span>
-                    )}
-                    <span className="text-4xl font-bold">${plan.price}</span>
-                    <span className="text-base-content/60 text-sm">/month</span>
+                    <span className="text-4xl font-bold">{plan.price}€</span>
+                    <span className="text-base-content/60 text-sm">/{t("pricing.perMonth")}</span>
                   </div>
                   {plan.trialDays && (
                     <div className="flex items-center gap-2 mt-2">
@@ -91,7 +88,7 @@ const Pricing = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <span className="text-xs text-primary font-medium">
-                        {plan.trialDays}-day free trial
+                        {t("pricing.trialDays", { days: plan.trialDays })}
                       </span>
                     </div>
                   )}
@@ -101,7 +98,7 @@ const Pricing = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <span className="text-xs text-success font-medium">
-                        No card required
+                        {t("pricing.noCardRequired")}
                       </span>
                     </div>
                   )}
@@ -144,16 +141,30 @@ const Pricing = () => {
                     href="/api/auth/signin?callbackUrl=/onboarding"
                     className="btn btn-success btn-outline w-full mt-auto"
                   >
-                    Get Started Free
+                    {t("pricing.getStartedFree")}
                   </Link>
                 ) : (
-                  <ButtonCheckout
-                    priceId={planId}
-                    mode="subscription"
-                    className={`w-full mt-auto ${
-                      isFeatured ? "btn-primary" : "btn-outline"
-                    }`}
-                  />
+                  <div className="mt-auto space-y-2">
+                    {/* Primary: Fiat via LemonSqueezy (cards, PayPal — EU VAT handled) */}
+                    <ButtonCheckout
+                      priceId={planId}
+                      mode="subscription"
+                      className={`w-full ${
+                        isFeatured ? "btn-primary" : "btn-outline"
+                      }`}
+                    />
+                    {/* Secondary: Crypto via MoonPay (BTC, ETH, USDC, SOL…) */}
+                    <ButtonCryptoCheckout
+                      planName={plan.name}
+                      className="w-full btn-ghost text-base-content/50 hover:text-primary"
+                    />
+                    {/* Auto-renewal + refund disclosure (ROSCA / Code de la consommation) */}
+                    <p className="text-[10px] text-base-content/40 text-center leading-tight">
+                      Subscription renews automatically. Cancel anytime.
+                      <br />14-day money-back guarantee.{" "}
+                      <Link href="/tos#6" className="text-primary/50 hover:underline">Terms</Link>
+                    </p>
+                  </div>
                 )}
               </div>
             );
@@ -161,17 +172,26 @@ const Pricing = () => {
         </div>
 
         {/* Bottom note */}
-        <div className="text-center mt-12">
-          <div className="inline-flex items-center gap-2 text-base-content/50 text-sm mb-2">
+        <div className="text-center mt-12 space-y-2">
+          <div className="inline-flex items-center gap-2 text-base-content/50 text-sm">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
             </svg>
-            14-day trial with card required (EU compliant)
+            {t("pricing.cardPaypalNote")}
           </div>
-          <p className="text-base-content/50 text-sm">
-            Need a custom solution?{" "}
+          <div className="inline-flex items-center gap-2 text-base-content/50 text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {t("pricing.cryptoPaymentNote")}
+          </div>
+          <p className="text-base-content/40 text-xs mt-2">
+            {t("pricing.trialCancelNote")}
+          </p>
+          <p className="text-base-content/50 text-sm mt-2">
+            {t("pricing.customSolution")}{" "}
             <a href="mailto:enterprise@safescoring.io" className="text-primary hover:underline">
-              Contact us
+              {t("pricing.contactUs")}
             </a>
           </p>
         </div>

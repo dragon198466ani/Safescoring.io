@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/libs/supabase";
+import { quickProtect } from "@/libs/api-protection";
 import { leadSchema, validateBody } from "@/libs/validations";
 
 // This route is used to store the leads that are generated from the landing page.
-// The API call is initiated by <ButtonLead /> component
 // Duplicate emails just return 200 OK (using upsert to avoid race conditions)
 export async function POST(req) {
+  // Rate limiting
+  const protection = await quickProtect(req, "sensitive");
+  if (protection.blocked) return protection.response;
+
   // Validate input with Zod
   const validation = await validateBody(req, leadSchema);
   if (!validation.success) {
@@ -16,7 +20,6 @@ export async function POST(req) {
 
   try {
     if (supabaseAdmin) {
-      // Use upsert to avoid race conditions - atomically insert or do nothing
       const { error } = await supabaseAdmin
         .from("leads")
         .upsert(

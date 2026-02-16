@@ -4,8 +4,8 @@ import Link from "next/link";
 import config from "@/config";
 
 export default function StepComplete({ data, onComplete, onBack, saving }) {
-  const freePlan = config.stripe.plans.find((p) => p.priceId === "free");
-  const proPlan = config.stripe.plans.find((p) => p.isFeatured);
+  const freePlan = config.lemonsqueezy.plans.find((p) => p.variantId === "free");
+  const proPlan = config.lemonsqueezy.plans.find((p) => p.isFeatured);
 
   return (
     <div className="text-center">
@@ -56,7 +56,7 @@ export default function StepComplete({ data, onComplete, onBack, saving }) {
               Upgrade to {proPlan?.name} for unlimited product evaluations, API access, and more.
             </p>
             <div className="flex items-baseline gap-2 mb-3">
-              <span className="text-2xl font-bold">${proPlan?.price}</span>
+              <span className="text-2xl font-bold">${proPlan?.price || "—"}</span>
               <span className="text-base-content/60">/month</span>
               <span className="badge badge-primary badge-sm">14-day free trial</span>
             </div>

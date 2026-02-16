@@ -1,7 +1,7 @@
 "use client";
 
 import { Component } from "react";
-import * as Sentry from "@sentry/nextjs";
+import { captureError } from "@/libs/monitoring";
 
 /**
  * Error Boundary Component
@@ -24,19 +24,16 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log error to console in development
-    console.error("ErrorBoundary caught an error:", error, errorInfo);
-
     this.setState({ errorInfo });
 
-    // Report to Sentry if configured
-    try {
-      Sentry.captureException(error, {
-        extra: { componentStack: errorInfo?.componentStack },
-      });
-    } catch (_e) {
-      // Sentry not initialized, ignore
-    }
+    // Send to monitoring (Sentry + console)
+    captureError(error, {
+      tags: { source: "error-boundary" },
+      extra: {
+        componentStack: errorInfo?.componentStack,
+        url: typeof window !== "undefined" ? window.location?.href : undefined,
+      },
+    });
   }
 
   handleRetry = () => {

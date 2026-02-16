@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 
 export const revalidate = 3600; // 1 hour ISR
@@ -20,7 +21,7 @@ export const metadata = {
   ],
   openGraph: {
     title: "Crypto Hacks Database | SafeScoring",
-    description: "Learn from $10B+ in crypto hacks. Pre-hack scores, analysis, and lessons learned.",
+    description: "Comprehensive database of crypto hacks, exploits and security incidents with pre-hack SafeScore analysis.",
     url: "https://safescoring.io/hacks",
   },
 };
@@ -28,7 +29,7 @@ export const metadata = {
 // Fetch incidents from database
 async function getHacks() {
   if (!isSupabaseConfigured()) {
-    return getSampleHacks();
+    return { data: getSampleHacks(), isSample: true };
   }
 
   try {
@@ -39,14 +40,14 @@ async function getHacks() {
       .limit(50);
 
     if (error) throw error;
-    return data || getSampleHacks();
+    return { data: data || getSampleHacks(), isSample: !data || data.length === 0 };
   } catch (e) {
-    console.error("Error fetching hacks:", e);
-    return getSampleHacks();
+    if (process.env.NODE_ENV === "development") console.error("Error fetching hacks:", e);
+    return { data: getSampleHacks(), isSample: true };
   }
 }
 
-// Sample data for development
+// Sample data for development — real incidents, no fabricated scores
 function getSampleHacks() {
   return [
     {
@@ -58,7 +59,6 @@ function getSampleHacks() {
       date: "2023-06-03",
       category: "WALLET",
       summary: "Private keys compromised through supply chain attack. Over $100M stolen from users.",
-      safescore_before: 52,
       product_slug: "atomic-wallet",
     },
     {
@@ -70,7 +70,6 @@ function getSampleHacks() {
       date: "2022-03-23",
       category: "BRIDGE",
       summary: "Validator keys compromised in largest DeFi hack to date. $625M stolen.",
-      safescore_before: 45,
       product_slug: "ronin-bridge",
     },
     {
@@ -82,7 +81,6 @@ function getSampleHacks() {
       date: "2022-11-11",
       category: "EXCHANGE",
       summary: "Exchange insolvency and alleged fraud. $8B+ in customer funds missing.",
-      safescore_before: 38,
       product_slug: "ftx",
     },
     {
@@ -94,7 +92,6 @@ function getSampleHacks() {
       date: "2022-02-02",
       category: "BRIDGE",
       summary: "Smart contract vulnerability exploited. 120,000 wETH stolen.",
-      safescore_before: 55,
       product_slug: "wormhole",
     },
     {
@@ -106,7 +103,6 @@ function getSampleHacks() {
       date: "2022-08-01",
       category: "BRIDGE",
       summary: "Configuration error allowed anyone to drain funds. Chaotic free-for-all hack.",
-      safescore_before: 41,
       product_slug: "nomad",
     },
     {
@@ -118,7 +114,6 @@ function getSampleHacks() {
       date: "2023-03-13",
       category: "DEFI",
       summary: "Flash loan attack exploiting donation function. Funds later returned.",
-      safescore_before: 62,
       product_slug: "euler-finance",
     },
     {
@@ -130,7 +125,6 @@ function getSampleHacks() {
       date: "2023-07-30",
       category: "DEFI",
       summary: "Vyper compiler bug enabled reentrancy attacks on multiple pools.",
-      safescore_before: 71,
       product_slug: "curve",
     },
     {
@@ -142,7 +136,6 @@ function getSampleHacks() {
       date: "2023-07-06",
       category: "BRIDGE",
       summary: "CEO arrest led to bridge collapse. $130M+ stuck or stolen.",
-      safescore_before: 48,
       product_slug: "multichain",
     },
   ];
@@ -175,15 +168,21 @@ function getScoreColor(score) {
   return "text-error";
 }
 
+function getScoreLabel(score) {
+  if (score >= 80) return "Strong";
+  if (score >= 60) return "Moderate";
+  return "Developing";
+}
+
 export default async function HacksPage() {
-  const hacks = await getHacks();
+  const { data: hacks, isSample } = await getHacks();
 
   // Calculate stats
   const totalStolen = hacks.reduce((sum, h) => sum + (h.amount_usd || 0), 0);
-  const avgScoreBefore = Math.round(
-    hacks.filter((h) => h.safescore_before).reduce((sum, h) => sum + h.safescore_before, 0) /
-      hacks.filter((h) => h.safescore_before).length || 0
-  );
+  const hacksWithScores = hacks.filter((h) => h.safescore_before);
+  const avgScoreBefore = hacksWithScores.length > 0
+    ? Math.round(hacksWithScores.reduce((sum, h) => sum + h.safescore_before, 0) / hacksWithScores.length)
+    : null;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -208,7 +207,21 @@ export default async function HacksPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Header />
       <main className="min-h-screen pt-24 pb-16 px-6 hero-bg">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
+          <Breadcrumbs items={[
+            { label: "Home", href: "/" },
+            { label: "Hacks Database" },
+          ]} />
+          {/* Sample data banner */}
+          {isSample && (
+            <div className="alert alert-info mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-sm">Showing notable historical incidents. Live incident tracking is being populated.</span>
+            </div>
+          )}
+
           {/* Hero */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-black mb-4">
@@ -225,11 +238,13 @@ export default async function HacksPage() {
                 <div className="stat-value text-error">{formatAmount(totalStolen)}</div>
                 <div className="stat-desc">from tracked incidents</div>
               </div>
-              <div className="stat bg-base-200 rounded-box px-6 py-4">
-                <div className="stat-title">Avg Score Before Hack</div>
-                <div className="stat-value text-warning">{avgScoreBefore}/100</div>
-                <div className="stat-desc">SafeScore pre-incident</div>
-              </div>
+              {avgScoreBefore !== null && (
+                <div className="stat bg-base-200 rounded-box px-6 py-4">
+                  <div className="stat-title">Avg Score Before Hack</div>
+                  <div className="stat-value text-warning">{avgScoreBefore}/100</div>
+                  <div className="stat-desc">SafeScore pre-incident</div>
+                </div>
+              )}
               <div className="stat bg-base-200 rounded-box px-6 py-4">
                 <div className="stat-title">Incidents Tracked</div>
                 <div className="stat-value">{hacks.length}</div>
@@ -244,10 +259,15 @@ export default async function HacksPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <div>
-              <h3 className="font-bold">Nearly half of hacked projects had been audited</h3>
-              <p className="text-sm">Audits are not enough. SafeScoring evaluates ongoing security practices, not just code snapshots.</p>
+              <h3 className="font-bold">Security is an ongoing process</h3>
+              <p className="text-sm">Code audits and continuous monitoring serve complementary roles. SafeScoring evaluates ongoing security practices alongside audit results.</p>
             </div>
           </div>
+
+          {/* Legal disclaimer */}
+          <p className="text-xs text-base-content/40 mb-6">
+            Incident data is compiled from public reports and may be incomplete or contain inaccuracies. Pre-hack scores are retrospective assessments. This information does not constitute financial advice. If you believe any data is incorrect, please <a href="mailto:contact@safescoring.io" className="underline hover:text-primary">contact us</a>.
+          </p>
 
           {/* Hacks List */}
           <div className="space-y-4">
@@ -266,7 +286,7 @@ export default async function HacksPage() {
                     </div>
                     <p className="text-base-content/70 line-clamp-2">{hack.summary}</p>
                     <div className="text-sm text-base-content/50 mt-2">
-                      {new Date(hack.date).toLocaleDateString("en-US", {
+                      {new Date(hack.date).toLocaleDateString(undefined, {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -285,9 +305,10 @@ export default async function HacksPage() {
                     {/* Pre-hack Score */}
                     {hack.safescore_before && (
                       <div className="text-center px-4 py-2 bg-base-100 rounded-lg">
-                        <div className={`text-2xl font-bold ${getScoreColor(hack.safescore_before)}`}>
+                        <div className={`text-2xl font-bold ${getScoreColor(hack.safescore_before)}`} title={getScoreLabel(hack.safescore_before)}>
                           {hack.safescore_before}
                         </div>
+                        <div className={`text-xs font-medium ${getScoreColor(hack.safescore_before)}`}>{getScoreLabel(hack.safescore_before)}</div>
                         <div className="text-xs text-base-content/50">pre-hack score</div>
                       </div>
                     )}
@@ -304,9 +325,9 @@ export default async function HacksPage() {
 
           {/* CTA */}
           <div className="mt-12 rounded-xl bg-gradient-to-br from-error/20 to-base-200 border border-base-300 p-8 text-center">
-            <h2 className="text-2xl font-bold mb-2">Don&apos;t become the next victim</h2>
+            <h2 className="text-2xl font-bold mb-2">Stay informed about security</h2>
             <p className="text-base-content/60 mb-6 max-w-xl mx-auto">
-              Check the security score of your crypto tools before trusting them with your funds.
+              Review the security evaluation of your crypto tools to make more informed decisions.
             </p>
             <Link href="/products" className="btn btn-primary btn-lg">
               Check Your Tools Now

@@ -17,12 +17,8 @@ export default async function AdminPage() {
     redirect("/signin");
   }
 
-  // Vérifier si admin (via centralized RBAC)
-  const isAdmin =
-    isAdminEmail(session.user?.email) ||
-    session.user?.role === "admin";
-
-  if (!isAdmin) {
+  // Vérifier si admin via le système RBAC centralisé
+  if (!isAdminEmail(session.user?.email)) {
     redirect("/dashboard");
   }
 

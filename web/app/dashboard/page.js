@@ -12,6 +12,18 @@ const getScoreColor = (score) => {
   return "text-red-400";
 };
 
+const getScoreLabel = (score) => {
+  if (score >= 80) return "Strong";
+  if (score >= 60) return "Moderate";
+  return "Developing";
+};
+
+const getChangeIndicator = (change) => {
+  if (change > 0) return { icon: "↑", color: "text-green-400" };
+  if (change < 0) return { icon: "↓", color: "text-red-400" };
+  return { icon: "→", color: "text-base-content/50" };
+};
+
 async function getDashboardData(userId) {
   if (!supabaseAdmin) {
     return { topProducts: [], stats: { products: 0, setups: 0, alerts: 0, incidents: 0 } };
@@ -81,8 +93,73 @@ async function getDashboardData(userId) {
     change: 0, // Would need score_history to calculate
   }));
 
+  // Fetch user's latest setup for Stack Health widget
+  let stackHealth = null;
+  if (userId) {
+    try {
+      const { data: latestSetup } = await supabaseAdmin
+        .from("user_setups")
+        .select("id, name, products")
+        .eq("user_id", userId)
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (latestSetup?.products && latestSetup.products.length > 0) {
+        const productIds = latestSetup.products.map(p => p.product_id).filter(Boolean);
+        if (productIds.length > 0) {
+          const { data: scores } = await supabaseAdmin
+            .from("safe_scoring_results")
+            .select("product_id, note_finale, score_s, score_a, score_f, score_e")
+            .in("product_id", productIds);
+
+          if (scores && scores.length > 0) {
+            // Weighted average (wallet = 2x)
+            let totalWeight = 0;
+            let weightedS = 0, weightedA = 0, weightedF = 0, weightedE = 0, weightedTotal = 0;
+
+            latestSetup.products.forEach(sp => {
+              const score = scores.find(s => s.product_id === sp.product_id);
+              if (!score) return;
+              const weight = sp.role === "wallet" ? 2 : 1;
+              totalWeight += weight;
+              weightedS += (score.score_s || 0) * weight;
+              weightedA += (score.score_a || 0) * weight;
+              weightedF += (score.score_f || 0) * weight;
+              weightedE += (score.score_e || 0) * weight;
+              weightedTotal += (score.note_finale || 0) * weight;
+            });
+
+            if (totalWeight > 0) {
+              const pillarScores = {
+                s: Math.round(weightedS / totalWeight),
+                a: Math.round(weightedA / totalWeight),
+                f: Math.round(weightedF / totalWeight),
+                e: Math.round(weightedE / totalWeight),
+              };
+              const weakest = Object.entries(pillarScores).sort((a, b) => a[1] - b[1])[0];
+              const pillarNames = { s: "Security", a: "Adversity", f: "Fidelity", e: "Efficiency" };
+
+              stackHealth = {
+                setupName: latestSetup.name || "My Setup",
+                setupId: latestSetup.id,
+                productCount: latestSetup.products.length,
+                totalScore: Math.round(weightedTotal / totalWeight),
+                pillars: pillarScores,
+                weakest: { code: weakest[0].toUpperCase(), name: pillarNames[weakest[0]], score: weakest[1] },
+              };
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching stack health:", err);
+    }
+  }
+
   return {
     topProducts,
+    stackHealth,
     stats: {
       products: productsResult.count || 0,
       setups: setupsResult.count || 0,
@@ -96,7 +173,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Dashboard() {
   const session = await auth();
-  const { topProducts, stats } = await getDashboardData(session?.user?.id);
+  const { topProducts, stats, stackHealth } = await getDashboardData(session?.user?.id);
 
   return (
     <div className="space-y-8">
@@ -168,6 +245,79 @@ export default async function Dashboard() {
           <div className="text-3xl font-bold">{stats.incidents}</div>
         </div>
       </div>
+
+      {/* Stack Health Widget */}
+      {stackHealth ? (
+        <div className="rounded-2xl bg-base-200 border border-base-300 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold">Stack Health</h2>
+            <Link href={`/dashboard/setups`} className="text-sm text-primary hover:underline">
+              {stackHealth.setupName} →
+            </Link>
+          </div>
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            {/* Score Circle */}
+            <div className="flex-shrink-0 text-center">
+              <div className={`text-5xl font-bold ${getScoreColor(stackHealth.totalScore)}`}>
+                {stackHealth.totalScore}
+              </div>
+              <div className={`text-sm font-medium mt-1 ${getScoreColor(stackHealth.totalScore)}`}>
+                {getScoreLabel(stackHealth.totalScore)}
+              </div>
+              <div className="text-sm text-base-content/60 mt-0.5">
+                Combined Score
+              </div>
+              <div className="text-xs text-base-content/40 mt-0.5">
+                {stackHealth.productCount} product{stackHealth.productCount !== 1 ? "s" : ""}
+              </div>
+            </div>
+            {/* Pillar Bars */}
+            <div className="flex-1 w-full space-y-3">
+              {config.safe.pillars.map((pillar) => {
+                const score = stackHealth.pillars[pillar.code.toLowerCase()] || 0;
+                const isWeakest = pillar.code === stackHealth.weakest.code;
+                return (
+                  <div key={pillar.code}>
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold" style={{ color: pillar.color }}>
+                          {pillar.code}
+                        </span>
+                        <span className="text-xs text-base-content/60">{pillar.name}</span>
+                        {isWeakest && (
+                          <span className="badge badge-warning badge-xs">weakest</span>
+                        )}
+                      </div>
+                      <span className={`text-sm font-bold ${getScoreColor(score)}`}>
+                        {score}
+                      </span>
+                    </div>
+                    <div className="w-full bg-base-300 rounded-full h-2">
+                      <div
+                        className="h-2 rounded-full transition-all"
+                        style={{ width: `${score}%`, backgroundColor: pillar.color }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      ) : session?.user && (
+        <div className="rounded-2xl bg-base-200 border border-base-300 border-dashed p-6 text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-12 h-12 mx-auto mb-3 text-base-content/30">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+          </svg>
+          <h3 className="font-semibold mb-1">Create Your First Stack Setup</h3>
+          <p className="text-sm text-base-content/60 mb-4">
+            Build a setup with your crypto products to see your combined security health.
+          </p>
+          <Link href="/dashboard/setups" className="btn btn-primary btn-sm">
+            Build a Setup
+          </Link>
+        </div>
+      )}
 
       {/* SAFE Pillars overview */}
       <div className="rounded-2xl bg-base-200 border border-base-300 p-6">
@@ -281,9 +431,9 @@ export default async function Dashboard() {
               <p className="text-sm text-base-content/60 mb-4">
                 Can&apos;t find a product? Request an evaluation for any crypto product.
               </p>
-              <button className="btn btn-primary btn-sm">
+              <a href="mailto:evaluate@safescoring.io?subject=Product%20Evaluation%20Request" className="btn btn-primary btn-sm">
                 Request Evaluation
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -300,9 +450,9 @@ export default async function Dashboard() {
               <p className="text-sm text-base-content/60 mb-4">
                 Integrate SafeScoring data into your own applications.
               </p>
-              <button className="btn btn-outline btn-sm">
+              <Link href="/dashboard/api-keys" className="btn btn-outline btn-sm">
                 Get API Keys
-              </button>
+              </Link>
             </div>
           </div>
         </div>

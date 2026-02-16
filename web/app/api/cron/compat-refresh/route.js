@@ -2,10 +2,10 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
 function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) return null;
-  return createClient(url, key);
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
 }
 
 // Vercel cron: every 30 minutes
@@ -38,13 +38,9 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const supabase = getSupabase();
-  if (!supabase) {
-    return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
-  }
-
   try {
     // Get pending products from queue
+    const supabase = getSupabase();
     const { data: queue, error: queueError } = await supabase
       .from('compat_refresh_queue')
       .select('product_id')

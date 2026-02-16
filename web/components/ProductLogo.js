@@ -6,12 +6,12 @@ import Image from "next/image";
 export default function ProductLogo({ logoUrl, fallbackUrl, name, size = "lg" }) {
   const [errorLevel, setErrorLevel] = useState(0);
 
-  const sizeConfig = {
+  const sizeMap = {
     sm: { classes: "w-12 h-12 rounded-xl text-xl", px: 48 },
     lg: { classes: "w-20 h-20 rounded-2xl text-3xl", px: 80 },
   };
 
-  const { classes, px } = sizeConfig[size] || sizeConfig.lg;
+  const { classes, px } = sizeMap[size] || sizeMap.lg;
 
   // Fallback chain: Clearbit → Google Favicon → Initial letter
   const handleError = () => {

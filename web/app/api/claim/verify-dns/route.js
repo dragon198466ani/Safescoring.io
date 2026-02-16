@@ -156,8 +156,8 @@ export async function POST(request) {
           verified: false,
           domain,
           message: "Verification record not found",
-          hint: `Looking for TXT record: ${expectedValue}`,
-          found: flatRecords.length > 0 ? flatRecords : [],
+          hint: `Add a TXT record with value: ${expectedValue}`,
+          recordsChecked: flatRecords.length,
         });
       }
     } catch (dnsError) {
@@ -172,12 +172,9 @@ export async function POST(request) {
         });
       }
 
-      console.error("DNS resolution error:", dnsError);
+      console.error("DNS resolution error:", dnsError.code);
       return NextResponse.json(
-        {
-          error: "Failed to resolve DNS records",
-          details: dnsError.message,
-        },
+        { error: "Failed to resolve DNS records" },
         { status: 500 }
       );
     }

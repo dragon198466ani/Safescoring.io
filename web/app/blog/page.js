@@ -5,9 +5,9 @@ import config from "@/config";
 import { getSEOTags } from "@/libs/seo";
 
 export const metadata = getSEOTags({
-  title: `${config.appName} Blog | Stripe Chargeback Protection`,
+  title: `${config.appName} Blog | Crypto Security Insights`,
   description:
-    "Learn how to prevent chargebacks, how to accept payments online, and keep your Stripe account in good standing",
+    "Expert analysis on crypto security, wallet safety, DeFi risks, and how to protect your digital assets",
   canonicalUrlRelative: "/blog",
 });
 

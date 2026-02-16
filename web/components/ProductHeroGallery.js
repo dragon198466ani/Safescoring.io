@@ -133,6 +133,7 @@ export default function ProductHeroGallery({ media = [], productName = "Product"
               <>
                 <button
                   onClick={() => scroll(-1)}
+                  aria-label="Scroll gallery left"
                   className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-base-100/90 rounded-full flex items-center justify-center shadow-lg hover:bg-base-100 transition-colors"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
@@ -141,6 +142,7 @@ export default function ProductHeroGallery({ media = [], productName = "Product"
                 </button>
                 <button
                   onClick={() => scroll(1)}
+                  aria-label="Scroll gallery right"
                   className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-base-100/90 rounded-full flex items-center justify-center shadow-lg hover:bg-base-100 transition-colors"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
@@ -201,6 +203,7 @@ export default function ProductHeroGallery({ media = [], productName = "Product"
           {/* Close button */}
           <button
             onClick={() => setSelectedMedia(null)}
+            aria-label="Close lightbox"
             className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-white">
@@ -214,6 +217,7 @@ export default function ProductHeroGallery({ media = [], productName = "Product"
               <button
                 onClick={(e) => { e.stopPropagation(); navigate(-1); }}
                 disabled={selectedIndex === 0}
+                aria-label="Previous image"
                 className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors ${
                   selectedIndex === 0 ? "opacity-30 cursor-not-allowed" : ""
                 }`}
@@ -225,6 +229,7 @@ export default function ProductHeroGallery({ media = [], productName = "Product"
               <button
                 onClick={(e) => { e.stopPropagation(); navigate(1); }}
                 disabled={selectedIndex === validMedia.length - 1}
+                aria-label="Next image"
                 className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors ${
                   selectedIndex === validMedia.length - 1 ? "opacity-30 cursor-not-allowed" : ""
                 }`}

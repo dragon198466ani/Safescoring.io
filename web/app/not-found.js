@@ -1,9 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import ButtonSupport from "@/components/ButtonSupport";
+import { useTranslation } from "@/libs/i18n/LanguageProvider";
 
 // Simple 404 page with a button to go home and a button to contact support
 // Show a cute SVG with your primary color
 export default function Custom404() {
+  const { t } = useTranslation();
   return (
     <section className="relative bg-base-100 text-base-content h-screen w-full flex flex-col justify-center gap-8 items-center p-10">
       <div className="p-6 bg-white rounded-xl">
@@ -96,7 +100,7 @@ export default function Custom404() {
         </svg>
       </div>
       <p className="text-lg md:text-xl font-semibold">
-        This page doesn&apos;t exist 😅
+        {t("errors.pageNotFound")} 😅
       </p>
 
       <div className="flex flex-wrap gap-4 justify-center">
@@ -113,7 +117,7 @@ export default function Custom404() {
               clipRule="evenodd"
             />
           </svg>
-          Home
+          {t("errors.home")}
         </Link>
 
         <ButtonSupport />

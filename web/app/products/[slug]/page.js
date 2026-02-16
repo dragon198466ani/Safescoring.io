@@ -2,8 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import config from "@/config";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { getNormStats } from "@/libs/norm-stats";
 // Critical components - loaded immediately
 import ScoreSecurityPanel from "@/components/ScoreSecurityPanel";
 import CommunityStats from "@/components/CommunityStats";
@@ -15,6 +17,12 @@ import {
   LazyCorrectionSection,
   LazyProductHeroGallery,
 } from "@/libs/lazy-components";
+import CompareWithSimilar from "@/components/CompareWithSimilar";
+import FavoriteButton from "@/components/FavoriteButton";
+import ShareButtons from "@/components/ShareButtons";
+import ProductViewGate from "@/components/ProductViewGate";
+import ScoreTypeSwitcher from "@/components/ScoreTypeSwitcher";
+import { getLogoUrl, getFaviconUrl } from "@/libs/logo-utils";
 
 // Enable ISR caching for better SEO and Google crawl efficiency
 // Product scores don't change frequently, so 1 hour cache is reasonable
@@ -81,9 +89,10 @@ export async function generateMetadata({ params }) {
   const score = scoreData?.[0]?.note_finale ? Math.round(scoreData[0].note_finale) : null;
   const scoreText = score ? ` - SAFE Score: ${score}%` : "";
 
+  const normStats = await getNormStats();
   const title = `${product.name} Security Score${scoreText} | SafeScoring`;
   const description = product.short_description ||
-    `${product.name} ${typeName} security evaluation. See the full SAFE score breakdown across Security, Adversity, Fidelity & Efficiency. 916 norms evaluated.`;
+    `${product.name} ${typeName} security evaluation. See the full SAFE score breakdown across Security, Adversity, Fidelity & Efficiency. ${normStats?.totalNorms || "Comprehensive"} norms evaluated.`;
 
   return {
     title,
@@ -131,7 +140,7 @@ export async function generateMetadata({ params }) {
 async function getProduct(slug) {
   try {
     if (!isSupabaseConfigured()) {
-      console.log("Supabase not configured");
+      console.warn("Supabase not configured");
       return null;
     }
 
@@ -179,17 +188,24 @@ async function getProduct(slug) {
     if (productType) productTypes = [productType];
   }
 
-  // Fetch brand separately
-  let brand = null;
-  if (productBasic.brand_id) {
-    const { data: brandData } = await supabase
-      .from("brands")
-      .select("id, name")
-      .eq("id", productBasic.brand_id)
-      .maybeSingle();
-    brand = brandData;
-  }
+  // Fetch brand, scores, and evaluations in parallel (reduces 3 sequential queries to 1 step)
+  const [brandResult, safeScoringResult, evaluationsResult] = await Promise.all([
+    productBasic.brand_id
+      ? supabase.from("brands").select("id, name").eq("id", productBasic.brand_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+    supabase
+      .from("safe_scoring_results")
+      .select("*")
+      .eq("product_id", productBasic.id)
+      .order("calculated_at", { ascending: false })
+      .limit(1),
+    supabase
+      .from("evaluations")
+      .select("norm_id, result, why_this_result")
+      .eq("product_id", productBasic.id),
+  ]);
 
+  const brand = brandResult.data;
   const product = {
     ...productBasic,
     product_types: productType,
@@ -197,21 +213,8 @@ async function getProduct(slug) {
     brands: brand
   };
 
-  // Fetch safe_scoring_results for scores
-  const { data: safeScoringData } = await supabase
-    .from("safe_scoring_results")
-    .select("*")
-    .eq("product_id", product.id)
-    .order("calculated_at", { ascending: false })
-    .limit(1);
-
-  const safeScoring = safeScoringData?.[0] || null;
-
-  // Fetch evaluations with norm_id
-  const { data: evaluations } = await supabase
-    .from("evaluations")
-    .select("norm_id, result, why_this_result")
-    .eq("product_id", product.id);
+  const safeScoring = safeScoringResult.data?.[0] || null;
+  const evaluations = evaluationsResult.data;
 
   let evaluationStats = {
     totalNorms: 0,
@@ -265,28 +268,6 @@ async function getProduct(slug) {
     });
   }
 
-  // Helper to generate HD logo URL via Clearbit
-  const getLogoUrl = (url) => {
-    if (!url) return null;
-    try {
-      const domain = new URL(url).hostname.replace('www.', '');
-      return `https://logo.clearbit.com/${domain}`;
-    } catch {
-      return null;
-    }
-  };
-
-  // Fallback: Google Favicon (works for all sites)
-  const getFaviconUrl = (url) => {
-    if (!url) return null;
-    try {
-      const domain = new URL(url).hostname;
-      return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-    } catch {
-      return null;
-    }
-  };
-
   // Build types display string
   const typesDisplay = product.all_types?.length > 0
     ? product.all_types.map(t => t.name).join(" • ")
@@ -316,6 +297,20 @@ async function getProduct(slug) {
       f: Math.round(safeScoring?.score_f || 0),
       e: Math.round(safeScoring?.score_e || 0),
     },
+    consumerScores: {
+      total: Math.round(safeScoring?.note_consumer || 0),
+      s: Math.round(safeScoring?.s_consumer || 0),
+      a: Math.round(safeScoring?.a_consumer || 0),
+      f: Math.round(safeScoring?.f_consumer || 0),
+      e: Math.round(safeScoring?.e_consumer || 0),
+    },
+    essentialScores: {
+      total: Math.round(safeScoring?.note_essential || 0),
+      s: Math.round(safeScoring?.s_essential || 0),
+      a: Math.round(safeScoring?.a_essential || 0),
+      f: Math.round(safeScoring?.f_essential || 0),
+      e: Math.round(safeScoring?.e_essential || 0),
+    },
     verified: safeScoring?.note_finale != null,
     // DATES CLAIRES - Chaque produit a des dates uniques et spécifiques
     dates: {
@@ -342,9 +337,9 @@ const getScoreColor = (score) => {
 };
 
 const getScoreLabel = (score) => {
-  if (score >= 80) return { label: "Excellent", color: "text-green-400" };
-  if (score >= 60) return { label: "Good", color: "text-amber-400" };
-  return { label: "At Risk", color: "text-red-400" };
+  if (score >= 80) return { label: "Strong", color: "text-green-400" };
+  if (score >= 60) return { label: "Moderate", color: "text-amber-400" };
+  return { label: "Developing", color: "text-red-400" };
 };
 
 const ScoreCircle = ({ score, size = 140, strokeWidth = 10, lastUpdate }) => {
@@ -416,30 +411,8 @@ export default async function ProductPage({ params }) {
       name: product.brand || product.name,
     },
     category: product.type,
-    aggregateRating: product.verified ? {
-      "@type": "AggregateRating",
-      ratingValue: (product.scores.total / 20).toFixed(1), // Convert 0-100 to 0-5
-      bestRating: "5",
-      worstRating: "0",
-      ratingCount: product.evaluationDetails.totalNorms,
-      reviewCount: 1,
-    } : undefined,
-    review: product.verified ? {
-      "@type": "Review",
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: (product.scores.total / 20).toFixed(1),
-        bestRating: "5",
-        worstRating: "0",
-      },
-      author: {
-        "@type": "Organization",
-        name: "SafeScoring",
-        url: "https://safescoring.io",
-      },
-      reviewBody: `Security evaluation based on ${product.evaluationDetails.totalNorms} norms. SAFE Score: ${product.scores.total}% (S:${product.scores.s}%, A:${product.scores.a}%, F:${product.scores.f}%, E:${product.scores.e}%)`,
-      datePublished: product.lastUpdate,
-    } : undefined,
+    // Note: AggregateRating and Review removed to avoid implying endorsement or guarantee.
+    // SafeScoring evaluations are methodology-based assessments, not consumer reviews.
   };
 
   // Breadcrumb schema
@@ -466,15 +439,13 @@ export default async function ProductPage({ params }) {
       />
       <Header />
       <main className="min-h-screen pt-24 pb-16 px-6 hero-bg">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-base-content/60 mb-8">
-            <Link href="/" className="hover:text-base-content">Home</Link>
-            <span>/</span>
-            <Link href="/products" className="hover:text-base-content">Products</Link>
-            <span>/</span>
-            <span className="text-base-content">{product.name}</span>
-          </div>
+          <Breadcrumbs items={[
+            { label: "Home", href: "/" },
+            { label: "Products", href: "/products" },
+            { label: product.name },
+          ]} />
 
           {/* Product header */}
           <div className="flex flex-col lg:flex-row gap-8 mb-12">
@@ -487,11 +458,11 @@ export default async function ProductPage({ params }) {
                   <div className="flex items-center gap-3 flex-wrap">
                     <h1 className="text-2xl md:text-3xl font-bold">{product.name}</h1>
                     {product.verified && (
-                      <span className="badge badge-verified">
+                      <span className="badge badge-verified" title="This product has been evaluated using SafeScoring's methodology. This does not constitute an endorsement or security guarantee.">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 mr-1">
                           <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                         </svg>
-                        Verified
+                        Scored
                       </span>
                     )}
                   </div>
@@ -531,21 +502,32 @@ export default async function ProductPage({ params }) {
                     Visit Website
                   </a>
                 )}
-                <button className="inline-flex items-center gap-1.5 text-base-content/60 hover:text-primary transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-                  </svg>
-                  Add to Favorites
-                </button>
+                <FavoriteButton productId={product.id} />
+                <ShareButtons url={`/products/${slug}`} title={`${product.name} SAFE Score: ${product.scores.total}/100`} />
               </div>
             </div>
 
-            {/* Right: SAFE Score Circle only */}
+            {/* Right: SAFE Score with type switcher (Full/Consumer/Essential) */}
             <div className="shrink-0">
-              <ScoreCircle score={product.scores.total} lastUpdate={product.lastUpdate} />
+              <ScoreTypeSwitcher
+                scores={product.scores}
+                consumerScores={product.consumerScores}
+                essentialScores={product.essentialScores}
+                lastUpdate={product.lastUpdate}
+              />
             </div>
           </div>
 
+          {/* Legal disclaimer — opinion framing (UK Defamation Act 2013 s.3 / French fair comment) */}
+          <div className="mb-6 max-w-3xl">
+            <p className="text-xs text-base-content/40">
+              <span className="font-semibold text-base-content/50">Opinion-Based Evaluation</span> — Scores represent SafeScoring&apos;s opinion based on publicly available information and our SAFE methodology. They do not guarantee security, predict future incidents, or constitute financial, investment, or security advice. Experts using different criteria may reach different conclusions. Always conduct your own research.
+              {" "}<a href="/tos#5.8" className="text-primary/60 hover:text-primary hover:underline">Dispute this score</a>
+            </p>
+          </div>
+
+          {/* Free tier view gate — tracks usage and shows paywall if limit reached */}
+          <ProductViewGate productId={product.id}>
           {/* Hero Section: Gallery + Pillar Scores côte à côte */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
             {/* Left: Gallery (2/3 on desktop) */}
@@ -654,10 +636,10 @@ export default async function ProductPage({ params }) {
                     </div>
                     <p className="text-sm text-base-content/70">
                       {topPillar.score >= 80
-                        ? `Excellent ${topPillar.name.toLowerCase()} rating. This product demonstrates strong practices in this area.`
+                        ? `Excellent ${topPillar.name.toLowerCase()} rating. This product demonstrates strong practices in this area based on our methodology.`
                         : topPillar.score >= 60
-                        ? `Good ${topPillar.name.toLowerCase()} fundamentals with room for improvement.`
-                        : `${topPillar.name} is the strongest pillar but still needs attention.`}
+                        ? `Good ${topPillar.name.toLowerCase()} fundamentals with room for further development based on our evaluation criteria.`
+                        : `${topPillar.name} is the highest-scoring pillar in our evaluation. See methodology for scoring criteria.`}
                     </p>
                   </div>
 
@@ -672,10 +654,10 @@ export default async function ProductPage({ params }) {
                     </div>
                     <p className="text-sm text-base-content/70">
                       {weakPillar.score < 60
-                        ? `${weakPillar.name} requires attention. Review security practices and consider additional protective measures.`
+                        ? `${weakPillar.name} scored lowest in our evaluation. This reflects our methodology's assessment of publicly available information.`
                         : weakPillar.score < 80
-                        ? `${weakPillar.name} is adequate but could be strengthened. Monitor for improvements.`
-                        : `All pillars are strong. Continue maintaining good security practices.`}
+                        ? `${weakPillar.name} is the lowest-scoring pillar but scores within a moderate range. See our methodology for details.`
+                        : `All pillars score within a strong range based on our evaluation methodology.`}
                     </p>
                   </div>
                 </>
@@ -706,16 +688,40 @@ export default async function ProductPage({ params }) {
             />
           </div>
 
+          {/* Compare with similar products */}
+          <CompareWithSimilar
+            currentSlug={product.slug}
+            currentName={product.name}
+            currentScore={product.scores.total}
+            typeId={product.types?.[0]?.id}
+            category={product.category}
+          />
+
           {/* CTA for full report */}
           <div className="rounded-xl bg-gradient-to-br from-primary/20 to-base-200 border border-base-300 p-8 text-center">
             <h2 className="text-xl font-bold mb-2">Want the full evaluation report?</h2>
             <p className="text-base-content/60 mb-6">
               Get detailed breakdown of all {product.evaluationDetails.totalNorms} norms, including evidence and recommendations.
             </p>
-            <Link href="/#pricing" className="btn btn-primary">
-              Upgrade to Professional
-            </Link>
+            <div className="flex items-center justify-center gap-4 flex-wrap">
+              <a
+                href={`/api/reports/${product.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline"
+                title="Professional plan required"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                </svg>
+                Download PDF Report
+              </a>
+              <Link href="/#pricing" className="btn btn-primary">
+                Upgrade to Professional
+              </Link>
+            </div>
           </div>
+          </ProductViewGate>
         </div>
       </main>
       <Footer />

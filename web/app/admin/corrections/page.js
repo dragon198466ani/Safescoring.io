@@ -92,7 +92,7 @@ export default function AdminCorrectionsPage() {
     <>
       <Header />
       <main className="min-h-screen pt-24 pb-16 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>

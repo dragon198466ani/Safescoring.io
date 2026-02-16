@@ -1,14 +1,10 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import { requireAdmin as requireAdminAuth } from "@/libs/admin-auth";
+import { requireAdmin } from "@/libs/admin-auth";
+import { dispatchWebhookEvent } from "@/libs/webhook-dispatch";
 
 export const dynamic = "force-dynamic";
 
-// Admin authentication check using centralized RBAC
-async function requireAdmin() {
-  const admin = await requireAdminAuth();
-  return !!admin;
-}
 
 /**
  * POST /api/admin/recalculate-scores
@@ -56,6 +52,13 @@ export async function POST(request) {
         );
       }
 
+      // Dispatch webhook event (fire-and-forget, don't block response)
+      dispatchWebhookEvent("score_change", {
+        productId,
+        result: data,
+        scope: "single",
+      }).catch(() => {});
+
       return NextResponse.json({
         success: true,
         message: "Scores recalculated for product",
@@ -72,6 +75,12 @@ export async function POST(request) {
           { status: 500 }
         );
       }
+
+      // Dispatch webhook event (fire-and-forget)
+      dispatchWebhookEvent("score_change", {
+        scope: "all",
+        result: data,
+      }).catch(() => {});
 
       return NextResponse.json({
         success: true,

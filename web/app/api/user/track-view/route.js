@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { supabaseAdmin } from "@/libs/supabase";
+import { sendEmail } from "@/libs/resend";
+import { upgradeNudgeEmail } from "@/libs/email-templates";
 import config from "@/config";
 
 // POST - Track product view and check limits
@@ -92,6 +94,46 @@ export async function POST(req) {
 
     // Check if limit reached
     if (remaining <= 0) {
+      // Send upgrade nudge email (non-blocking, once per user)
+      if (process.env.RESEND_API_KEY && session.user.email) {
+        supabaseAdmin
+          .from("email_log")
+          .select("id")
+          .eq("user_id", session.user.id)
+          .eq("email_type", "upgrade_nudge")
+          .maybeSingle()
+          .then(({ data: existing }) => {
+            if (!existing) {
+              // Generate unsubscribe URL for CAN-SPAM compliance
+              const crypto = require("crypto");
+              const secret = process.env.NEXTAUTH_SECRET || "";
+              const unsubToken = secret ? crypto.createHmac("sha256", secret).update(session.user.email.toLowerCase().trim()).digest("hex") : "";
+              const unsubUrl = unsubToken
+                ? `https://${config.domainName}/api/newsletter?email=${encodeURIComponent(session.user.email)}&token=${unsubToken}`
+                : null;
+              const template = upgradeNudgeEmail({
+                name: session.user.name,
+                viewsUsed: limit,
+                viewsLimit: limit,
+                unsubscribeUrl: unsubUrl,
+              });
+              sendEmail({
+                to: session.user.email,
+                subject: template.subject,
+                text: template.text,
+                html: template.html,
+              }).then(() => {
+                supabaseAdmin.from("email_log").insert({
+                  user_id: session.user.id,
+                  email_type: "upgrade_nudge",
+                  sent_at: new Date().toISOString(),
+                });
+              }).catch((err) => console.error("Upgrade email failed:", err.message));
+            }
+          })
+          .catch(() => {});
+      }
+
       return NextResponse.json({
         allowed: false,
         remaining: 0,

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-SAFESCORING.IO - Script d'automatisation mensuelle GRATUITE
-Utilise Mistral + Gemini + Supabase selon le guide d'automatisation
+SAFESCORING.IO - FREE monthly automation script
+Uses Mistral + Gemini + Supabase according to the automation guide
 
 Usage:
     python monthly_automation.py [--dry-run] [--force]
 
 Options:
-    --dry-run : Simulation sans modifier la base de données
-    --force   : Force la mise à jour même si déjà faite ce mois-ci
+    --dry-run : Simulation without modifying the database
+    --force   : Force the update even if already done this month
 """
 
 import os
@@ -45,41 +45,24 @@ except ImportError:
 # CONFIGURATION
 # ============================================
 
-def load_config():
-    """Charge la configuration depuis env_template_free.txt"""
-    config = {}
-    config_path = os.path.join(os.path.dirname(__file__), 'env_template_free.txt')
-    
-    if not os.path.exists(config_path):
-        print(f"❌ Fichier de configuration non trouvé: {config_path}")
-        sys.exit(1)
-    
-    with open(config_path, 'r', encoding='utf-8') as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith('#') and '=' in line:
-                key, value = line.split('=', 1)
-                config[key.strip()] = value.strip()
-    
-    return config
+# Add parent directory to path to access core/
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-# Charger configuration
-CONFIG = load_config()
-SUPABASE_URL = CONFIG.get('NEXT_PUBLIC_SUPABASE_URL', '')
-SUPABASE_KEY = CONFIG.get('NEXT_PUBLIC_SUPABASE_ANON_KEY', '')
+from core.config import load_config, CONFIG, SUPABASE_URL, SUPABASE_KEY
+
 MISTRAL_API_KEY = CONFIG.get('MISTRAL_API_KEY', '')
 GOOGLE_API_KEY = CONFIG.get('GOOGLE_API_KEY', '')
 
 # Validation
 if not all([SUPABASE_URL, SUPABASE_KEY]):
-    print("❌ Configuration Supabase manquante")
+    print("❌ Missing Supabase configuration")
     sys.exit(1)
 
 if not any([MISTRAL_API_KEY, GOOGLE_API_KEY]):
-    print("❌ Au moins une clé IA requise (Mistral ou Gemini)")
+    print("❌ At least one AI key required (Mistral or Gemini)")
     sys.exit(1)
 
-# Clients IA
+# AI clients
 mistral_client = None
 if MISTRAL_API_KEY:
     mistral_client = Mistral(api_key=MISTRAL_API_KEY)
@@ -87,7 +70,7 @@ if MISTRAL_API_KEY:
 if GOOGLE_API_KEY:
     genai.configure(api_key=GOOGLE_API_KEY)
 
-# User agent pour scraping
+# User agent for scraping
 ua = UserAgent()
 
 # ============================================
@@ -95,7 +78,7 @@ ua = UserAgent()
 # ============================================
 
 class SupabaseClient:
-    """Client simplifié pour Supabase REST API"""
+    """Simplified client for Supabase REST API"""
     
     def __init__(self, url: str, key: str):
         self.url = url.rstrip('/')
@@ -108,7 +91,7 @@ class SupabaseClient:
         }
     
     def test_connection(self) -> bool:
-        """Teste la connexion à Supabase"""
+        """Tests the connection to Supabase"""
         try:
             response = requests.get(f"{self.url}/rest/v1/", headers=self.headers, timeout=10)
             return response.status_code == 200
@@ -116,7 +99,7 @@ class SupabaseClient:
             return False
     
     def get(self, table: str, select: str = "*", filters: Dict = None) -> List[Dict]:
-        """Récupère des données"""
+        """Retrieves data"""
         params = {'select': select}
         if filters:
             for key, value in filters.items():
@@ -127,14 +110,14 @@ class SupabaseClient:
             if response.status_code == 200:
                 return response.json()
             else:
-                print(f"❌ Erreur GET {table}: {response.status_code}")
+                print(f"❌ Error GET {table}: {response.status_code}")
                 return []
         except Exception as e:
             print(f"❌ Exception GET {table}: {e}")
             return []
     
     def post(self, table: str, data: Dict) -> bool:
-        """Insère des données"""
+        """Inserts data"""
         try:
             response = requests.post(f"{self.url}/rest/v1/{table}", headers=self.headers, json=data, timeout=30)
             return response.status_code in [201, 204]
@@ -143,7 +126,7 @@ class SupabaseClient:
             return False
     
     def patch(self, table: str, data: Dict, filters: Dict) -> bool:
-        """Met à jour des données"""
+        """Updates data"""
         params = filters
         try:
             response = requests.patch(f"{self.url}/rest/v1/{table}", headers=self.headers, json=data, params=params, timeout=30)
@@ -153,7 +136,7 @@ class SupabaseClient:
             return False
     
     def upsert(self, table: str, data: List[Dict]) -> bool:
-        """Upsert (insert ou update)"""
+        """Upsert (insert or update)"""
         try:
             response = requests.post(f"{self.url}/rest/v1/{table}", headers={**self.headers, 'Prefer': 'resolution=merge-duplicates'}, json=data, timeout=30)
             return response.status_code in [201, 204]
@@ -166,7 +149,7 @@ class SupabaseClient:
 # ============================================
 
 class AIAnalyzer:
-    """Client IA hybride (Mistral + Gemini)"""
+    """Hybrid AI client (Mistral + Gemini)"""
     
     def __init__(self, mistral_client=None, gemini_model=None):
         self.mistral = mistral_client
@@ -176,18 +159,18 @@ class AIAnalyzer:
         self.last_reset = datetime.now()
     
     def _reset_counters(self):
-        """Reset les compteurs de rate limit"""
+        """Resets the rate limit counters"""
         if (datetime.now() - self.last_reset).seconds >= 60:
             self.mistral_calls = 0
             self.gemini_calls = 0
             self.last_reset = datetime.now()
     
     def extract_specs(self, content: str, product_name: str) -> Dict:
-        """Extrait les spécifications avec IA"""
+        """Extracts specifications using AI"""
         self._reset_counters()
         
-        # Priorité: Mistral (français, plus précis)
-        if self.mistral and self.mistral_calls < 50:  # Limites sécuritaires
+        # Priority: Mistral (more precise)
+        if self.mistral and self.mistral_calls < 50:  # Safety limits
             return self._extract_with_mistral(content, product_name)
         elif self.gemini and self.gemini_calls < 50:
             return self._extract_with_gemini(content, product_name)
@@ -195,7 +178,7 @@ class AIAnalyzer:
             return self._fallback_specs(product_name)
     
     def _extract_with_mistral(self, content: str, product_name: str) -> Dict:
-        """Extraction avec Mistral"""
+        """Extraction with Mistral"""
         try:
             prompt = f"""Expert en extraction de données hardware wallet. Produit: {product_name}
 
@@ -236,15 +219,15 @@ Réponds UNIQUEMENT avec le JSON, sans autre texte."""
             time.sleep(1.5)  # Rate limit Mistral
             
             result = json.loads(response.choices[0].message.content)
-            print(f"   ✅ Mistral: {len([k for k, v in result.items() if v is not None and v != '' and v != []])} specs trouvées")
+            print(f"   ✅ Mistral: {len([k for k, v in result.items() if v is not None and v != '' and v != []])} specs found")
             return result
             
         except Exception as e:
-            print(f"   ⚠️  Erreur Mistral: {e}")
+            print(f"   ⚠️  Mistral error: {e}")
             return self._fallback_specs(product_name)
     
     def _extract_with_gemini(self, content: str, product_name: str) -> Dict:
-        """Extraction avec Gemini (backup)"""
+        """Extraction with Gemini (backup)"""
         try:
             model = genai.GenerativeModel('gemini-1.5-flash')
             
@@ -286,15 +269,15 @@ Return ONLY the JSON, no other text."""
             time.sleep(1.2)  # Rate limit Gemini
             
             result = json.loads(json_str)
-            print(f"   ✅ Gemini: {len([k for k, v in result.items() if v is not None and v != '' and v != []])} specs trouvées")
+            print(f"   ✅ Gemini: {len([k for k, v in result.items() if v is not None and v != '' and v != []])} specs found")
             return result
             
         except Exception as e:
-            print(f"   ⚠️  Erreur Gemini: {e}")
+            print(f"   ⚠️  Gemini error: {e}")
             return self._fallback_specs(product_name)
     
     def _fallback_specs(self, product_name: str) -> Dict:
-        """Spécifications de secours"""
+        """Fallback specifications"""
         name_lower = product_name.lower()
         
         fallback = {
@@ -317,11 +300,11 @@ Return ONLY the JSON, no other text."""
             "release_year": None
         }
         
-        print(f"   ⚠️  Fallback: specs par défaut")
+        print(f"   ⚠️  Fallback: default specs")
         return fallback
     
     def evaluate_security(self, specs: Dict, product_name: str) -> Dict:
-        """Évalue la sécurité avec IA"""
+        """Evaluates security using AI"""
         try:
             if self.mistral and self.mistral_calls < 50:
                 return self._evaluate_with_mistral(specs, product_name)
@@ -333,7 +316,7 @@ Return ONLY the JSON, no other text."""
             return self._fallback_security(product_name)
     
     def _evaluate_with_mistral(self, specs: Dict, product_name: str) -> Dict:
-        """Évaluation avec Mistral"""
+        """Evaluation with Mistral"""
         prompt = f"""Expert en sécurité des hardware wallets. Évalue : {product_name}
 
 Spécifications:
@@ -362,7 +345,7 @@ Réponds UNIQUEMENT avec le JSON."""
         return json.loads(response.choices[0].message.content)
     
     def _evaluate_with_gemini(self, specs: Dict, product_name: str) -> Dict:
-        """Évaluation avec Gemini"""
+        """Evaluation with Gemini"""
         model = genai.GenerativeModel('gemini-1.5-flash')
         
         prompt = f"""Security expert evaluating hardware wallet: {product_name}
@@ -392,28 +375,28 @@ Return ONLY the JSON."""
         return json.loads(json_str)
     
     def _fallback_security(self, product_name: str) -> Dict:
-        """Évaluation de secours"""
+        """Fallback evaluation"""
         name_lower = product_name.lower()
         
         if 'trezor' in name_lower:
             return {
                 'risk_score': 25,
                 'vulnerabilities': [],
-                'recommendations': ['Garder firmware à jour', 'Utiliser passphrase'],
+                'recommendations': ['Keep firmware up to date', 'Use passphrase'],
                 'status': 'secure'
             }
         elif 'ledger' in name_lower:
             return {
                 'risk_score': 30,
                 'vulnerabilities': [],
-                'recommendations': ['Vérifier authenticité', 'Activer 2FA'],
+                'recommendations': ['Verify authenticity', 'Enable 2FA'],
                 'status': 'secure'
             }
         else:
             return {
                 'risk_score': 60,
                 'vulnerabilities': ['Unknown security model'],
-                'recommendations': ['Rechercher audits de sécurité', 'Vérifier open source'],
+                'recommendations': ['Look for security audits', 'Verify open source'],
                 'status': 'warning'
             }
 
@@ -422,14 +405,14 @@ Return ONLY the JSON."""
 # ============================================
 
 def scrape_product_page(url: str) -> Tuple[str, bool]:
-    """Scrape une page produit"""
+    """Scrapes a product page"""
     try:
         headers = {'User-Agent': ua.random}
         response = requests.get(url, headers=headers, timeout=30)
         
         if response.status_code == 200:
             content = response.text
-            # Hash pour détecter les changements
+            # Hash to detect changes
             content_hash = hashlib.sha256(content.encode()).hexdigest()
             return content, content_hash
         else:
@@ -437,7 +420,7 @@ def scrape_product_page(url: str) -> Tuple[str, bool]:
             return "", False
             
     except Exception as e:
-        print(f"   ❌ Erreur scraping: {e}")
+        print(f"   ❌ Scraping error: {e}")
         return "", False
 
 # ============================================
@@ -445,17 +428,17 @@ def scrape_product_page(url: str) -> Tuple[str, bool]:
 # ============================================
 
 class MonthlyAutomation:
-    """Classe principale d'automatisation mensuelle"""
+    """Main monthly automation class"""
     
     def __init__(self, dry_run: bool = False, force: bool = False):
         self.dry_run = dry_run
         self.force = force
         
-        # Initialiser clients
+        # Initialize clients
         self.db = SupabaseClient(SUPABASE_URL, SUPABASE_KEY)
         self.ai = AIAnalyzer(mistral_client, genai.GenerativeModel('gemini-1.5-flash') if GOOGLE_API_KEY else None)
         
-        # Statistiques
+        # Statistics
         self.stats = {
             'start_time': datetime.now(),
             'products_total': 0,
@@ -468,51 +451,51 @@ class MonthlyAutomation:
         }
     
     def run(self) -> bool:
-        """Exécute l'automatisation complète"""
-        print("🗓️  SAFESCORING - AUTOMATISATION MENSUELLE GRATUITE")
+        """Executes the full automation"""
+        print("🗓️  SAFESCORING - FREE MONTHLY AUTOMATION")
         print("=" * 60)
         print(f"⚙️  Mode: {'DRY RUN' if self.dry_run else 'PRODUCTION'}")
-        print(f"🔧 Force update: {'OUI' if self.force else 'NON'}")
+        print(f"🔧 Force update: {'YES' if self.force else 'NO'}")
         print()
         
-        # Tester connexion
+        # Test connection
         if not self.db.test_connection():
-            print("❌ Erreur connexion Supabase")
+            print("❌ Supabase connection error")
             return False
         
-        print("✅ Connexion Supabase OK")
+        print("✅ Supabase connection OK")
         
-        # Vérifier si déjà exécuté ce mois-ci
+        # Check if already executed this month
         if not self.force and not self._should_run():
-            print("⏭️  Déjà exécuté ce mois-ci. Utilisez --force pour forcer.")
+            print("⏭️  Already executed this month. Use --force to force.")
             return True
         
-        # Récupérer les produits
+        # Retrieve the products
         products = self.db.get('products', select="id,name,slug,url,last_monthly_update,specs")
         if not products:
-            print("❌ Aucun produit trouvé ou erreur de récupération")
+            print("❌ No products found or retrieval error")
             return False
         
         self.stats['products_total'] = len(products)
-        print(f"📊 {len(products)} produits à traiter")
+        print(f"📊 {len(products)} products to process")
         print()
         
-        # Traiter chaque produit
+        # Process each product
         for i, product in enumerate(products, 1):
             self._process_product(product, i)
             
-            # Pause toutes les 10 requêtes
+            # Pause every 10 requests
             if i % 10 == 0:
                 print(f"\\n⏸️  Pause 30s (rate limit)...")
                 time.sleep(30)
         
-        # Finaliser
+        # Finalize
         self._finalize()
         return True
     
     def _should_run(self) -> bool:
-        """Vérifie si l'automatisation doit tourner"""
-        # Vérifier le dernier log
+        """Checks if the automation should run"""
+        # Check the last log
         logs = self.db.get('automation_logs', filters={
             'run_type': 'eq.monthly',
             'run_date': 'gte.' + (datetime.now() - timedelta(days=25)).isoformat()
@@ -521,19 +504,19 @@ class MonthlyAutomation:
         return len(logs) == 0
     
     def _process_product(self, product: Dict, index: int):
-        """Traite un produit individuel"""
+        """Processes an individual product"""
         print(f"📦 [{index}/{self.stats['products_total']}] {product['name']}")
         
-        # Vérifier si déjà à jour
+        # Check if already up to date
         if not self.force and product.get('last_monthly_update'):
             last_update = datetime.fromisoformat(product['last_monthly_update'].replace('Z', '+00:00'))
             if (datetime.now() - last_update).days < 25:
-                print(f"   ⏭️  Déjà à jour ({last_update.strftime('%d/%m/%Y')})")
+                print(f"   ⏭️  Already up to date ({last_update.strftime('%d/%m/%Y')})")
                 self.stats['products_skipped'] += 1
                 return
         
         try:
-            # 1. Scraper la page
+            # 1. Scrape the page
             if product.get('url'):
                 print(f"   🌐 Scraping: {product['url']}")
                 content, content_hash = scrape_product_page(product['url'])
@@ -542,23 +525,23 @@ class MonthlyAutomation:
                     self.stats['scrapes_success'] += 1
                 else:
                     self.stats['scrapes_failed'] += 1
-                    print(f"   ⚠️  Erreur scraping, utilisation données existantes")
+                    print(f"   ⚠️  Scraping error, using existing data")
             else:
                 content = ""
                 content_hash = ""
-                print(f"   ⚠️  Pas d'URL, skipping scrape")
+                print(f"   ⚠️  No URL, skipping scrape")
             
-            # 2. Extraire les spécifications
-            print(f"   🔍 Extraction specs...")
+            # 2. Extract specifications
+            print(f"   🔍 Extracting specs...")
             specs = self.ai.extract_specs(content, product['name'])
             self.stats['ai_calls'] += 1
             
-            # 3. Évaluer la sécurité
-            print(f"   🛡️  Évaluation sécurité...")
+            # 3. Evaluate security
+            print(f"   🛡️  Security evaluation...")
             security = self.ai.evaluate_security(specs, product['name'])
             self.stats['ai_calls'] += 1
             
-            # 4. Préparer les données de mise à jour
+            # 4. Prepare update data
             update_data = {
                 'specs': specs,
                 'risk_score': security['risk_score'],
@@ -567,51 +550,51 @@ class MonthlyAutomation:
                 'last_monthly_update': datetime.now().isoformat()
             }
             
-            # 5. Mettre à jour en base
+            # 5. Update in database
             if not self.dry_run:
                 success = self.db.patch('products', update_data, {'id': f'eq.{product["id"]}'})
                 if success:
-                    print(f"   ✅ Mis à jour: {security['risk_score']}/100 ({security['status']})")
+                    print(f"   ✅ Updated: {security['risk_score']}/100 ({security['status']})")
                     self.stats['products_updated'] += 1
                 else:
-                    error = f"Erreur mise à jour produit {product['id']}"
+                    error = f"Error updating product {product['id']}"
                     print(f"   ❌ {error}")
                     self.stats['errors'].append(error)
             else:
-                print(f"   🔍 DRY RUN: serait mis à jour ({security['risk_score']}/100)")
+                print(f"   🔍 DRY RUN: would be updated ({security['risk_score']}/100)")
             
         except Exception as e:
-            error = f"Erreur produit {product['name']}: {str(e)}"
+            error = f"Error product {product['name']}: {str(e)}"
             print(f"   ❌ {error}")
             self.stats['errors'].append(error)
         
-        print()  # Ligne vide entre produits
+        print()  # Empty line between products
     
     def _finalize(self):
-        """Finalise l'exécution et sauvegarde les logs"""
+        """Finalizes execution and saves logs"""
         end_time = datetime.now()
         duration = int((end_time - self.stats['start_time']).total_seconds())
         
-        # Afficher le résumé
-        print("🎉 AUTOMATISATION TERMINÉE")
+        # Display summary
+        print("🎉 AUTOMATION COMPLETED")
         print("=" * 40)
-        print(f"⏱️  Durée totale: {duration} secondes")
-        print(f"📦 Produits totaux: {self.stats['products_total']}")
-        print(f"✅ Produits mis à jour: {self.stats['products_updated']}")
-        print(f"⏭️  Produits ignorés: {self.stats['products_skipped']}")
-        print(f"🌐 Scrapes réussis: {self.stats['scrapes_success']}")
-        print(f"❌ Scrapes échoués: {self.stats['scrapes_failed']}")
-        print(f"🤖 Appels IA: {self.stats['ai_calls']}")
-        print(f"🚨 Erreurs: {len(self.stats['errors'])}")
+        print(f"⏱️  Total duration: {duration} seconds")
+        print(f"📦 Total products: {self.stats['products_total']}")
+        print(f"✅ Products updated: {self.stats['products_updated']}")
+        print(f"⏭️  Products skipped: {self.stats['products_skipped']}")
+        print(f"🌐 Successful scrapes: {self.stats['scrapes_success']}")
+        print(f"❌ Failed scrapes: {self.stats['scrapes_failed']}")
+        print(f"🤖 AI calls: {self.stats['ai_calls']}")
+        print(f"🚨 Errors: {len(self.stats['errors'])}")
         
         if self.stats['errors']:
-            print("\\n🚨 Détail des erreurs:")
+            print("\\n🚨 Error details:")
             for error in self.stats['errors'][:5]:
                 print(f"   - {error}")
             if len(self.stats['errors']) > 5:
-                print(f"   ... et {len(self.stats['errors']) - 5} autres")
+                print(f"   ... et {len(self.stats['errors']) - 5} more")
         
-        # Sauvegarder en base
+        # Save to database
         if not self.dry_run:
             log_data = {
                 'run_date': self.stats['start_time'].isoformat(),
@@ -624,25 +607,25 @@ class MonthlyAutomation:
             }
             
             if self.db.post('automation_logs', log_data):
-                print("\\n📋 Log d'automatisation sauvegardé dans Supabase")
+                print("\\n📋 Automation log saved in Supabase")
             else:
-                print("\\n⚠️  Erreur sauvegarde log")
+                print("\\n⚠️  Error saving log")
         
-        print("\\n✨ Prochaine exécution: dans 1 mois (ou --force)")
+        print("\\n✨ Next execution: in 1 month (or --force)")
 
 # ============================================
-# POINT D'ENTRÉE
+# ENTRY POINT
 # ============================================
 
 def main():
-    """Point d'entrée principal"""
-    parser = argparse.ArgumentParser(description='Automatisation mensuelle SafeScoring')
-    parser.add_argument('--dry-run', action='store_true', help='Simulation sans modifier la base')
-    parser.add_argument('--force', action='store_true', help='Force la mise à jour même si déjà faite')
+    """Main entry point"""
+    parser = argparse.ArgumentParser(description='SafeScoring monthly automation')
+    parser.add_argument('--dry-run', action='store_true', help='Simulation without modifying the database')
+    parser.add_argument('--force', action='store_true', help='Force the update even if already done')
     
     args = parser.parse_args()
     
-    # Lancer l'automatisation
+    # Launch the automation
     automation = MonthlyAutomation(dry_run=args.dry_run, force=args.force)
     success = automation.run()
     

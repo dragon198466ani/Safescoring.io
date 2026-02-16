@@ -149,12 +149,30 @@ export function withProtection(handler, options = {}) {
       );
     }
 
-    // Check authentication if required
+    // Check API key first (for programmatic access)
+    let apiKeyAuth = null;
+    // API key ONLY via header — never via URL param (prevents leaks in logs/referrer)
+    const apiKeyHeader = request.headers.get("x-api-key") || request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
+    if (apiKeyHeader) {
+      try {
+        const { validateApiKey } = await import("@/libs/api-key-auth");
+        apiKeyAuth = await validateApiKey(request);
+      } catch {
+        // API key validation module not available, continue
+      }
+    }
+
+    // Check session authentication
     let session = null;
-    try {
-      session = await auth();
-    } catch (e) {
-      // Session check failed, continue as unauthenticated
+    if (apiKeyAuth?.valid) {
+      // Create synthetic session from API key
+      session = { user: { id: apiKeyAuth.userId, apiKeyAuth: true } };
+    } else {
+      try {
+        session = await auth();
+      } catch (e) {
+        // Session check failed, continue as unauthenticated
+      }
     }
 
     if (requireAuth && !session) {

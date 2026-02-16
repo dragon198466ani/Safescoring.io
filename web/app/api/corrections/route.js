@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { quickProtect } from "@/libs/api-protection";
+import { safeString, isValidUrl } from "@/libs/security";
 import { userCorrectionSchema, validateBody } from "@/libs/validations";
 
 /**
@@ -13,6 +15,10 @@ import { userCorrectionSchema, validateBody } from "@/libs/validations";
  * - Builds user reputation system
  */
 export async function POST(request) {
+  // Rate limiting
+  const protection = await quickProtect(request, "sensitive");
+  if (protection.blocked) return protection.response;
+
   try {
     // Check authentication
     const session = await auth();
@@ -91,17 +97,22 @@ export async function POST(request) {
       .eq("user_id", session.user.id)
       .single();
 
+    // Sanitize and validate evidence URLs (only https allowed)
+    const safeEvidenceUrls = Array.isArray(evidenceUrls)
+      ? evidenceUrls.filter((url) => typeof url === "string" && isValidUrl(url)).slice(0, 5)
+      : [];
+
     // Create correction
     const correctionData = {
       product_id: resolvedProductId,
       norm_id: normId || null,
       user_id: session.user.id,
       field_corrected: fieldCorrected,
-      original_value: originalValue || null,
-      suggested_value: suggestedValue,
-      correction_reason: correctionReason || null,
-      evidence_urls: evidenceUrls || [],
-      evidence_description: evidenceDescription || null,
+      original_value: safeString(originalValue, { maxLength: 2000 }) || null,
+      suggested_value: safeString(suggestedValue, { maxLength: 5000 }),
+      correction_reason: safeString(correctionReason, { maxLength: 2000 }) || null,
+      evidence_urls: safeEvidenceUrls,
+      evidence_description: safeString(evidenceDescription, { maxLength: 2000 }) || null,
       status: "pending",
       user_reputation_score: reputation?.reputation_score || 50.0,
     };
@@ -211,16 +222,18 @@ async function checkAndApplyConsensus({ productId, normId, fieldCorrected, sugge
       return { applied: false, count: 0 };
     }
 
-    if (similarCorrections.length < CONSENSUS_THRESHOLD) {
-      return { applied: false, count: similarCorrections.length };
+    // Anti-Sybil: Count only DISTINCT users (not multiple corrections from same user)
+    const distinctUserIds = [...new Set(similarCorrections.map(c => c.user_id).filter(Boolean))];
+    if (distinctUserIds.length < CONSENSUS_THRESHOLD) {
+      return { applied: false, count: distinctUserIds.length };
     }
 
     // CONSENSUS REACHED - Auto-approve all similar corrections
     const correctionIds = similarCorrections.map(c => c.id);
     const userIds = [...new Set(similarCorrections.map(c => c.user_id).filter(Boolean))];
 
-    // 1. Update status of all corrections to approved
-    const { error: updateError } = await supabase
+    // 1. Update only corrections that are still pending (optimistic concurrency control)
+    const { data: updated, error: updateError } = await supabase
       .from("user_corrections")
       .update({
         status: "approved",
@@ -229,10 +242,17 @@ async function checkAndApplyConsensus({ productId, normId, fieldCorrected, sugge
         review_notes: `Auto-approved by consensus (${similarCorrections.length} votes)`,
         was_applied: true
       })
-      .in("id", correctionIds);
+      .in("id", correctionIds)
+      .eq("status", "pending")
+      .select("id");
 
     if (updateError) {
       console.error("Error updating corrections:", updateError);
+      return { applied: false, count: similarCorrections.length };
+    }
+
+    // If no rows were updated, another request already processed consensus
+    if (!updated || updated.length === 0) {
       return { applied: false, count: similarCorrections.length };
     }
 
@@ -276,13 +296,24 @@ async function applyUserCorrection(correction) {
         break;
 
       case "product_info":
-        // Update product information
+        // Update product information (only whitelisted fields)
         try {
-          const updates = JSON.parse(correction.suggested_value);
-          await supabase
-            .from("products")
-            .update(updates)
-            .eq("id", correction.product_id);
+          const ALLOWED_PRODUCT_FIELDS = [
+            "name", "description", "url", "specs",
+          ];
+          const rawUpdates = JSON.parse(correction.suggested_value);
+          const updates = {};
+          for (const key of Object.keys(rawUpdates)) {
+            if (ALLOWED_PRODUCT_FIELDS.includes(key)) {
+              updates[key] = rawUpdates[key];
+            }
+          }
+          if (Object.keys(updates).length > 0) {
+            await supabase
+              .from("products")
+              .update(updates)
+              .eq("id", correction.product_id);
+          }
         } catch {
           console.log("Product info correction requires JSON format");
         }

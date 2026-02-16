@@ -3,6 +3,9 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import ProductLogo from "@/components/ProductLogo";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 /**
  * Stack Audit - Analyze compatibility between products in your stack
@@ -21,9 +24,9 @@ const getCompatibilityColor = (status) => {
 
 const getCompatibilityLabel = (status) => {
   switch (status) {
-    case "excellent": return "Excellent";
-    case "good": return "Good";
-    case "limited": return "Limited";
+    case "excellent": return "Strong";
+    case "good": return "Moderate";
+    case "limited": return "Developing";
     case "incompatible": return "Incompatible";
     default: return "Not analyzed";
   }
@@ -261,8 +264,16 @@ export default function StackAuditPage() {
   }, [compatibility]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Header */}
+    <>
+    <Header />
+    <main className="min-h-screen pt-24 pb-16 px-6 hero-bg">
+    <div className="max-w-7xl mx-auto">
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "Stack Audit" },
+      ]} />
+
+      {/* Page Title */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Stack Audit</h1>
         <p className="text-base-content/60">
@@ -440,5 +451,8 @@ export default function StackAuditPage() {
         </Link>
       </div>
     </div>
+    </main>
+    <Footer />
+    </>
   );
 }

@@ -1,16 +1,20 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { quickProtect } from "@/libs/api-protection";
 
 /**
  * Predictions API
  *
- * GET - Get verified predictions and accuracy stats
+ * GET - Get predictions and accuracy stats
  *
- * This data proves SafeScoring's predictive accuracy over time.
+ * This data helps validate SafeScoring's methodology over time.
  * All predictions are cryptographically committed to blockchain BEFORE events.
  */
 
 export async function GET(request) {
+  // Rate limit: public endpoint with expensive DB queries
+  const protection = await quickProtect(request, "public");
+  if (protection.blocked) return protection.response;
   if (!isSupabaseConfigured()) {
     return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
   }

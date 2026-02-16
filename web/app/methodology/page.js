@@ -1,12 +1,16 @@
 import Link from "next/link";
 import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { getNormStats } from "@/libs/norm-stats";
 
 const { hackLosses2024, accessControlLossPct, auditedHackedApprox, auditedHackedYear } = config.safe.stats;
 
 export const metadata = getSEOTags({
   title: `SAFE Methodology | ${config.appName}`,
-  description: `The SAFE Framework: ${config.safe.stats.totalNorms} security norms across 4 pillars - Security, Adversity, Fidelity, and Efficiency. Learn how we evaluate crypto product security.`,
+  description: `The SAFE Framework: comprehensive security norms across 4 pillars - Security, Adversity, Fidelity, and Efficiency. Learn how we evaluate crypto product security.`,
   canonicalUrlRelative: "/methodology",
 });
 
@@ -148,28 +152,18 @@ const pillarEducationalContent = {
   },
 };
 
-const Methodology = () => {
+const Methodology = async () => {
+  const normStats = await getNormStats();
+
   return (
-    <main className="min-h-screen bg-base-100">
-      {/* Header */}
-      <div className="bg-base-200/50 border-b border-base-300">
-        <div className="max-w-6xl mx-auto px-6 py-6">
-          <Link href="/" className="btn btn-ghost btn-sm gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="w-5 h-5"
-            >
-              <path
-                fillRule="evenodd"
-                d="M15 10a.75.75 0 01-.75.75H7.612l2.158 1.96a.75.75 0 11-1.04 1.08l-3.5-3.25a.75.75 0 010-1.08l3.5-3.25a.75.75 0 111.04 1.08L7.612 9.25h6.638A.75.75 0 0115 10z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Back
-          </Link>
-        </div>
+    <>
+    <Header />
+    <main className="min-h-screen pt-24 pb-16 px-6 hero-bg">
+      <div className="max-w-7xl mx-auto">
+        <Breadcrumbs items={[
+          { label: "Home", href: "/" },
+          { label: "Methodology" },
+        ]} />
       </div>
 
       {/* Hero Section */}
@@ -181,13 +175,16 @@ const Methodology = () => {
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
             The <span className="text-gradient-safe">SAFE</span> Framework
           </h1>
-          <p className="text-lg text-base-content/60 max-w-2xl mx-auto mb-8">
-            A comprehensive evaluation system with {config.safe.stats.totalNorms} security norms across four pillars.
-            Every crypto product is rigorously assessed against these standards.
+          <p className="text-lg text-base-content/60 max-w-2xl mx-auto mb-4">
+            An evaluation system with {normStats?.totalNorms || "\u2014"} security norms across four pillars.
+            Crypto products are assessed against these standards using our standardized methodology.
+          </p>
+          <p className="text-xs text-base-content/40 max-w-2xl mx-auto mb-8">
+            Opinion-Based Evaluation — Scores represent SafeScoring&apos;s opinion based on publicly available information. They do not guarantee security, predict future incidents, or constitute financial advice. Experts using different criteria may reach different conclusions.
           </p>
           <div className="flex justify-center gap-8 text-center">
             <div>
-              <div className="text-3xl font-bold text-primary">{config.safe.stats.totalNorms}</div>
+              <div className="text-3xl font-bold text-primary">{normStats?.totalNorms || "\u2014"}</div>
               <div className="text-sm text-base-content/60">Security Norms</div>
             </div>
             <div>
@@ -195,7 +192,7 @@ const Methodology = () => {
               <div className="text-sm text-base-content/60">Core Pillars</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-primary">{config.safe.stats.totalProducts}+</div>
+              <div className="text-3xl font-bold text-primary">{normStats?.totalProducts || "\u2014"}+</div>
               <div className="text-sm text-base-content/60">Products Evaluated</div>
             </div>
           </div>
@@ -204,7 +201,7 @@ const Methodology = () => {
 
       {/* Pillars Section */}
       <section className="py-12 px-6">
-        <div className="max-w-6xl mx-auto space-y-16">
+        <div className="max-w-7xl mx-auto space-y-16">
           {config.safe.pillars.map((pillar, index) => {
             const content = pillarEducationalContent[pillar.code];
             return (
@@ -349,7 +346,7 @@ const Methodology = () => {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">Ready to explore product scores?</h2>
           <p className="text-base-content/60 mb-8">
-            See how your favorite crypto products stack up against our {config.safe.stats.totalNorms} security norms.
+            See how your favorite crypto products stack up against our {normStats?.totalNorms || "\u2014"} security norms.
           </p>
           <Link href="/products" className="btn btn-primary btn-lg">
             View All Products
@@ -357,6 +354,8 @@ const Methodology = () => {
         </div>
       </section>
     </main>
+    <Footer />
+    </>
   );
 };
 
