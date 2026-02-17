@@ -75,6 +75,10 @@ def main():
                         help='Skip score calculation after evaluation')
     parser.add_argument('--no-narrative', action='store_true',
                         help='Skip narrative generation after scoring')
+    parser.add_argument('--no-setup-narrative', action='store_true',
+                        help='Skip setup (combination) narrative generation')
+    parser.add_argument('--setup-only', action='store_true',
+                        help='Only generate setup narratives (skip product eval/score/narrative)')
     args = parser.parse_args()
 
     print("""
@@ -107,40 +111,56 @@ def main():
         print(f"  Limit: {args.limit}")
     print()
 
-    # Import after setting env vars
-    from src.core.smart_evaluator import SmartEvaluator
+    # --setup-only mode: skip product evaluation/scoring/narrative
+    if not args.setup_only:
+        # Import after setting env vars
+        from src.core.smart_evaluator import SmartEvaluator
 
-    evaluator = SmartEvaluator()
-    evaluator.run(
-        product_name=args.product,
-        type_id=args.type,
-        limit=args.limit,
-        skip_evaluated=args.resume,
-    )
+        evaluator = SmartEvaluator()
+        evaluator.run(
+            product_name=args.product,
+            type_id=args.type,
+            limit=args.limit,
+            skip_evaluated=args.resume,
+        )
 
-    # After evaluation, calculate scores automatically
-    if not args.no_score:
-        print("\n" + "=" * 60)
-        print("[SCORE] Calculating SAFE scores...")
-        print("=" * 60)
-        from src.core.score_calculator import ScoreCalculator
-        calculator = ScoreCalculator()
-        calculator.run()
-        print("\n[SCORE] Done - scores visible on website")
+        # After evaluation, calculate scores automatically
+        if not args.no_score:
+            print("\n" + "=" * 60)
+            print("[SCORE] Calculating SAFE scores...")
+            print("=" * 60)
+            from src.core.score_calculator import ScoreCalculator
+            calculator = ScoreCalculator()
+            calculator.run()
+            print("\n[SCORE] Done - scores visible on website")
+        else:
+            print("\n[SCORE] Skipped (--no-score flag)")
+
+        # After scoring, generate strategic narratives (per-product)
+        if not args.no_score and not args.no_narrative:
+            print("\n" + "=" * 60)
+            print("[NARRATIVE] Generating strategic analysis narratives...")
+            print("=" * 60)
+            from src.core.narrative_generator import NarrativeGenerator
+            generator = NarrativeGenerator()
+            generator.run(product_name=args.product, limit=args.limit)
+            print("\n[NARRATIVE] Done - narratives visible on website")
+        elif args.no_narrative:
+            print("\n[NARRATIVE] Skipped (--no-narrative flag)")
     else:
-        print("\n[SCORE] Skipped (--no-score flag)")
+        print("\n[SETUP-ONLY] Skipping product eval/score/narrative (--setup-only flag)")
 
-    # After scoring, generate strategic narratives
-    if not args.no_score and not args.no_narrative:
+    # After product narratives, generate setup (combination) narratives
+    if not args.no_setup_narrative:
         print("\n" + "=" * 60)
-        print("[NARRATIVE] Generating strategic analysis narratives...")
+        print("[SETUP-NARRATIVE] Generating setup combination narratives...")
         print("=" * 60)
-        from src.core.narrative_generator import NarrativeGenerator
-        generator = NarrativeGenerator()
-        generator.run(product_name=args.product, limit=args.limit)
-        print("\n[NARRATIVE] Done - narratives visible on website")
-    elif args.no_narrative:
-        print("\n[NARRATIVE] Skipped (--no-narrative flag)")
+        from src.core.setup_narrative_generator import SetupNarrativeGenerator
+        setup_generator = SetupNarrativeGenerator()
+        setup_generator.run(limit=args.limit)
+        print("\n[SETUP-NARRATIVE] Done - setup narratives visible on website")
+    else:
+        print("\n[SETUP-NARRATIVE] Skipped (--no-setup-narrative flag)")
 
 
 if __name__ == '__main__':

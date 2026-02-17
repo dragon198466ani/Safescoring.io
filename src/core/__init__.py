@@ -34,6 +34,7 @@ from .scraper import (
 from .smart_evaluator import SmartEvaluator
 from .score_calculator import ScoreCalculator
 from .narrative_generator import NarrativeGenerator
+from .setup_narrative_generator import SetupNarrativeGenerator
 
 __all__ = [
     # Config
@@ -53,4 +54,5 @@ __all__ = [
     'SmartEvaluator',
     'ScoreCalculator',
     'NarrativeGenerator',
+    'SetupNarrativeGenerator',
 ]
