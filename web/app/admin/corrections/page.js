@@ -259,15 +259,10 @@ export default function AdminCorrectionsPage() {
                       </div>
                     )}
 
-                    {/* User info */}
+                    {/* Submission info (anonymized) */}
                     <div className="mt-4 pt-4 border-t border-base-300 flex items-center justify-between">
                       <div className="text-sm text-base-content/50">
-                        Submitted by: {correction.users?.email || "Unknown"}
-                        {correction.user_reputation_score && (
-                          <span className="ml-2 badge badge-sm">
-                            Rep: {correction.user_reputation_score}
-                          </span>
-                        )}
+                        Submitted: {new Date(correction.created_at).toLocaleDateString()}
                       </div>
 
                       {/* Actions */}

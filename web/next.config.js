@@ -55,9 +55,12 @@ const securityHeaders = [
   },
 ];
 
+const isVercel = !!process.env.VERCEL;
+
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
+  // standalone is for self-hosted Docker; Vercel uses its own output mode
+  ...(isVercel ? {} : { output: 'standalone' }),
 
   // Enable gzip/brotli compression
   compress: true,
@@ -67,11 +70,6 @@ const nextConfig = {
 
   // Power optimizations
   poweredByHeader: false,
-
-  // Don't fail build on ESLint warnings (only errors)
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
 
   // Experimental optimizations (disabled - requires additional packages)
   // experimental: {
@@ -161,7 +159,12 @@ const nextConfig = {
     ],
   },
   webpack: (config, { webpack, isServer }) => {
-    // Ignore MongoDB's optional dependencies to prevent build warnings
+    // Ignore optional/peer dependencies that cause build failures
+    config.plugins.push(
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^(@react-native-async-storage\/async-storage|pino-pretty)$/,
+      })
+    );
     if (isServer) {
       config.plugins.push(
         new webpack.IgnorePlugin({

@@ -30,14 +30,13 @@ export async function GET(request) {
       );
     }
 
-    // Get corrections with user and product info
+    // Get corrections with product info (no personal user data)
     let query = supabase
       .from("user_corrections")
       .select(`
         *,
         products(id, name, slug),
-        norms(id, code, title, pillar),
-        users(id, email, name)
+        norms(id, code, title, pillar)
       `)
       .order("created_at", { ascending: false })
       .range(offset, offset + limit - 1);

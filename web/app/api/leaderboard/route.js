@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 
-// Cache leaderboard for 5 minutes (changes infrequently)
 export const revalidate = 300;
 
 /**
  * GET /api/leaderboard
- * Get top contributors leaderboard for future token airdrop
+ * Get top products leaderboard (product-only, no personal data)
  */
 export async function GET(request) {
   try {
@@ -18,34 +17,27 @@ export async function GET(request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get("limit") || "10");
-    const _period = searchParams.get("period") || "all"; // all, month, week
+    const limit = Math.min(parseInt(searchParams.get("limit") || "10"), 50);
 
-    // Get leaderboard from user_reputation table
-    let query = supabase
-      .from("user_reputation")
+    // Only return product scores — no user/person data
+    const { data: products, error } = await supabase
+      .from("safe_scoring_results")
       .select(`
-        user_id,
-        corrections_submitted,
-        corrections_approved,
-        corrections_rejected,
-        reputation_score,
-        reputation_level,
-        points_earned,
-        badges,
-        created_at,
-        users!inner (
+        product_id,
+        note_finale,
+        score_s,
+        score_a,
+        score_f,
+        score_e,
+        products!inner (
           id,
           name,
-          image,
-          created_at
+          slug
         )
       `)
-      .order("points_earned", { ascending: false })
-      .order("reputation_score", { ascending: false })
+      .not("note_finale", "is", null)
+      .order("note_finale", { ascending: false })
       .limit(limit);
-
-    const { data: leaderboard, error } = await query;
 
     if (error) {
       console.error("Error fetching leaderboard:", error);
@@ -55,87 +47,31 @@ export async function GET(request) {
       );
     }
 
-    // Calculate additional metrics and format response
-    const formattedLeaderboard = (leaderboard || []).map((entry, index) => {
-      const user = entry.users;
-      const daysSinceJoined = Math.floor(
-        (new Date() - new Date(user.created_at)) / (1000 * 60 * 60 * 24)
-      );
+    const formattedProducts = (products || []).map((item, index) => ({
+      rank: index + 1,
+      name: item.products.name,
+      slug: item.products.slug,
+      score: Math.round(item.note_finale || 0),
+      scores: {
+        s: Math.round(item.score_s || 0),
+        a: Math.round(item.score_a || 0),
+        f: Math.round(item.score_f || 0),
+        e: Math.round(item.score_e || 0),
+      },
+    }));
 
-      // Calculate estimated airdrop multiplier based on:
-      // - Points earned
-      // - Reputation level
-      // - Seniority (days since joined)
-      const levelMultiplier = {
-        newcomer: 1.0,
-        contributor: 1.2,
-        trusted: 1.5,
-        expert: 2.0,
-        oracle: 3.0,
-      }[entry.reputation_level] || 1.0;
-
-      const seniorityMultiplier = Math.min(2.0, 1 + (daysSinceJoined / 365));
-
-      const estimatedPoints = Math.round(
-        (entry.points_earned || entry.corrections_approved * 50) *
-        levelMultiplier *
-        seniorityMultiplier
-      );
-
-      return {
-        rank: index + 1,
-        userId: entry.user_id,
-        name: user.name || "Anonymous",
-        avatar: user.image,
-        stats: {
-          correctionsSubmitted: entry.corrections_submitted || 0,
-          correctionsApproved: entry.corrections_approved || 0,
-          approvalRate: entry.corrections_submitted > 0
-            ? Math.round((entry.corrections_approved / entry.corrections_submitted) * 100)
-            : 0,
-        },
-        reputation: {
-          score: Math.round(entry.reputation_score || 50),
-          level: entry.reputation_level || "newcomer",
-        },
-        seniority: {
-          joinedAt: user.created_at,
-          daysActive: daysSinceJoined,
-          multiplier: seniorityMultiplier.toFixed(2),
-        },
-        airdrop: {
-          basePoints: entry.points_earned || entry.corrections_approved * 50,
-          estimatedPoints: estimatedPoints,
-          levelMultiplier: levelMultiplier,
-        },
-        badges: entry.badges || [],
-      };
-    });
-
-    // Get global stats
-    const { data: globalStats } = await supabase
-      .from("user_reputation")
-      .select("points_earned, corrections_approved")
-      .not("points_earned", "is", null);
-
-    const totalPoints = (globalStats || []).reduce(
-      (sum, r) => sum + (r.points_earned || r.corrections_approved * 50),
-      0
-    );
-    const totalContributors = globalStats?.length || 0;
+    // Aggregated anonymous stats only
+    const { count: totalCorrections } = await supabase
+      .from("user_corrections")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "approved");
 
     return NextResponse.json(
       {
-        leaderboard: formattedLeaderboard,
-        global: {
-          totalContributors,
-          totalPointsDistributed: totalPoints,
-          averagePoints: totalContributors > 0 ? Math.round(totalPoints / totalContributors) : 0,
-        },
-        airdropInfo: {
-          message: "Early contributors will be rewarded. Points accumulated now will count towards the future $SAFE token airdrop.",
-          formula: "Airdrop = Base Points × Level Multiplier × Seniority Multiplier",
-          snapshotDate: "TBA",
+        leaderboard: formattedProducts,
+        stats: {
+          totalProducts: formattedProducts.length,
+          totalApprovedCorrections: totalCorrections || 0,
         },
       },
       {
@@ -144,7 +80,6 @@ export async function GET(request) {
         },
       }
     );
-
   } catch (error) {
     console.error("Leaderboard error:", error);
     return NextResponse.json(

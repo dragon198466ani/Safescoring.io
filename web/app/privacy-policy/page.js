@@ -34,14 +34,16 @@ const PrivacyPolicy = () => {
           className="leading-relaxed whitespace-pre-wrap"
           style={{ fontFamily: "sans-serif" }}
         >
-          {`Last Updated: December 2024
+          {`Last Updated: February 2026
 
 SafeScoring ("we," "us," or "our") is committed to protecting your privacy in accordance with the General Data Protection Regulation (GDPR) and applicable data protection laws.
+
+IMPORTANT: SafeScoring evaluates products and services only. We do NOT score, rate, profile, or create reputation systems for individual persons.
 
 1. Data Controller
 
 SafeScoring acts as the data controller for personal data collected through https://safescoring.io.
-Contact: support@safescoring.io
+Contact: safescoring@proton.me
 
 2. Legal Basis for Processing (GDPR Article 6)
 
@@ -58,25 +60,32 @@ We process your data based on:
 - OAuth profile data (if using Google sign-in)
 
 3.2 Payment Data:
-- Processed securely by Stripe
+- Processed securely by Lemon Squeezy (Merchant of Record)
 - We do NOT store credit card numbers
-- We store: Stripe customer ID, subscription status
+- We store: customer ID, subscription status
 
 3.3 Usage Data:
 - Products viewed (for usage limits)
 - Preferences and interests (onboarding)
 
+3.4 Correction Submissions:
+- If you submit a correction, we store the correction content and associate it with your account for moderation purposes only
+
 4. Data We Do NOT Collect
 
+- We do NOT create individual reputation scores or profiles
+- We do NOT score, rank, or evaluate individual persons
 - We do NOT collect cryptocurrency wallet addresses
 - We do NOT collect financial holdings information
 - We do NOT track your cryptocurrency transactions
 - We do NOT sell your data to third parties
+- We do NOT use personal data for automated decision-making (GDPR Art. 22)
 
 5. Data Retention
 
 - Account data: Until account deletion
 - Usage data: 12 months rolling
+- Correction submissions: Until reviewed, then anonymized
 - Payment records: As required by law (typically 7 years)
 
 6. Your Rights Under GDPR
@@ -91,7 +100,7 @@ You have the right to:
 6.6 Objection: Object to processing based on legitimate interests
 6.7 Withdraw consent: At any time for consent-based processing
 
-To exercise these rights, contact: support@safescoring.io
+To exercise these rights, contact: safescoring@proton.me
 
 7. Data Security
 
@@ -110,8 +119,8 @@ Data is processed within the EU/EEA. If transferred outside, we ensure adequate 
 
 We use the following processors:
 - Supabase (Database): EU servers, GDPR compliant
-- Stripe (Payments): PCI DSS compliant
-- Google (OAuth): Privacy Shield certified
+- Lemon Squeezy (Payments): Merchant of Record
+- Google (OAuth): Data Processing Agreement in place
 - Resend (Email): GDPR compliant
 
 10. Cookies
@@ -119,6 +128,7 @@ We use the following processors:
 10.1 Essential cookies: Required for authentication (session management)
 10.2 We do NOT use advertising or tracking cookies
 10.3 We do NOT use third-party analytics that track individual users
+10.4 For details, see our Cookie Policy at /cookies
 
 11. Children's Privacy
 
@@ -139,7 +149,7 @@ You have the right to lodge a complaint with a supervisory authority (CNIL in Fr
 15. Contact
 
 Data Protection Inquiries:
-Email: support@safescoring.io
+Email: safescoring@proton.me
 
 By using SafeScoring, you acknowledge that you have read and understood this Privacy Policy.`}
         </pre>

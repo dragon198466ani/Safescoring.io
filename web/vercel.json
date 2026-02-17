@@ -2,15 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "public": true,
+  "installCommand": "npm ci --legacy-peer-deps",
   "crons": [
-    {
-      "path": "/api/cron/retention",
-      "schedule": "0 8 * * *"
-    },
-    {
-      "path": "/api/cron/crypto-retention",
-      "schedule": "0 9 * * *"
-    },
     {
       "path": "/api/cron/compat-refresh",
       "schedule": "*/30 * * * *"

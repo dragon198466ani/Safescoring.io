@@ -84,14 +84,7 @@ export async function POST(request) {
       );
     }
 
-    // Get user's current reputation
-    const { data: reputation } = await supabase
-      .from("user_reputation")
-      .select("reputation_score")
-      .eq("user_id", session.user.id)
-      .single();
-
-    // Create correction
+    // Create correction (no personal reputation/scoring data stored)
     const correctionData = {
       product_id: resolvedProductId,
       norm_id: normId || null,
@@ -103,7 +96,6 @@ export async function POST(request) {
       evidence_urls: evidenceUrls || [],
       evidence_description: evidenceDescription || null,
       status: "pending",
-      user_reputation_score: reputation?.reputation_score || 50.0,
     };
 
     const { data: correction, error: insertError } = await supabase
@@ -119,26 +111,6 @@ export async function POST(request) {
         { status: 500 }
       );
     }
-
-    // Update or create user reputation entry
-    await supabase
-      .from("user_reputation")
-      .upsert({
-        user_id: session.user.id,
-        corrections_submitted: 1,
-        reputation_score: 50.0,
-        reputation_level: "newcomer"
-      }, {
-        onConflict: "user_id",
-        ignoreDuplicates: false
-      });
-
-    // Increment corrections_submitted
-    await supabase.rpc("increment_user_corrections", {
-      p_user_id: session.user.id
-    }).catch(() => {
-      // RPC might not exist, that's ok
-    });
 
     // Check for consensus (3+ users suggesting same correction)
     const consensusResult = await checkAndApplyConsensus({
@@ -238,11 +210,6 @@ async function checkAndApplyConsensus({ productId, normId, fieldCorrected, sugge
 
     // 2. Apply the correction
     await applyUserCorrection(similarCorrections[0]);
-
-    // 3. Update reputation for all contributing users
-    for (const userId of userIds) {
-      await supabase.rpc("update_user_reputation", { p_user_id: userId }).catch(() => {});
-    }
 
     console.log(`Consensus reached! Auto-approved ${similarCorrections.length} corrections for product ${productId}`);
     return { applied: true, count: similarCorrections.length };
@@ -383,22 +350,8 @@ export async function GET(request) {
       );
     }
 
-    // Get user reputation
-    const { data: reputation } = await supabase
-      .from("user_reputation")
-      .select("*")
-      .eq("user_id", session.user.id)
-      .single();
-
     return NextResponse.json({
       corrections: corrections || [],
-      reputation: reputation || {
-        corrections_submitted: 0,
-        corrections_approved: 0,
-        corrections_rejected: 0,
-        reputation_score: 50.0,
-        reputation_level: "newcomer"
-      },
       total: corrections?.length || 0,
     });
 

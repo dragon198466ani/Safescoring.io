@@ -32,9 +32,9 @@ const Legal = () => {
           className="leading-relaxed whitespace-pre-wrap"
           style={{ fontFamily: "sans-serif" }}
         >
-          {`LEGAL
+          {`LEGAL NOTICE
 
-SafeScoring is an independent research project focused on cryptocurrency security ratings.
+SafeScoring is an independent research project focused on cryptocurrency product security ratings. SafeScoring evaluates products and services only — it does not score, rate, or profile individual persons.
 
 
 HOSTING
@@ -61,13 +61,22 @@ CONTACT
 safescoring@proton.me
 
 
-DISCLAIMER
+IMPORTANT DISCLAIMER
 
-All information is provided for educational purposes only.
-This is not financial advice. Cryptocurrency investments carry significant risk. Always do your own research.
+NOT FINANCIAL ADVICE. SafeScoring is not a registered investment advisor, financial advisor, or broker-dealer. Nothing on this website constitutes financial, investment, legal, or tax advice.
+
+All information, scores, and evaluations are provided for educational and informational purposes only. They are algorithmic assessments based on publicly available information and may contain errors or inaccuracies.
+
+SafeScoring does not guarantee the security, reliability, or safety of any product evaluated. Past security performance does not guarantee future security. New vulnerabilities may exist that are not yet reflected in our assessments.
+
+SafeScoring is not affiliated with, endorsed by, or partnered with any of the products it evaluates. All product names and trademarks belong to their respective owners.
+
+Cryptocurrency and digital assets carry significant risk. Always do your own research before making any decisions.
+
+THE SERVICE IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND. USE AT YOUR OWN RISK.
 
 
-© 2025 SafeScoring. All rights reserved.`}
+© 2026 SafeScoring. All rights reserved.`}
         </pre>
       </div>
     </main>
