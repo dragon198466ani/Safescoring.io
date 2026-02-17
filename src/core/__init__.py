@@ -33,6 +33,7 @@ from .scraper import (
 
 from .smart_evaluator import SmartEvaluator
 from .score_calculator import ScoreCalculator
+from .narrative_generator import NarrativeGenerator
 
 __all__ = [
     # Config
@@ -51,4 +52,5 @@ __all__ = [
     # Main classes
     'SmartEvaluator',
     'ScoreCalculator',
+    'NarrativeGenerator',
 ]
