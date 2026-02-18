@@ -16,10 +16,14 @@ import time
 from datetime import datetime
 
 # Import from common modules
-from .config import SUPABASE_URL, get_supabase_headers
+from .config import (
+    SUPABASE_URL, get_supabase_headers,
+    EVAL_BATCH_SIZE, EVAL_BATCH_DELAY, EVAL_PASS2_MAX_TOKENS, EVAL_PASS2_TEMPERATURE,
+)
 from .api_provider import AIProvider, parse_evaluation_response
 from .scraper import WebScraper
 from .ai_strategy import get_norm_strategy, TaskComplexity, AIModel
+from .supabase_pagination import fetch_all
 
 
 # =============================================================================
@@ -159,12 +163,8 @@ class SmartEvaluator:
         """Loads data from Supabase (products, types, norms, applicability, type mapping)"""
         print("\n[LOAD] Loading Supabase data...")
 
-        # Products
-        r = requests.get(
-            f"{SUPABASE_URL}/rest/v1/products?select=*&limit=500",
-            headers=self.headers
-        )
-        self.products = r.json() if r.status_code == 200 else []
+        # Products (paginated - no 1000 limit)
+        self.products = fetch_all('products', select='*', order='id')
         print(f"   {len(self.products)} products")
 
         # Product types
@@ -176,12 +176,12 @@ class SmartEvaluator:
         self.product_types = {t['id']: t for t in types}
         print(f"   {len(self.product_types)} product types")
 
-        # Norms
-        r = requests.get(
-            f"{SUPABASE_URL}/rest/v1/norms?select=id,code,pillar,title,description,is_essential,consumer&order=pillar.asc,code.asc",
-            headers=self.headers
+        # Norms (paginated - loads ALL 2159+ norms, not just 1000)
+        self.norms = fetch_all(
+            'norms',
+            select='id,code,pillar,title,description,is_essential,consumer',
+            order='pillar.asc,code.asc'
         )
-        self.norms = r.json() if r.status_code == 200 else []
         self.norms_by_id = {n['id']: n for n in self.norms}
         print(f"   {len(self.norms)} norms")
 
@@ -526,7 +526,7 @@ Review:"""
             first_norm_code = norms_group[0]['code']
             result = self.ai_provider.call_for_norm(
                 first_norm_code, review_prompt,
-                max_tokens=2500, temperature=0.15,
+                max_tokens=EVAL_PASS2_MAX_TOKENS, temperature=EVAL_PASS2_TEMPERATURE,
                 pass2_override=True  # Force expert review
             )
 
@@ -599,17 +599,16 @@ Review:"""
             if not pillar_norms:
                 continue
 
-            batch_size = 50  # Optimized: more norms per request = fewer API calls
             pillar_results = {}
 
-            for i in range(0, len(pillar_norms), batch_size):
-                batch = pillar_norms[i:i+batch_size]
+            for i in range(0, len(pillar_norms), EVAL_BATCH_SIZE):
+                batch = pillar_norms[i:i+EVAL_BATCH_SIZE]
                 pillar_label = f"{pillar}*" if pillar in CRITICAL_PILLARS else pillar
-                print(f"   Pillar {pillar_label} batch {i//batch_size + 1} ({len(batch)} norms)...")
+                print(f"   Pillar {pillar_label} batch {i//EVAL_BATCH_SIZE + 1} ({len(batch)} norms)...")
 
                 batch_results = self.evaluate_batch_with_ai(product_info, batch, pillar, website_content)
                 pillar_results.update(batch_results)
-                time.sleep(0.5)
+                time.sleep(EVAL_BATCH_DELAY)
 
             # Count results
             yes_count = sum(1 for v in pillar_results.values() if v[0] == 'YES')

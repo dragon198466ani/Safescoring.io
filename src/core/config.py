@@ -265,8 +265,92 @@ def validate_config(require_ai=False):
 # All APIs are disabled - evaluations use Claude Code directly
 CLAUDE_CODE_ONLY = CONFIG.get('CLAUDE_CODE_ONLY', 'true').lower() == 'true'
 
+# Claude Code CLI model selection
+CLAUDE_CODE_MODEL = CONFIG.get('CLAUDE_CODE_MODEL', 'sonnet')            # Default model (sonnet/opus/haiku)
+CLAUDE_CODE_MODEL_EXPERT = CONFIG.get('CLAUDE_CODE_MODEL_EXPERT', 'sonnet')  # Expert review model
+CLAUDE_CODE_TIMEOUT = int(CONFIG.get('CLAUDE_CODE_TIMEOUT', '300'))      # CLI timeout in seconds
+CLAUDE_CODE_RPM = int(CONFIG.get('CLAUDE_CODE_RPM', '20'))              # Max requests per minute
+
 # Claude API - DISABLED (use Claude Code CLI instead)
 CLAUDE_API_KEY = ''  # No API key - use Claude Code CLI
+
+# ============================================
+# AI PROVIDER GENERAL SETTINGS
+# ============================================
+AI_REQUEST_TIMEOUT = int(CONFIG.get('AI_REQUEST_TIMEOUT', '90'))          # Default HTTP timeout for AI APIs
+AI_MAX_RETRIES = int(CONFIG.get('AI_MAX_RETRIES', '2'))                  # HTTP retry count
+AI_BACKOFF_FACTOR = float(CONFIG.get('AI_BACKOFF_FACTOR', '0.5'))        # Retry backoff multiplier
+AI_POOL_CONNECTIONS = int(CONFIG.get('AI_POOL_CONNECTIONS', '10'))        # HTTP connection pool size
+AI_POOL_MAXSIZE = int(CONFIG.get('AI_POOL_MAXSIZE', '20'))              # HTTP pool max connections
+
+# ============================================
+# GEMINI SETTINGS
+# ============================================
+GEMINI_COOLDOWN_MINUTES = int(CONFIG.get('GEMINI_COOLDOWN_MINUTES', '65'))
+GEMINI_DAILY_COOLDOWN_HOURS = int(CONFIG.get('GEMINI_DAILY_COOLDOWN_HOURS', '24'))
+GEMINI_QUOTA_CACHE_HOURS = int(CONFIG.get('GEMINI_QUOTA_CACHE_HOURS', '20'))
+GEMINI_QUOTA_FILE = CONFIG.get('GEMINI_QUOTA_FILE', 'config/.gemini_quota_exhausted')
+GEMINI_ROTATION_THRESHOLD = int(CONFIG.get('GEMINI_ROTATION_THRESHOLD', '50'))
+GEMINI_PRO_MODEL = CONFIG.get('GEMINI_PRO_MODEL', 'gemini-2.5-pro-preview-06-05')
+GEMINI_FLASH_MODEL = CONFIG.get('GEMINI_FLASH_MODEL', 'gemini-2.0-flash')
+
+# ============================================
+# MODEL NAMES (per provider)
+# ============================================
+GROQ_MODEL = CONFIG.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
+GROQ_RPM_PER_KEY = int(CONFIG.get('GROQ_RPM_PER_KEY', '25'))
+CEREBRAS_MODEL = CONFIG.get('CEREBRAS_MODEL', 'llama-3.3-70b')
+DEEPSEEK_MODEL = CONFIG.get('DEEPSEEK_MODEL', 'deepseek-chat')
+CLAUDE_API_MODEL = CONFIG.get('CLAUDE_API_MODEL', 'claude-sonnet-4-20250514')
+MISTRAL_MODEL = CONFIG.get('MISTRAL_MODEL', 'mistral-small-latest')
+
+# ============================================
+# TOKEN LIMITS BY COMPLEXITY
+# ============================================
+TOKENS_CRITICAL = int(CONFIG.get('TOKENS_CRITICAL', '3500'))    # S01-S40, A01-A30, S101-S120
+TOKENS_COMPLEX = int(CONFIG.get('TOKENS_COMPLEX', '2500'))      # S41-S90, S221-S260, A51-A110
+TOKENS_MODERATE = int(CONFIG.get('TOKENS_MODERATE', '2000'))    # S51-S180, general evaluation
+TOKENS_SIMPLE = int(CONFIG.get('TOKENS_SIMPLE', '1500'))        # F, E pillars, factual checks
+
+# ============================================
+# TEMPERATURE BY COMPLEXITY
+# ============================================
+TEMP_CRITICAL = float(CONFIG.get('TEMP_CRITICAL', '0.1'))       # Most deterministic
+TEMP_COMPLEX = float(CONFIG.get('TEMP_COMPLEX', '0.15'))        # Slightly creative
+TEMP_MODERATE = float(CONFIG.get('TEMP_MODERATE', '0.2'))       # Balanced
+TEMP_SIMPLE = float(CONFIG.get('TEMP_SIMPLE', '0.3'))           # Faster for factual
+
+# ============================================
+# EVALUATOR SETTINGS
+# ============================================
+EVAL_BATCH_SIZE = int(CONFIG.get('EVAL_BATCH_SIZE', '50'))              # Norms per batch
+EVAL_BATCH_DELAY = float(CONFIG.get('EVAL_BATCH_DELAY', '0.5'))        # Delay between batches (seconds)
+EVAL_PASS2_MAX_TOKENS = int(CONFIG.get('EVAL_PASS2_MAX_TOKENS', '2500'))
+EVAL_PASS2_TEMPERATURE = float(CONFIG.get('EVAL_PASS2_TEMPERATURE', '0.15'))
+EVAL_VALIDATION_TOKENS = int(CONFIG.get('EVAL_VALIDATION_TOKENS', '200'))
+
+# ============================================
+# SUPABASE PAGINATION
+# ============================================
+SUPABASE_PAGE_SIZE = int(CONFIG.get('SUPABASE_PAGE_SIZE', '1000'))
+SUPABASE_MAX_PAGES = int(CONFIG.get('SUPABASE_MAX_PAGES', '500'))
+
+# ============================================
+# RATE LIMIT GENERAL
+# ============================================
+RATE_LIMIT_WINDOW_SECONDS = int(CONFIG.get('RATE_LIMIT_WINDOW_SECONDS', '60'))
+
+# ============================================
+# NARRATIVE GENERATION
+# ============================================
+NARRATIVE_MODEL = CONFIG.get('NARRATIVE_MODEL', 'sonnet')
+NARRATIVE_EXPERT_MODEL = CONFIG.get('NARRATIVE_EXPERT_MODEL', 'sonnet')
+NARRATIVE_MAX_TOKENS = int(CONFIG.get('NARRATIVE_MAX_TOKENS', '4000'))
+NARRATIVE_TEMPERATURE = float(CONFIG.get('NARRATIVE_TEMPERATURE', '0.3'))
+NARRATIVE_RISK_MAX_TOKENS = int(CONFIG.get('NARRATIVE_RISK_MAX_TOKENS', '3000'))
+NARRATIVE_RISK_TEMPERATURE = float(CONFIG.get('NARRATIVE_RISK_TEMPERATURE', '0.2'))
+NARRATIVE_ENABLED = CONFIG.get('NARRATIVE_ENABLED', 'true').lower() == 'true'
+NARRATIVE_REASON_MAX_LENGTH = int(CONFIG.get('NARRATIVE_REASON_MAX_LENGTH', '500'))
 
 # ============================================
 # ALL APIs DISABLED - Using Claude Code CLI only
