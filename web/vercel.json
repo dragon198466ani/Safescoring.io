@@ -8,12 +8,8 @@
       "schedule": "0 8 * * *"
     },
     {
-      "path": "/api/cron/crypto-retention",
-      "schedule": "0 9 * * *"
-    },
-    {
       "path": "/api/cron/compat-refresh",
-      "schedule": "*/30 * * * *"
+      "schedule": "0 */6 * * *"
     }
   ]
 }
