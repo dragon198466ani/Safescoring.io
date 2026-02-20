@@ -42,4 +42,25 @@ export const MiniScoreCircle = ({ score, size = 72, strokeWidth = 6 }) => {
   );
 };
 
+export function getScoreColor(score) {
+  if (score >= 80) return "text-success";
+  if (score >= 60) return "text-warning";
+  if (score >= 40) return "text-orange-500";
+  return "text-error";
+}
+
+export function getScoreBg(score) {
+  if (score >= 80) return "bg-success/10";
+  if (score >= 60) return "bg-warning/10";
+  if (score >= 40) return "bg-orange-500/10";
+  return "bg-error/10";
+}
+
+export const SAFEPillars = [
+  { code: "S", name: "Security", color: "#3b82f6" },
+  { code: "A", name: "Adversity", color: "#f59e0b" },
+  { code: "F", name: "Fidelity", color: "#22c55e" },
+  { code: "E", name: "Efficiency", color: "#a855f7" },
+];
+
 export default MiniScoreCircle;

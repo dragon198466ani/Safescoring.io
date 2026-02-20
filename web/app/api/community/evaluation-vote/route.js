@@ -3,11 +3,13 @@ import { auth } from "@/libs/auth";
 import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 
-// Supabase admin client (service role for RLS bypass)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+// Lazy init to avoid build-time crash when env vars are missing
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 /**
  * Mapping des résultats d'évaluation IA vers scores numériques
@@ -48,6 +50,11 @@ const VOTE_CONFIG = {
  */
 export async function GET(req) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ evaluations: [], pagination: { offset: 0, limit: 20, total: 0, hasMore: false }, userStats: null, dailyQuota: null, config: {} });
+    }
+
     const { searchParams } = new URL(req.url);
     const productId = searchParams.get("productId");
     const productSlug = searchParams.get("productSlug");
@@ -314,6 +321,11 @@ export async function POST(req) {
         { error: "evaluationId (number) et voteAgrees (boolean) requis" },
         { status: 400 }
       );
+    }
+
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
     }
 
     const userId = session.user.id;

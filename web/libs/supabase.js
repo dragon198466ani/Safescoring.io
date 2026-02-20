@@ -19,4 +19,23 @@ export const isSupabaseConfigured = () => {
   return !!(supabaseUrl && supabaseAnonKey);
 };
 
+// Lazy getters used by newer routes
+export function getSupabase() {
+  if (!supabaseUrl || !supabaseAnonKey) return null;
+  return createClient(supabaseUrl, supabaseAnonKey);
+}
+
+export function getSupabaseServer() {
+  const key = supabaseServiceKey || supabaseAnonKey;
+  if (!supabaseUrl || !key) return null;
+  return createClient(supabaseUrl, key);
+}
+
+export function getSupabaseAdmin() {
+  if (!supabaseUrl || !supabaseServiceKey) return null;
+  return createClient(supabaseUrl, supabaseServiceKey);
+}
+
+export { createClient };
+
 export default supabase;

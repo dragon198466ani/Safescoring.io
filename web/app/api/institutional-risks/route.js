@@ -1,10 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 const RISK_COLORS = {
   very_low: "#22c55e",
@@ -17,9 +19,25 @@ const RISK_COLORS = {
 
 export async function GET(request) {
   try {
+    const supabase = getSupabase();
     const { searchParams } = new URL(request.url);
     const countryCode = searchParams.get("country");
     const includeIncidents = searchParams.get("incidents") !== "false";
+
+    if (!supabase) {
+      return NextResponse.json({
+        success: true,
+        countries: getFallbackRisks().map(risk => ({
+          code: risk.country_code,
+          name: risk.country_name,
+          institutionalTrustScore: risk.institutional_trust_score,
+          overallRiskLevel: risk.overall_risk_level,
+          riskColor: RISK_COLORS[risk.overall_risk_level] || "#6b7280",
+        })),
+        incidents: [],
+        riskColors: RISK_COLORS,
+      });
+    }
 
     let risksQuery = supabase
       .from("country_institutional_risks")
@@ -33,7 +51,7 @@ export async function GET(request) {
     const { data: risks, error: risksError } = await risksQuery;
 
     let incidents = [];
-    if (includeIncidents && !risksError) {
+    if (includeIncidents && !risksError && supabase) {
       let incidentsQuery = supabase
         .from("institutional_incidents")
         .select("*")

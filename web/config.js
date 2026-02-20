@@ -229,6 +229,12 @@ const config = {
     trialDays: 14,
     requireCard: true,
   },
+  // Company info for trust page
+  company: {
+    name: "SafeScoring",
+    registration: "France",
+    email: "contact@safescoring.io",
+  },
 };
 
 export default config;
