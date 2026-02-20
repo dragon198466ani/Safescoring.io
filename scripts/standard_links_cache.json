@@ -1,0 +1,2077 @@
+{
+  "A-AMD-SEV": {
+    "standard_name": "SP 800-193",
+    "official_link": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-193.pdf",
+    "relevance": "Provides guidance on platform firmware resiliency, including AMD SEV-SNP"
+  },
+  "A-ARM-TZ": {
+    "standard_name": "ISO 15408",
+    "official_link": "https://www.iso.org/standard/50341.html",
+    "relevance": "Common Criteria standard for evaluating the security of ARM TrustZone and similar trusted execution environments"
+  },
+  "A-AZURE-CVM": {
+    "standard_name": "ISO 27001",
+    "official_link": "https://www.iso.org/iso/iso27001",
+    "relevance": "Provides a framework for information security management, including cloud security and confidentiality, which is relevant to Azure Confidential Computing"
+  },
+  "A-CC-001": {
+    "standard_name": "ISO 15408",
+    "official_link": "https://www.iso.org/standard/50341.html",
+    "relevance": "Defines the Common Criteria for information technology security evaluation, which includes EAL5+ certification"
+  },
+  "A-CC-002": {
+    "standard_name": "ISO 15408",
+    "official_link": "https://www.iso.org/standard/50341.html",
+    "relevance": "Defines Common Criteria for information technology security evaluation, including EAL6+ (Evaluation Assurance Level 6+) which is referenced in the criterion"
+  },
+  "A-CC-003": {
+    "standard_name": "ISO 15408",
+    "official_link": "https://www.iso.org/standard/50341.html",
+    "relevance": "Defines Common Criteria for information technology security evaluation, including physical tamper detection"
+  },
+  "A-CUST-GEOCONT": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf",
+    "relevance": "Provides guidelines for geographic controls and access controls, which can be applied to custody geographic controls"
+  },
+  "A-ETSI-103097": {
+    "standard_name": "ETSI TS 103 097",
+    "official_link": "https://www.etsi.org/deliver/etsi_ts/103000_103099/103097/01.01.01_60/ts_103097v010101p.pdf",
+    "relevance": "Specifies a standard for cryptography and security in ICT systems"
+  },
+  "A-GCP-CVM": {
+    "standard_name": "NIST SP 800-190",
+    "official_link": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-190.pdf",
+    "relevance": "Provides guidance on the security of cloud computing, including confidentiality and virtual machines"
+  },
+  "A-GP-TEE": {
+    "standard_name": "GlobalPlatform TEE Specification",
+    "official_link": "https://globalplatform.org/specifications-device-tee/",
+    "relevance": "Defines the specifications for a Trusted Execution Environment (TEE) as referenced in the criterion title"
+  },
+  "A-HDN-005": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic wallets, which can be used to create hidden wallets that are not easily detectable without the seed phrase or extended public keys."
+  },
+  "A-INTEL-SGX": {
+    "standard_name": "NIST SP 800-193",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-193/final",
+    "relevance": "Provides guidelines for trusted execution environments (TEEs) like Intel SGX/TDX, addressing security and adversarial resilience"
+  },
+  "A-ISO-17712": {
+    "standard_name": "ISO/IEC 17712:2023",
+    "official_link": "https://www.iso.org/standard/79212.html",
+    "relevance": "Specifies requirements and test methods for tamper-evident seals used in supply chain security, including cryptocurrency packaging and physical security measures."
+  },
+  "A-LEND-EMERG": {
+    "standard_name": "EIP-4626",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-4626",
+    "relevance": "Defines a standard interface for yield-bearing vaults, which includes mechanisms for emergency shutdowns in lending protocols."
+  },
+  "A-OPS-002": {
+    "standard_name": "BIP-65",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki",
+    "relevance": "Defines CLTV (CheckLockTimeVerify) for time-locked transactions, which can be used to enforce delays on large transfers"
+  },
+  "A-OPS-003": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "While BIP-39 itself does not directly address multi-device confirmation, it is foundational for secure key management, which is often a prerequisite for multi-device authentication schemes in cryptocurrency systems."
+  },
+  "A-OPS-004": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53-rev-5",
+    "relevance": "Covers access control policies, including IP whitelisting as part of system security controls (e.g., AC-17, SC-7)"
+  },
+  "A-OPS-005": {
+    "standard_name": "BIP-65",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki",
+    "relevance": "Defines CLTV (CheckLockTimeVerify) for transaction time-locking, which can indirectly influence velocity limits by restricting transaction timing."
+  },
+  "A-OPS-006": {
+    "standard_name": "EIP-2612",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-2612",
+    "relevance": "Defines ERC-2612, which includes permit functionality allowing for transaction whitelisting via signed approvals, reducing the need for manual whitelisting."
+  },
+  "A-OPS-007": {
+    "standard_name": "FIDO2",
+    "official_link": "https://fidoalliance.org/specs/fido-v2.0-id-20180227/fido-client-to-authenticator-protocol-v2.0-id-20180227.html",
+    "relevance": "FIDO2 (including WebAuthn) supports biometric authentication combined with knowledge factors (e.g., PINs or passwords) for secure cryptographic operations."
+  },
+  "A-OPS-008": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53-rev-5",
+    "relevance": "Provides guidelines for operational security (OPSEC) documentation and controls, including cryptographic security requirements."
+  },
+  "A-PHY-003": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for information security management, including physical security controls that could apply to disguising cryptocurrency hardware as common objects"
+  },
+  "A-PHY-004": {
+    "standard_name": "ISO/IEC 23001-3",
+    "official_link": "https://www.iso.org/standard/73339.html",
+    "relevance": "Specifies requirements for physical security of cryptographic modules, including minimal footprint considerations for secure storage and processing."
+  },
+  "A-PNC-006": {
+    "standard_name": "EIP-1822",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1822",
+    "relevance": "Proposes a mechanism for self-destructing Ethereum contracts under certain conditions, which aligns with the 'Self-Destruct on Tamper' criterion."
+  },
+  "A-SOC-001": {
+    "standard_name": "EIP-4337",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-4337",
+    "relevance": "Defines account abstraction and social recovery mechanisms in Ethereum, which can include recovery without amount disclosure"
+  },
+  "A-SOC-003": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which can be used for encrypted social backup of cryptographic keys"
+  },
+  "A-SOC-004": {
+    "standard_name": "BIP-38",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki",
+    "relevance": "Defines a method for encrypting private keys with a passphrase, which can be used in time-locked inheritance scenarios"
+  },
+  "A-STM-ST33": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "FIPS 140-2 is a widely recognized standard for cryptographic module security, which may include hardware security modules (HSMs) like STMicro's ST33 series, ensuring tamper resistance and secure cryptographic operations."
+  },
+  "A04": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "While BIP-39 itself does not directly address duress actions, it is foundational for wallet security and could be extended to implement duress mechanisms via mnemonic phrases or passphrase configurations."
+  },
+  "A05": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "While BIP-39 defines mnemonic seed phrases, it indirectly supports 'delayed wipe' by enabling secure backup and recovery mechanisms, which can mitigate adversarial wipe scenarios."
+  },
+  "A07": {
+    "standard_name": "ISO/IEC 23800-1",
+    "official_link": "https://www.iso.org/standard/73820.html",
+    "relevance": "Covers security and privacy aspects of blockchain and distributed ledger technology, including protection against fake transaction histories"
+  },
+  "A09": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "While BIP-39 defines mnemonic seed phrases, it does not explicitly cover duress word passphrases. However, it is foundational for wallet security and could be extended to support duress scenarios."
+  },
+  "A10": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53-rev-5",
+    "relevance": "Includes guidelines for incident response and graduated security measures, aligning with the 'Graduated response' criterion under adversity."
+  },
+  "A100": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which are commonly used for backup and recovery in cryptocurrency wallets, ensuring verification of backups through checksums and word lists."
+  },
+  "A101": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which include recovery mechanisms"
+  },
+  "A102": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which can be used for partial seed recovery in some implementations"
+  },
+  "A104": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "While BIP-39 focuses on mnemonic seed phrases, it indirectly supports multi-location backup by enabling the creation of recoverable wallets that can be stored in multiple secure locations."
+  },
+  "A105": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
+    "relevance": "Provides guidelines for secure data storage, including encrypted backups, which aligns with the 'Encrypted cloud backup' criterion."
+  },
+  "A106": {
+    "standard_name": "FATF Recommendation 15",
+    "official_link": "https://www.fatf-gafi.org/en/publications/fatfrecommendations/documents/fatf-recommendations.html",
+    "relevance": "Provides international standards for virtual asset service providers (VASPs) and cross-border legal support in cryptocurrency regulation"
+  },
+  "A107": {
+    "standard_name": "ISO 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides a framework for information security management, including asset protection and trust mechanisms"
+  },
+  "A112": {
+    "standard_name": "ISO/IEC 27701",
+    "official_link": "https://www.iso.org/standard/71670.html",
+    "relevance": "Provides guidelines for privacy information management, including GDPR compliance, and can be applied to cryptocurrency systems to ensure data portability (Art. 20)"
+  },
+  "A116": {
+    "standard_name": "CCPA (California Consumer Privacy Act)",
+    "official_link": "https://oag.ca.gov/privacy/ccpa",
+    "relevance": "Directly addresses consumer privacy rights, including data protection and security, which aligns with the adversity pillar in cryptocurrency security."
+  },
+  "A117": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Covers security and privacy controls, including adversity-related criteria"
+  },
+  "A119": {
+    "standard_name": "PIPL",
+    "official_link": "https://www.npc.gov.cn/npc/xinwen/lfgz/2021-10/27/content_2311530.htm",
+    "relevance": "Personal Information Protection Law (PIPL) of the People's Republic of China, which governs data privacy and security, including cryptocurrency-related personal data handling."
+  },
+  "A120": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which are critical for cryptocurrency security and adversity resilience (Pillar A)"
+  },
+  "A121": {
+    "standard_name": "POPIA (Protection of Personal Information Act)",
+    "official_link": "https://www.gov.za/documents/download/20760",
+    "relevance": "South African law governing personal data protection, relevant for cryptocurrency security and privacy compliance"
+  },
+  "A122": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53-rev-5",
+    "relevance": "Provides guidelines for privacy and security controls, including those relevant to the Privacy Act 1988 (Australia), such as access controls, audit logging, and data protection."
+  },
+  "A123": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides a framework for information security management, including personal data protection (PDPA) requirements"
+  },
+  "A128": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Covers security and privacy controls, including adversity-related criteria for cryptographic systems"
+  },
+  "A129": {
+    "standard_name": "BIP-85",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0085.mediawiki",
+    "relevance": "Derives child seeds from a master seed phrase"
+  },
+  "A13": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which inherently avoid hidden wallets by deriving all keys from a master seed"
+  },
+  "A130": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which can be used to create decoy wallets for security purposes"
+  },
+  "A132": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "While BIP-39 focuses on mnemonic seed phrases, it indirectly supports 'Heartbeat Dead Man' by enabling secure recovery mechanisms, which can be part of a broader adversity resilience strategy."
+  },
+  "A134": {
+    "standard_name": "FROST",
+    "official_link": "https://eprint.iacr.org/2020/835",
+    "relevance": "FROST (Flexible Round-Optimized Schnorr Threshold Signatures) is a threshold signature scheme for cryptocurrencies, directly addressing the criterion."
+  },
+  "A141": {
+    "standard_name": "FIDO2",
+    "official_link": "https://fidoalliance.org/specs/fido-v2.0-id-20180227/fido-client-to-authenticator-protocol-v2.0-id-20180227.html",
+    "relevance": "FIDO2 includes standards for secure authentication, including PIN-based mechanisms, which aligns with the 'Brick PIN' criterion for adversity-resistant security."
+  },
+  "A142": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which are often used in travel mode for secure offline access to cryptocurrency wallets"
+  },
+  "A144": {
+    "standard_name": "BIP-141",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki",
+    "relevance": "Defines Segregated Witness (SegWit), which improves censorship resistance by making transactions less susceptible to filtering and manipulation by miners or intermediaries."
+  },
+  "A145": {
+    "standard_name": "EIP-1559",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1559",
+    "relevance": "Introduces transaction fee market changes that indirectly mitigate MEV by reducing front-running opportunities through base fee and priority fee mechanisms"
+  },
+  "A147": {
+    "standard_name": "BIP-152",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki",
+    "relevance": "Defines compact block relay, which is relevant to transaction relay mechanisms in Bitcoin"
+  },
+  "A148": {
+    "standard_name": "BIP-44",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki",
+    "relevance": "Defines a hierarchical deterministic wallet structure that inherently discourages address reuse by generating unique addresses for each transaction"
+  },
+  "A15": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which include key derivation and storage size management"
+  },
+  "A151": {
+    "standard_name": "NIST SP 800-61",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-61/rev-2/final",
+    "relevance": "Provides guidelines for incident response planning and management, including cryptocurrency security incidents"
+  },
+  "A152": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for incident management and disclosure as part of information security management systems (ISMS)"
+  },
+  "A154": {
+    "standard_name": "OWASP Bug Bounty Program Guidelines",
+    "official_link": "https://owasp.org/www-community/Bug_Bounty_Program",
+    "relevance": "Provides guidelines for establishing and managing bug bounty programs to improve security through community-driven vulnerability reporting."
+  },
+  "A155": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for establishing, implementing, maintaining, and continuously improving an information security management system (ISMS), which includes security contact procedures."
+  },
+  "A158": {
+    "standard_name": "ISO 27001",
+    "official_link": "https://www.iso.org/standard/27001",
+    "relevance": "Covers information security management, including disclosure of security controls and coverage amounts in risk management."
+  },
+  "A159": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001",
+    "relevance": "Provides guidelines for information security management, including documented processes for incident and claims handling"
+  },
+  "A16": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "While BIP-39 focuses on mnemonic seed phrases, it indirectly supports 'activity indistinguishable' by ensuring uniform key generation, reducing traceability of wallet origins."
+  },
+  "A160": {
+    "standard_name": "ISO 23004-2",
+    "official_link": "https://www.iso.org/standard/77000.html",
+    "relevance": "Provides guidelines for digital asset custody, including treasury reserve management and security controls"
+  },
+  "A162": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for information security management, including team transparency and accountability in cryptocurrency projects"
+  },
+  "A163": {
+    "standard_name": "ISO 31000",
+    "official_link": "https://www.iso.org/standard/63504.html",
+    "relevance": "Provides guidelines for risk management, including company registration and operational security in adversity scenarios"
+  },
+  "A165": {
+    "standard_name": "ISO 27001",
+    "official_link": "https://www.iso.org/standard/27001",
+    "relevance": "Covers information security management, including audit requirements and transparency"
+  },
+  "A166": {
+    "standard_name": "ISO/IEC 27031:2011",
+    "official_link": "https://www.iso.org/standard/43451.html",
+    "relevance": "Provides guidelines for business continuity and disaster recovery, including IT systems and cryptocurrency infrastructure."
+  },
+  "A167": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Provides guidelines for data backup and recovery as part of security and privacy controls"
+  },
+  "A168": {
+    "standard_name": "ISO/IEC 27031",
+    "official_link": "https://www.iso.org/standard/56524.html",
+    "relevance": "Provides guidelines for business continuity and disaster recovery, including geographic redundancy for IT systems"
+  },
+  "A169": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for information security management, including failover and redundancy testing as part of business continuity and disaster recovery planning."
+  },
+  "A170": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf",
+    "relevance": "Includes guidelines for Recovery Time Objective (RTO) as part of its contingency planning controls"
+  },
+  "A173": {
+    "standard_name": "BIP-47",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0047.mediawiki",
+    "relevance": "Defines PayNym, a protocol for private and reusable payment codes"
+  },
+  "A179": {
+    "standard_name": "Grin Technical Specifications",
+    "official_link": "https://github.com/mimblewimble/grin/blob/master/doc/specs.md",
+    "relevance": "Defines the technical specifications for Grin, a Mimblewimble-based cryptocurrency, including its security model and privacy features."
+  },
+  "A18": {
+    "standard_name": "RFC 3211",
+    "official_link": "https://www.rfc-editor.org/rfc/rfc3211",
+    "relevance": "Defines the Cryptographic Message Syntax (CMS) for encrypted data, which can be used to create deniable containers"
+  },
+  "A182": {
+    "standard_name": "FIDO2",
+    "official_link": "https://fidoalliance.org/specs/fido-v2.0-ps-20190130/fido-client-to-authenticator-protocol-v2.0-ps-20190130.html",
+    "relevance": "FIDO2 includes biometric authentication standards and could be adapted for duress scenarios in cryptocurrency security."
+  },
+  "A185": {
+    "standard_name": "OFAC Compliance Guidelines for Cryptocurrency",
+    "official_link": "https://home.treasury.gov/policy-issues/financial-sanctions/faqs",
+    "relevance": "Provides official guidance on OFAC compliance for cryptocurrency transactions and entities"
+  },
+  "A186": {
+    "standard_name": "EU Regulation 2023/1114 (EU Sanctions Regulation)",
+    "official_link": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32023R1114",
+    "relevance": "Directly addresses EU sanctions compliance, including cryptocurrency-related checks"
+  },
+  "A187": {
+    "standard_name": "FATF Recommendation 16",
+    "official_link": "https://www.fatf-gafi.org/en/publications/fatfrecommendations/documents/guidance-r-16-virtual-assets.html",
+    "relevance": "Provides guidelines for Travel Rule compliance in virtual asset transfers, including cryptocurrency transactions."
+  },
+  "A192": {
+    "standard_name": "BIP-150",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0150.mediawiki",
+    "relevance": "Defines peer-to-peer authentication for Bitcoin nodes, which is relevant to private full node security"
+  },
+  "A23": {
+    "standard_name": "BIP-38",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki",
+    "relevance": "Defines a method for encrypting private keys with a passphrase, which can be used to implement a delay mechanism for vault access."
+  },
+  "A24": {
+    "standard_name": "EIP-2612",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-2612",
+    "relevance": "Defines ERC-2612, which includes permit functionality for gasless approvals and spending limits in Ethereum smart contracts"
+  },
+  "A25": {
+    "standard_name": "BIP-65",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki",
+    "relevance": "Defines CLTV (CheckLockTimeVerify) for customizable delays in Bitcoin transactions"
+  },
+  "A28": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic wallets, which can enforce delays or access controls for key material"
+  },
+  "A29": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "While BIP-39 defines mnemonic seed phrases, it indirectly supports emergency multisig bypass by enabling recovery mechanisms. No direct standard exists for emergency multisig bypass."
+  },
+  "A30": {
+    "standard_name": "BIP-65",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki",
+    "relevance": "Defines the CHECKLOCKTIMEVERIFY (CLTV) opcode, which enforces time-lock transparency in Bitcoin transactions"
+  },
+  "A31": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Covers geographic distribution as part of risk management and physical security controls in information security management systems (ISMS)"
+  },
+  "A33": {
+    "standard_name": "BIP-324",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0324.mediawiki",
+    "relevance": "Defines a protocol for threshold signature schemes (TSS) in Bitcoin, enabling multi-party computation for key generation and signing."
+  },
+  "A34": {
+    "standard_name": "ERC-4337",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-4337",
+    "relevance": "Defines account abstraction, which can include social recovery mechanisms for Ethereum wallets"
+  },
+  "A35": {
+    "standard_name": "BIP-65",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki",
+    "relevance": "Defines CLTV (CheckLockTimeVerify) for time-lock functionality, which can be combined with multisig for enhanced security"
+  },
+  "A36": {
+    "standard_name": "ISO 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Covers information security management systems, including risk management and jurisdictional considerations for secure operations"
+  },
+  "A37": {
+    "standard_name": "BIP-38",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki",
+    "relevance": "Specifies a method for encrypting private keys with a passphrase, which can be part of a key ceremony process"
+  },
+  "A38": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which can include multi-signature schemes requiring cosigner notifications"
+  },
+  "A40": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic wallets, which can include inactivity-related security features like key derivation and expiration"
+  },
+  "A41": {
+    "standard_name": "BIP-38",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki",
+    "relevance": "Defines a method for encrypting private keys with a passphrase, which can be used in time-delayed inheritance scenarios"
+  },
+  "A42": {
+    "standard_name": "EIP-712",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-712",
+    "relevance": "Defines a standardized method for signing structured data, which can be used to implement multi-beneficiary transactions or contracts in a secure and verifiable way."
+  },
+  "A43": {
+    "standard_name": "BIP-38",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki",
+    "relevance": "Encryption of private keys with a passphrase, which can be considered a form of partial reveal"
+  },
+  "A45": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which are often used in notary integration for key derivation and management"
+  },
+  "A48": {
+    "standard_name": "EIP-1559",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1559",
+    "relevance": "Introduces a contestation period for transaction inclusion and fee market changes in Ethereum"
+  },
+  "A50": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Provides guidelines for cryptographic module security, including physical security requirements that may cover quick physical destruction of hardware security modules (HSMs) or other secure storage devices."
+  },
+  "A54": {
+    "standard_name": "NIST SP 800-88",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-88/rev-1/final",
+    "relevance": "Provides guidelines for media sanitization and data wipe verification, including cryptographic methods."
+  },
+  "A55": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cryptographic-module-validation-program-cmvp/validation-authorities/fips-140-2-and-140-3-validation",
+    "relevance": "Provides guidelines for cryptographic module security, including physical security and tamper-evident mechanisms, which can be relevant to failsafe destruction of cryptographic material."
+  },
+  "A56": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which are used to generate deterministic wallets. Loss of the mnemonic phrase typically results in irreversible loss of access to funds, aligning with the 'No recovery possible' criterion."
+  },
+  "A62": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001",
+    "relevance": "Covers secure packaging and handling of cryptographic materials, including physical and logical security measures to ensure innocuous packaging."
+  },
+  "A66": {
+    "standard_name": "BIP-21",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki",
+    "relevance": "Defines URI schemes for Bitcoin transactions, which often use QR codes for communication"
+  },
+  "A67": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "While BIP-39 itself does not directly address 'no mandatory internet' (A67), it enables offline seed phrase generation, which is a foundational step for air-gapped or offline cryptocurrency security. No direct standard exists for A67, but BIP-39 is the closest relevant standard for offline key generation."
+  },
+  "A68": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Covers privacy and telemetry controls in security and privacy controls for information systems"
+  },
+  "A70": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Covers information security controls, including privacy and data protection, which may address IP logging restrictions in cryptocurrency systems."
+  },
+  "A71": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic wallets, enabling non-custodial key management"
+  },
+  "A78": {
+    "standard_name": "BIP-69",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0069.mediawiki",
+    "relevance": "Defines lexicographical ordering of transactions to enhance privacy by making transactions less distinguishable"
+  },
+  "A79": {
+    "standard_name": "NIST SP 800-56C",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-56c/final",
+    "relevance": "Provides guidelines for cryptographic key establishment, including ring signature schemes as a form of anonymous authentication."
+  },
+  "A80": {
+    "standard_name": "BIP-324",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0324.mediawiki",
+    "relevance": "Defines Bulletproofs for confidential transactions in Bitcoin, aligning with the adversity pillar (A) by enhancing privacy and security against adversarial attacks."
+  },
+  "A82": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which include coin selection strategies that can impact privacy"
+  },
+  "A83": {
+    "standard_name": "BIP-44",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki",
+    "relevance": "Defines a hierarchical deterministic wallet structure that inherently prevents address reuse by generating unique addresses for each transaction"
+  },
+  "A84": {
+    "standard_name": "BIP-174",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki",
+    "relevance": "Defines Partially Signed Bitcoin Transactions (PSBT), which includes labeling of UTXOs for multi-party transaction signing"
+  },
+  "A85": {
+    "standard_name": "BIP-65",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki",
+    "relevance": "Defines CLTV (CheckLockTimeVerify) which is a foundational component for atomic swaps in Bitcoin"
+  },
+  "A87": {
+    "standard_name": "NIST SP 800-208",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-208/final",
+    "relevance": "Covers privacy-preserving cryptographic techniques, including mixnets, for anonymity and adversity resistance"
+  },
+  "A88": {
+    "standard_name": "RFC 7686",
+    "official_link": "https://datatracker.ietf.org/doc/html/rfc7686",
+    "relevance": "Defines the Tor Hidden Service Protocol, which is a form of onion routing for anonymity"
+  },
+  "A89": {
+    "standard_name": "RFC 6979",
+    "official_link": "https://datatracker.ietf.org/doc/html/rfc6979",
+    "relevance": "Defines deterministic nonce generation for ECDSA, which can indirectly relate to traffic padding by ensuring predictable yet secure randomness in cryptographic operations."
+  },
+  "A90": {
+    "standard_name": "BIP-150",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0150.mediawiki",
+    "relevance": "Defines peer-to-peer authentication and timing-based security mechanisms in Bitcoin"
+  },
+  "A91": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which may include metadata stripping for security purposes"
+  },
+  "A93": {
+    "standard_name": "RFC 7844",
+    "official_link": "https://datatracker.ietf.org/doc/html/rfc7844",
+    "relevance": "Defines MAC address randomization for privacy in wireless networks, which is relevant to cryptocurrency security in adversarial environments."
+  },
+  "A95": {
+    "standard_name": "OWASP ASVS",
+    "official_link": "https://owasp.org/www-project-application-security-verification-standard/",
+    "relevance": "Includes guidelines for certificate pinning (V4.3: V4.10.1 - Certificate Pinning)"
+  },
+  "A96": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Covers security and privacy controls, including traffic analysis resistance in cryptographic systems"
+  },
+  "A97": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which can be used to resist fingerprinting by ensuring deterministic key generation from a human-readable phrase."
+  },
+  "A99": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which can be used for emergency recovery in cryptocurrency wallets"
+  },
+  "E-BANK-CARD": {
+    "standard_name": "ISO/IEC 22239:2023",
+    "official_link": "https://www.iso.org/standard/82001.html",
+    "relevance": "Covers financial transaction card operations and security, including crypto debit card functionality"
+  },
+  "E-BRIDGE-TOKEN": {
+    "standard_name": "EIP-1967",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1967",
+    "relevance": "Defines the standard for proxy contract storage slots, which is often used in bridge token implementations to manage token transfers across chains."
+  },
+  "E-COW-1INCH": {
+    "standard_name": "EIP-1559",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1559",
+    "relevance": "EIP-1559 introduces a fee market mechanism with base fees and priority fees, which is relevant to DeFi protocols like CoW Protocol and 1inch Fusion that optimize gas costs and transaction execution."
+  },
+  "E-CUST-STAKE": {
+    "standard_name": "ISO/IEC 23800",
+    "official_link": "https://www.iso.org/standard/72302.html",
+    "relevance": "Provides guidelines for security management in blockchain and distributed ledger technology, including custody and staking services."
+  },
+  "E-GITCOIN": {
+    "standard_name": "EIP-712",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-712",
+    "relevance": "EIP-712 defines a standard for structured data hashing and signing, which is relevant to Gitcoin Passport's use of EAS (Ethereum Attestation Service) for identity verification and attestations."
+  },
+  "E-ISO-25010": {
+    "standard_name": "ISO/IEC 25010",
+    "official_link": "https://www.iso.org/standard/35733.html",
+    "relevance": "Directly defines software quality requirements, including security, functionality, and reliability, applicable to cryptocurrency systems."
+  },
+  "E-ISO-9241": {
+    "standard_name": "ISO/IEC 9241-11:2018",
+    "official_link": "https://www.iso.org/standard/63909.html",
+    "relevance": "Specifies usability and human-system interaction principles, including accessibility and user experience, which are critical for cryptocurrency interfaces and wallets."
+  },
+  "E-PAY-CRYPTO": {
+    "standard_name": "BIP-70",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki",
+    "relevance": "Defines a protocol for payment requests and processing in Bitcoin, which is directly relevant to payment crypto support."
+  },
+  "E07": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, a foundational security standard for cryptocurrency ecosystems"
+  },
+  "E09": {
+    "standard_name": "Avalanche Consensus Protocol",
+    "official_link": "https://docs.avax.network/concepts/avalanche-consensus",
+    "relevance": "Defines the consensus mechanism for the Avalanche blockchain, which is directly related to the 'Avalanche' criterion in the Ecosystem pillar."
+  },
+  "E107": {
+    "standard_name": "ERC-721",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-721",
+    "relevance": "Defines the standard interface for NFTs, which is foundational for NFT marketplaces"
+  },
+  "E108": {
+    "standard_name": "EIP-1155",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1155",
+    "relevance": "Multi-token standard that can be used for portfolio tracking of multiple assets"
+  },
+  "E111": {
+    "standard_name": "WCAG 2.1",
+    "official_link": "https://www.w3.org/TR/WCAG21/",
+    "relevance": "Web Content Accessibility Guidelines (WCAG) 2.1 includes criteria for screen reader compatibility, including VoiceOver, under Success Criterion 1.3.5 (Identify Input Purpose) and other relevant guidelines for assistive technology support."
+  },
+  "E118": {
+    "standard_name": "WalletConnect v2 Specification",
+    "official_link": "https://docs.walletconnect.com/2.0/specs/core/2.0/core",
+    "relevance": "Defines the protocol and security requirements for WalletConnect v2, including session management, cryptographic handshakes, and secure communication between wallets and dApps."
+  },
+  "E119": {
+    "standard_name": "EIP-1193",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1193",
+    "relevance": "Defines the Ethereum Provider API, which is commonly used by wallet SDKs like Coinbase Wallet to interact with dApps and manage user accounts."
+  },
+  "E120": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which are essential for Ledger Live compatibility as it supports HD wallet structures"
+  },
+  "E122": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which are foundational for hardware wallet bridges"
+  },
+  "E123": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which include account import/export functionality"
+  },
+  "E124": {
+    "standard_name": "BIP-211",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0211.mediawiki",
+    "relevance": "Defines the UR (Uniform Resource) scheme for cryptocurrency payments, including animated QR codes for better user experience"
+  },
+  "E127": {
+    "standard_name": "EIP-712",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-712",
+    "relevance": "Defines a standardized way to sign structured data, which can be used to generate transaction alerts or notifications in a secure and verifiable manner."
+  },
+  "E128": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53-rev-5",
+    "relevance": "Provides guidelines for security and privacy controls, including incident response and security alerts"
+  },
+  "E129": {
+    "standard_name": "EIP-712",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-712",
+    "relevance": "Defines structured, human-readable signatures for off-chain data, which can be used for governance alerts and notifications in Ethereum-based ecosystems."
+  },
+  "E132": {
+    "standard_name": "EIP-4844",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-4844",
+    "relevance": "Proposes proto-danksharding, which is foundational for ZK-Rollup scalability on Ethereum"
+  },
+  "E142": {
+    "standard_name": "ICS-20",
+    "official_link": "https://github.com/cosmos/ibc/blob/main/spec/core/ics-002-client-semantics.md",
+    "relevance": "Defines the Inter-Blockchain Communication (IBC) protocol for Cosmos SDK-based blockchains"
+  },
+  "E151": {
+    "standard_name": "EN 301 549",
+    "official_link": "https://www.etsi.org/deliver/etsi_en/301500_301599/301549/01.01.01_60/en_301549v010101p.pdf",
+    "relevance": "European standard for cybersecurity and data protection in electronic communications networks"
+  },
+  "E152": {
+    "standard_name": "WCAG 2.1",
+    "official_link": "https://www.w3.org/WAI/standards-guidelines/wcag/",
+    "relevance": "RGAA 4.1 is the French accessibility standard aligned with WCAG 2.1, which is the most relevant official standard for accessibility in digital ecosystems."
+  },
+  "E156": {
+    "standard_name": "EIP-1559",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1559",
+    "relevance": "Introduces gas fee market changes to optimize gas usage and reduce volatility in Ethereum"
+  },
+  "E164": {
+    "standard_name": "BOLT 11",
+    "official_link": "https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md",
+    "relevance": "Defines the BOLT 11 invoice format for Lightning Network payments"
+  },
+  "E165": {
+    "standard_name": "BOLT 12",
+    "official_link": "https://github.com/lightning/bolts/blob/master/12-offers.md",
+    "relevance": "Defines a standard for offers in the Lightning Network, which is directly related to the criterion E165 (BOLT 12)"
+  },
+  "E166": {
+    "standard_name": "BOLT-12",
+    "official_link": "https://github.com/lightning/bolts/blob/master/12-payment-offers.md",
+    "relevance": "Defines the LNURL protocol for Lightning Network payment offers and authentication"
+  },
+  "E167": {
+    "standard_name": "OWASP API Security Project",
+    "official_link": "https://owasp.org/www-project-api-security/",
+    "relevance": "Provides guidelines and best practices for API documentation, including security considerations"
+  },
+  "E172": {
+    "standard_name": "EIP-1559",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1559",
+    "relevance": "Introduces a mechanism for gas fee estimation and dynamic fee market in Ethereum, which is directly related to gas estimation criteria."
+  },
+  "E173": {
+    "standard_name": "EIP-1559",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1559",
+    "relevance": "Introduces a mechanism for dynamic gas pricing and includes a gas price oracle component"
+  },
+  "E175": {
+    "standard_name": "EIP-31337",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-31337",
+    "relevance": "Defines a standard for gas token support in Ethereum, allowing for gasless transactions and tokenized gas mechanisms"
+  },
+  "E177": {
+    "standard_name": "BIP-174",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki",
+    "relevance": "Defines the Partially Signed Bitcoin Transaction (PSBT) format, which supports batch transaction signing and coordination"
+  },
+  "E178": {
+    "standard_name": "EIP-712",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-712",
+    "relevance": "Defines a structured way to sign typed data, which can be used for multi-send transactions by encoding multiple transactions in a single signed message."
+  },
+  "E179": {
+    "standard_name": "EIP-712",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-712",
+    "relevance": "Defines a standardized method for structured data hashing and signing, which is often used in approve + swap combo operations to ensure secure and verifiable transactions."
+  },
+  "E182": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which enable offline transaction signing by deriving keys offline and broadcasting signed transactions later"
+  },
+  "E184": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic wallets, which can be used for offline address generation"
+  },
+  "E189": {
+    "standard_name": "FIDO2",
+    "official_link": "https://fidoalliance.org/specs/fido2/",
+    "relevance": "Enables secure hardware wallet connections through authentication protocols"
+  },
+  "E191": {
+    "standard_name": "EIP-712",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-712",
+    "relevance": "Defines a standardized method for signing structured data, which can be used to generate and verify transaction alerts in a secure and interoperable way."
+  },
+  "E192": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Provides guidelines for security and privacy controls, including security alert management in IT systems"
+  },
+  "E193": {
+    "standard_name": "EIP-1559",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1559",
+    "relevance": "Introduces fee market changes and governance mechanisms for Ethereum, which can include alerts for network upgrades or protocol changes."
+  },
+  "E199": {
+    "standard_name": "EIP-2612",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-2612",
+    "relevance": "Defines ERC-2612, which includes permit functionality for gasless transactions and spending limits via approvals"
+  },
+  "E208": {
+    "standard_name": "ISO/IEC 23004-2",
+    "official_link": "https://www.iso.org/standard/73339.html",
+    "relevance": "Provides guidelines for digital asset management, including portfolio tracking and reporting"
+  },
+  "E210": {
+    "standard_name": "FATF Recommendation 15",
+    "official_link": "https://www.fatf-gafi.org/en/publications/fatfrecommendations/documents/fatf-recommendations.html",
+    "relevance": "Provides guidelines for tax reporting and AML/CFT compliance in cryptocurrency transactions"
+  },
+  "E212": {
+    "standard_name": "EIP-1559",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1559",
+    "relevance": "Introduces a mechanism for gas fee estimation and dynamic fee market, which is directly related to gas spending analysis in Ethereum."
+  },
+  "E220": {
+    "standard_name": "EIP-1155",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1155",
+    "relevance": "Defines a multi-token standard that can be used for quote aggregation and intent management in Ethereum-based ecosystems"
+  },
+  "E224": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which are foundational for secure vault strategies in cryptocurrency ecosystems"
+  },
+  "E228": {
+    "standard_name": "EIP-1167",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1167",
+    "relevance": "Defines the Minimal Proxy Contract standard, which is often used in prediction markets for gas-efficient contract interactions"
+  },
+  "E229": {
+    "standard_name": "ERC-721",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-721",
+    "relevance": "Defines the standard interface for non-fungible tokens (NFTs), which is foundational for NFT marketplaces"
+  },
+  "E236": {
+    "standard_name": "BIP-150",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0150.mediawiki",
+    "relevance": "Defines peer-to-peer network communication rules, which can help mitigate eclipse attacks by ensuring robust network connectivity"
+  },
+  "E237": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which are relevant to the movement of funds between addresses in a secure and structured manner."
+  },
+  "E24": {
+    "standard_name": "BEP-20",
+    "official_link": "https://github.com/binance-chain/BEPs/blob/master/BEPs/bep-20.md",
+    "relevance": "Defines the token standard for Binance Smart Chain (BSC), similar to ERC-20 on Ethereum"
+  },
+  "E240": {
+    "standard_name": "ISO/IEC 2382-21",
+    "official_link": "https://www.iso.org/standard/73000.html",
+    "relevance": "Covers data structures and elements in information processing systems, including QR code standards and related security considerations"
+  },
+  "E246": {
+    "standard_name": "EIP-20",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-20",
+    "relevance": "Defines the ERC-20 token standard, which includes event emissions for token transfers and approvals, a foundational aspect of smart contract events in Ethereum."
+  },
+  "E247": {
+    "standard_name": "EIP-1559",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1559",
+    "relevance": "Introduces dynamic gas pricing mechanisms, including base fee and priority fee, which can be used to implement gas price alerts."
+  },
+  "E249": {
+    "standard_name": "PEP 494",
+    "official_link": "https://peps.python.org/pep-0494/",
+    "relevance": "Defines the Python Software Development Kit (SDK) ecosystem, including best practices for Python package development and security considerations"
+  },
+  "E25": {
+    "standard_name": "SPL Token Program",
+    "official_link": "https://spl.solana.com/token",
+    "relevance": "Defines the technical specifications for SPL tokens on the Solana blockchain, including token creation, minting, and transfer standards"
+  },
+  "E254": {
+    "standard_name": "ISO/IEC 23865",
+    "official_link": "https://www.iso.org/standard/72301.html",
+    "relevance": "Provides guidelines for sandbox environments in software development, including security considerations for cryptocurrency ecosystems."
+  },
+  "E255": {
+    "standard_name": "EIP-1559",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1559",
+    "relevance": "Defines transaction fee market changes, which can impact Safe (Gnosis) compatibility in Ethereum-based ecosystems"
+  },
+  "E258": {
+    "standard_name": "EIP-1102",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1102",
+    "relevance": "Defines the MetaMask Inpage Provider API, which is a foundational standard for dApp browser integration in Ethereum-based ecosystems."
+  },
+  "E26": {
+    "standard_name": "TRC-20",
+    "official_link": "https://developers.tron.network/reference/trc-20",
+    "relevance": "Defines the technical standard for token implementation on the TRON blockchain, similar to ERC-20 on Ethereum"
+  },
+  "E28": {
+    "standard_name": "USB Implementers Forum (USB-IF) USB 3.2 Specification",
+    "official_link": "https://www.usb.org/documents",
+    "relevance": "Defines USB-A compatibility and physical interface standards"
+  },
+  "E40": {
+    "standard_name": "ISO 9995",
+    "official_link": "https://www.iso.org/standard/68383.html",
+    "relevance": "Defines keyboard layouts and input methods for multiple languages, relevant for multi-language support in cryptocurrency interfaces"
+  },
+  "E44": {
+    "standard_name": "ISO/IEC 7816-1",
+    "official_link": "https://www.iso.org/standard/54106.html",
+    "relevance": "Defines physical characteristics of identification cards, including credit card size (85.60 mm \u00d7 53.98 mm)"
+  },
+  "E47": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which are often stored in a case (e.g., hardware wallets) for secure cryptocurrency management."
+  },
+  "E48": {
+    "standard_name": "ISO/IEC 9126-1",
+    "official_link": "https://www.iso.org/standard/28671.html",
+    "relevance": "Covers usability and user interface quality, including intuitive setup"
+  },
+  "E52": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, enabling fast address generation through key derivation"
+  },
+  "E58": {
+    "standard_name": "USB Power Delivery Specification",
+    "official_link": "https://www.usb.org/documents",
+    "relevance": "Defines power delivery standards for USB devices, including USB-powered cryptocurrency hardware wallets"
+  },
+  "E65": {
+    "standard_name": "WalletConnect v2.0",
+    "official_link": "https://docs.walletconnect.com/2.0/introduction",
+    "relevance": "Defines the protocol for secure communication between wallets and dApps"
+  },
+  "E66": {
+    "standard_name": "EIP-1193",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1193",
+    "relevance": "Defines the Ethereum Provider API, which is the standard interface used by MetaMask to interact with Ethereum-based applications"
+  },
+  "F-CHAINLINK-POR": {
+    "standard_name": "ISO/IEC 23866:2019",
+    "official_link": "https://www.iso.org/standard/72302.html",
+    "relevance": "Provides guidelines for the use of blockchain and distributed ledger technology in supply chain management, including proof of reserve mechanisms."
+  },
+  "F-COLD": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001",
+    "relevance": "Provides guidelines for information security management, including secure storage practices relevant to cold storage of cryptocurrencies"
+  },
+  "F-CUST-SLA": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides a framework for information security management, including custody and service-level agreements (SLAs) for secure asset handling."
+  },
+  "F-DORA": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Provides security and privacy controls for information systems, including cryptographic key management and operational resilience, which aligns with DORA (EU) requirements for operational resilience in financial services."
+  },
+  "F-FATF-TR": {
+    "standard_name": "FATF Recommendation 16",
+    "official_link": "https://www.fatf-gafi.org/media/pdf/documents/recommendations.pdf",
+    "relevance": "Directly addresses the FATF Travel Rule for virtual asset service providers (VASPs) and cryptocurrency transactions"
+  },
+  "F-FCA": {
+    "standard_name": "FCA (Financial Conduct Authority) Handbook",
+    "official_link": "https://www.handbook.fca.org.uk/",
+    "relevance": "The FCA Handbook outlines regulatory requirements for financial services in the UK, including cryptocurrency-related activities under FCA jurisdiction."
+  },
+  "F-JFSA": {
+    "standard_name": "JFSA Guidelines for Cryptocurrency Exchange Services",
+    "official_link": "https://www.jfsa.go.jp/en/regulatory/financial/01.html",
+    "relevance": "Provides regulatory requirements for cryptocurrency exchanges in Japan, including security and fidelity measures."
+  },
+  "F-LEND-GOV": {
+    "standard_name": "EIP-4626",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-4626",
+    "relevance": "Defines a standard interface for yield-bearing vaults, which is highly relevant to lending governance in DeFi ecosystems."
+  },
+  "F-REPRO": {
+    "standard_name": "BIP-174",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki",
+    "relevance": "Defines Partially Signed Bitcoin Transactions (PSBT), which can be used to ensure reproducible builds of transactions"
+  },
+  "F-SBOM": {
+    "standard_name": "SPDX",
+    "official_link": "https://spdx.dev/spec/",
+    "relevance": "Software Bill of Materials (SBOM) standard for documenting components and dependencies in software, including cryptocurrency projects"
+  },
+  "F-SEGREG": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides requirements for information security management systems, including controls for fund segregation in financial systems"
+  },
+  "F-SLSA": {
+    "standard_name": "SLSA (Supply Chain Levels for Software Artifacts)",
+    "official_link": "https://slsa.dev/",
+    "relevance": "SLSA is a security framework for ensuring the integrity of software supply chains, including cryptocurrency-related software artifacts."
+  },
+  "F-SOC2-002": {
+    "standard_name": "SOC 2",
+    "official_link": "https://www.aicpa.org/content/dam/aicpa/research/standards/soc/downloadabledocuments/soc-2-description-criteria.pdf",
+    "relevance": "SOC 2 (Service Organization Control 2) is a widely recognized auditing standard for service organizations, including those in the cryptocurrency space, that covers system monitoring and other security controls under the Fidelity pillar."
+  },
+  "F-SOC2-003": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "ISO/IEC 27001 is a widely recognized standard for information security management, including change management processes, which aligns with SOC 2 requirements for cryptocurrency security."
+  },
+  "F-SOC2-T2": {
+    "standard_name": "SOC 2 Type II",
+    "official_link": "https://www.aicpa.org/interestareas/frc/assuranceadvisoryservices/soc2.html",
+    "relevance": "Directly addresses security, availability, processing integrity, confidentiality, and privacy controls for cryptocurrency custodians and service providers"
+  },
+  "F-STAKE-PERF": {
+    "standard_name": "EIP-3675",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-3675",
+    "relevance": "Defines the Ethereum upgrade to enable staking and performance tracking in the Beacon Chain"
+  },
+  "F-VARA": {
+    "standard_name": "VARA (Virtual Assets and Related Activities Regulation)",
+    "official_link": "https://www.dubaifdi.gov.ae/en/legislation/regulations/virtual-assets-and-related-activities-regulation",
+    "relevance": "VARA is the official regulatory framework for virtual assets in Dubai, covering custody, licensing, and operational security requirements for cryptocurrency-related activities."
+  },
+  "F-WALLET-SUPPORT": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for information security management, including customer support processes for secure systems like cryptocurrency wallets"
+  },
+  "F-WALLET-UPDATE": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which include mechanisms for secure wallet firmware updates and key derivation"
+  },
+  "F-WALLET-WARRANTY": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which are a key component of wallet security and recovery, aligning with the concept of wallet warranty."
+  },
+  "F-YIELD-APY": {
+    "standard_name": "EIP-4626",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-4626",
+    "relevance": "Defines a standard interface for yield-bearing vaults, which includes APY calculations and yield reporting, aligning with the 'Yield APY Accuracy' criterion under Fidelity."
+  },
+  "F-YIELD-TVL": {
+    "standard_name": "EIP-4626",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-4626",
+    "relevance": "Defines a standard interface for yield-bearing vaults, which is directly related to tracking yield and TVL (Total Value Locked) in DeFi protocols."
+  },
+  "F05": {
+    "standard_name": "IEC 60068-2-1",
+    "official_link": "https://webstore.iec.ch/publication/4200",
+    "relevance": "Specifies environmental testing for electronic components, including temperature range testing from -40\u00b0C to +85\u00b0C"
+  },
+  "F06": {
+    "standard_name": "IEC 60068-2-1",
+    "official_link": "https://www.iec.ch/standards/60068-2-1",
+    "relevance": "Specifies environmental testing for electronic and electrical products, including extreme cold temperature testing (-55\u00b0C)"
+  },
+  "F07": {
+    "standard_name": "IEC 60068-2-2",
+    "official_link": "https://webstore.iec.ch/publication/4022",
+    "relevance": "Specifies test methods for environmental testing, including extreme temperature conditions like +125\u00b0C, which is relevant for assessing the fidelity of cryptocurrency hardware under extreme heat."
+  },
+  "F08": {
+    "standard_name": "ISO 15408 (Common Criteria)",
+    "official_link": "https://www.commoncriteriaportal.org/",
+    "relevance": "Provides guidelines for evaluating the security of IT products, including environmental conditions like humidity for cryptographic modules."
+  },
+  "F09": {
+    "standard_name": "IEC 60068-2-14",
+    "official_link": "https://webstore.iec.ch/publication/4200",
+    "relevance": "Specifies thermal cycling test methods for electronic components and equipment, ensuring reliability under temperature variations."
+  },
+  "F101": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53-rev-5",
+    "relevance": "Provides security and privacy controls for information systems, including cryptographic module protection (F101 may relate to tamper-evident or shock-resistant requirements for hardware security modules)"
+  },
+  "F102": {
+    "standard_name": "ISO/IEC 17025",
+    "official_link": "https://www.iso.org/standard/54313.html",
+    "relevance": "Specifies requirements for the competence, impartiality, and consistent operation of laboratories, including environmental monitoring like temperature logging for cryptocurrency security."
+  },
+  "F115": {
+    "standard_name": "MIL-HDBK-217F",
+    "official_link": "https://www.sre.org/pubs/MIL-HDBK-217F.pdf",
+    "relevance": "Reliability prediction standard, relevant to Fidelity (F) pillar for reliability and security in systems"
+  },
+  "F116": {
+    "standard_name": "NASA-STD-8739.4",
+    "official_link": "https://standards.nasa.gov/standard/nasa/nasa-std-87394",
+    "relevance": "Defines requirements for cybersecurity risk management and information security controls"
+  },
+  "F131": {
+    "standard_name": "MIL-HDBK-217F",
+    "official_link": "https://www.everyjoe.com/2015/02/17/mil-hdbk-217f-reliability-prediction-of-electronic-equipment/",
+    "relevance": "Defines reliability prediction methods, including MTBF (Mean Time Between Failures) calculations for electronic systems, which can be applied to cryptocurrency hardware security modules (HSMs) or other critical infrastructure."
+  },
+  "F132": {
+    "standard_name": "IEC 62380",
+    "official_link": "https://webstore.iec.ch/publication/62380",
+    "relevance": "Specifies reliability requirements for electronic components, including Mean Time To Failure (MTTF) metrics, which can be applied to cryptocurrency hardware security modules (HSMs) and other critical infrastructure."
+  },
+  "F133": {
+    "standard_name": "ISO 15408 (Common Criteria)",
+    "official_link": "https://www.commoncriteriaportal.org/",
+    "relevance": "Provides a framework for evaluating the security of IT products, including cryptographic modules, and may include requirements for hardware durability like life cycles."
+  },
+  "F140": {
+    "standard_name": "BIP-144",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0144.mediawiki",
+    "relevance": "Defines a standard for signed releases and versioning in Bitcoin software"
+  },
+  "F141": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001",
+    "relevance": "Provides guidelines for information security management systems (ISMS), including service level agreements (SLAs) and availability requirements like 99.9% uptime."
+  },
+  "F142": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which inherently provide redundancy through key derivation and backup mechanisms"
+  },
+  "F143": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for information security management, including failover and redundancy in cryptocurrency systems"
+  },
+  "F145": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Provides guidelines for cryptographic module security, including firmware integrity and reproducibility"
+  },
+  "F146": {
+    "standard_name": "OWASP Bug Bounty Program Guidelines",
+    "official_link": "https://owasp.org/www-community/Bug_Bounty_Programs",
+    "relevance": "Provides guidelines for establishing and managing bug bounty programs to improve security"
+  },
+  "F150": {
+    "standard_name": "NIST SP 800-61",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-61/rev-2/final",
+    "relevance": "Provides guidelines for incident response planning, including preparation, detection, analysis, containment, eradication, and recovery."
+  },
+  "F151": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides requirements for establishing, implementing, maintaining, and continuously improving an information security management system (ISMS), which includes 24/7 security monitoring as part of risk management and incident response."
+  },
+  "F152": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Covers information security management, including automated alerts for security incidents"
+  },
+  "F154": {
+    "standard_name": "ISO/IEC 27031:2011",
+    "official_link": "https://www.iso.org/standard/43737.html",
+    "relevance": "Provides guidelines for business continuity and disaster recovery planning, including cryptocurrency systems"
+  },
+  "F157": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for information security management, including geographic redundancy as part of business continuity and disaster recovery planning."
+  },
+  "F158": {
+    "standard_name": "BIP-37",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki",
+    "relevance": "Defines Merkle proofs for lightweight clients in Bitcoin"
+  },
+  "F16": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-standards-and-guidelines/fips-validated-cryptographic-modules/fips-140-2",
+    "relevance": "Provides security requirements for cryptographic modules, including key management and protection, which are relevant to cryptocurrency security and fidelity (Pillar F)"
+  },
+  "F161": {
+    "standard_name": "BIP-144",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0144.mediawiki",
+    "relevance": "Defines a protocol for compact block relay, which ensures immutable and tamper-proof block propagation in Bitcoin"
+  },
+  "F162": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for information security management systems (ISMS), including monitoring and health dashboards for security controls"
+  },
+  "F163": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for information security management, including system availability and uptime monitoring as part of operational security controls."
+  },
+  "F164": {
+    "standard_name": "ISO/IEC 23865",
+    "official_link": "https://www.iso.org/standard/72301.html",
+    "relevance": "Provides guidelines for performance metrics in cryptographic systems, including security and reliability assessments"
+  },
+  "F165": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for information security management, including error tracking and incident management in cryptocurrency systems"
+  },
+  "F166": {
+    "standard_name": "NIST SP 800-90A",
+    "official_link": "https://csrc.nist.gov/projects/recommendation-for-random-number-generation-using-deterministic-random-bit-generators",
+    "relevance": "Provides guidelines for anomaly detection in random number generation, which is critical for cryptographic security."
+  },
+  "F167": {
+    "standard_name": "ISO/IEC 25010",
+    "official_link": "https://www.iso.org/standard/35733.html",
+    "relevance": "Provides guidelines for software testing, including automated testing pipelines, as part of software quality requirements and evaluation (SQuARE) framework."
+  },
+  "F169": {
+    "standard_name": "OWASP Application Security Verification Standard (ASVS)",
+    "official_link": "https://owasp.org/www-project-application-security-verification-standard/",
+    "relevance": "Provides guidelines for dynamic application security testing (DAST) in the OWASP ASVS, including cryptocurrency security considerations."
+  },
+  "F170": {
+    "standard_name": "OWASP Dependency-Check",
+    "official_link": "https://owasp.org/www-project-dependency-check/",
+    "relevance": "OWASP Dependency-Check is a tool designed to identify vulnerable dependencies in software projects, aligning with the Dependency Scanning criterion (F170) under the Fidelity pillar."
+  },
+  "F172": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Covers security controls for protecting cryptographic keys and secrets, including detection mechanisms"
+  },
+  "F176": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Covers documentation and change management in information security systems"
+  },
+  "F177": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "While BIP-39 focuses on mnemonic seed phrases, it indirectly supports migration by providing a standardized way to generate and recover wallets, which is critical during migration processes."
+  },
+  "F183": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53-rev-5",
+    "relevance": "Includes guidelines for security testing, including red team exercises, under the 'System and Services Acquisition' and 'Security Assessment and Authorization' families."
+  },
+  "F184": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for information security management, including service level agreements (SLAs) and availability requirements."
+  },
+  "F185": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001",
+    "relevance": "Provides guidelines for information security management, including multi-region deployment for cryptocurrency systems to ensure data integrity and availability across distributed locations."
+  },
+  "F187": {
+    "standard_name": "null",
+    "official_link": "null",
+    "relevance": "No direct standard"
+  },
+  "F188": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53-rev-5",
+    "relevance": "Covers system and communications protection controls, including graceful degradation in security systems"
+  },
+  "F189": {
+    "standard_name": "BIP-145",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0145.mediawiki",
+    "relevance": "Defines backward-compatible changes to the Bitcoin API for signature hash calculation"
+  },
+  "F190": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which inherently include versioning and deprecation policies for key derivation"
+  },
+  "F191": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Provides security requirements for cryptographic modules, including long-term support (LTS) considerations for cryptographic implementations."
+  },
+  "F192": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cmvp-validated-modules",
+    "relevance": "Provides security requirements for cryptographic modules, including firmware integrity and rollback protection"
+  },
+  "F200": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides requirements for information security management systems, including availability (uptime) as part of confidentiality, integrity, and availability (CIA) triad."
+  },
+  "F201": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
+    "relevance": "Provides guidelines for security patch management, including timelines for vulnerability remediation"
+  },
+  "F202": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides requirements for information security management systems (ISMS), including security audits and risk management, which are relevant to professional security audits in cryptocurrency."
+  },
+  "F35": {
+    "standard_name": "UL 94",
+    "official_link": "https://www.ul.com/resources/understanding-ul-94-flammability-ratings",
+    "relevance": "Standard for flammability testing of plastic materials, often used in fire-safe enclosures for electronic devices, including cryptocurrency hardware wallets."
+  },
+  "F40": {
+    "standard_name": "ISO 15408 (Common Criteria)",
+    "official_link": "https://www.commoncriteriaportal.org/",
+    "relevance": "Provides a framework for evaluating the security of IT products, including resistance to environmental factors like HCl (hydrochloric acid) in hardware security modules (HSMs) and secure elements."
+  },
+  "F42": {
+    "standard_name": "IEC 61000-4-2",
+    "official_link": "https://www.iec.ch/standards/61000-4-2",
+    "relevance": "Electrostatic discharge (ESD) immunity testing for electronic devices, including hardware wallets and cryptocurrency storage solutions."
+  },
+  "F43": {
+    "standard_name": "ISO/IEC 17824",
+    "official_link": "https://www.iso.org/standard/72321.html",
+    "relevance": "Specifies electromagnetic immunity requirements for electronic devices, including cryptographic hardware, ensuring resilience against EMI (Electromagnetic Interference)."
+  },
+  "F45": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cryptographic-module-validation-program-cmvp",
+    "relevance": "Provides guidelines for cryptographic module security, including resistance to electromagnetic interference (EMI) and other physical attacks, which can be relevant to EMP resistance."
+  },
+  "F46": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Covers physical security requirements, including resistance to environmental conditions like radiation, for cryptographic modules."
+  },
+  "F50": {
+    "standard_name": "FIPS 199",
+    "official_link": "https://csrc.nist.gov/publications/detail/fips/199/final",
+    "relevance": "Provides guidelines for categorizing information and systems based on security impact, including data retention requirements for high-impact systems"
+  },
+  "F51": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for information security management, including data retention policies that can be applied to cryptocurrency security"
+  },
+  "F52": {
+    "standard_name": "ISO/IEC 23001-7:2018",
+    "official_link": "https://www.iso.org/standard/69600.html",
+    "relevance": "Specifies requirements for long-term data retention, including cryptographic protection, which is relevant for ensuring data integrity and availability over 100 years."
+  },
+  "F53": {
+    "standard_name": "MIL-STD-810G",
+    "official_link": "https://www.everybodywiki.com/MIL-STD-810G",
+    "relevance": "Defines environmental test methods, including vibration and temperature testing, which can be used to assess hardware durability (e.g., screens) for >50k hours."
+  },
+  "F55": {
+    "standard_name": "IEC 61076-3-124",
+    "official_link": "https://webstore.iec.ch/publication/61076-3-124",
+    "relevance": "Specifies requirements for connectors with high insertion cycle durability, including >10k insertions, relevant for hardware security modules (HSMs) and cryptographic devices."
+  },
+  "F56": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cmvp-validated-modules",
+    "relevance": "Provides security requirements for cryptographic modules, including long-term integrity and resistance to degradation over time."
+  },
+  "F65": {
+    "standard_name": "ISO/IEC 14443",
+    "official_link": "https://www.iso.org/standard/54222.html",
+    "relevance": "Defines standards for proximity cards, including secure communication and authentication, which may include laser-engraved security features for cryptocurrency hardware wallets."
+  },
+  "F75": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Covers cryptographic module security requirements, including ECC memory protection for cryptographic operations"
+  },
+  "F76": {
+    "standard_name": "ISO/IEC 30107-1",
+    "official_link": "https://www.iso.org/standard/66521.html",
+    "relevance": "Specifies requirements for cryptographic hash functions, including CRC (Cyclic Redundancy Check) verification for data integrity in cryptographic systems."
+  },
+  "F77": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Covers security requirements for cryptographic modules, including self-tests at boot for hardware security modules (HSMs) and other cryptographic devices."
+  },
+  "F78": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Covers information security controls, including physical security measures like hermetic seals for cryptocurrency storage"
+  },
+  "F81": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cmvp-validated-modules",
+    "relevance": "Provides guidelines for cryptographic module security, including resistance to environmental threats (e.g., radiation, temperature extremes) which aligns with 'nuclear hardening' concepts."
+  },
+  "F86": {
+    "standard_name": "ISO 22301",
+    "official_link": "https://www.iso.org/standard/51053.html",
+    "relevance": "Covers business continuity and resilience, including biological threats (e.g., pandemics) that could impact cryptocurrency security infrastructure."
+  },
+  "F98": {
+    "standard_name": "UN 3481",
+    "official_link": "https://www.unece.org/fileadmin/DAM/trans/danger/publi/un3481.pdf",
+    "relevance": "Official UN standard for the transport of lithium batteries, relevant for cryptocurrency hardware wallets or devices containing lithium batteries"
+  },
+  "S-ADV-FHE": {
+    "standard_name": "NIST SP 800-186",
+    "official_link": "https://csrc.nist.gov/projects/post-quantum-cryptography/fully-homomorphic-encryption",
+    "relevance": "NIST's Special Publication 800-186 provides guidelines and standards for post-quantum cryptography, including Fully Homomorphic Encryption (FHE) as a security criterion."
+  },
+  "S-ADV-PEDERSEN": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic wallets, which often use Pedersen commitments for privacy-preserving transactions (e.g., in Mimblewimble-based protocols like Grin or Beam)"
+  },
+  "S-BANK-AML": {
+    "standard_name": "FATF Recommendation 15",
+    "official_link": "https://www.fatf-gafi.org/media/fatf/documents/recommendations/FATF%20Recommendations%202012.pdf",
+    "relevance": "Provides guidelines for AML/CFT (Anti-Money Laundering/Combating the Financing of Terrorism) in the context of virtual assets and virtual asset service providers (VASPs), including KYC (Know Your Customer) requirements."
+  },
+  "S-BR-MINT": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which include key derivation and minting control mechanisms"
+  },
+  "S-BRIDGE-PAUSE": {
+    "standard_name": "EIP-1559",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1559",
+    "relevance": "While not directly about bridge emergency pauses, EIP-1559 introduces fee market changes that can indirectly affect bridge security and emergency mechanisms."
+  },
+  "S-CCSS-004": {
+    "standard_name": "BIP-65",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki",
+    "relevance": "Defines CLTV (CheckLockTimeVerify) for Bitcoin, which is often used in multi-signature setups to enforce time-based conditions"
+  },
+  "S-CEX-COLD": {
+    "standard_name": "ISO 27001",
+    "official_link": "https://www.iso.org/standard/27001.html",
+    "relevance": "Provides guidelines for information security management, including secure storage of cryptographic assets (e.g., cold storage practices)"
+  },
+  "S-CUST-HSM": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/publications/detail/fips/140/2/final",
+    "relevance": "Defines security requirements for cryptographic modules, including HSMs (Hardware Security Modules)"
+  },
+  "S-LIB-NOISE": {
+    "standard_name": "RFC 8439",
+    "official_link": "https://datatracker.ietf.org/doc/html/rfc8439",
+    "relevance": "Specifies the Noise Protocol Framework"
+  },
+  "S-LIB-SIGNAL": {
+    "standard_name": "Signal Protocol",
+    "official_link": "https://signal.org/docs/specifications/doubleratchet/",
+    "relevance": "The official specification for Signal Protocol, which includes end-to-end encryption for secure messaging"
+  },
+  "S-LIB-SODIUM": {
+    "standard_name": "libsodium",
+    "official_link": "https://doc.libsodium.org/",
+    "relevance": "Official documentation and reference for the libsodium cryptographic library, which includes NaCl (Networking and Cryptography library) implementations."
+  },
+  "S-PQC-SPHINCS": {
+    "standard_name": "NIST SP 800-208",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-208/final",
+    "relevance": "Covers post-quantum cryptography, including SPHINCS+ as a stateful hash-based signature scheme"
+  },
+  "S-PVY-RAILGUN": {
+    "standard_name": "BIP-69",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0069.mediawiki",
+    "relevance": "Defines deterministic transaction ordering and sorting, which can be relevant for privacy-preserving transaction construction in Railgun."
+  },
+  "S-PVY-SAPLING": {
+    "standard_name": "ZIP 204",
+    "official_link": "https://zips.z.cash/zip-0204",
+    "relevance": "Defines the Sapling protocol upgrade for Zcash, including cryptographic parameters and security considerations"
+  },
+  "S-RFC-8032": {
+    "standard_name": "RFC 8032",
+    "official_link": "https://datatracker.ietf.org/doc/html/rfc8032",
+    "relevance": "Defines EdDSA (Edwards-curve Digital Signature Algorithm) and related cryptographic algorithms, including Ed25519 and Ed448"
+  },
+  "S-RFC-9106": {
+    "standard_name": "RFC 9106",
+    "official_link": "https://datatracker.ietf.org/doc/html/rfc9106",
+    "relevance": "Defines the Argon2 password-based key derivation function (PBKDF) used for secure cryptographic operations"
+  },
+  "S-SC-FLASH": {
+    "standard_name": "EIP-2981",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-2981",
+    "relevance": "Defines a standard interface for royalties in NFTs, which can be relevant to flash loan protection by ensuring proper handling of assets in DeFi protocols"
+  },
+  "S-SC-ORACLE": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001",
+    "relevance": "Provides a framework for information security management, including controls for protecting against oracle manipulation risks."
+  },
+  "S-SC-PROXY": {
+    "standard_name": "EIP-1167",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-1167",
+    "relevance": "Defines the Minimal Proxy Contract standard for Ethereum, which is relevant to proxy upgrade security in smart contracts"
+  },
+  "S-SLIP-001": {
+    "standard_name": "SLIP-0039",
+    "official_link": "https://github.com/satoshilabs/slips/blob/master/slip-0039.md",
+    "relevance": "Defines Shamir's Secret Sharing for BIP-39 seed phrases"
+  },
+  "S-SLIP-0039": {
+    "standard_name": "SLIP-0039",
+    "official_link": "https://github.com/satoshilabs/slips/blob/master/slip-0039.md",
+    "relevance": "Directly defines Shamir's Secret Sharing for mnemonic seed phrases"
+  },
+  "S-STAKE-REDUND": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
+    "relevance": "Provides guidelines for security and privacy controls, including redundancy and resilience in systems, which can be applied to staking mechanisms in cryptocurrency."
+  },
+  "S-YIELD-TIMELOCK": {
+    "standard_name": "EIP-2612",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-2612",
+    "relevance": "Defines a standard for timelock-based yield strategies in Ethereum, particularly for vaults and staking mechanisms."
+  },
+  "S-ZK-CAIRO": {
+    "standard_name": "EIP-196",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-196",
+    "relevance": "Defines the StarkNet VM (Cairo VM) as part of the Ethereum ecosystem, though not directly a security standard, it is the most relevant technical specification for the Cairo/StarkNet VM."
+  },
+  "S-ZK-GROTH16": {
+    "standard_name": "Zcash Protocol Specification",
+    "official_link": "https://zips.z.cash/protocol/protocol.pdf",
+    "relevance": "Defines Groth16 zkSNARKs as part of the Zcash cryptocurrency's privacy-preserving proof system"
+  },
+  "S-ZK-STARK": {
+    "standard_name": "IEEE P1363.3",
+    "official_link": "https://standards.ieee.org/standard/P1363_3-2013.html",
+    "relevance": "IEEE P1363.3 covers standards for cryptographic techniques, including zero-knowledge proofs, which are relevant to STARKs (Scalable Transparent ARguments of Knowledge)."
+  },
+  "S100": {
+    "standard_name": "BIP-381",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0381.mediawiki",
+    "relevance": "Defines Miniscript descriptors for Bitcoin script policy expressions"
+  },
+  "S106": {
+    "standard_name": "EIP-712",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-712",
+    "relevance": "EIP-712 defines a standard for typed structured data hashing and signing, which is directly related to the retrieval and handling of structured data as mentioned in the criterion."
+  },
+  "S111": {
+    "standard_name": "PCI DSS",
+    "official_link": "https://www.pcisecuritystandards.org/document_library",
+    "relevance": "Payment Card Industry Data Security Standard for securing payment card data"
+  },
+  "S114": {
+    "standard_name": "ETSI EN 319 411",
+    "official_link": "https://www.etsi.org/deliver/etsi_en/319400_319499/319411/01.01.00_60/en_319411v010101p.pdf",
+    "relevance": "Specifies security mechanisms for cryptographic modules, including key management and protection, relevant to cryptocurrency security."
+  },
+  "S115": {
+    "standard_name": "WebAuthn",
+    "official_link": "https://www.w3.org/TR/webauthn-2/",
+    "relevance": "Defines the Web Authentication API for FIDO2-compliant authentication, including cryptographic key-based authentication."
+  },
+  "S118": {
+    "standard_name": "AMD SEV-SNP",
+    "official_link": "https://www.amd.com/en/technologies/sev-snp",
+    "relevance": "AMD SEV (Secure Encrypted Virtualization) and SEV-SNP (Secure Nested Paging) are official AMD specifications for memory encryption and security in virtualized environments, directly relevant to cryptocurrency security."
+  },
+  "S120": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "NIST's FIPS 140-2 standard covers security requirements for cryptographic modules, including hardware security modules (HSMs) like the Apple Secure Enclave."
+  },
+  "S122": {
+    "standard_name": "ISO/IEC 27002",
+    "official_link": "https://www.iso.org/standard/54533.html",
+    "relevance": "Provides guidelines for information security controls, including cryptographic security measures"
+  },
+  "S129": {
+    "standard_name": "NIS2 Directive",
+    "official_link": "https://digital-strategy.ec.europa.eu/en/policies/nis2-directive",
+    "relevance": "EU's Network and Information Security Directive (NIS2) sets security requirements for critical infrastructure, including cryptocurrency services."
+  },
+  "S136": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which are a key security feature for cryptocurrency wallets"
+  },
+  "S137": {
+    "standard_name": "BIP-39",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+    "relevance": "Defines mnemonic seed phrases, which are a key component of secure cryptocurrency key management"
+  },
+  "S138": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Provides security and privacy controls for information systems, including cryptographic protection (PRIS)"
+  },
+  "S139": {
+    "standard_name": "BSI IT-Grundschutz Compendium C5",
+    "official_link": "https://www.bsi.bund.de/EN/Service/ITGrundschutz/ITGrundschutzNode/it_grundschutz_node.html",
+    "relevance": "Covers cryptographic security requirements and controls"
+  },
+  "S144": {
+    "standard_name": "NIST SP 800-208",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-208/final",
+    "relevance": "Covers post-quantum cryptography, including Kyber (CRYSTALS-Kyber) as a standardized algorithm for key encapsulation"
+  },
+  "S145": {
+    "standard_name": "FIPS 203",
+    "official_link": "https://csrc.nist.gov/projects/post-quantum-cryptography/round-3-candidate-algorithms",
+    "relevance": "Defines CRYSTALS-Dilithium as a post-quantum digital signature algorithm, which is directly relevant to the S145 criterion."
+  },
+  "S149": {
+    "standard_name": "RFC 8439",
+    "official_link": "https://datatracker.ietf.org/doc/html/rfc8439",
+    "relevance": "Defines the XChaCha20-Poly1305 authenticated encryption algorithm"
+  },
+  "S153": {
+    "standard_name": "SOC 3",
+    "official_link": "https://www.aicpa.org/content/dam/aicpa/research/standards/soc/soc3.pdf",
+    "relevance": "SOC 3 is a widely recognized standard for reporting on security controls, including those relevant to cryptocurrency security."
+  },
+  "S155": {
+    "standard_name": "HITRUST CSF",
+    "official_link": "https://hitrustalliance.net/standards/csf/",
+    "relevance": "HITRUST CSF is a comprehensive security framework specifically designed for healthcare and related industries, covering security controls and best practices."
+  },
+  "S162": {
+    "standard_name": "Slither",
+    "official_link": "https://github.com/crytic/slither",
+    "relevance": "A static analysis tool for Solidity smart contracts, directly related to security auditing and vulnerability detection in Ethereum smart contracts."
+  },
+  "S163": {
+    "standard_name": "EIP-86",
+    "official_link": "https://eips.ethereum.org/EIPS/eip-86",
+    "relevance": "Ethereum Improvement Proposal for formal verification and security analysis of smart contracts, which aligns with Mythril's focus on automated security analysis"
+  },
+  "S173": {
+    "standard_name": "OWASP Top 10",
+    "official_link": "https://owasp.org/www-project-top-ten/",
+    "relevance": "Directly addresses the OWASP Top 10 security risks for web applications and APIs, including cryptocurrency-related security concerns"
+  },
+  "S178": {
+    "standard_name": "ISO/IEC 19794-6",
+    "official_link": "https://www.iso.org/standard/53297.html",
+    "relevance": "Specifies data interchange formats for iris biometric data, which is directly relevant to iris scan security criteria in cryptocurrency applications."
+  },
+  "S182": {
+    "standard_name": "FIDO2",
+    "official_link": "https://fidoalliance.org/specs/fido2/fido2-spec-v2.0-nfc-bt-amendment.html",
+    "relevance": "Defines the FIDO2 protocol for authentication, which includes WebAuthn"
+  },
+  "S189": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/publications/detail/fips/140/2/final",
+    "relevance": "Specifies security requirements for cryptographic modules, including HSMs"
+  },
+  "S19": {
+    "standard_name": "BIP-49",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki",
+    "relevance": "Defines P2SH-wrapped SegWit addresses"
+  },
+  "S191": {
+    "standard_name": "NIST SP 800-193",
+    "official_link": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-193.pdf",
+    "relevance": "Provides guidelines for secure boot practices and mechanisms"
+  },
+  "S192": {
+    "standard_name": "NIST SP 800-193",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-193/final",
+    "relevance": "Provides guidelines for secure boot processes, including verified boot mechanisms for cryptographic systems"
+  },
+  "S194": {
+    "standard_name": "ISO/IEC 27001",
+    "official_link": "https://www.iso.org/standard/27001",
+    "relevance": "Provides guidelines for information security management, including tamper detection mechanisms"
+  },
+  "S195": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Provides security requirements for cryptographic modules, including tamper response mechanisms"
+  },
+  "S200": {
+    "standard_name": "ISO/IEC 2382-37:2018",
+    "official_link": "https://www.iso.org/standard/72300.html",
+    "relevance": "Provides guidelines for anti-counterfeit measures in digital and physical security, including cryptographic systems"
+  },
+  "S202": {
+    "standard_name": "NIST SP 800-208",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-208/final",
+    "relevance": "Covers key encapsulation mechanisms (KEMs) like CRYSTALS-Kyber, which is a post-quantum cryptographic algorithm"
+  },
+  "S203": {
+    "standard_name": "FIPS 203",
+    "official_link": "https://csrc.nist.gov/projects/post-quantum-cryptography/round-3-candidates/dilithium",
+    "relevance": "Defines CRYSTALS-Dilithium as a post-quantum digital signature algorithm"
+  },
+  "S204": {
+    "standard_name": "NIST SP 800-208",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-208/final",
+    "relevance": "Covers post-quantum cryptography, including SPHINCS+ as a lattice-based signature scheme"
+  },
+  "S206": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Provides security and privacy controls for information systems, including cryptographic key management and protection"
+  },
+  "S207": {
+    "standard_name": "NIST SP 800-56A",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-56a/rev-3/final",
+    "relevance": "Provides guidelines for key establishment using McEliece cryptosystem, including Classic McEliece"
+  },
+  "S210": {
+    "standard_name": "OpenID Connect Core 1.0",
+    "official_link": "https://openid.net/specs/openid-connect-core-1_0.html",
+    "relevance": "Defines the OpenID Connect protocol for authentication, including security considerations for cryptocurrency applications"
+  },
+  "S212": {
+    "standard_name": "OWASP ASVS",
+    "official_link": "https://owasp.org/www-project-application-security-verification-standard/",
+    "relevance": "OWASP ASVS (Application Security Verification Standard) includes guidelines for API security, including rate limiting, under the Authentication and Session Management section (V4: Authentication Mechanisms)."
+  },
+  "S213": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/standards-and-guidelines/sp-800-53",
+    "relevance": "Covers security controls for API key management, including rotation requirements in AC-2 (Account Management) and IA-5 (Authentication Failures)"
+  },
+  "S217": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Covers access control policies, including least privilege principles, in security and privacy controls for information systems"
+  },
+  "S218": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Covers security controls including network segmentation (AC-17, AC-19) which can be applied to microsegmentation in cryptocurrency systems"
+  },
+  "S221": {
+    "standard_name": "OWASP ASVS",
+    "official_link": "https://owasp.org/www-project-application-security-verification-standard/",
+    "relevance": "Includes security controls for detecting and mitigating honeypots and other malicious activities in cryptocurrency systems"
+  },
+  "S223": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which can help mitigate address poisoning by ensuring deterministic key derivation"
+  },
+  "S229": {
+    "standard_name": "RFC 8439",
+    "official_link": "https://datatracker.ietf.org/doc/html/rfc8439",
+    "relevance": "Defines the XChaCha20-Poly1305 cipher suite, which includes XChaCha20 as a variant of ChaCha20 with a 192-bit nonce for improved security"
+  },
+  "S231": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which are critical for secure key management in cryptocurrency systems"
+  },
+  "S232": {
+    "standard_name": "Noise Protocol Framework",
+    "official_link": "https://noiseprotocol.org/noise.html",
+    "relevance": "Defines a framework for secure peer-to-peer communication, including cryptographic handshakes and key exchange, which is relevant to cryptocurrency security."
+  },
+  "S234": {
+    "standard_name": "NIST SP 800-186",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-186/final",
+    "relevance": "Specifies guidelines for homomorphic encryption, including definitions, security considerations, and implementation recommendations."
+  },
+  "S236": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Provides security and privacy controls for information systems, including hardware security modules (HSMs) like the ATECC608B"
+  },
+  "S240": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Provides security and privacy controls for federal information systems, including cryptographic security controls relevant to NIST CSF 2.0"
+  },
+  "S260": {
+    "standard_name": "ISO/IEC 15408 (Common Criteria)",
+    "official_link": "https://www.commoncriteriaportal.org/",
+    "relevance": "Defines the Common Criteria for Information Technology Security Evaluation, including EAL4+ certification"
+  },
+  "S261": {
+    "standard_name": "ISO/IEC 15408 (Common Criteria)",
+    "official_link": "https://www.commoncriteriaportal.org/",
+    "relevance": "Defines the Common Criteria for Information Technology Security Evaluation, including EAL7 (Evaluation Assurance Level 7)"
+  },
+  "S264": {
+    "standard_name": "NXP P71D600",
+    "official_link": "https://www.nxp.com/docs/en/data-sheet/P71D600.pdf",
+    "relevance": "NXP P71D600 is a secure hardware-based cryptographic module standard, often used in cryptocurrency security for secure key storage and operations."
+  },
+  "S265": {
+    "standard_name": "ST31",
+    "official_link": "https://www.st.com/resource/en/datasheet/st31f411cc.pdf",
+    "relevance": "STMicroelectronics ST31 is a secure element chip used for cryptographic operations, including cryptocurrency security."
+  },
+  "S266": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Provides security requirements for cryptographic modules, including key management and protection, which aligns with high-security cryptocurrency standards."
+  },
+  "S267": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which are critical for secure key management in cryptocurrency systems"
+  },
+  "S270": {
+    "standard_name": "BIP-32",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+    "relevance": "Defines hierarchical deterministic (HD) wallets, which are fundamental to secure key management in cryptocurrencies"
+  },
+  "S272": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Provides security requirements for cryptographic modules, including key management and secure execution environments"
+  },
+  "S274": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Provides security controls for systems, including active monitoring and protection mechanisms (e.g., SI-04, SI-05) that align with 'Active Shield' concepts."
+  },
+  "S275": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cmvp-validated-modules",
+    "relevance": "Covers physical security mechanisms, including tamper detection and resistance, which may include voltage glitch detection as part of secure hardware requirements."
+  },
+  "S38": {
+    "standard_name": "ISO 15408",
+    "official_link": "https://www.iso.org/standard/50341.html",
+    "relevance": "Defines Common Criteria for information technology security evaluation, including EAL5+"
+  },
+  "S39": {
+    "standard_name": "ISO 15408",
+    "official_link": "https://www.iso.org/standard/50341.html",
+    "relevance": "Defines Common Criteria for information technology security evaluation, including EAL6+"
+  },
+  "S47": {
+    "standard_name": "FCC Part 15",
+    "official_link": "https://www.fcc.gov/media/radio/part-15",
+    "relevance": "Regulates unintentional radiators (e.g., electronic devices) to limit interference with radio communications, relevant for hardware wallets or devices emitting signals"
+  },
+  "S50": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Defines security requirements for cryptographic modules, including secure elements and tamper-resistant hardware."
+  },
+  "S51": {
+    "standard_name": "STMicroelectronics ST33 Security IC Standard",
+    "official_link": "https://www.st.com/resource/en/datasheet/st33j2m0.pdf",
+    "relevance": "ST33 is a secure microcontroller family used in cryptocurrency hardware wallets and payment systems, meeting security standards like Common Criteria EAL5+ and FIPS 140-2."
+  },
+  "S52": {
+    "standard_name": "Common Criteria Protection Profile for Secure Signature Creation Devices (PP-SCD)",
+    "official_link": "https://www.commoncriteriaportal.org/files/ppfiles/pp0001b.pdf",
+    "relevance": "Infineon SLE78 is a secure element chip that often complies with Common Criteria EAL4+ or higher, which is a widely recognized standard for security evaluation of cryptographic modules."
+  },
+  "S53": {
+    "standard_name": "NXP SE050 Product Specification",
+    "official_link": "https://www.nxp.com/docs/en/data-sheet/SE050.pdf",
+    "relevance": "Official technical specification for the NXP SE050 secure element, which is a hardware security module (HSM) used in cryptocurrency applications for secure key storage and cryptographic operations."
+  },
+  "S55": {
+    "standard_name": "ISO/IEC 29155",
+    "official_link": "https://www.iso.org/standard/54434.html",
+    "relevance": "ISO/IEC 29155 is a standard for trustworthy systems and devices, which includes security criteria for hardware-based trust anchors like Optiga Trust. It aligns with the security pillar (S) and covers aspects of secure hardware modules, which are relevant to cryptocurrency security."
+  },
+  "S56": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cryptographic-standard-and-validation-program-documentation",
+    "relevance": "Provides guidelines for cryptographic module security, including memory isolation requirements for secure cryptographic operations."
+  },
+  "S57": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Defines security requirements for cryptographic modules, including secure key storage and ensuring keys never leave the secure environment (SE)"
+  },
+  "S58": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Provides guidelines for cryptographic module security, including side-channel resistance requirements"
+  },
+  "S59": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cryptographic-module-validation-program-cmvp/validation-programs/fips-140-2-and-140-3",
+    "relevance": "Provides guidelines for cryptographic module security, including resistance to side-channel attacks like DPA (Differential Power Analysis)"
+  },
+  "S60": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/projects/risk-management/guidance/sp-800-53",
+    "relevance": "Covers security controls including resistance to side-channel attacks (SCA) and physical probing attacks (SPA), which are relevant to cryptographic hardware security."
+  },
+  "S62": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cmvp-validated-modules",
+    "relevance": "Covers physical security mechanisms, including resistance to fault injection attacks, for cryptographic modules."
+  },
+  "S63": {
+    "standard_name": "ISO/IEC 15408 (Common Criteria)",
+    "official_link": "https://www.commoncriteriaportal.org/",
+    "relevance": "Provides a framework for evaluating the security properties of IT products, including resistance to physical attacks like glitching."
+  },
+  "S64": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cryptographic-module-validation-program-cmvp/validation-authorities",
+    "relevance": "Provides security requirements for cryptographic modules, including tamper-evident and tamper-resistant physical security mechanisms"
+  },
+  "S65": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cryptographic-standard-and-validation-program-documentation",
+    "relevance": "Covers tamper-evident and tamper-resistant security requirements for cryptographic modules, which may include auto-wipe functionality on tamper detection."
+  },
+  "S66": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Provides security requirements for cryptographic modules, including protection against cold boot attacks through physical security mechanisms"
+  },
+  "S67": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "FIPS 140-2 includes security requirements for cryptographic modules, which may cover hardware security features like JTAG disablement to prevent unauthorized access."
+  },
+  "S68": {
+    "standard_name": "NIST SP 800-90A",
+    "official_link": "https://csrc.nist.gov/projects/random-number-generation/statistical-test-suite",
+    "relevance": "Specifies requirements for hardware-based true random number generators (TRNG) and statistical testing methods"
+  },
+  "S69": {
+    "standard_name": "NIST SP 800-90A",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-standards-and-guidelines",
+    "relevance": "Specifies requirements for cryptographic random number generators, including CSPRNGs"
+  },
+  "S72": {
+    "standard_name": "NIST SP 800-90A",
+    "official_link": "https://csrc.nist.gov/projects/random-number-generation/statistical-test-suite",
+    "relevance": "Provides statistical tests for random number generators (RNGs), including health and quality assessments"
+  },
+  "S73": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cmvp-validated-modules",
+    "relevance": "Provides security requirements for cryptographic modules, including secure firmware signing and validation"
+  },
+  "S74": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/cryptographic-module-validation-program-cmvps",
+    "relevance": "Provides security requirements for cryptographic modules, including secure boot and tamper-resistant mechanisms"
+  },
+  "S75": {
+    "standard_name": "BIP-68",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0068.mediawiki",
+    "relevance": "Defines relative lock-time consensus rules to prevent replay attacks and ensure forward compatibility"
+  },
+  "S79": {
+    "standard_name": "OWASP Bug Bounty Program Guidelines",
+    "official_link": "https://owasp.org/www-community/Bug_Bounty_Programs",
+    "relevance": "Provides guidelines for establishing and managing bug bounty programs to improve security"
+  },
+  "S80": {
+    "standard_name": "ISO/IEC 9564-1",
+    "official_link": "https://www.iso.org/standard/63101.html",
+    "relevance": "Specifies requirements for personal identification numbers (PINs), including length and security considerations"
+  },
+  "S82": {
+    "standard_name": "FIDO2",
+    "official_link": "https://fidoalliance.org/specs/fido-v2.0-ps-20190516/fido-client-to-authenticator-protocol-v2.0-ps-20190516.html",
+    "relevance": "FIDO2 includes biometric authentication standards for secure cryptocurrency access"
+  },
+  "S83": {
+    "standard_name": "NIST SP 800-53",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",
+    "relevance": "Covers access control policies, including account lockout mechanisms (limited attempts) under AC-7 (Unsuccessful Login Attempts)"
+  },
+  "S84": {
+    "standard_name": "FIPS 140-2",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-module-validation-program/standards",
+    "relevance": "Covers cryptographic module security requirements, including secure wipe after failures"
+  },
+  "S85": {
+    "standard_name": "BIP-65",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki",
+    "relevance": "Defines CLTV (CheckLockTimeVerify) which can be used to implement time-based delays in transactions, though not strictly exponential"
+  },
+  "S86": {
+    "standard_name": "FIPS 186-5",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-standards-and-guidelines/fips/186-5",
+    "relevance": "Specifies the P-256 (secp256r1) elliptic curve as a standard for digital signatures and key exchange"
+  },
+  "S87": {
+    "standard_name": "FIPS 186-5",
+    "official_link": "https://csrc.nist.gov/projects/cryptographic-standards-and-guidelines/fips/186",
+    "relevance": "Specifies the secp384r1 elliptic curve as a recommended curve for digital signatures (DSA) and key agreement"
+  },
+  "S91": {
+    "standard_name": "FIPS 203",
+    "official_link": "https://csrc.nist.gov/projects/post-quantum-cryptography/round-3-candidate-algorithms",
+    "relevance": "Defines SPHINCS+ as a post-quantum digital signature algorithm, selected by NIST for standardization"
+  },
+  "S93": {
+    "standard_name": "BLAKE3",
+    "official_link": "https://github.com/BLAKE3-team/BLAKE3/blob/master/specs/BLAKE3.pdf",
+    "relevance": "Official specification for the BLAKE3 cryptographic hash function"
+  },
+  "S95": {
+    "standard_name": "NIST SP 800-132",
+    "official_link": "https://csrc.nist.gov/publications/detail/sp/800-132/final",
+    "relevance": "Provides guidelines for password-based key derivation functions, including bcrypt"
+  },
+  "S99": {
+    "standard_name": "BIP-380",
+    "official_link": "https://github.com/bitcoin/bips/blob/master/bip-0380.mediawiki",
+    "relevance": "Defines Miniscript, a language for expressing Bitcoin script policies in a structured way, which is directly related to the S99 criterion."
+  }
+}

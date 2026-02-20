@@ -10,9 +10,10 @@ import time
 from datetime import datetime
 from core.config import SUPABASE_URL, get_supabase_headers
 from core.api_provider import AIProvider, parse_evaluation_response
+from core.supabase_pagination import SupabaseClient
 
 SYSTEM_PROMPT = """You are an expert in crypto security and blockchain product evaluation.
-You use the SAFE SCORING methodology to evaluate products.
+You use the SAFE SCORING methodology to evaluate products ACCURATELY based on FACTS.
 
 SAFE SCORING METHODOLOGY:
 - S (Security 25%): Cryptographic protection, encryption, Secure Element, multisig
@@ -20,87 +21,59 @@ SAFE SCORING METHODOLOGY:
 - F (Fidelity 25%): Durability, physical resistance, software quality, audits
 - E (Efficiency 25%): Usability, multi-chain, interface, accessibility
 
-RATING SYSTEM:
-- YES = Concrete proof that the product implements this norm
-- YESp = Imposed by product design (no proof needed)
-- NO = The product does NOT implement this applicable norm
-- TBD = Truly impossible to determine (use rarely)
+RATING SYSTEM - BE STRICT AND FACTUAL:
+- YES = CONCRETE PROOF the product implements this norm
+- YESp = Inherent to the technology (e.g., EVM uses secp256k1)
+- NO = Product does NOT implement this norm
+- N/A = Norm is technically IMPOSSIBLE for this product type
+- TBD = Cannot determine (use RARELY, max 5%)
+
+ANTI-HALLUCINATION RULES:
+1. HARDWARE vs SOFTWARE: Hardware norms (Secure Element, tamper) = N/A for software
+2. CUSTODIAL vs SELF-CUSTODY: Self-custody features = N/A for custodial services
+3. BE SPECIFIC: Don't assume features exist without evidence
+4. TYPE MATTERS: Read the product type carefully
+
+Read the norm DEFINITION before evaluating.
 
 FORMAT (one line per norm):
-CODE: RESULT | Brief reason
+CODE: RESULT | Brief factual reason
 """
 
 
 def get_all_evaluated_ids():
-    """Get ALL evaluated product IDs with pagination."""
-    headers = get_supabase_headers()
-    evaluated_ids = set()
-    offset = 0
-    while True:
-        r = requests.get(
-            f"{SUPABASE_URL}/rest/v1/evaluations?select=product_id&offset={offset}&limit=1000",
-            headers=headers
-        )
-        if r.status_code != 200:
-            break
-        data = r.json()
-        if not data:
-            break
-        for e in data:
-            evaluated_ids.add(e['product_id'])
-        offset += 1000
-        if offset > 100000:
-            break
-    return evaluated_ids
+    """Get ALL evaluated product IDs using centralized pagination."""
+    client = SupabaseClient()
+    return client.fetch_evaluated_product_ids()
 
 
 def load_data():
-    """Load minimal required data."""
-    headers = get_supabase_headers()
+    """
+    Load ALL data using centralized pagination.
+    This NEVER limits to 1000 - always fetches complete data.
+    """
+    client = SupabaseClient()
 
-    # Products
-    r = requests.get(f"{SUPABASE_URL}/rest/v1/products?select=*", headers=headers)
-    products = r.json() if r.status_code == 200 else []
+    # Products - ALWAYS gets all
+    products = client.fetch_products()
     print(f"   {len(products)} products")
 
     # Product types
-    r = requests.get(f"{SUPABASE_URL}/rest/v1/product_types?select=id,code,name", headers=headers)
-    types = {t['id']: t for t in r.json()} if r.status_code == 200 else {}
+    types = client.fetch_product_types()
     print(f"   {len(types)} types")
 
-    # Norms
-    r = requests.get(f"{SUPABASE_URL}/rest/v1/norms?select=id,code,pillar,title&order=pillar,code", headers=headers)
-    norms = r.json() if r.status_code == 200 else []
+    # Norms - ALWAYS gets all with summaries
+    norms = client.fetch_norms(with_summaries=True)
     norms_by_id = {n['id']: n for n in norms}
     print(f"   {len(norms)} norms")
 
-    # Applicability with pagination
-    applicability = {}
-    offset = 0
-    while True:
-        r = requests.get(
-            f"{SUPABASE_URL}/rest/v1/norm_applicability?select=type_id,norm_id,is_applicable&offset={offset}&limit=1000",
-            headers=headers
-        )
-        data = r.json() if r.status_code == 200 else []
-        if not data:
-            break
-        for a in data:
-            if a['type_id'] not in applicability:
-                applicability[a['type_id']] = {}
-            applicability[a['type_id']][a['norm_id']] = a['is_applicable']
-        offset += 1000
+    # Applicability rules
+    applicability = client.fetch_applicability()
     print(f"   {sum(len(v) for v in applicability.values())} applicability rules")
 
-    # Product type mapping
-    r = requests.get(f"{SUPABASE_URL}/rest/v1/product_type_mapping?select=product_id,type_id,is_primary", headers=headers)
-    mappings = r.json() if r.status_code == 200 else []
-    product_types = {}
-    for m in mappings:
-        pid = m['product_id']
-        if pid not in product_types:
-            product_types[pid] = []
-        product_types[pid].append(m['type_id'])
+    # Product type mappings
+    product_types = client.fetch_product_type_mappings()
+
     # Fallback
     for p in products:
         if p['id'] not in product_types and p.get('type_id'):
@@ -144,16 +117,38 @@ def evaluate_product(product, types, norms, norms_by_id, applicability, product_
 
     all_evaluations = {}
 
+    # Sub-batch size to avoid timeouts (100 norms max per call)
+    BATCH_SIZE = 100
+
     # Evaluate by pillar
     for pillar in ['S', 'A', 'F', 'E']:
         pillar_norms = [n for n in applicable_norms if n['pillar'] == pillar]
         if not pillar_norms:
             continue
 
-        # Batch norms
-        norms_text = "\n".join([f"- {n['code']}: {n['title']}" for n in pillar_norms])
+        # Split into sub-batches
+        num_batches = (len(pillar_norms) + BATCH_SIZE - 1) // BATCH_SIZE
+        pillar_yes = 0
+        pillar_no = 0
 
-        prompt = f"""{SYSTEM_PROMPT}
+        for batch_idx in range(num_batches):
+            start = batch_idx * BATCH_SIZE
+            end = min(start + BATCH_SIZE, len(pillar_norms))
+            batch_norms = pillar_norms[start:end]
+
+            # Build norms text with official summaries
+            norms_lines = []
+            for n in batch_norms:
+                summary = n.get('official_doc_summary') or n.get('description', '')
+                if summary and len(summary) > 200:
+                    summary = summary[:200] + "..."
+                if summary:
+                    norms_lines.append(f"- {n['code']}: {n['title']}\n  Definition: {summary}")
+                else:
+                    norms_lines.append(f"- {n['code']}: {n['title']}")
+            norms_text = "\n".join(norms_lines)
+
+            prompt = f"""{SYSTEM_PROMPT}
 
 PRODUCT: {product['name']}
 TYPE(S): {', '.join(type_names)}
@@ -161,27 +156,33 @@ WEBSITE: {product.get('url', 'N/A')}
 
 PILLAR: {pillar}
 
-NORMS TO EVALUATE (pre-filtered as applicable):
+NORMS TO EVALUATE (batch {batch_idx + 1}/{num_batches}):
 {norms_text}
 
 Evaluate each norm:"""
 
-        print(f"   Pillar {pillar} ({len(pillar_norms)} norms)...")
-        sys.stdout.flush()
+            batch_label = f"Pillar {pillar}" if num_batches == 1 else f"Pillar {pillar} batch {batch_idx + 1}/{num_batches}"
+            print(f"   {batch_label} ({len(batch_norms)} norms)...")
+            sys.stdout.flush()
 
-        result = ai_provider.call(prompt, max_tokens=4000)
-        if result:
-            parsed = parse_evaluation_response(result)
-            all_evaluations.update(parsed)
+            result = ai_provider.call(prompt, max_tokens=4000)
+            if result:
+                parsed = parse_evaluation_response(result)
+                all_evaluations.update(parsed)
 
-            # Count
-            yes_count = sum(1 for v in parsed.values() if v[0] in ['YES', 'YESp'])
-            no_count = sum(1 for v in parsed.values() if v[0] == 'NO')
-            print(f"      -> {yes_count} YES, {no_count} NO")
-        else:
-            print(f"      -> API failed")
+                # Count
+                yes_count = sum(1 for v in parsed.values() if v[0] in ['YES', 'YESp'])
+                no_count = sum(1 for v in parsed.values() if v[0] == 'NO')
+                pillar_yes += yes_count
+                pillar_no += no_count
+                print(f"      -> {yes_count} YES, {no_count} NO")
+            else:
+                print(f"      -> API failed")
 
-        time.sleep(0.5)
+            time.sleep(0.5)
+
+        if num_batches > 1:
+            print(f"   Pillar {pillar} total: {pillar_yes} YES, {pillar_no} NO")
 
     return all_evaluations, applicable_norms
 
@@ -193,6 +194,7 @@ def save_evaluations(product_id, evaluations, applicable_norms, norms):
     applicable_norm_ids = {n['id'] for n in applicable_norms}
 
     eval_records = []
+    unmatched_codes = []
 
     # AI evaluations
     for code, eval_data in evaluations.items():
@@ -207,6 +209,11 @@ def save_evaluations(product_id, evaluations, applicable_norms, norms):
                 'evaluated_by': 'smart_ai_fast',
                 'evaluation_date': datetime.now().strftime('%Y-%m-%d')
             })
+        else:
+            unmatched_codes.append(code)
+
+    if unmatched_codes and len(unmatched_codes) <= 10:
+        print(f"      Unmatched codes: {unmatched_codes[:10]}")
 
     # N/A for non-applicable
     for norm in norms:
@@ -242,8 +249,10 @@ def save_evaluations(product_id, evaluations, applicable_norms, norms):
     for i in range(0, len(eval_records), batch_size):
         batch = eval_records[i:i+batch_size]
         r = requests.post(f"{SUPABASE_URL}/rest/v1/evaluations", headers=upsert_headers, json=batch)
-        if r.status_code in [200, 201]:
+        if r.status_code in [200, 201, 204]:
             inserted += len(batch)
+        else:
+            print(f"      DB Error {r.status_code}: {r.text[:200]}")
 
     return inserted
 

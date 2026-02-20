@@ -1,0 +1,37 @@
+Columns: 34
+ID: 2 chars - 63
+Name: 8 chars - Billfodl
+Brand: 12 chars - Privacy Pros
+Type Principal: 12 chars - Bkp Physical
+SAFE Score Utile?: 16 chars - ✅ TRÈS PERTINENT
+Raison: 27 chars - Backup seed phrase physique
+KYC: 6 chars - No KYC
+Country: 6 chars - 🇺🇸 USA
+Website: 23 chars - privacypros.io/billfodl
+Twitter: 31 chars - https://twitter.com/privacypros
+Documentation: 22 chars - https://privacypros.io
+Siège Social: 3 chars - USA
+Pays Autorisés: 6 chars - Global
+Année: 9 chars - Voir site
+Funding: 12 chars - Non divulgué
+Licences: 18 chars - Voir site officiel
+Employés: 8 chars - Variable
+Cryptos: 9 chars - Voir site
+Frais: 9 chars - Voir site
+Sécurité: 9 chars - Voir site
+Open Source: 9 chars - Voir site
+Audit: 9 chars - Voir site
+Audits: 8 chars - Variable
+Volume/TVL: 8 chars - Variable
+Notes: 8 chars - Variable
+Plateformes: 8 chars - Variable
+API: 8 chars - Variable
+Paiement: 8 chars - Variable
+Programmes: 8 chars - Variable
+Fondateurs: 9 chars - Voir site
+Investisseurs: 8 chars - Variable
+Incidents: 8 chars - Variable
+Token: 8 chars - Variable
+Support: 8 chars - Variable
+
+Total JSON: 974 chars

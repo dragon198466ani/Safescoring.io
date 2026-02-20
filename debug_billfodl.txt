@@ -1,0 +1,19 @@
+id: int = 2 chars
+slug: str = 8 chars
+name: str = 8 chars
+url: str = 31 chars
+type_id: int = 1 chars
+security_status: str = 7 chars
+updated_at: str = 26 chars
+description: str = 4 chars
+short_description: str = 8 chars
+social_links: dict = 39 chars
+  .twitter: 24 chars
+price_details: str = 81 chars
+headquarters: str = 3 chars
+country_origin: str = 2 chars
+countries_operating: list = 6 chars
+data_version: int = 1 chars
+data_updated_at: str = 32 chars
+is_active: bool = 4 chars
+news_sentiment: str = 7 chars

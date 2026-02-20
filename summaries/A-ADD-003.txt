@@ -1,0 +1,280 @@
+## 1. Overview
+
+High altitude operation at 15,000 meters (approximately 49,200 feet) represents an extreme environmental condition that cryptocurrency hardware wallets and backup devices must withstand during air transport, particularly in unpressurized cargo holds of aircraft. This standard establishes requirements for electronic devices to maintain functionality and integrity when exposed to the reduced atmospheric pressure, extreme cold temperatures, and low oxygen conditions characteristic of high altitude environments.
+
+At 15,000 meters altitude, atmospheric pressure drops to approximately 12 kPa (0.12 atmospheres), compared to 101.3 kPa at sea level. This dramatic pressure reduction creates multiple stress mechanisms for electronic devices: differential pressure across sealed enclosures can cause housing deformation or seal failure, reduced air density affects thermal dissipation, outgassing from materials and components accelerates, and any trapped moisture may vaporize causing internal damage.
+
+The temperature at 15,000 meters typically ranges from -50C to -70C, combining low-pressure effects with extreme cold stress. While hardware wallets are not expected to operate at these conditions, they must survive transit without damage and return to full functionality upon return to normal conditions.
+
+For cryptocurrency users, understanding altitude resistance is particularly relevant for international shipping of hardware wallets, personal transport of devices during air travel, and storage conditions in high-altitude locations (mountain regions, pressurized aircraft cabins during flights). Device failure during or after air transport could result in lost access to cryptocurrency assets.
+
+This SafeScoring criterion ensures that evaluated products can survive air transport in worst-case conditions, including cargo hold exposure during aircraft depressurization events or transport in unpressurized aircraft sections.
+
+### Physical Principles at Altitude
+
+**Atmospheric Pressure Variation:**
+The relationship between altitude and pressure follows an exponential decay pattern. Key pressure values:
+- Sea level: 101.3 kPa (1.0 atm)
+- 5,000 m (16,400 ft): 54.0 kPa (0.53 atm)
+- 10,000 m (32,800 ft): 26.4 kPa (0.26 atm)
+- 15,000 m (49,200 ft): 12.0 kPa (0.12 atm)
+- 18,000 m (59,000 ft): 7.5 kPa (0.07 atm)
+
+**Temperature Profile:**
+The standard atmosphere temperature decreases at approximately 6.5C per 1,000 meters up to the tropopause (approximately 11,000 m), then remains relatively constant through the lower stratosphere:
+- Sea level: 15C (standard)
+- 5,000 m: -17.5C
+- 10,000 m: -50C
+- 15,000 m: -56.5C (stratospheric)
+
+**Combined Effects on Electronics:**
+1. Reduced pressure differential across seals may cause ingress or egress
+2. Trapped gases expand, potentially rupturing sealed components
+3. Electrolytic capacitor electrolyte may outgas
+4. Reduced thermal conductivity impairs heat dissipation
+5. Increased risk of electrical arcing at reduced pressure
+6. Material stress from thermal contraction
+7. LCD fluid may bubble or separate at extreme low pressure
+
+### Relevance to Cryptocurrency Hardware
+
+Cryptocurrency hardware wallets face altitude exposure primarily through:
+
+**Commercial Air Freight:**
+- Pressurized cargo holds maintain cabin altitude of 2,400 m (8,000 ft) typically
+- Depressurization events can expose cargo to cruise altitude (10,000-13,000 m)
+- Unpressurized cargo areas may approach full altitude conditions
+- Extended exposure during long-haul international flights
+
+**Personal Air Travel:**
+- Cabin altitude typically 1,800-2,400 m (6,000-8,000 ft)
+- Checked baggage in pressurized holds: same as cabin
+- Carry-on items: cabin pressure
+- Private/military aircraft may have different pressure profiles
+
+**High-Altitude Storage and Use:**
+- Mountain communities (up to 5,000 m inhabited elevations)
+- High-altitude research stations
+- Aircraft and aerospace applications
+- Mountaineering with portable devices
+
+**Emergency and Unusual Conditions:**
+- Rapid decompression events
+- Military transport in unpressurized aircraft
+- Space-adjacent applications (high-altitude balloons, etc.)
+
+## 2. Technical Specifications
+
+| Parameter | Value |
+|-----------|-------|
+| Standard Reference | MIL-STD-810H Method 500.6, RTCA DO-160G Section 4 |
+| Test Altitude | 15,000 m (49,200 ft) equivalent |
+| Test Pressure | 12.0 kPa +/- 0.5 kPa |
+| Altitude Temperature | -55C to -70C (combined test) |
+| Room Temperature Test | 23C +/- 5C (pressure-only test) |
+| Decompression Rate | Maximum 10 kPa/minute (explosive) or 1 kPa/minute (gradual) |
+| Dwell Time at Altitude | Minimum 2 hours (transit), 8 hours (extended) |
+| Operating Test (if applicable) | Verify function at 4,500 m (15,000 ft) equivalent |
+| Recompression Rate | Maximum 3 kPa/minute to avoid condensation |
+| Post-Test Stabilization | Minimum 4 hours at standard conditions |
+| Seal Integrity Requirement | No visible deformation, no permanent set |
+| Functional Requirement | Full operation after return to standard conditions |
+| Visual Criteria | No cracking, delamination, or component displacement |
+
+### Test Chamber and Equipment
+
+**Altitude Chamber Requirements:**
+- Altitude capability: 0 to 30,000 m equivalent
+- Pressure range: 1 kPa to 110 kPa
+- Pressure accuracy: +/- 0.5 kPa or 2% (whichever greater)
+- Pump-down rate: Controllable from 0.1 to 50 kPa/minute
+- Temperature capability: -70C to +85C (for combined testing)
+- Chamber size: Minimum 5x device volume
+- Observation window: For in-situ monitoring
+- Feedthroughs: Electrical for powered testing if required
+
+**Instrumentation:**
+- Calibrated pressure transducer (NIST traceable)
+- Multiple temperature sensors (chamber and specimen)
+- Humidity sensor (for condensation monitoring)
+- Video recording capability for visual observation
+- Data logging at minimum 1 Hz during rapid transitions
+
+### Detailed Test Procedure
+
+**Procedure A: Pressure-Only (Storage/Transport Simulation)**
+
+1. Pre-test conditioning at 23C +/- 5C, 50% RH for 24 hours
+2. Document initial condition (photos, functional test, weight)
+3. Place specimen in altitude chamber at ambient conditions
+4. Reduce pressure at 3 kPa/minute to 12 kPa (15,000 m equivalent)
+5. Maintain 12 kPa for minimum 2 hours (8 hours for extended test)
+6. During dwell, observe for any visible changes (bulging, leakage)
+7. Return to ambient pressure at maximum 3 kPa/minute
+8. Allow 4-hour stabilization at standard conditions
+9. Perform complete functional test and visual inspection
+10. Document any changes from baseline
+
+**Procedure B: Combined Altitude/Temperature**
+
+1. Pre-test conditioning and baseline as Procedure A
+2. Place specimen in chamber, reduce temperature to -55C at 3C/minute
+3. After thermal stabilization, reduce pressure to 12 kPa at 3 kPa/minute
+4. Maintain combined conditions (-55C, 12 kPa) for specified duration
+5. Return pressure to ambient at 3 kPa/minute maximum
+6. Increase temperature to ambient at 3C/minute maximum
+7. Allow minimum 8-hour stabilization before testing
+8. Perform complete functional test and visual inspection
+
+**Procedure C: Rapid Decompression (Explosive Decompression Simulation)**
+
+1. Baseline specimen at standard conditions
+2. Place in chamber pressurized to 75 kPa (2,400 m cabin altitude)
+3. Rapidly decompress to 12 kPa within 15 seconds
+4. Maintain low pressure for minimum 1 hour
+5. Gradually recompress to ambient
+6. Evaluate for damage from rapid pressure change
+
+### Design Requirements for Compliance
+
+**Enclosure Design:**
+- Pressure equalization vent with moisture protection (Gore-Tex membrane)
+- OR hermetic seal rated for 90 kPa differential pressure
+- Flexible housing materials that accommodate pressure differential
+- Avoid trapped air volumes without equalization path
+- Consider seal material compression set at low temperature
+
+**Component Selection:**
+- Electrolytic capacitors: Solid polymer or sealed types preferred
+- Batteries: Hermetically sealed cells, avoid vented designs
+- Displays: LCD must tolerate low pressure without bubbling
+- Connectors: Avoid sealed air volumes, or provide equalization
+
+**Assembly Considerations:**
+- Minimize trapped air volumes in potting compounds
+- Vacuum degas adhesives and sealants before cure
+- Provide equalization time after assembly before sealing
+- Consider altitude during manufacturing (high-altitude facilities)
+
+## 3. Application to Crypto Products
+
+### Hardware Wallets
+
+**Ledger Nano X:**
+The Ledger Nano X is designed to survive commercial air transport conditions. The housing design allows for pressure equalization through controlled paths that maintain moisture protection. The Bluetooth module and battery are selected to tolerate altitude pressure cycling. Ledger's shipping packaging provides additional protection during air freight. Testing validates survival of rapid decompression scenarios that might occur during cargo transport. Users report successful international shipping without functional issues, confirming practical altitude resistance.
+
+**Ledger Nano S Plus:**
+Without wireless connectivity and battery, the Nano S Plus has simpler altitude resistance requirements. The USB-C connector provides a natural pressure equalization path. No sealed battery eliminates a primary altitude failure mode. The secure element and supporting circuitry are solid-state with no pressure-sensitive components. This model is well-suited for air transport with minimal risk.
+
+**Trezor Model T:**
+SatoshiLabs validates altitude tolerance for international distribution. The touchscreen assembly is the primary component requiring altitude consideration, as LCDs can be affected by low pressure. Manufacturing quality control ensures proper seal integrity. The battery-free design eliminates cell pressure concerns. Users worldwide receive devices via air freight without reported altitude-related failures.
+
+**Trezor Model One:**
+The simpler design with physical buttons has no altitude-sensitive sealed components. Extensive international shipping history demonstrates practical altitude resistance. The small form factor minimizes trapped air volumes.
+
+**Coldcard Mk4:**
+Coinkite's MIL-STD-810H testing includes altitude exposure per Method 500.6. The industrial design considers unpressurized transport scenarios. The air-gapped design with SD card interface avoids sealed wireless modules. Documentation specifies operating altitude limits for high-altitude users.
+
+**Keystone Pro:**
+The battery-powered touchscreen device requires attention to altitude effects on both the display and battery. Keystone validates altitude survival for global distribution. The larger form factor requires careful attention to pressure equalization. Air-gapped QR operation avoids altitude-sensitive wireless components.
+
+### Software Wallets
+
+Software wallet host devices (smartphones, laptops) have their own altitude specifications:
+
+**Smartphones:**
+- iPhone: Tested to 3,000 m operating, higher for non-operating
+- Android devices: Vary by manufacturer, typically similar limits
+- Reduced screen brightness may occur at altitude due to pressure effects on some display technologies
+
+**Laptops:**
+- Commercial laptops typically rated for cabin altitude (2,400 m) operating
+- Hard drive failures historically linked to altitude (less relevant with SSD)
+- Battery swelling possible at extreme altitude
+
+**Recommendations:**
+- Transport software wallet devices in pressurized cabin
+- Allow stabilization time after altitude exposure before use
+- Monitor for any display or battery anomalies after air travel
+
+### Backup Solutions
+
+**Steel Plates:**
+Solid stainless steel has no altitude sensitivity. Zero failure modes from pressure or temperature at any achievable altitude. These products are inherently altitude-resistant to effectively unlimited conditions.
+
+**Titanium Plates:**
+Same as steel - completely altitude-insensitive. Suitable for aerospace applications far exceeding hardware wallet requirements.
+
+**Paper Backups:**
+Paper itself is unaffected by altitude. However:
+- Ink may be affected by low pressure (some inks contain volatile components)
+- Laminated backups may delaminate at low pressure if air is trapped
+- No functional altitude concerns for properly prepared paper backups
+
+### Exchanges and DeFi
+
+Digital services have no altitude considerations beyond user device limitations.
+
+## 4. SafeScoring Evaluation Criteria
+
+| Level | Description | Points |
+|-------|-------------|--------|
+| **Full Compliance** | Device tested to MIL-STD-810H Method 500.6 or equivalent at 15,000 m equivalent for minimum 8 hours with documented results. Full functionality verified after exposure. No visible damage or seal compromise. Combined altitude/temperature testing completed. | 100% |
+| **Substantial Compliance** | Device tested at 10,000-15,000 m equivalent for minimum 2 hours. Full functionality after test. Minor seal relaxation acceptable if no functional impact. Manufacturer environmental specifications published. | 80-99% |
+| **Partial Compliance** | Device includes altitude considerations in design (pressure equalization, appropriate component selection). Limited formal testing. Successful international shipping history via air freight demonstrates practical capability. | 50-79% |
+| **Minimal Compliance** | No specific altitude testing or design consideration. Device suitable for ground transport and cabin carry-on only. May survive cargo hold exposure but not validated. | 30-49% |
+| **Non-Compliant** | Device contains altitude-sensitive components without protection (vented batteries, pressure-sensitive displays). Likely to fail during unpressurized air transport. | 0-29% |
+
+### Scoring Factors
+
+**Design Analysis (30%):**
+- Pressure equalization provisions
+- Component selection for altitude tolerance
+- Sealed volume analysis
+- Temperature compensation
+
+**Test Documentation (35%):**
+- Formal altitude testing reports
+- Combined environment testing
+- Rapid decompression testing
+- Post-test functional verification
+
+**Shipping History (20%):**
+- International distribution without reported issues
+- Warranty claim analysis for altitude-related failures
+- User feedback from high-altitude regions
+
+**Manufacturer Specifications (15%):**
+- Published altitude limits (operating and storage)
+- Shipping recommendations
+- Warranty coverage for altitude exposure
+
+### Weight in SafeScoring
+
+Altitude resistance contributes to Adversity (A) pillar:
+
+| Category | Weight |
+|----------|--------|
+| Portable hardware wallets | 3% |
+| Stationary devices | 1% |
+| Metal backups | 0% (inherent compliance) |
+
+## 5. Sources and References
+
+**Primary Standards:**
+- [MIL-STD-810H Method 500.6 - Low Pressure (Altitude)](https://quicksearch.dla.mil/qsDocDetails.aspx?ident_number=36027)
+- [RTCA DO-160G Section 4 - Temperature and Altitude](https://www.rtca.org/products/do-160g/)
+- [IEC 60068-2-13 - Low air pressure](https://webstore.iec.ch/publication/516)
+
+**Supporting References:**
+- ICAO International Standard Atmosphere (ISA)
+- FAA Advisory Circular 25-20 - Pressurization
+- NASA Technical Standard NASA-STD-7002B
+
+**SafeScoring Documentation:**
+- SafeScoring Criteria A-ADD-003 v1.0 - Altitude Resistance
+- SafeScoring Test Protocol ENV-ALT-001
+
+---
+
+*This summary is generated by SafeScoring for comprehensive technical documentation of altitude resistance requirements. Consult primary standards for certification testing. Last verified: January 2026.*

@@ -1,0 +1,31 @@
+# SafeScoring Security Policy
+# https://securitytxt.org/
+
+Contact: mailto:security@safescoring.io
+Expires: 2027-01-01T00:00:00.000Z
+Encryption: https://safescoring.io/.well-known/pgp-key.txt
+Acknowledgments: https://safescoring.io/security/hall-of-fame
+Preferred-Languages: en, fr
+Canonical: https://safescoring.io/.well-known/security.txt
+Policy: https://safescoring.io/security/policy
+
+# Scope
+# - *.safescoring.io
+# - API endpoints
+# - Mobile applications
+
+# Out of scope
+# - Social engineering attacks
+# - Physical attacks
+# - Denial of Service attacks
+
+# Bug Bounty
+# We offer rewards for responsible disclosure of security vulnerabilities.
+# Critical: Up to $1,000
+# High: Up to $500
+# Medium: Up to $200
+# Low: Up to $50
+
+# Please report all vulnerabilities responsibly.
+# Do not access or modify data belonging to other users.
+# Do not perform actions that could harm our users or services.
