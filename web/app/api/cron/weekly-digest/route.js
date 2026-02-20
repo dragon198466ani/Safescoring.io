@@ -3,10 +3,9 @@ import { NextResponse } from "next/server";
 import { sendEmail } from "@/libs/resend";
 import { weeklyDigestEmail } from "@/libs/email-templates";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const _sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const _sbKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabase = _sbUrl && _sbKey ? createClient(_sbUrl, _sbKey) : null;
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;

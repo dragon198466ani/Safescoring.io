@@ -4,10 +4,9 @@ import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 
 // Supabase admin client (service role for RLS bypass)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const _sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const _sbKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabase = _sbUrl && _sbKey ? createClient(_sbUrl, _sbKey) : null;
 
 /**
  * Mapping des résultats d'évaluation IA vers scores numériques

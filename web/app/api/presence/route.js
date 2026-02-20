@@ -3,10 +3,9 @@ import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 
 // Initialize Supabase with service role for presence management
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const _sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const _sbKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabase = _sbUrl && _sbKey ? createClient(_sbUrl, _sbKey) : null;
 
 // Activity labels for display
 const ACTIVITY_LABELS = {
