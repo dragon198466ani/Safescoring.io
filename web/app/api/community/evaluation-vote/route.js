@@ -4,10 +4,12 @@ import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 
 // Supabase admin client (service role for RLS bypass)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+}
 
 /**
  * Mapping des résultats d'évaluation IA vers scores numériques
@@ -48,6 +50,7 @@ const VOTE_CONFIG = {
  */
 export async function GET(req) {
   try {
+    const supabase = getSupabase();
     const { searchParams } = new URL(req.url);
     const productId = searchParams.get("productId");
     const productSlug = searchParams.get("productSlug");
@@ -296,6 +299,7 @@ export async function GET(req) {
  */
 export async function POST(req) {
   try {
+    const supabase = getSupabase();
     const session = await auth();
 
     if (!session?.user?.id) {

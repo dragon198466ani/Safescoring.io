@@ -295,3 +295,38 @@ export const LazySAFEProtectionGuide = dynamic(
     ssr: false,
   }
 );
+
+// Community page components
+export const LazyEvaluationVoting = dynamic(
+  () => import("@/components/EvaluationVoting"),
+  {
+    loading: () => (
+      <div className="space-y-3 animate-pulse">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="h-32 bg-base-200 rounded-lg"></div>
+        ))}
+      </div>
+    ),
+    ssr: false,
+  }
+);
+
+export const LazyCommunityLeaderboard = dynamic(
+  () => import("@/components/CommunityLeaderboard"),
+  {
+    loading: () => (
+      <div className="h-64 bg-base-200 rounded-lg animate-pulse"></div>
+    ),
+    ssr: false,
+  }
+);
+
+export const LazyRewardsDashboard = dynamic(
+  () => import("@/components/RewardsDashboard"),
+  {
+    loading: () => (
+      <div className="h-48 bg-base-200 rounded-lg animate-pulse"></div>
+    ),
+    ssr: false,
+  }
+);

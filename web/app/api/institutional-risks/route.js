@@ -1,10 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+}
 
 const RISK_COLORS = {
   very_low: "#22c55e",
@@ -17,6 +19,7 @@ const RISK_COLORS = {
 
 export async function GET(request) {
   try {
+    const supabase = getSupabase();
     const { searchParams } = new URL(request.url);
     const countryCode = searchParams.get("country");
     const includeIncidents = searchParams.get("incidents") !== "false";

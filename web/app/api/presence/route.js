@@ -3,10 +3,12 @@ import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 
 // Initialize Supabase with service role for presence management
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+}
 
 // Activity labels for display
 const ACTIVITY_LABELS = {
@@ -25,6 +27,7 @@ const ACTIVITY_LABELS = {
 // GET: Fetch active users for map display
 export async function GET(request) {
   try {
+    const supabase = getSupabase();
     const { searchParams } = new URL(request.url);
     const includeDetails = searchParams.get("details") === "true";
 
@@ -130,6 +133,7 @@ export async function GET(request) {
 // POST: Update user presence (heartbeat)
 export async function POST(request) {
   try {
+    const supabase = getSupabase();
     const body = await request.json();
     const {
       sessionId,
@@ -214,6 +218,7 @@ export async function POST(request) {
 // DELETE: Remove user presence (on disconnect)
 export async function DELETE(request) {
   try {
+    const supabase = getSupabase();
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get("sessionId");
 

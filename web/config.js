@@ -139,6 +139,14 @@ const config = {
     loginUrl: "/api/auth/signin",
     callbackUrl: "/dashboard",
   },
+  // Company legal information (used on /trust page)
+  company: {
+    name: "SafeScoring",
+    legalForm: "LLC",
+    state: "Wyoming",
+    country: "United States",
+    email: "contact@safescoring.io",
+  },
   // SafeScoring specific config
   safe: {
     // Strategic tagline
