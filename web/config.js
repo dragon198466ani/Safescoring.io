@@ -18,6 +18,16 @@ const config = {
     "The first unified security rating for all crypto products. 2159 norms. 0 opinion. 1 score. Hardware wallets, software wallets, and DeFi protocols - all evaluated with the same rigorous SAFE methodology.",
   // REQUIRED (no https://, not trialing slash at the end, just the naked domain)
   domainName: "safescoring.io",
+  // Company info for trust/transparency page
+  company: {
+    name: "SafeScoring",
+    legalName: "SafeScoring SAS",
+    legalForm: "SAS",
+    state: "France",
+    country: "France",
+    founded: "2024",
+    email: "contact@safescoring.io",
+  },
   crisp: {
     // Crisp website ID. IF YOU DON'T USE CRISP: just remove this => Then add a support email in this config file (resend.supportEmail) otherwise customer support won't work.
     id: "",

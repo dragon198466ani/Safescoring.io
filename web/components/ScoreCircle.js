@@ -1,5 +1,11 @@
 "use client";
 
+export function getScoreColor(score) {
+  if (score >= 80) return "text-green-400";
+  if (score >= 60) return "text-amber-400";
+  return "text-red-400";
+}
+
 export const MiniScoreCircle = ({ score, size = 72, strokeWidth = 6 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;

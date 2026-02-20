@@ -27,6 +27,8 @@
     "crisp-sdk-web": "^1.0.25",
     "form-data": "^4.0.1",
     "isomorphic-dompurify": "^2.36.0",
+    "jspdf": "^4.2.0",
+    "jspdf-autotable": "^5.0.7",
     "leaflet": "^1.9.4",
     "next": "^15.1.9",
     "next-auth": "5.0.0-beta.25",
