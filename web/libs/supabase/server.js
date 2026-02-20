@@ -11,15 +11,16 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 /**
  * Create a server-side Supabase client.
  * Uses service role key if available, otherwise falls back to anon key.
+ * Returns null if Supabase is not configured (safe for build-time).
  */
 export function createClient() {
-  const key = supabaseServiceKey || supabaseAnonKey;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !key) {
-    throw new Error(
-      "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or NEXT_PUBLIC_SUPABASE_ANON_KEY)."
-    );
+  if (!url || !key) {
+    console.warn("[Supabase] Not configured — missing URL or key.");
+    return null;
   }
 
-  return supabaseCreateClient(supabaseUrl, key);
+  return supabaseCreateClient(url, key);
 }
