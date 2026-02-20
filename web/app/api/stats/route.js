@@ -13,8 +13,23 @@ export const revalidate = 3600; // Cache 1 hour
 
 export async function GET() {
   try {
+    const supabase = getSupabase();
+    if (!supabase) {
+      // Return empty stats during build or when DB is not configured
+      return NextResponse.json({
+        total_products: 0,
+        global: { avg: 0, min: 0, max: 0, count: 0 },
+        pillars: { S: { avg: 0, min: 0, max: 0, count: 0 }, A: { avg: 0, min: 0, max: 0, count: 0 }, F: { avg: 0, min: 0, max: 0, count: 0 }, E: { avg: 0, min: 0, max: 0, count: 0 } },
+        distribution: { excellent: { count: 0, products: [] }, good: { count: 0, products: [] }, average: { count: 0, products: [] }, poor: { count: 0, products: [] }, critical: { count: 0, products: [] } },
+        samples: { top_5: [], bottom_5: [], middle_5: [] },
+        updated_at: new Date().toISOString(),
+      }, {
+        headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200" },
+      });
+    }
+
     // Get all products with scores
-    const { data: products, error } = await getSupabase()
+    const { data: products, error } = await supabase
       .from("products")
       .select("id, name, slug, type_id, product_types(name)")
       .order("name");
@@ -22,7 +37,7 @@ export async function GET() {
     if (error) throw error;
 
     // Get scores from safe_scoring_results
-    const { data: scores, error: scoresError } = await getSupabase()
+    const { data: scores, error: scoresError } = await supabase
       .from("safe_scoring_results")
       .select("product_id, note_finale, score_s, score_a, score_f, score_e, total_yes, total_no, total_na");
 

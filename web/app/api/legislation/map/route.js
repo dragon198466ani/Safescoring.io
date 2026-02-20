@@ -1,10 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 // Country coordinates for map display
 const COUNTRY_COORDINATES = {
@@ -90,6 +92,16 @@ const STANCE_COLORS = {
 
 export async function GET(request) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({
+        success: true,
+        countries: getFallbackData(),
+        stats: { totalCountries: 17, veryFriendly: 5, friendly: 6, neutral: 2, restrictive: 3, hostile: 2, veryHostile: 5 },
+        stanceColors: STANCE_COLORS,
+      });
+    }
+
     // Fetch country crypto profiles and legislation stats in parallel
     const [profilesResult, statsResult] = await Promise.all([
       supabase
