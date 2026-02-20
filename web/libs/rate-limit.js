@@ -40,36 +40,38 @@ setInterval(() => {
  * Rate limit configuration per endpoint type
  * Can be overridden via environment variables
  */
+const isProduction = process.env.NODE_ENV === "production";
+
 export const RATE_LIMITS = {
-  // Public APIs - relaxed limits for development
+  // Public APIs
   public: {
     windowMs: 60000, // 1 minute
-    maxRequests: parseInt(process.env.RATE_LIMIT_PUBLIC) || 1000,
-    blockDuration: 0, // No blocking in dev
+    maxRequests: parseInt(process.env.RATE_LIMIT_PUBLIC) || (isProduction ? 30 : 1000),
+    blockDuration: isProduction ? 300000 : 0, // 5 min block in production
   },
   // Authenticated APIs - higher limits for logged-in users
   authenticated: {
     windowMs: 60000,
-    maxRequests: parseInt(process.env.RATE_LIMIT_AUTHENTICATED) || 2000,
-    blockDuration: 0,
+    maxRequests: parseInt(process.env.RATE_LIMIT_AUTHENTICATED) || (isProduction ? 200 : 2000),
+    blockDuration: isProduction ? 120000 : 0, // 2 min block in production
   },
-  // Sensitive APIs (history, bulk data, DNS verification) - relaxed for dev
+  // Sensitive APIs (history, bulk data, DNS verification)
   sensitive: {
     windowMs: 60000,
-    maxRequests: 500,
-    blockDuration: 0,
+    maxRequests: isProduction ? 20 : 500,
+    blockDuration: isProduction ? 600000 : 0, // 10 min block in production
   },
   // Admin APIs
   admin: {
     windowMs: 60000,
-    maxRequests: parseInt(process.env.RATE_LIMIT_ADMIN) || 1000,
-    blockDuration: 0,
+    maxRequests: parseInt(process.env.RATE_LIMIT_ADMIN) || (isProduction ? 100 : 1000),
+    blockDuration: isProduction ? 60000 : 0, // 1 min block in production
   },
   // Search/query APIs
   search: {
     windowMs: 60000,
-    maxRequests: 500,
-    blockDuration: 0,
+    maxRequests: isProduction ? 60 : 500,
+    blockDuration: isProduction ? 180000 : 0, // 3 min block in production
   },
 };
 

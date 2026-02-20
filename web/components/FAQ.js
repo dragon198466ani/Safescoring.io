@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import config from "@/config";
+
+const { hackLosses2024Short, accessControlLossPct, auditedHackedApprox } = config.safe.stats;
 
 const faqs = [
   {
@@ -11,7 +14,7 @@ const faqs = [
   {
     question: "How is SafeScoring different from CertiK or other auditors?",
     answer:
-      "Audits verify code at a single point in time. SafeScoring measures real-world security continuously. Key differences: (1) We cover ALL products - hardware, software, AND DeFi - with one methodology. CertiK only audits smart contracts. (2) We update monthly, not once. (3) 87% of hacked projects in 2024 had been audited. We go beyond code to evaluate operational security, track record, and resilience.",
+      `Audits verify code at a single point in time. SafeScoring measures real-world security continuously. Key differences: (1) We cover ALL products - hardware, software, AND DeFi - with one methodology. CertiK only audits smart contracts. (2) We update monthly, not once. (3) ${auditedHackedApprox} of hacked projects in 2024 had been audited. We go beyond code to evaluate operational security, track record, and resilience.`,
   },
   {
     question: "How are products evaluated?",
@@ -31,7 +34,12 @@ const faqs = [
   {
     question: "What are the 4 SAFE pillars?",
     answer:
-      "S (Security, 25%): Cryptographic standards, key management, encryption. A (Adversity, 25%): Duress protection, anti-coercion, physical security. F (Fidelity, 25%): Audits, uptime, update frequency, track record. E (Efficiency, 25%): UX, multi-chain support, accessibility. Each pillar contributes equally to the final score.",
+      `S (Security, 25%): Your cryptographic armor — we verify encryption, key management, and whether the algorithms protecting your funds would survive a real-world attack. ${hackLosses2024Short} was stolen in crypto hacks in 2024, over ${accessControlLossPct} via compromised keys. A (Adversity, 25%): Physical threat resistance — duress PINs, time-locks, multi-signature, hidden wallets. This pillar directly addresses the growing wave of crypto-related kidnappings by evaluating whether a product makes forced transfers impossible. F (Fidelity, 25%): Proven track record, not promises — ${auditedHackedApprox} of hacked projects had been audited. We measure patch speed, incident response, and whether the team actually fixes what breaks. E (Efficiency, 25%): Security you can actually use — because user errors (wrong address, lost seed phrase, blind signing) cause billions in irreversible losses every year. We evaluate UX, error prevention, and blind-signing risks. Each pillar contributes equally to the final score.`,
+  },
+  {
+    question: "Can SafeScoring help protect against physical attacks and kidnappings?",
+    answer:
+      "Yes — indirectly but powerfully. The Adversity pillar (25% of every score) specifically evaluates anti-coercion features: time-locked transfers, multi-signature requirements, duress PINs, and hidden wallets. These features make it technically impossible to move funds under threat, which breaks the criminal business model. If a kidnapper cannot get instant payment, the attack becomes pointless. By choosing products with high Adversity scores, users make themselves harder targets and contribute to making the entire ecosystem safer.",
   },
   {
     question: "Can I request a product evaluation?",

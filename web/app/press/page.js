@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export const metadata = {
   title: "Press Kit | SafeScoring",
   description: "Media resources, brand assets, and press information for SafeScoring - the crypto security rating platform.",
@@ -209,14 +207,14 @@ export default function PressPage() {
               <div>
                 <h4 className="font-semibold text-success mb-2">Do</h4>
                 <ul className="space-y-1 text-base-content/70">
-                  <li>✓ Use "SafeScoring" as one word with capital S's</li>
-                  <li>✓ Reference our methodology as "SAFE score" or "SafeScore"</li>
+                  <li>✓ Use &quot;SafeScoring&quot; as one word with capital S&apos;s</li>
+                  <li>✓ Reference our methodology as &quot;SAFE score&quot; or &quot;SafeScore&quot;</li>
                   <li>✓ Link to product pages when citing scores</li>
                   <li>✓ Use official colors and assets</li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-error mb-2">Don't</h4>
+                <h4 className="font-semibold text-error mb-2">Don&apos;t</h4>
                 <ul className="space-y-1 text-base-content/70">
                   <li>✗ Alter logo colors or proportions</li>
                   <li>✗ Imply endorsement without permission</li>

@@ -1,3 +1,15 @@
+// Sourced stats — single source of truth (update annually)
+const STATS = {
+  // Source: Chainalysis "Crypto Hacking Stolen Funds 2025" (Dec 2024)
+  hackLosses2024: "$2.2 billion",
+  hackLosses2024Short: "$2.2B",
+  // Source: Cyvers 2024 Web3 Security Report — access control breaches
+  accessControlLossPct: "81%",
+  // Source: Hacken Q2 2024 Web3 Security Report — ~half of affected projects had audits
+  auditedHackedApprox: "nearly half",
+  auditedHackedYear: "2024",
+};
+
 const config = {
   // REQUIRED
   appName: "SafeScoring",
@@ -34,7 +46,6 @@ const config = {
         },
       },
       {
-        // TODO: Replace with your actual Lemon Squeezy variant ID
         variantId: process.env.LEMON_SQUEEZY_EXPLORER_VARIANT_ID || "explorer_variant",
         variantIdAnnual: process.env.LEMON_SQUEEZY_EXPLORER_ANNUAL_VARIANT_ID || "explorer_annual_variant",
         name: "Explorer",
@@ -59,7 +70,6 @@ const config = {
       },
       {
         isFeatured: true,
-        // TODO: Replace with your actual Lemon Squeezy variant ID
         variantId: process.env.LEMON_SQUEEZY_PRO_VARIANT_ID || "pro_variant",
         variantIdAnnual: process.env.LEMON_SQUEEZY_PRO_ANNUAL_VARIANT_ID || "pro_annual_variant",
         name: "Professional",
@@ -84,7 +94,6 @@ const config = {
         },
       },
       {
-        // TODO: Replace with your actual Lemon Squeezy variant ID
         variantId: process.env.LEMON_SQUEEZY_ENTERPRISE_VARIANT_ID || "enterprise_variant",
         variantIdAnnual: process.env.LEMON_SQUEEZY_ENTERPRISE_ANNUAL_VARIANT_ID || "enterprise_annual_variant",
         name: "Enterprise",
@@ -149,32 +158,32 @@ const config = {
       {
         code: "S",
         name: "Security",
-        description: "Is your crypto actually protected? We verify cryptographic standards, key management, and encryption.",
-        shortDesc: "Cryptographic foundations",
+        description: "Would your wallet survive a state-level attack? We verify encryption, key management, and cryptographic standards — because a single weak algorithm means everything you own is one exploit away from zero.",
+        shortDesc: "Cryptographic armor",
         color: "#22c55e", // green
         normCount: 794,
       },
       {
         code: "A",
         name: "Adversity",
-        description: "What happens under threat? We assess duress protection, anti-coercion features, and physical security.",
-        shortDesc: "Threat resistance",
+        description: "What happens when someone holds a gun to your head? We assess duress protection, anti-coercion mechanisms, time-locks, and physical security — because the real threat to crypto holders is no longer just hackers.",
+        shortDesc: "Physical threat & coercion resistance",
         color: "#f59e0b", // amber
         normCount: 353,
       },
       {
         code: "F",
         name: "Fidelity",
-        description: "Can you trust it long-term? We check audits, uptime, update frequency, and track record.",
-        shortDesc: "Reliability & trust",
+        description: `${STATS.auditedHackedApprox} of hacked projects in ${STATS.auditedHackedYear} had been audited. An audit is a snapshot — we measure what happens after. Update frequency, incident response, team track record, and whether they actually fix what breaks.`,
+        shortDesc: "Proven reliability over time",
         color: "#3b82f6", // blue
         normCount: 408,
       },
       {
         code: "E",
         name: "Efficiency",
-        description: "Is it usable AND secure? We evaluate UX, multi-chain support, and accessibility.",
-        shortDesc: "Usability & performance",
+        description: "The most secure wallet is worthless if you send funds to the wrong address because the UI was confusing. We measure whether security actually works in your hands — UX, clarity, multi-chain support, and error prevention.",
+        shortDesc: "Security you can actually use",
         color: "#8b5cf6", // purple
         normCount: 604,
       },
@@ -184,6 +193,8 @@ const config = {
       totalProducts: 100,
       totalProductTypes: 21,
       totalEvaluations: 50000,
+      // Pillar-specific sourced stats (from STATS constant above)
+      ...STATS,
     },
     // Competitive differentiators
     differentiators: [
@@ -194,7 +205,7 @@ const config = {
       },
       {
         title: "Beyond Audits",
-        description: "87% of hacked projects in 2024 had been audited. We measure real security.",
+        description: `${STATS.auditedHackedApprox} of hacked projects in ${STATS.auditedHackedYear} had been audited. We measure real security.`,
         icon: "beyond",
       },
       {
@@ -206,6 +217,11 @@ const config = {
         title: "AI-Powered",
         description: "Automated, reproducible evaluations updated monthly. Not opinions.",
         icon: "ai",
+      },
+      {
+        title: "Physical Threat Defense",
+        description: "The only rating that evaluates anti-coercion features: time-locks, duress PINs, hidden wallets. Because kidnappings targeting crypto holders are real.",
+        icon: "physical",
       },
     ],
     // Competitor comparison data

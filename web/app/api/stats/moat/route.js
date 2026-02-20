@@ -50,7 +50,7 @@ export async function GET(request) {
           await sleep(userProtection.delay);
         }
       }
-    } catch (e) {
+    } catch (_e) {
       // Auth failed, continue as unauthenticated
     }
 

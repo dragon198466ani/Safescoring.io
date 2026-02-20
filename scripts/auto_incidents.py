@@ -16,9 +16,13 @@ import time
 from datetime import datetime
 from difflib import SequenceMatcher
 
-SUPABASE_URL = 'https://ajdncttomdqojlozxjxu.supabase.co'
-SUPABASE_KEY = 'REVOKED_ROTATE_ON_DASHBOARD'
-MISTRAL_API_KEY = '1UrlJxV2G7O0kngOXMDI1dMT2xT39rLD'
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+SUPABASE_URL = os.environ.get('NEXT_PUBLIC_SUPABASE_URL', '')
+SUPABASE_KEY = os.environ.get('NEXT_PUBLIC_SUPABASE_ANON_KEY', '')
+MISTRAL_API_KEY = os.environ.get('MISTRAL_API_KEY', '')
 
 headers = {
     'apikey': SUPABASE_KEY,

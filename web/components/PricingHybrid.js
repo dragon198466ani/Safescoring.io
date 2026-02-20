@@ -15,7 +15,7 @@ import config from "@/config";
 export default function PricingHybrid() {
   const [paymentMethod, setPaymentMethod] = useState("card"); // card | crypto
   const [billingCycle, setBillingCycle] = useState("annual"); // monthly | annual
-  const { isConnected } = useAccount();
+  const { isConnected: _isConnected } = useAccount();
 
   const plans = config.lemonsqueezy.plans;
 
@@ -118,7 +118,7 @@ export default function PricingHybrid() {
 
       {/* Pricing Cards */}
       <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {plans.map((plan, index) => {
+        {plans.map((plan, _index) => {
           const tierName = plan.name;
           const isPopular = plan.isFeatured;
 

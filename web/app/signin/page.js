@@ -7,7 +7,7 @@ import Link from "next/link";
 import config from "@/config";
 
 function SignInContent() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";

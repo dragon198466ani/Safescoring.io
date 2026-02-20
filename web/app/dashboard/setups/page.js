@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
-import Link from "next/link";
 import ProductLogo from "@/components/ProductLogo";
 import SetupQuiz from "@/components/SetupQuiz";
 import SetupAssistant from "@/components/SetupAssistant";
@@ -199,7 +198,7 @@ function ProductCard({ product, onAdd, isAdded }) {
 
 // Setup product item
 function SetupProductItem({ product, role, onRemove, onRoleChange }) {
-  const roleInfo = ROLES.find(r => r.id === role) || ROLES[3];
+  const _roleInfo = ROLES.find(r => r.id === role) || ROLES[3];
 
   return (
     <div className="flex items-center gap-3 p-3 rounded-xl bg-base-300/50 border border-base-300">

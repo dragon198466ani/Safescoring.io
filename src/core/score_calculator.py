@@ -23,6 +23,7 @@ import requests
 
 # Import from common module
 from .config import SUPABASE_URL, SUPABASE_KEY, SUPABASE_HEADERS
+from .supabase_pagination import fetch_all
 
 # Import MoatManager for history tracking
 try:
@@ -97,25 +98,18 @@ class ScoreCalculator:
 
         time.sleep(0.5)
 
-        # Load norms with pillar info
-        r = self.session.get(
-            f'{SUPABASE_URL}/rest/v1/norms?select=id,code,pillar',
-            headers=SUPABASE_HEADERS,
-            timeout=30
-        )
-        norms_list = r.json()
+        # Load norms with pillar info (paginated - loads ALL 2159+ norms)
+        norms_list = fetch_all('norms', select='id,code,pillar', order='id')
         self.norms = {n['id']: n for n in norms_list}
         print(f"   {len(self.norms)} norms")
 
         time.sleep(0.5)
 
-        # Load safe_scoring_definitions
-        r = self.session.get(
-            f'{SUPABASE_URL}/rest/v1/safe_scoring_definitions?select=norm_id,is_essential,is_consumer,is_full',
-            headers=SUPABASE_HEADERS,
-            timeout=30
+        # Load safe_scoring_definitions (paginated)
+        definitions = fetch_all(
+            'safe_scoring_definitions',
+            select='norm_id,is_essential,is_consumer,is_full'
         )
-        definitions = r.json()
         self.definitions = {d['norm_id']: d for d in definitions}
         print(f"   {len(self.definitions)} norm definitions")
 

@@ -1,16 +1,13 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import { auth } from "@/libs/auth";
+import { requireAdmin as requireAdminAuth } from "@/libs/admin-auth";
 
 export const dynamic = "force-dynamic";
 
-// Admin authentication check
+// Admin authentication check using centralized RBAC
 async function requireAdmin() {
-  const session = await auth();
-  if (!session?.user?.email || session.user.email !== "admin@safescoring.io") {
-    return false;
-  }
-  return true;
+  const admin = await requireAdminAuth();
+  return !!admin;
 }
 
 /**
@@ -197,7 +194,7 @@ export async function GET(request) {
   } catch (error) {
     console.error("Diagnose error:", error);
     return NextResponse.json(
-      { error: "Internal server error", details: error.message },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

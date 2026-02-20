@@ -1,4 +1,5 @@
 import Link from "next/link";
+/* eslint-disable @next/next/no-img-element */
 
 export const metadata = {
   title: "API Documentation | SafeScoring",

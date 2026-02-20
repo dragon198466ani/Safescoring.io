@@ -116,11 +116,13 @@ export function logAdminAction({ adminEmail, action, resource, details = {} }) {
     details,
   };
 
-  // Log to console (in production, send to logging service)
-  console.log("[ADMIN AUDIT]", JSON.stringify(logEntry));
-
-  // TODO: In production, store in database or send to logging service
-  // await supabaseAdmin.from("admin_audit_logs").insert(logEntry);
+  // Log admin action (structured for log aggregation)
+  if (process.env.NODE_ENV === "production") {
+    // Structured JSON log for production log aggregators (Datadog, CloudWatch, etc.)
+    console.log(JSON.stringify({ level: "info", type: "admin_audit", ...logEntry }));
+  } else {
+    console.log("[ADMIN AUDIT]", JSON.stringify(logEntry));
+  }
 
   return logEntry;
 }

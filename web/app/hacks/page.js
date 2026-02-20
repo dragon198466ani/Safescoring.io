@@ -244,7 +244,7 @@ export default async function HacksPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <div>
-              <h3 className="font-bold">87% of hacked projects had been audited</h3>
+              <h3 className="font-bold">Nearly half of hacked projects had been audited</h3>
               <p className="text-sm">Audits are not enough. SafeScoring evaluates ongoing security practices, not just code snapshots.</p>
             </div>
           </div>
@@ -304,7 +304,7 @@ export default async function HacksPage() {
 
           {/* CTA */}
           <div className="mt-12 rounded-xl bg-gradient-to-br from-error/20 to-base-200 border border-base-300 p-8 text-center">
-            <h2 className="text-2xl font-bold mb-2">Don't become the next victim</h2>
+            <h2 className="text-2xl font-bold mb-2">Don&apos;t become the next victim</h2>
             <p className="text-base-content/60 mb-6 max-w-xl mx-auto">
               Check the security score of your crypto tools before trusting them with your funds.
             </p>

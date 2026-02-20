@@ -1,0 +1,1295 @@
+============================================================
+SAFE SUMMARY REGENERATION
+============================================================
+Mode: LIVE
+Pillar filter: ALL
+Limit: NONE
+
+  Fetched 1000 norms (total: 1000)
+  Fetched 298 norms (total: 1298)
+Found 1298 norms to process
+
+Processing A-AMD-SEV: AMD SEV-SNP...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 20.0%)
+
+Processing A-APPLE-SE: Apple Secure Enclave...
+  Found html document (1123 chars)
+  Document relevance: 33.3%
+  Generated summary (1939 chars)
+  Extracted authority: Crypto Consortium
+  Extracted description: 226 chars
+  Updated 4 columns in database
+
+Processing A-ARM-TZ: ARM TrustZone...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 20.0%)
+
+Processing A-AWS-NITRO: AWS Nitro Enclaves...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-AZURE-CVM: Azure Confidential Computing...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-BANK-ACCESS: Crypto Bank Account Access...
+  Found html document (81048 chars)
+  Document relevance: 100.0%
+      Groq DAILY QUOTA (key 2) - disabled for 24h
+      Groq DAILY QUOTA (key 3) - disabled for 24h
+      Groq DAILY QUOTA (key 4) - disabled for 24h
+      Groq DAILY QUOTA (key 5) - disabled for 24h
+      Groq DAILY QUOTA (key 6) - disabled for 24h
+      Groq DAILY QUOTA (key 7) - disabled for 24h
+      Groq DAILY QUOTA (key 8) - disabled for 24h
+      Groq DAILY QUOTA (key 9) - disabled for 24h
+      Groq DAILY QUOTA (key 10) - disabled for 24h
+      Groq DAILY QUOTA (key 11) - disabled for 24h
+      Groq DAILY QUOTA (key 12) - disabled for 24h
+      Groq DAILY QUOTA (key 13) - disabled for 24h
+      Groq DAILY QUOTA (key 14) - disabled for 24h
+      Groq DAILY QUOTA (key 15) - disabled for 24h
+      Groq DAILY QUOTA (key 1) - disabled for 24h
+      SambaNova rate limit (key 1) - rotating
+      SambaNova rate limit (key 2) - rotating
+      SambaNova rate limit (key 3) - rotating
+      SambaNova rate limit (key 4) - rotating
+      SambaNova rate limit (key 5) - rotating
+      SambaNova rate limit (key 6) - rotating
+      SambaNova rate limit (key 7) - rotating
+      SambaNova rate limit (key 8) - rotating
+      SambaNova rate limit (key 9) - rotating
+      SambaNova rate limit (key 10) - rotating
+      SambaNova rate limit (key 11) - rotating
+      SambaNova rate limit (key 12) - rotating
+      SambaNova rate limit (key 13) - rotating
+      SambaNova rate limit (key 14) - rotating
+      SambaNova rate limit (key 15) - rotating
+      SambaNova rate limit (key 16) - rotating
+      SambaNova rate limit (key 17) - rotating
+      SambaNova rate limit (key 18) - rotating
+      SambaNova rate limit (key 19) - rotating
+      SambaNova rate limit (key 20) - rotating
+      SambaNova rate limit (key 21) - rotating
+      SambaNova rate limit (key 22) - rotating
+      SambaNova rate limit (key 23) - rotating
+      SambaNova rate limit (key 24) - rotating
+      Cerebras rate limit (key 1) - rotating
+      Cerebras rate limit (key 2) - rotating
+      Cerebras rate limit (key 3) - rotating
+      Cerebras rate limit (key 4) - rotating
+      Gemini key 1 invalid - permanently disabled
+      DeepSeek HTTP 402 - DISABLED
+  Generated summary (1146 chars)
+  Extracted authority: European Banking Authority (EBA)
+  Extracted description: 132 chars
+  Updated 4 columns in database
+
+Processing A-BANK-FREEZE: Crypto Bank Freeze Policy...
+  Found html document (81048 chars)
+  Document relevance: 71.4%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+      SambaNova all keys rate-limited - cooldown (delay now: 15.0s)
+      Cerebras all keys rate-limited - cooldown (delay now: 6.2s)
+      All Gemini keys invalid - DISABLED
+  Generated summary (1571 chars)
+  Extracted authority: European Banking Authority (EBA)
+  Extracted description: 94 chars
+  Updated 4 columns in database
+
+Processing A-BANK-TRANS: Crypto Bank Transfer Limits...
+  Found html document (81048 chars)
+  Document relevance: 71.4%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (829 chars)
+  Extracted authority: European Banking Authority (EBA)
+  Updated 3 columns in database
+
+Processing A-BRIDGE-DELAY: Bridge Finality Delay...
+  Found html document (631059 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1417 chars)
+  Extracted authority: Ethereum Foundation
+  Extracted description: 57 chars
+  Updated 4 columns in database
+
+Processing A-BRIDGE-LIMIT: Bridge Transfer Limits...
+  Found html document (631059 chars)
+  Document relevance: 83.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1667 chars)
+  Extracted authority: Ethereum Foundation
+  Extracted description: 68 chars
+  Updated 4 columns in database
+
+Processing A-BRIDGE-VERIFY: Bridge Destination Verify...
+  Found html document (631059 chars)
+  Document relevance: 100.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2488 chars)
+  Extracted authority: Ethereum Foundation
+  Extracted description: 68 chars
+  Updated 4 columns in database
+
+Processing A-CC-001: Common Criteria EAL5+ Certification...
+  Found txt document (50000 chars)
+  Document not relevant (match ratio: 28.6%)
+
+Processing A-CC-002: Common Criteria EAL6+ Military Grade...
+  Found txt document (50000 chars)
+  Document not relevant (match ratio: 25.0%)
+
+Processing A-CC-003: Common Criteria Physical Tamper Detection...
+  Found txt document (50000 chars)
+  Document not relevant (match ratio: 25.0%)
+
+Processing A-CC-15408: Common Criteria ISO 15408...
+  Found txt document (3758 chars)
+  Document relevance: 71.4%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2525 chars)
+  Extracted year: 2009
+  Extracted authority: ISO/IEC JTC 1/SC 27
+  Extracted description: 289 chars
+  Updated 5 columns in database
+
+Processing A-CEX-2FA: CEX 2FA Mandatory...
+  Found html document (215968 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (3086 chars)
+  Extracted authority: National Institute of Standards and Technology (NIST)
+  Extracted description: 405 chars
+  Updated 4 columns in database
+
+Processing A-CEX-DELAY: CEX Withdrawal Delay...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-CEX-FREEZE: CEX Account Freeze...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-CEX-LIMIT: CEX Daily Withdrawal Limit...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 14.3%)
+
+Processing A-CEX-WHITELIST: CEX Address Whitelist...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-CRYPTO-DURESS: Duress PIN/Panic Wallet...
+  No local document, trying web fetch...
+  Fetching from: https://www.commoncriteriaportal.org/...
+  Fetch failed: HTTP 200
+  No document available (local or web)
+
+Processing A-CRYPTO-SSS: Shamir Secret Sharing...
+  Found html document (1123 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2003 chars)
+  Extracted authority: CryptoConsortium
+  Extracted description: 319 chars
+  Updated 4 columns in database
+
+Processing A-CRYPTO-TIMELOCK: Time-Locked Contracts...
+  Found html document (1123 chars)
+  Document relevance: 40.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2211 chars)
+  Extracted authority: CryptoCurrency Security Standard (CCSS) Consortium
+  Extracted description: 319 chars
+  Updated 4 columns in database
+
+Processing A-CUST-DURESS: Custody Duress Protocols...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-CUST-GEOCONT: Custody Geographic Controls...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-CUST-QUORUM: Custody Quorum Approval...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-CUST-TIMELK: Custody Timelock...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 20.0%)
+
+Processing A-DRS-001: Duress PIN/Password Support...
+  No local document, trying web fetch...
+  Fetching from: https://www.ccss.info/...
+  Fetch failed: HTTP 200
+  No document available (local or web)
+
+Processing A-DRS-002: Duress Mode Indistinguishable...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-DRS-003: Multiple Duress Levels...
+  Found txt document (50000 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-EMVCO: EMVCo Security Guidelines...
+  Found html document (1123 chars)
+  Document relevance: 40.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2037 chars)
+  Extracted authority: CryptoConsortium
+  Extracted description: 319 chars
+  Updated 4 columns in database
+
+Processing A-ETSI-103097: ETSI TS 103 097...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-FIDO2: FIDO2/WebAuthn/CTAP2...
+  Found html document (215968 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (3417 chars)
+  Extracted authority: National Institute of Standards and Technology (NIST)
+  Extracted description: 405 chars
+  Updated 4 columns in database
+
+Processing A-GCP-CVM: GCP Confidential VM...
+  Found html document (51043 chars)
+  Document not relevant (match ratio: 20.0%)
+
+Processing A-GOOGLE-TM2: Google Titan M2...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 20.0%)
+
+Processing A-GP-TEE: GlobalPlatform TEE...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 20.0%)
+
+Processing A-HDN-001: Hidden Wallet Support...
+  No local document, trying web fetch...
+  Fetching from: https://www.ccss.info/...
+  Fetch failed: HTTP 200
+  No document available (local or web)
+
+Processing A-HDN-002: Plausible Deniability Design...
+  No local document, trying web fetch...
+  Fetching from: https://www.ccss.info/...
+  Fetch failed: HTTP 200
+  No document available (local or web)
+
+Processing A-HDN-003: Automatic Decoy Wallet Setup...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 14.3%)
+
+Processing A-HDN-004: Unlimited Hidden Wallets...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-HDN-005: Hidden Wallet Cannot Be Detected...
+  Found txt document (50000 chars)
+  Document not relevant (match ratio: 28.6%)
+
+Processing A-INF-SE: Infineon SLE78/Optiga...
+  Found txt document (50000 chars)
+  Document relevance: 60.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1572 chars)
+  Extracted description: 81 chars
+  Updated 3 columns in database
+
+Processing A-INTEL-SGX: Intel SGX/TDX...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 20.0%)
+
+Processing A-ISO-17712: ISO 17712 Tamper-Evident Seals...
+  Found txt document (50000 chars)
+  Document not relevant (match ratio: 14.3%)
+
+Processing A-ISO-24759: ISO/IEC 24759 Crypto Module Testing...
+  Found html document (1123 chars)
+  Document relevance: 37.5%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2024 chars)
+  Extracted authority: CryptoConsortium
+  Extracted description: 319 chars
+  Updated 4 columns in database
+
+Processing A-LEND-COOL: Lending Cooldown Period...
+  Found html document (379555 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1459 chars)
+  Extracted authority: Aave Protocol
+  Updated 3 columns in database
+
+Processing A-LEND-EMERG: Lending Emergency Shutdown...
+  Found html document (6825 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-LEND-LIMIT: Lending Position Limits...
+  Found html document (379555 chars)
+  Document relevance: 50.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+      SambaNova cooldown done - resetting (delay: 15.0s)
+      SambaNova rate limit (key 1) - rotating
+      SambaNova rate limit (key 2) - rotating
+      SambaNova rate limit (key 3) - rotating
+      SambaNova rate limit (key 4) - rotating
+      SambaNova rate limit (key 5) - rotating
+      SambaNova rate limit (key 6) - rotating
+      SambaNova rate limit (key 7) - rotating
+      SambaNova rate limit (key 8) - rotating
+      SambaNova rate limit (key 9) - rotating
+      SambaNova rate limit (key 10) - rotating
+      SambaNova rate limit (key 11) - rotating
+      SambaNova rate limit (key 12) - rotating
+      SambaNova rate limit (key 13) - rotating
+      SambaNova rate limit (key 14) - rotating
+      SambaNova rate limit (key 15) - rotating
+      SambaNova rate limit (key 16) - rotating
+      SambaNova rate limit (key 17) - rotating
+      SambaNova rate limit (key 18) - rotating
+      SambaNova rate limit (key 19) - rotating
+      SambaNova rate limit (key 20) - rotating
+      SambaNova rate limit (key 21) - rotating
+      SambaNova rate limit (key 22) - rotating
+      SambaNova rate limit (key 23) - rotating
+      SambaNova rate limit (key 24) - rotating
+      Cerebras cooldown done - resetting (delay: 6.2s)
+      Cerebras rate limit (key 1) - rotating
+      Cerebras rate limit (key 2) - rotating
+      Cerebras rate limit (key 3) - rotating
+      Cerebras rate limit (key 4) - rotating
+  Generated summary (1291 chars)
+  Extracted authority: Aave (implied by context)
+  Extracted description: 111 chars
+  Updated 4 columns in database
+
+Processing A-LST-QUEUE: Liquid Staking Queue Time...
+  Found html document (2954438 chars)
+  Document relevance: 71.4%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+      SambaNova all keys rate-limited - cooldown (delay now: 15.0s)
+      Cerebras all keys rate-limited - cooldown (delay now: 10.0s)
+  Generated summary (1602 chars)
+  Extracted authority: Lido Finance
+  Extracted description: 43 chars
+  Updated 4 columns in database
+
+Processing A-LST-REDEEM: Liquid Staking Redemption...
+  Found html document (2954438 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1669 chars)
+  Extracted authority: Lido Finance (implied by domain and branding)
+  Extracted description: 220 chars
+  Updated 4 columns in database
+
+Processing A-NFT-CANCEL: NFT Listing Cancellation...
+  Found html document (1950064 chars)
+  Document relevance: 100.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1909 chars)
+  Updated 2 columns in database
+
+Processing A-NFT-ESCROW: NFT Trade Escrow...
+  Found html document (1950064 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1449 chars)
+  Updated 2 columns in database
+
+Processing A-NFT-FRAUD: NFT Fraud Detection...
+  Found html document (1950064 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1810 chars)
+  Extracted description: 77 chars
+  Updated 3 columns in database
+
+Processing A-NIST-053: NIST SP 800-53 Security Controls...
+  Found html document (87831 chars)
+  Document relevance: 85.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (4349 chars)
+  Extracted authority: New Relic (implied by the code and references to New Relic's infrastructure)
+  Extracted description: 303 chars
+  Updated 4 columns in database
+
+Processing A-OPS-001: Geofencing Support...
+  No local document, trying web fetch...
+  Fetching from: https://www.ccss.info/...
+  Fetch failed: HTTP 200
+  No document available (local or web)
+
+Processing A-OPS-002: Time-Lock Large Transfers...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-OPS-003: Multi-Device Confirmation Required...
+  No local document, trying web fetch...
+  Fetching from: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawi...
+  Fetch failed: HTTP 200
+  No document available (local or web)
+
+Processing A-OPS-004: IP Whitelisting...
+  No local document, trying web fetch...
+  Fetching from: https://csrc.nist.gov/projects/risk-management/guidance/sp-8...
+  Fetch failed: HTTP 404
+  No document available (local or web)
+
+Processing A-OPS-005: Velocity Limits...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 20.0%)
+
+Processing A-OPS-006: Transaction Whitelist...
+  No local document, trying web fetch...
+  Fetching from: https://eips.ethereum.org/EIPS/eip-2612...
+  Saved fetched content to A-OPS-006.txt
+  Found web_fetch document (9462 chars)
+  Document relevance: 40.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2648 chars)
+  Extracted year: 2020
+  Extracted authority: Ethereum Improvement Proposals (EIPs)
+  Extracted description: 176 chars
+  Updated 5 columns in database
+
+Processing A-OPS-007: Biometric + Knowledge Factor...
+  No local document, trying web fetch...
+  Domain not trusted: fidoalliance.org
+  No document available (local or web)
+
+Processing A-OPS-008: OPSEC Documentation Provided...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-OWASP-001: OWASP MASVS Code Obfuscation...
+  Found html document (954853 chars)
+  Document relevance: 100.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2702 chars)
+  Extracted authority: OWASP (Open Web Application Security Project)
+  Extracted description: 274 chars
+  Updated 4 columns in database
+
+Processing A-OWASP-002: OWASP MASVS Root/Jailbreak Detection...
+  Found html document (954853 chars)
+  Document relevance: 100.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1293 chars)
+  Extracted authority: OWASP (Open Web Application Security Project)
+  Extracted description: 264 chars
+  Updated 4 columns in database
+
+Processing A-OWASP-003: OWASP MASVS Secure Storage...
+  Found html document (954853 chars)
+  Document relevance: 100.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1464 chars)
+  Extracted authority: OWASP (Open Web Application Security Project)
+  Extracted description: 291 chars
+  Updated 4 columns in database
+
+Processing A-OWASP-004: OWASP MASVS Runtime Application Self-Protection...
+  Found html document (954853 chars)
+  Document relevance: 87.5%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1844 chars)
+  Extracted authority: OWASP (Open Web Application Security Project)
+  Extracted description: 44 chars
+  Updated 4 columns in database
+
+Processing A-OWASP-MASVS: OWASP MASVS/MASTG...
+  Found html document (954853 chars)
+  Document relevance: 80.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2847 chars)
+  Extracted authority: OWASP (Open Web Application Security Project)
+  Extracted description: 181 chars
+  Updated 4 columns in database
+
+Processing A-PAY-DISPUTE: Payment Dispute Process...
+  Found html document (2115064 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2250 chars)
+  Extracted authority: Stripe
+  Extracted description: 99 chars
+  Updated 4 columns in database
+
+Processing A-PAY-REFUND: Payment Refund Policy...
+  Found html document (2115064 chars)
+  Document relevance: 50.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1974 chars)
+  Extracted authority: Stripe
+  Extracted description: 99 chars
+  Updated 4 columns in database
+
+Processing A-PCI-PIN: PCI PIN/PTS...
+  Found html document (289481 chars)
+  Document relevance: 80.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2722 chars)
+  Extracted description: 267 chars
+  Updated 3 columns in database
+
+Processing A-PERP-LEVER: Perp DEX Max Leverage...
+  Found html document (383693 chars)
+  Document relevance: 100.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2783 chars)
+  Extracted authority: dYdX
+  Extracted description: 288 chars
+  Updated 4 columns in database
+
+Processing A-PERP-MARGIN: Perp DEX Margin Requirements...
+  Found html document (383693 chars)
+  Document relevance: 85.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+      SambaNova cooldown done - resetting (delay: 15.0s)
+      SambaNova rate limit (key 1) - rotating
+      SambaNova rate limit (key 2) - rotating
+      SambaNova rate limit (key 3) - rotating
+      SambaNova rate limit (key 4) - rotating
+      SambaNova rate limit (key 5) - rotating
+      SambaNova rate limit (key 6) - rotating
+      SambaNova rate limit (key 7) - rotating
+      SambaNova rate limit (key 8) - rotating
+      SambaNova rate limit (key 9) - rotating
+      SambaNova rate limit (key 10) - rotating
+      SambaNova rate limit (key 11) - rotating
+      SambaNova rate limit (key 12) - rotating
+      SambaNova rate limit (key 13) - rotating
+      SambaNova rate limit (key 14) - rotating
+      SambaNova rate limit (key 15) - rotating
+      SambaNova rate limit (key 16) - rotating
+      SambaNova rate limit (key 17) - rotating
+      SambaNova rate limit (key 18) - rotating
+      SambaNova rate limit (key 19) - rotating
+      SambaNova rate limit (key 20) - rotating
+      SambaNova rate limit (key 21) - rotating
+      SambaNova rate limit (key 22) - rotating
+      SambaNova rate limit (key 23) - rotating
+      SambaNova rate limit (key 24) - rotating
+      Cerebras cooldown done - resetting (delay: 10.0s)
+      Cerebras rate limit (key 1) - rotating
+      Cerebras rate limit (key 2) - rotating
+      Cerebras rate limit (key 3) - rotating
+      Cerebras rate limit (key 4) - rotating
+  Generated summary (2300 chars)
+  Extracted authority: dYdX
+  Extracted description: 292 chars
+  Updated 4 columns in database
+
+Processing A-PERP-STOP: Perp DEX Stop Orders...
+  Found html document (383693 chars)
+  Document relevance: 85.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+      SambaNova all keys rate-limited - cooldown (delay now: 15.0s)
+      Cerebras all keys rate-limited - cooldown (delay now: 10.0s)
+  Generated summary (2425 chars)
+  Extracted authority: dYdX
+  Extracted description: 288 chars
+  Updated 4 columns in database
+
+Processing A-PHY-001: Discreet Physical Appearance...
+  Found html document (1123 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1951 chars)
+  Extracted authority: CryptoConsortium
+  Extracted description: 319 chars
+  Updated 4 columns in database
+
+Processing A-PHY-002: No Visible Branding...
+  No local document, trying web fetch...
+  Fetching from: https://www.ccss.info/...
+  Fetch failed: HTTP 200
+  No document available (local or web)
+
+Processing A-PHY-003: Disguised as Common Object...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 16.7%)
+
+Processing A-PHY-004: Minimal Physical Footprint...
+  No local document, trying web fetch...
+  Fetching from: https://www.iso.org/standard/73339.html...
+  Saved fetched content to A-PHY-004.txt
+  Found web_fetch document (4987 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2930 chars)
+  Extracted year: 2018
+  Extracted authority: International Organization for Standardization (ISO)
+  Extracted description: 211 chars
+  Updated 5 columns in database
+
+Processing A-PNC-001: Panic Mode Available...
+  Found html document (1123 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2058 chars)
+  Extracted authority: CryptoConsortium
+  Extracted description: 319 chars
+  Updated 4 columns in database
+
+Processing A-PNC-002: Instant Wipe Capability...
+  No local document, trying web fetch...
+  Fetching from: https://www.ccss.info/...
+  Fetch failed: HTTP 200
+  No document available (local or web)
+
+Processing A-PNC-003: Remote Wipe Support...
+  Found html document (215968 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (3205 chars)
+  Extracted authority: National Institute of Standards and Technology (NIST)
+  Extracted description: 405 chars
+  Updated 4 columns in database
+
+Processing A-PNC-004: Dead Man Switch...
+  Found html document (1123 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1974 chars)
+  Extracted authority: CryptoConsortium
+  Extracted description: 319 chars
+  Updated 4 columns in database
+
+Processing A-PNC-005: Panic PIN Sends Alert...
+  No local document, trying web fetch...
+  Fetching from: https://www.ccss.info/...
+  Fetch failed: HTTP 200
+  No document available (local or web)
+
+Processing A-PNC-006: Self-Destruct on Tamper...
+  Found html document (1123 chars)
+  Document not relevant (match ratio: 20.0%)
+
+Processing A-SOC-001: Social Recovery Without Amount Disclosure...
+  No local document, trying web fetch...
+  Fetching from: https://eips.ethereum.org/EIPS/eip-4337...
+  Saved fetched content to A-SOC-001.txt
+  Found web_fetch document (44861 chars)
+  Document relevance: 50.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (3472 chars)
+  Extracted year: 2021
+  Extracted authority: Ethereum Foundation (ERC standards track)
+  Extracted description: 551 chars
+  Updated 5 columns in database
+
+Processing A-SOC-002: Shamir Secret Sharing...
+  Found html document (86986 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (3277 chars)
+  Extracted authority: New Relic (implied by the code and references)
+  Extracted description: 392 chars
+  Updated 4 columns in database
+
+Processing A-SOC-003: Encrypted Social Backup...
+  No local document, trying web fetch...
+  Fetching from: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawi...
+  Fetch failed: HTTP 200
+  No document available (local or web)
+
+Processing A-SOC-004: Time-Locked Inheritance...
+  No local document, trying web fetch...
+  Fetching from: https://github.com/bitcoin/bips/blob/master/bip-0038.mediawi...
+  Fetch failed: HTTP 200
+  No document available (local or web)
+
+Processing A-STAKE-DELAY: Staking Withdrawal Delay...
+  Found html document (632023 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1368 chars)
+  Extracted authority: Ethereum Community
+  Extracted description: 178 chars
+  Updated 4 columns in database
+
+Processing A-STAKE-NOCUST: Staking Non-custodial Option...
+  Found html document (2954438 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1817 chars)
+  Extracted authority: Lido Finance
+  Extracted description: 207 chars
+  Updated 4 columns in database
+
+Processing A-STAKE-UNSTK: Staking Unstake Process...
+  Found html document (632064 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1619 chars)
+  Extracted authority: Ethereum Community
+  Extracted description: 123 chars
+  Updated 4 columns in database
+
+Processing A-STM-ST33: STMicro ST33...
+  Found txt document (50000 chars)
+  Document not relevant (match ratio: 20.0%)
+
+Processing A-TEMPEST: TEMPEST/EMSEC...
+  Found html document (1123 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2197 chars)
+  Extracted authority: CryptoCurrency Security Standard (CCSS) / CryptoConsortium
+  Extracted description: 319 chars
+  Updated 4 columns in database
+
+Processing A-YIELD-EXIT: Yield Emergency Exit...
+  Found html document (11557 chars)
+  Document relevance: 50.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1154 chars)
+  Extracted description: 76 chars
+  Updated 3 columns in database
+
+Processing A-YIELD-FEE: Yield Fee Disclosure...
+  Found html document (11557 chars)
+  Document relevance: 50.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1980 chars)
+  Extracted authority: Yearn Finance (implied by domain and content)
+  Extracted description: 77 chars
+  Updated 4 columns in database
+
+Processing A-YIELD-LOCK: Yield Lock Period...
+  Found html document (11557 chars)
+  Document relevance: 50.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+      SambaNova cooldown done - resetting (delay: 15.0s)
+      SambaNova rate limit (key 1) - rotating
+      SambaNova rate limit (key 2) - rotating
+      SambaNova rate limit (key 3) - rotating
+      SambaNova rate limit (key 4) - rotating
+      SambaNova rate limit (key 5) - rotating
+      SambaNova rate limit (key 6) - rotating
+      SambaNova rate limit (key 7) - rotating
+      SambaNova rate limit (key 8) - rotating
+      SambaNova rate limit (key 9) - rotating
+      SambaNova rate limit (key 10) - rotating
+      SambaNova rate limit (key 11) - rotating
+      SambaNova rate limit (key 12) - rotating
+      SambaNova rate limit (key 13) - rotating
+      SambaNova rate limit (key 14) - rotating
+      SambaNova rate limit (key 15) - rotating
+      SambaNova rate limit (key 16) - rotating
+      SambaNova rate limit (key 17) - rotating
+      SambaNova rate limit (key 18) - rotating
+      SambaNova rate limit (key 19) - rotating
+      SambaNova rate limit (key 20) - rotating
+      SambaNova rate limit (key 21) - rotating
+      SambaNova rate limit (key 22) - rotating
+      SambaNova rate limit (key 23) - rotating
+      SambaNova rate limit (key 24) - rotating
+      Cerebras cooldown done - resetting (delay: 10.0s)
+  Generated summary (1388 chars)
+  Extracted description: 37 chars
+  Updated 3 columns in database
+
+Processing A01: Duress PIN...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A02: Wipe PIN...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A03: Multiple Duress PINs...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A04: Configurable duress action...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A05: Delayed wipe...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A06: Silent alert...
+  Found html document (7310 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+      SambaNova all keys rate-limited - cooldown (delay now: 15.0s)
+      Cerebras rate limit (key 2) - rotating
+      Cerebras rate limit (key 3) - rotating
+      Cerebras rate limit (key 4) - rotating
+      Cerebras rate limit (key 1) - rotating
+  Generated summary (3553 chars)
+  Extracted authority: National Institute of Standards and Technology (NIST)
+  Extracted description: 114 chars
+  Updated 4 columns in database
+
+Processing A07: Fake transaction history...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A08: Believable decoy balance...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A09: Duress word passphrase...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A10: Graduated response...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A100: Backup verification...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A101: Recovery drill mode...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A102: Partial seed recovery...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A103: Seed phrase checksum...
+  Found html document (222938 chars)
+  Document relevance: 75.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+      Cerebras all keys rate-limited - cooldown (delay now: 10.0s)
+  Generated summary (1197 chars)
+  Updated 2 columns in database
+
+Processing A104: Multi-location backup...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A105: Encrypted cloud backup...
+  No local document, trying web fetch...
+  Fetching from: https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/fi...
+  Saved fetched content to A105.txt
+  Found web_fetch document (8062 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A106: Cross-border legal support...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 25.0%)
+
+Processing A107: Asset protection trust...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 25.0%)
+
+Processing A108: Plausible deniability docs...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A109: Travel advisory integration...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A11: Norm A11...
+  Found html document (222938 chars)
+  Document relevance: 100.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1674 chars)
+  Extracted authority: GitHub (implied by domain and assets)
+  Extracted description: 77 chars
+  Updated 4 columns in database
+
+Processing A110: Regulatory compliance alerts...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A111: GDPR Art. 17...
+  Found html document (1067003 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2759 chars)
+  Extracted year: 2016
+  Extracted authority: European Union (EU)
+  Extracted description: 237 chars
+  Updated 5 columns in database
+
+Processing A112: GDPR Art. 20...
+  No local document, trying web fetch...
+  Fetching from: https://www.iso.org/standard/71670.html...
+  Saved fetched content to A112.txt
+  Found web_fetch document (2796 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A113: GDPR Art. 25...
+  Found html document (1067002 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (3251 chars)
+  Extracted year: 2016
+  Extracted authority: European Union (EU)
+  Extracted description: 216 chars
+  Updated 5 columns in database
+
+Processing A114: GDPR Art. 32...
+  Found html document (1067002 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2834 chars)
+  Extracted year: 2016
+  Extracted authority: European Union
+  Extracted description: 237 chars
+  Updated 5 columns in database
+
+Processing A115: GDPR Art. 35...
+  Found html document (1067003 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (3121 chars)
+  Extracted year: 2016
+  Extracted authority: European Union
+  Extracted description: 237 chars
+  Updated 5 columns in database
+
+Processing A116: CCPA...
+  No local document, trying web fetch...
+  Domain not trusted: oag.ca.gov
+  No document available (local or web)
+
+Processing A117: CPRA...
+  No local document, trying web fetch...
+  Fetching from: https://csrc.nist.gov/projects/risk-management/guidance/sp-8...
+  Fetch failed: HTTP 404
+  No document available (local or web)
+
+Processing A118: LGPD...
+  Found html document (135435 chars)
+  Document relevance: 50.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2424 chars)
+  Extracted authority: Government of Brazil (gov.br)
+  Extracted description: 238 chars
+  Updated 4 columns in database
+
+Processing A119: PIPL...
+  No local document, trying web fetch...
+  Domain not trusted: www.npc.gov.cn
+  No document available (local or web)
+
+Processing A12: Multiple hidden wallets...
+  Found html document (222938 chars)
+  Document relevance: 75.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1563 chars)
+  Extracted authority: GitHub (implied by domain and assets)
+  Extracted description: 77 chars
+  Updated 4 columns in database
+
+Processing A120: APPI...
+  No local document, trying web fetch...
+  Fetching from: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawi...
+  Fetch failed: HTTP 200
+  No document available (local or web)
+
+Processing A121: POPIA...
+  Found html document (14226 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A122: Privacy Act 1988...
+  No local document, trying web fetch...
+  Fetching from: https://csrc.nist.gov/projects/risk-management/guidance/sp-8...
+  Fetch failed: HTTP 404
+  No document available (local or web)
+
+Processing A123: PDPA...
+  No local document, trying web fetch...
+  Fetching from: https://www.iso.org/standard/27001.html...
+  Fetch failed: HTTP 404
+  No document available (local or web)
+
+Processing A125: Tor v3 Onion...
+  Found txt document (1653 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2279 chars)
+  Extracted authority: Tor Project
+  Extracted description: 218 chars
+  Updated 4 columns in database
+
+Processing A126: Nym Mixnet...
+  Found html document (27864 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2359 chars)
+  Extracted authority: Nym (nym.com)
+  Extracted description: 199 chars
+  Updated 4 columns in database
+
+Processing A127: ORAM...
+  No local document, trying web fetch...
+  Domain not trusted: scholar.google.com
+  No document available (local or web)
+
+Processing A128: PIR...
+  No local document, trying web fetch...
+  Fetching from: https://csrc.nist.gov/projects/risk-management/guidance/sp-8...
+  Fetch failed: HTTP 404
+  No document available (local or web)
+
+Processing A129: BIP-85...
+  Found html document (21044 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A13: No hidden wallet indicator...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 25.0%)
+
+Processing A130: Decoy Wallet Standard...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A131: Geographic Kill Switch...
+  Found html document (46212 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A132: Heartbeat Dead Man...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 25.0%)
+
+Processing A133: Panic Wipe...
+  Found html document (42672 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A134: FROST...
+  Found html document (15473 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A135: MuSig2...
+  Found html document (379591 chars)
+  Document relevance: 50.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1773 chars)
+  Extracted description: 95 chars
+  Updated 3 columns in database
+
+Processing A136: ROAST...
+  Found html document (163630 chars)
+  Document relevance: 50.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1209 chars)
+  Updated 2 columns in database
+
+Processing A137: Zero-Knowledge Proof...
+  Found html document (168105 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+      SambaNova cooldown done - resetting (delay: 15.0s)
+      SambaNova rate limit (key 1) - rotating
+      SambaNova rate limit (key 2) - rotating
+      SambaNova rate limit (key 3) - rotating
+      SambaNova rate limit (key 4) - rotating
+      SambaNova rate limit (key 5) - rotating
+      SambaNova rate limit (key 6) - rotating
+      SambaNova rate limit (key 7) - rotating
+      SambaNova rate limit (key 8) - rotating
+      SambaNova rate limit (key 9) - rotating
+      SambaNova rate limit (key 10) - rotating
+      SambaNova rate limit (key 11) - rotating
+      SambaNova rate limit (key 12) - rotating
+      SambaNova rate limit (key 13) - rotating
+      SambaNova rate limit (key 14) - rotating
+      SambaNova rate limit (key 15) - rotating
+      SambaNova rate limit (key 16) - rotating
+      SambaNova rate limit (key 17) - rotating
+      SambaNova rate limit (key 18) - rotating
+      SambaNova rate limit (key 19) - rotating
+      SambaNova rate limit (key 20) - rotating
+      SambaNova rate limit (key 21) - rotating
+      SambaNova rate limit (key 22) - rotating
+      SambaNova rate limit (key 23) - rotating
+      SambaNova rate limit (key 24) - rotating
+      Cerebras cooldown done - resetting (delay: 10.0s)
+      Cerebras rate limit (key 2) - rotating
+      Cerebras rate limit (key 3) - rotating
+      Cerebras rate limit (key 4) - rotating
+      Cerebras rate limit (key 1) - rotating
+  Generated summary (1003 chars)
+  Updated 2 columns in database
+
+Processing A138: Pedersen Commitment...
+  Found html document (165345 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+      SambaNova all keys rate-limited - cooldown (delay now: 15.0s)
+      Cerebras all keys rate-limited - cooldown (delay now: 10.0s)
+  Generated summary (1400 chars)
+  Updated 2 columns in database
+
+Processing A139: Stealth Addresses...
+  Found html document (29521 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (3406 chars)
+  Extracted authority: Bitcoin Wiki (community-maintained)
+  Extracted description: 269 chars
+  Updated 4 columns in database
+
+Processing A14: Wallet count undetectable...
+  Found html document (692435 chars)
+  Document relevance: 75.0%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1740 chars)
+  Extracted authority: Ethereum Foundation (implied by domain)
+  Extracted description: 129 chars
+  Updated 4 columns in database
+
+Processing A140: VPN Support...
+  Found html document (7310 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2463 chars)
+  Extracted description: 294 chars
+  Updated 3 columns in database
+
+Processing A141: Brick PIN...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A142: Travel Mode...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A143: Shamir Backup...
+  Found html document (43045 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (4487 chars)
+  Extracted year: 2017
+  Extracted authority: SatoshiLabs
+  Extracted description: 568 chars
+  Updated 5 columns in database
+
+Processing A144: Censorship Resistance...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A145: MEV Protection...
+  No local document, trying web fetch...
+  Fetching from: https://eips.ethereum.org/EIPS/eip-1559...
+  Saved fetched content to A145.txt
+  Found web_fetch document (21496 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (3393 chars)
+  Extracted year: 2019
+  Extracted authority: Ethereum Improvement Proposal (EIP)
+  Extracted description: 169 chars
+  Updated 5 columns in database
+
+Processing A146: Private Mempool...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A147: Transaction Relay...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A148: Address Reuse Prevention...
+  Found html document (29521 chars)
+  Document not relevant (match ratio: 25.0%)
+
+Processing A149: UTXO Management...
+  Found html document (29521 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2945 chars)
+  Extracted authority: Bitcoin Wiki (community-maintained)
+  Extracted description: 269 chars
+  Updated 4 columns in database
+
+Processing A15: Storage size invariant...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A150: Coin Control...
+  Found html document (29521 chars)
+  Document relevance: 66.7%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (2877 chars)
+  Extracted authority: Bitcoin community
+  Extracted description: 269 chars
+  Updated 4 columns in database
+
+Processing A151: Incident Response Plan...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A152: Incident Disclosure Policy...
+  Found html document (11171 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A153: Post-Mortem Reports...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A154: Bug Bounty Program...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A155: Security Contact...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A156: Insurance Coverage...
+  Found html document (1049652 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (1927 chars)
+  Extracted authority: World Wide Web Consortium (W3C)
+  Extracted description: 63 chars
+  Updated 4 columns in database
+
+Processing A157: Insurance Provider Disclosed...
+  Found html document (1049652 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A158: Coverage Amount Disclosed...
+  Found html document (667149 chars)
+  Document not relevant (match ratio: 25.0%)
+
+Processing A159: Claims Process Documented...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A16: Activity indistinguishable...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A160: Treasury Reserve...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A161: Proof of Reserves...
+  Found html document (7310 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back
+  Generated summary (4157 chars)
+  Extracted authority: National Institute of Standards and Technology (NIST)
+  Extracted description: 114 chars
+  Updated 4 columns in database
+
+Processing A162: Team Transparency...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A163: Company Registration...
+  Found html document (7310 chars)
+  Document not relevant (match ratio: 0.0%)
+
+Processing A164: Regular Updates...
+  Found html document (42315 chars)
+  Document relevance: 33.3%
+      Groq ALL KEYS daily quota exhausted (15/15) - falling back

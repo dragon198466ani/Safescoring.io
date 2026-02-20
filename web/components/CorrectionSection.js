@@ -9,7 +9,7 @@ import CorrectionForm from "./CorrectionForm";
  * Creates closed-loop data that improves evaluations
  */
 export default function CorrectionSection({ productId, productSlug, productName }) {
-  const { data: session } = useSession();
+  const { data: _session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [recentSubmission, setRecentSubmission] = useState(null);
 

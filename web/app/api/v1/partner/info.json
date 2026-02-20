@@ -1,0 +1,1 @@
+{"name":"Partner API","version":"1.0","endpoints":["/v1/partner/scores","/v1/partner/products","/v1/partner/compare"]}

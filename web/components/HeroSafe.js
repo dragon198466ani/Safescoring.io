@@ -33,7 +33,7 @@ const HeroSafe = () => {
 
         {/* Anti-audit message */}
         <p className="text-base text-base-content/50 max-w-xl mx-auto mb-10">
-          87% of hacked projects in 2024 had been audited.{" "}
+          Nearly half of hacked projects in 2024 had been audited.{" "}
           <span className="text-primary font-medium">We measure real security.</span>
         </p>
 

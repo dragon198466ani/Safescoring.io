@@ -17,12 +17,6 @@ const getScoreColor = (score) => {
   return "text-red-400";
 };
 
-const getChangeIndicator = (change) => {
-  if (change > 0) return { icon: "↑", color: "text-green-400" };
-  if (change < 0) return { icon: "↓", color: "text-red-400" };
-  return { icon: "→", color: "text-base-content/50" };
-};
-
 async function getDashboardData(userId) {
   if (!supabaseAdmin) {
     return { topProducts: [], stats: { products: 0, setups: 0, alerts: 0, incidents: 0 }, firstSetupId: null };

@@ -122,7 +122,7 @@ const WhyNotAudits = () => {
         {/* Bottom stats */}
         <div className="mt-16 grid md:grid-cols-3 gap-8 text-center">
           <div className="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/20">
-            <div className="text-4xl font-bold text-amber-400 mb-2">87%</div>
+            <div className="text-4xl font-bold text-amber-400 mb-2">~50%</div>
             <div className="text-sm text-base-content/60">
               of exploited DeFi projects had audits — showing audits alone aren&apos;t enough
             </div>

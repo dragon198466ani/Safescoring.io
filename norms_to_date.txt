@@ -1,0 +1,782 @@
+# 781 normes sans date:
+'A01': None,  # Duress PIN
+'A02': None,  # Wipe PIN
+'A03': None,  # Multiple Duress PINs
+'A04': None,  # Configurable duress action
+'A05': None,  # Delayed wipe
+'A06': None,  # Silent alert
+'A07': None,  # Fake transaction history
+'A08': None,  # Believable decoy balance
+'A09': None,  # Duress word passphrase
+'A10': None,  # Graduated response
+'A100': None,  # Backup verification
+'A101': None,  # Recovery drill mode
+'A102': None,  # Partial seed recovery
+'A103': None,  # Seed phrase checksum
+'A104': None,  # Multi-location backup
+'A105': None,  # Encrypted cloud backup
+'A106': None,  # Cross-border legal support
+'A107': None,  # Asset protection trust
+'A108': None,  # Plausible deniability docs
+'A109': None,  # Travel advisory integration
+'A11': None,  # Norm A11
+'A110': None,  # Regulatory compliance alerts
+'A111': None,  # GDPR Art. 17
+'A112': None,  # GDPR Art. 20
+'A114': None,  # GDPR Art. 32
+'A115': None,  # GDPR Art. 35
+'A116': None,  # CCPA
+'A118': None,  # LGPD
+'A119': None,  # PIPL
+'A12': None,  # Multiple hidden wallets
+'A120': None,  # APPI
+'A121': None,  # POPIA
+'A122': None,  # Privacy Act 1988
+'A125': None,  # Tor v3 Onion
+'A127': None,  # ORAM
+'A128': None,  # PIR
+'A129': None,  # BIP-85
+'A130': None,  # Decoy Wallet Standard
+'A131': None,  # Geographic Kill Switch
+'A132': None,  # Heartbeat Dead Man
+'A133': None,  # Panic Wipe
+'A134': None,  # FROST
+'A135': None,  # MuSig2
+'A136': None,  # ROAST
+'A137': None,  # Zero-Knowledge Proof
+'A138': None,  # Pedersen Commitment
+'A139': None,  # Stealth Addresses
+'A140': None,  # VPN Support
+'A141': None,  # Brick PIN
+'A142': None,  # Travel Mode
+'A144': None,  # Censorship Resistance
+'A145': None,  # MEV Protection
+'A146': None,  # Private Mempool
+'A147': None,  # Transaction Relay
+'A148': None,  # Address Reuse Prevention
+'A149': None,  # UTXO Management
+'A15': None,  # Storage size invariant
+'A150': None,  # Coin Control
+'A16': None,  # Activity indistinguishable
+'A17': None,  # No metadata leakage
+'A171': None,  # Progressive Reveal
+'A172': None,  # Silent Payments (BIP-352)
+'A173': None,  # PayNym (BIP-47)
+'A174': None,  # Aztec Network
+'A175': None,  # Railgun
+'A176': None,  # Tornado Cash (legacy)
+'A177': None,  # Monero Support
+'A178': None,  # Zcash Shielded
+'A179': None,  # Grin/MimbleWimble
+'A18': None,  # Encrypted deniable container
+'A180': None,  # Geographic Unlock
+'A181': None,  # Time-Based Unlock
+'A182': None,  # Biometric Duress
+'A183': None,  # Voice Stress Detection
+'A184': None,  # Countdown Abort
+'A185': None,  # OFAC Compliance Check
+'A186': None,  # EU Sanctions Check
+'A187': None,  # Travel Rule Compliance
+'A188': None,  # Proof of Funds
+'A189': None,  # Dandelion++ Protocol
+'A19': None,  # Steganographic backup
+'A190': None,  # I2P Integration
+'A191': None,  # Nym Mixnet
+'A192': None,  # Private Full Node
+'A193': None,  # Electrum over Tor
+'A20': None,  # Plausible empty state
+'A21': None,  # CLTV CheckLockTimeVerify
+'A23': None,  # Vault with delay
+'A24': None,  # Spending limits per period
+'A25': None,  # Customizable delays
+'A26': None,  # 24h withdrawal delay
+'A27': None,  # 7d large tx delay
+'A28': None,  # 30d full access delay
+'A29': None,  # Emergency multisig bypass
+'A30': None,  # Time-lock transparency
+'A31': None,  # Geographic distribution
+'A32': None,  # M-of-N configurable
+'A34': None,  # Social recovery
+'A35': None,  # Time-lock + multisig combo
+'A36': None,  # Jurisdictional diversity
+'A37': None,  # Key ceremony support
+'A38': None,  # Cosigner notification
+'A41': None,  # Time-delayed inheritance
+'A42': None,  # Multi-beneficiary
+'A43': None,  # Partial reveal
+'A44': None,  # Proof-of-life mechanism
+'A45': None,  # Notary integration guide
+'A46': None,  # Legal documentation
+'A47': None,  # Beneficiary notification
+'A48': None,  # Contestation period
+'A49': None,  # Remote wipe
+'A50': None,  # Quick physical destroy
+'A54': None,  # Verification of wipe
+'A55': None,  # Failsafe destruction
+'A56': None,  # No recovery possible
+'A57': None,  # Discreet design
+'A58': None,  # Common object disguise
+'A59': None,  # No crypto branding
+'A60': None,  # Pocketable size
+'A61': None,  # No LED/sound reveal
+'A62': None,  # Innocuous packaging
+'A63': None,  # Neutral device name
+'A65': None,  # Air-gapped operation
+'A66': None,  # QR-only communication
+'A67': None,  # No mandatory internet
+'A68': None,  # No telemetry
+'A69': None,  # VPN compatible
+'A70': None,  # No IP logging
+'A72': None,  # No KYC required
+'A73': None,  # Data minimization
+'A74': None,  # Right to deletion
+'A75': None,  # Privacy by design
+'A76': None,  # CoinJoin support
+'A77': None,  # PayJoin/P2EP
+'A80': None,  # Bulletproofs
+'A83': None,  # Address reuse prevention
+'A84': None,  # UTXO labeling
+'A85': None,  # Atomic swaps
+'A86': None,  # I2P support
+'A87': None,  # Mixnet support
+'A88': None,  # Onion routing
+'A89': None,  # Traffic padding
+'A90': None,  # Timing obfuscation
+'A91': None,  # Metadata stripping
+'A92': None,  # EXIF removal
+'A93': None,  # MAC address randomization
+'A94': None,  # DNS over HTTPS
+'A95': None,  # Certificate pinning
+'A96': None,  # Traffic analysis resistance
+'A97': None,  # Fingerprinting resistance
+'A98': None,  # Screen capture block
+'A99': None,  # Emergency recovery key
+'E01': None,  # Bitcoin BTC
+'E02': None,  # Ethereum ETH
+'E03': None,  # EVM chains
+'E04': None,  # Polygon
+'E05': None,  # Arbitrum
+'E06': None,  # Optimism
+'E07': None,  # Base
+'E08': None,  # BNB Chain
+'E09': None,  # Avalanche
+'E10': None,  # Solana
+'E100': None,  # Native staking
+'E102': None,  # DEX aggregator
+'E103': None,  # Bridge integration
+'E104': None,  # Yield farming display
+'E105': None,  # LP position tracking
+'E106': None,  # Lending protocols
+'E107': None,  # NFT marketplace
+'E108': None,  # Portfolio tracking
+'E109': None,  # Tax reporting
+'E11': None,  # Cardano
+'E110': None,  # Screen reader NVDA
+'E111': None,  # Screen reader VoiceOver
+'E112': None,  # High contrast mode
+'E113': None,  # Large text support
+'E114': None,  # Voice control
+'E115': None,  # Haptic feedback
+'E116': None,  # Color blind mode
+'E117': None,  # Dyslexia font option
+'E118': None,  # WalletConnect v2
+'E119': None,  # Coinbase Wallet SDK
+'E121': None,  # Trezor Suite compatible
+'E122': None,  # Hardware wallet bridge
+'E123': None,  # Import/Export accounts
+'E124': None,  # QR animated (UR)
+'E125': None,  # CBOR encoding
+'E126': None,  # Price alerts
+'E127': None,  # Transaction alerts
+'E128': None,  # Security alerts
+'E129': None,  # Governance alerts
+'E13': None,  # Cosmos IBC
+'E130': None,  # Airdrop notifications
+'E131': None,  # Optimistic Rollup
+'E132': None,  # ZK-Rollup
+'E133': None,  # Validium
+'E134': None,  # State Channels
+'E135': None,  # Plasma
+'E136': None,  # ERC-4626
+'E137': None,  # ERC-3156
+'E138': None,  # ERC-2612
+'E139': None,  # ERC-4337
+'E14': None,  # Tron
+'E140': None,  # ERC-6900
+'E142': None,  # IBC Protocol
+'E143': None,  # LayerZero
+'E144': None,  # Chainlink CCIP
+'E145': None,  # Axelar GMP
+'E146': None,  # Wormhole NTT
+'E147': None,  # WCAG 2.2 Level A
+'E148': None,  # WCAG 2.2 Level AA
+'E149': None,  # WCAG 2.2 Level AAA
+'E15': None,  # XRP Ledger
+'E151': None,  # EN 301 549
+'E152': None,  # RGAA 4.1
+'E153': None,  # TPS >100,000
+'E154': None,  # Latency <100ms
+'E155': None,  # Finality <1s
+'E156': None,  # Gas optimization
+'E157': None,  # ISO 9241-210
+'E158': None,  # ISO 9241-11
+'E159': None,  # Nielsen Heuristics
+'E16': None,  # Lightning Network
+'E161': None,  # ERC-6551
+'E163': None,  # EIP-6963
+'E165': None,  # BOLT 12
+'E166': None,  # LNURL
+'E167': None,  # API Documentation
+'E168': None,  # User Guide
+'E169': None,  # Community Forum
+'E17': None,  # Stacks
+'E170': None,  # Multi-language Support
+'E171': None,  # RTL Support
+'E172': None,  # Gas Estimation
+'E173': None,  # Gas Price Oracle
+'E174': None,  # EIP-1559 Support
+'E175': None,  # Gas Token Support
+'E176': None,  # Transaction Simulation
+'E177': None,  # Batch Transactions
+'E178': None,  # Multi-send
+'E179': None,  # Approve + Swap Combo
+'E18': None,  # >1000 tokens
+'E181': None,  # ASIC Support
+'E182': None,  # Offline Transaction Signing
+'E183': None,  # PSBT Support
+'E184': None,  # Offline Address Generation
+'E185': None,  # Air-gapped Signing
+'E186': None,  # Seed Import
+'E187': None,  # Private Key Import
+'E188': None,  # Watch-only Wallet
+'E189': None,  # Hardware Wallet Connect
+'E19': None,  # >5000 tokens
+'E190': None,  # Price Alerts
+'E191': None,  # Transaction Alerts
+'E192': None,  # Security Alerts
+'E193': None,  # Governance Alerts
+'E194': None,  # ERC-4337 Support
+'E195': None,  # Paymaster Support
+'E196': None,  # Bundler Integration
+'E197': None,  # Session Keys
+'E198': None,  # Social Recovery (ERC-4337)
+'E199': None,  # Spending Limits (AA)
+'E20': None,  # Custom token add
+'E200': None,  # Arbitrum Nova
+'E201': None,  # zkSync Era
+'E202': None,  # Starknet
+'E203': None,  # Linea
+'E204': None,  # Scroll
+'E205': None,  # Mantle
+'E206': None,  # Blast
+'E207': None,  # Mode Network
+'E208': None,  # Portfolio Tracking
+'E209': None,  # P&L Calculationationationation
+'E21': None,  # ERC-20
+'E210': None,  # Tax Reporting
+'E211': None,  # Historical Performance
+'E212': None,  # Gas Spending Analysis
+'E213': None,  # DeFi Position Tracking
+'E214': None,  # Address Book
+'E215': None,  # ENS Integration
+'E216': None,  # Lens Protocol
+'E217': None,  # Farcaster Integration
+'E218': None,  # Transaction Messaging
+'E219': None,  # Contact Labels
+'E22': None,  # ERC-721 NFT
+'E220': None,  # Intents/Quote Aggregation
+'E221': None,  # Limit Orders
+'E223': None,  # Dollar-Cost Averaging
+'E224': None,  # Vault Strategies
+'E225': None,  # Leverage Trading
+'E226': None,  # Perpetual Futures
+'E227': None,  # Options Trading
+'E228': None,  # Prediction Markets
+'E229': None,  # NFT Marketplace
+'E23': None,  # ERC-1155
+'E231': None,  # Injective
+'E232': None,  # Celestia
+'E233': None,  # Berachain
+'E234': None,  # Monad
+'E235': None,  # Fuel
+'E237': None,  # Movement
+'E238': None,  # Touchscreen Interface
+'E24': None,  # BEP-20
+'E240': None,  # Camera for QR
+'E241': None,  # MicroSD Slot
+'E242': None,  # Wireless Charging
+'E243': None,  # Whale Alert
+'E244': None,  # NFT Floor Price Alert
+'E245': None,  # Liquidation Warning
+'E246': None,  # Smart Contract Event
+'E247': None,  # Gas Price Alert
+'E248': None,  # SDK JavaScript
+'E249': None,  # SDK Python
+'E25': None,  # SPL tokens
+'E251': None,  # SDK Go
+'E253': None,  # Testnet Support
+'E254': None,  # Sandbox Environment
+'E255': None,  # Safe (Gnosis) Compatible
+'E256': None,  # Rabby Compatible
+'E257': None,  # Frame Compatible
+'E258': None,  # dApp Browser Built-in
+'E259': None,  # Deep Link Support
+'E26': None,  # TRC-20
+'E28': None,  # USB-A compatible
+'E29': None,  # Bluetooth 5.0+
+'E30': None,  # NFC
+'E31': None,  # QR camera
+'E33': None,  # Wireless charging
+'E34': None,  # Audio jack
+'E37': None,  # High-res >128x64
+'E38': None,  # Physical buttons
+'E39': None,  # Clear tx confirmation
+'E40': None,  # Multi-language
+'E41': None,  # Dark mode
+'E42': None,  # WCAG Accessibility
+'E43': None,  # Weight <50g
+'E44': None,  # Credit card size
+'E45': None,  # One-hand operation
+'E46': None,  # Lanyard attachment
+'E47': None,  # Case included
+'E48': None,  # Intuitive setup
+'E49': None,  # Boot <5s
+'E50': None,  # Sign tx <3s
+'E51': None,  # Batch transactions
+'E52': None,  # Fast address generation
+'E53': None,  # Sync speed
+'E54': None,  # Built-in battery
+'E55': None,  # Battery >8h active
+'E56': None,  # Standby >6 months
+'E57': None,  # Fast charge <2h
+'E59': None,  # iOS app
+'E60': None,  # Android app
+'E61': None,  # Windows app
+'E63': None,  # Linux app
+'E64': None,  # Browser extension
+'E65': None,  # WalletConnect
+'E66': None,  # MetaMask compatible
+'E67': None,  # Price <100€
+'E68': None,  # Price <200€
+'E69': None,  # Price <500€
+'E70': None,  # No recurring fees
+'E71': None,  # Money-back guarantee
+'E72': None,  # Complete documentation
+'E73': None,  # Video tutorials
+'E74': None,  # Responsive support <24h
+'E76': None,  # Aptos
+'E77': None,  # Near Protocol
+'E78': None,  # Fantom
+'E79': None,  # Cronos
+'E80': None,  # Hedera
+'E81': None,  # Algorand
+'E82': None,  # Stellar
+'E83': None,  # TON
+'E84': None,  # Sei
+'E85': None,  # Injective
+'E86': None,  # Celestia
+'E87': None,  # zkSync Era
+'E89': None,  # Scroll
+'E90': None,  # Blast
+'E91': None,  # Mode
+'E92': None,  # Manta Pacific
+'E93': None,  # Mantle
+'E94': None,  # Taiko
+'E95': None,  # Ordinals support
+'E97': None,  # Runes protocol
+'E98': None,  # Atomicals
+'E99': None,  # RGB protocol
+'F01': None,  # IP67
+'F02': None,  # IP68
+'F03': None,  # Saltwater resistance
+'F04': None,  # Op temp -20°C to +60°C
+'F05': None,  # Storage -40°C to +85°C
+'F06': None,  # Extreme cold -55°C
+'F07': None,  # Extreme heat +125°C
+'F08': None,  # Humidity 95% RH
+'F10': None,  # Altitude 15000m
+'F100': None,  # Maritime transport
+'F101': None,  # Shock recorder
+'F102': None,  # Temperature logger
+'F103': None,  # Carbon fiber
+'F104': None,  # Tungsten alloy
+'F105': None,  # Inconel 625
+'F106': None,  # Hastelloy C-276
+'F107': None,  # Graphene coating
+'F108': None,  # DLC coating
+'F109': None,  # Aerogel insulation
+'F11': None,  # Pressure variation
+'F110': None,  # Molybdenum alloy
+'F112': None,  # MIL-STD-461G
+'F113': None,  # MIL-STD-883
+'F114': None,  # MIL-STD-1275
+'F115': None,  # MIL-HDBK-217F
+'F116': None,  # NASA-STD-8739.4
+'F118': None,  # JAXA JMR-013
+'F119': None,  # IEC 60068-2-1
+'F12': None,  # UV resistance
+'F120': None,  # IEC 60068-2-2
+'F122': None,  # IEC 60068-2-27
+'F123': None,  # IEC 60068-2-30
+'F124': None,  # IEC 60068-2-52
+'F126': None,  # Inconel 718
+'F128': None,  # Tungsten Carbide
+'F13': None,  # Ozone resistance
+'F130': None,  # Carbon Fiber Reinforced
+'F131': None,  # MTBF 100,000h
+'F132': None,  # MTTF 50,000h
+'F133': None,  # B10 Life >1M cycles
+'F134': None,  # Unit Testing
+'F135': None,  # Integration Testing
+'F136': None,  # Fuzz Testing
+'F137': None,  # Regression Testing
+'F138': None,  # Code Coverage >80%
+'F139': None,  # Semantic Versioning
+'F14': None,  # Sand/dust resistance
+'F140': None,  # Signed Releases
+'F141': None,  # SLA 99.9%
+'F142': None,  # Redundancy
+'F143': None,  # Failover
+'F144': None,  # Backup & Recovery
+'F145': None,  # Reproducible Firmware
+'F146': None,  # Bug Bounty Program
+'F147': None,  # Immunefi Listing
+'F148': None,  # HackerOne Program
+'F15': None,  # Fungus resistance
+'F150': None,  # Incident Response Plan
+'F151': None,  # Security Monitoring 24/7
+'F152': None,  # Automated Alerts
+'F153': None,  # Post-Mortem Process
+'F154': None,  # Disaster Recovery Plan
+'F155': None,  # RTO < 4h
+'F156': None,  # RPO < 1h
+'F157': None,  # Geographic Redundancy
+'F158': None,  # Merkle Proofs
+'F159': None,  # Checksum Verification
+'F16': None,  # IK10 impact
+'F160': None,  # Data Validation
+'F161': None,  # Immutable Logs
+'F162': None,  # Health Dashboard
+'F163': None,  # Uptime Monitoring
+'F164': None,  # Performance Metrics
+'F165': None,  # Error Tracking
+'F166': None,  # Anomaly Detection
+'F167': None,  # Automated Testing Pipeline
+'F168': None,  # Static Analysis (SAST)
+'F169': None,  # Dynamic Analysis (DAST)
+'F17': None,  # Drop 1.5m
+'F170': None,  # Dependency Scanning
+'F171': None,  # Container Scanning
+'F172': None,  # Secret Detection
+'F173': None,  # API Documentation Complete
+'F174': None,  # Security Whitepaper
+'F175': None,  # Architecture Documentation
+'F176': None,  # Changelog Maintained
+'F177': None,  # Migration Guides
+'F179': None,  # Mutation Testing
+'F18': None,  # Drop 2m concrete
+'F180': None,  # Load Testing
+'F181': None,  # Chaos Engineering
+'F182': None,  # Penetration Testing
+'F183': None,  # Red Team Exercise
+'F184': None,  # SLA 99.99%
+'F185': None,  # Multi-Region Deployment
+'F186': None,  # Auto-Scaling
+'F187': None,  # Circuit Breaker
+'F188': None,  # Graceful Degradation
+'F189': None,  # Backward Compatible API
+'F19': None,  # Vibration resistance
+'F190': None,  # Version Deprecation Policy
+'F191': None,  # LTS Support
+'F192': None,  # Firmware Rollback
+'F20': None,  # Crush 2 tonnes
+'F200': None,  # Uptime ≥99.9%
+'F201': None,  # Security patches <7 days
+'F202': None,  # Professional security audit
+'F203': None,  # LTS support ≥2 years
+'F204': None,  # Track record ≥2 years
+'F21': None,  # Flex/torsion resistance
+'F22': None,  # Scratch Mohs 6+
+'F23': None,  # Anti-perforation
+'F24': None,  # Shock 40G
+'F25': None,  # Abrasion resistance
+'F26': None,  # Bend cycles 10k
+'F27': None,  # Waterjet resistance
+'F28': None,  # Flame 1090°C
+'F29': None,  # Melting >1500°C
+'F30': None,  # House fire 30min
+'F31': None,  # Self-extinguishing
+'F32': None,  # No toxic fumes
+'F33': None,  # Char barrier
+'F34': None,  # Post-fire legibility
+'F35': None,  # Fire safe enclosure
+'F36': None,  # Acid resistance
+'F37': None,  # Base resistance
+'F38': None,  # Solvent resistance
+'F39': None,  # Anti-corrosion
+'F40': None,  # HCl resistance
+'F41': None,  # Seawater 1000h
+'F42': None,  # ESD protection
+'F43': None,  # EMI immunity
+'F45': None,  # EMP resistance
+'F46': None,  # Radiation resistance
+'F47': None,  # Battery >10yr standby
+'F48': None,  # Charge cycles >1000
+'F49': None,  # Flash >100k writes
+'F50': None,  # Data retention >10yr
+'F51': None,  # Data retention >25yr
+'F52': None,  # Data retention >100yr
+'F53': None,  # Screen >50k hours
+'F54': None,  # Buttons >100k presses
+'F55': None,  # Connector >10k insertions
+'F56': None,  # No degradation 5yr
+'F57': None,  # Stainless 316L
+'F58': None,  # Titanium Grade 5
+'F59': None,  # Technical ceramic
+'F60': None,  # Sapphire crystal
+'F61': None,  # Gorilla Glass
+'F62': None,  # Reinforced polycarbonate
+'F64': None,  # Food-grade silicone
+'F65': None,  # Laser engraving
+'F66': None,  # Steel stamping
+'F68': None,  # MIL-STD-810H
+'F69': None,  # ISO 9001
+'F70': None,  # ISO 14001
+'F71': None,  # MTBF >100k hours
+'F72': None,  # Warranty >2yr
+'F73': None,  # Warranty >5yr
+'F75': None,  # ECC memory
+'F76': None,  # CRC verification
+'F77': None,  # Self-test at boot
+'F78': None,  # Hermetic seals
+'F79': None,  # Salt fog test 500h
+'F80': None,  # Explosive atmosphere
+'F81': None,  # Nuclear hardening
+'F82': None,  # Space qualification
+'F83': None,  # Cryogenic -196°C
+'F84': None,  # Solar radiation
+'F85': None,  # Vacuum exposure
+'F86': None,  # Biological resistance
+'F87': None,  # Insect/rodent proof
+'F88': None,  # Condensation resistance
+'F89': None,  # Ballistic resistance
+'F90': None,  # Explosion proof
+'F91': None,  # Fatigue testing
+'F92': None,  # Creep resistance
+'F93': None,  # Tensile strength test
+'F95': None,  # HALT testing
+'F96': None,  # HASS testing
+'F97': None,  # ISTA 3A packaging
+'F98': None,  # UN 3481 lithium
+'F99': None,  # Air transport safe
+'S01': None,  # AES-256
+'S02': None,  # RSA-4096
+'S03': None,  # ECDSA secp256k1
+'S04': None,  # Ed25519
+'S05': None,  # SHA-256
+'S06': None,  # SHA-3 Keccak
+'S07': None,  # RIPEMD-160
+'S08': None,  # HMAC-SHA256
+'S10': None,  # Argon2
+'S100': None,  # BIP-381 Miniscript descriptors
+'S101': None,  # BIP-327 MuSig2
+'S102': None,  # BIP-388 Wallet Policies
+'S104': None,  # EIP-2612 Permit
+'S105': None,  # EIP-4626 Tokenized Vaults
+'S106': None,  # EIP-5267 EIP-712 retrieval
+'S109': None,  # EIP-3074 AUTH/AUTHCALL
+'S11': None,  # ChaCha20-Poly1305
+'S110': None,  # EIP-1271 Contract signatures
+'S111': None,  # PCI DSS
+'S112': None,  # EMVCo
+'S113': None,  # GlobalPlatform
+'S114': None,  # ETSI EN 319 411
+'S115': None,  # WebAuthn/FIDO2
+'S116': None,  # ARM TrustZone
+'S117': None,  # Intel SGX
+'S118': None,  # AMD SEV
+'S12': None,  # X25519
+'S120': None,  # Apple Secure Enclave
+'S122': None,  # ISO/IEC 27002
+'S123': None,  # ISO/IEC 27017
+'S124': None,  # ISO/IEC 27018
+'S125': None,  # ISO/IEC 27701
+'S126': None,  # ISO 22301
+'S127': None,  # ISO 31000
+'S128': None,  # DORA
+'S129': None,  # NIS2
+'S13': None,  # BLS12-381
+'S130': None,  # eIDAS 2.0
+'S131': None,  # Cyber Resilience Act
+'S132': None,  # AI Act
+'S135': None,  # ANSSI CC
+'S136': None,  # RGS
+'S137': None,  # PASSI
+'S138': None,  # PRIS
+'S14': None,  # Schnorr signatures
+'S141': None,  # ML-KEM (Kyber)
+'S142': None,  # ML-DSA (Dilithium)
+'S143': None,  # SLH-DSA (SPHINCS+)
+'S144': None,  # CRYSTALS-Kyber
+'S145': None,  # CRYSTALS-Dilithium
+'S146': None,  # Argon2id
+'S149': None,  # XChaCha20-Poly1305
+'S15': None,  # Zero-knowledge ready
+'S151': None,  # SOC 1 Type II
+'S153': None,  # SOC 3
+'S154': None,  # PCI DSS v4.0
+'S155': None,  # HITRUST CSF
+'S156': None,  # GlobalPlatform TEE
+'S160': None,  # RISC-V PMP
+'S161': None,  # Formal Verification
+'S162': None,  # Slither
+'S163': None,  # Mythril
+'S165': None,  # Certora Prover
+'S167': None,  # HTTPS
+'S169': None,  # Reentrancy Protection
+'S170': None,  # Access Control
+'S171': None,  # Pausable
+'S173': None,  # OWASP Top 10
+'S175': None,  # OWASP ASVS
+'S176': None,  # Fingerprint Authentication
+'S177': None,  # Face Recognition
+'S178': None,  # Iris Scan
+'S180': None,  # TOTP (RFC 6238)
+'S182': None,  # FIDO2 / WebAuthn
+'S183': None,  # U2F Security Key
+'S184': None,  # SMS 2FA
+'S185': None,  # Email 2FA
+'S186': None,  # Authenticator App
+'S187': None,  # Key Rotation
+'S188': None,  # Key Escrow
+'S189': None,  # HSM Integration
+'S19': None,  # BIP-49 SegWit P2SH
+'S190': None,  # Key Derivation Path
+'S191': None,  # Secure Boot
+'S192': None,  # Verified Boot
+'S193': None,  # Root of Trust
+'S194': None,  # Tamper Detection
+'S195': None,  # Tamper Response
+'S196': None,  # Mesh Shield
+'S197': None,  # Epoxy Potting
+'S198': None,  # Secure Supply Chain
+'S199': None,  # Device Attestation
+'S200': None,  # Anti-Counterfeit
+'S201': None,  # Firmware Verification
+'S203': None,  # CRYSTALS-Dilithium
+'S204': None,  # SPHINCS+
+'S205': None,  # FALCON
+'S206': None,  # BIKE
+'S207': None,  # Classic McEliece
+'S209': None,  # OAuth 2.0
+'S210': None,  # OpenID Connect
+'S211': None,  # JWT Validation
+'S212': None,  # API Rate Limiting
+'S213': None,  # API Key Rotation
+'S214': None,  # GraphQL Security
+'S215': None,  # REST Security
+'S217': None,  # Least Privilege
+'S218': None,  # Microsegmentation
+'S219': None,  # Continuous Verification
+'S22': None,  # BIP-86 Taproot
+'S220': None,  # Rug Pull Protection
+'S221': None,  # Honeypot Detection
+'S222': None,  # Phishing Protection
+'S223': None,  # Address Poisoning Detection
+'S224': None,  # Approval Management
+'S225': None,  # Revoke.cash Integration
+'S226': None,  # Contract Verification
+'S227': None,  # Simulation Before Sign
+'S228': None,  # Curve25519
+'S229': None,  # XChaCha20
+'S23': None,  # BIP-141 SegWit
+'S232': None,  # Noise Protocol
+'S235': None,  # Samsung S3K250AF
+'S236': None,  # Microchip ATECC608B
+'S237': None,  # Maxim DS28E38
+'S238': None,  # NXP A71CH
+'S239': None,  # IEC 62443
+'S240': None,  # NIST CSF 2.0
+'S242': None,  # ENISA Guidelines
+'S244': None,  # BIP-324 v2 P2P Transport
+'S245': None,  # BIP-327 MuSig2
+'S246': None,  # BIP-329 Wallet Labels
+'S248': None,  # BIP-341 Taproot
+'S249': None,  # BIP-342 Tapscript
+'S25': None,  # BIP-370 PSBTv2
+'S250': None,  # BIP-350 Bech32m
+'S251': None,  # BIP-370 PSBT v2
+'S252': None,  # BIP-380 Output Descriptors
+'S253': None,  # EIP-2612 Permit
+'S254': None,  # EIP-3074 AUTH/AUTHCALL
+'S255': None,  # EIP-4337 Account Abstraction
+'S256': None,  # EIP-4361 Sign-In with Ethereum
+'S258': None,  # EIP-6900 Modular Accounts
+'S259': None,  # EIP-7702 Set EOA Code
+'S26': None,  # BIP-341 Taproot scripts
+'S262': None,  # Maxim DS28S60
+'S263': None,  # Maxim MAX32520
+'S264': None,  # NXP P71D600
+'S265': None,  # ST31 STMicroelectronics
+'S266': None,  # JIL High
+'S267': None,  # AVA_VAN.5
+'S268': None,  # PCI PTS
+'S27': None,  # SLIP-39 Shamir
+'S270': None,  # MTPS
+'S272': None,  # Triple SE
+'S273': None,  # ChipDNA PUF
+'S274': None,  # Active Shield
+'S275': None,  # Voltage Glitch Detection
+'S276': None,  # Light Attack Detection
+'S29': None,  # EIP-155 Replay protection
+'S30': None,  # EIP-191 Data signing
+'S33': None,  # EIP-2333 BLS keygen
+'S35': None,  # EIP-4361 SIWE
+'S37': None,  # EIP-6963 Multi-wallet
+'S38': None,  # Common Criteria EAL5+
+'S43': None,  # CSPN ANSSI
+'S44': None,  # Qualification ANSSI
+'S46': None,  # RoHS Compliance
+'S47': None,  # FCC Part 15
+'S48': None,  # SOC 2 Type II
+'S50': None,  # Secure Element présent
+'S51': None,  # ST33 STMicroelectronics
+'S53': None,  # NXP SE050
+'S55': None,  # Optiga Trust
+'S58': None,  # Side-channel resistance
+'S59': None,  # DPA resistance
+'S60': None,  # SPA resistance
+'S62': None,  # Fault injection resistance
+'S63': None,  # Glitching resistance
+'S64': None,  # Anti-tamper physique
+'S65': None,  # Auto-wipe on tamper
+'S66': None,  # Cold boot protection
+'S67': None,  # JTAG disabled
+'S68': None,  # TRNG hardware
+'S69': None,  # CSPRNG
+'S70': None,  # External entropy
+'S71': None,  # DRBG certified
+'S72': None,  # RNG health tests
+'S73': None,  # Signed firmware
+'S74': None,  # Secure Boot
+'S76': None,  # Open source code
+'S78': None,  # Third-party audit
+'S79': None,  # Bug bounty program
+'S80': None,  # PIN 4-8 digits
+'S81': None,  # BIP-39 Passphrase
+'S82': None,  # Biometrics
+'S83': None,  # Limited attempts
+'S84': None,  # Wipe after failures
+'S85': None,  # Exponential delay
+'S86': None,  # P-256 (secp256r1)
+'S88': None,  # Curve25519
+'S89': None,  # Kyber (Post-quantum)
+'S90': None,  # Dilithium (Post-quantum)
+'S91': None,  # SPHINCS+ (Post-quantum)
+'S92': None,  # BLAKE2b
+'S93': None,  # BLAKE3
+'S94': None,  # scrypt
+'S95': None,  # bcrypt
+'S96': None,  # BIP-322 Generic Signing
+'S97': None,  # BIP-329 Wallet Labels
+'S98': None,  # BIP-352 Silent Payments

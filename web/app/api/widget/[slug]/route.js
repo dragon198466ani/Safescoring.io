@@ -117,7 +117,7 @@ export async function GET(request, { params }) {
   });
 }
 
-function generateWidgetHTML({ slug, productName, productType, score, scores, verified, theme, size }) {
+function generateWidgetHTML({ slug, productName, productType, score, scores, _verified, theme, size }) {
   // Colors
   const colors = theme === "light"
     ? { bg: "#ffffff", card: "#f8fafc", text: "#1e293b", muted: "#64748b", border: "#e2e8f0" }

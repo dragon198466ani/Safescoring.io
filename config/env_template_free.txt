@@ -10,7 +10,7 @@
 # Obtenir gratuitement sur: https://console.mistral.ai
 # Limites: 1 requête/sec, 500K tokens/mois
 # Modèles: Mistral Small, Mistral Large
-MISTRAL_API_KEY=1UrlJxV2G7O0kngOXMDI1dMT2xT39rLD
+MISTRAL_API_KEY=YOUR_MISTRAL_API_KEY_HERE
 
 # ============================================
 # 🔮 GOOGLE GEMINI API (GRATUIT - 1.5M tokens/jour!)
@@ -37,7 +37,7 @@ ANTHROPIC_API_KEY=
 # Obtenir sur: https://platform.deepseek.com
 # Prix: $0.14/M input, $0.28/M output (~30x moins cher que Claude)
 # Modèle: DeepSeek V3
-DEEPSEEK_API_KEY=sk-d0ca3572623d433b817a5e8c7c2596a0
+DEEPSEEK_API_KEY=YOUR_DEEPSEEK_API_KEY_HERE
 
 # ============================================
 # 🗄️ SUPABASE (GRATUIT - Tier Free)

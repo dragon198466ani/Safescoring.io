@@ -122,7 +122,7 @@ export async function POST(req) {
   } catch (error) {
     console.error("Lemon Squeezy checkout error:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to create checkout" },
+      { error: "Failed to create checkout" },
       { status: 500 }
     );
   }

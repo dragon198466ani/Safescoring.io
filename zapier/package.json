@@ -1,0 +1,27 @@
+{
+  "name": "safescoring-zapier",
+  "version": "1.0.0",
+  "description": "SafeScoring Zapier Integration - Crypto security alerts and automation",
+  "main": "index.js",
+  "scripts": {
+    "test": "zapier test",
+    "push": "zapier push",
+    "validate": "zapier validate"
+  },
+  "dependencies": {
+    "zapier-platform-core": "^15.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "zapier": {
+    "name": "SafeScoring",
+    "description": "Get real-time crypto security scores and alerts",
+    "homepage": "https://safescoring.io",
+    "category": "security"
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 export default function WebsitePreview({ url, websiteUrl, productName = "Product" }) {
   const [imageError, setImageError] = useState(false);
@@ -29,12 +30,15 @@ export default function WebsitePreview({ url, websiteUrl, productName = "Product
             <span className="loading loading-spinner loading-lg text-primary"></span>
           </div>
         )}
-        <img
+        <Image
           src={url}
           alt={`${productName} website preview`}
+          width={1200}
+          height={400}
           className="w-full h-auto max-h-[400px] object-cover object-top"
           onError={() => setImageError(true)}
           onLoad={() => setIsLoading(false)}
+          unoptimized
         />
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
           <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-primary text-primary-content px-4 py-2 rounded-lg font-medium flex items-center gap-2">

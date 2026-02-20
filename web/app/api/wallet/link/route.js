@@ -1,16 +1,14 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { createClient } from "@supabase/supabase-js";
-import { createPublicClient, http } from "viem";
-import { polygon } from "viem/chains";
 import { verifyMessage } from "viem";
 
 // Lazy initialization to avoid build-time errors
 function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
 }
 
 /**
@@ -49,7 +47,7 @@ export async function POST(req) {
             { status: 400 }
           );
         }
-      } catch (e) {
+      } catch (_e) {
         return NextResponse.json(
           { error: "Signature verification failed" },
           { status: 400 }
@@ -103,7 +101,7 @@ export async function POST(req) {
  * DELETE /api/wallet/link
  * Unlink wallet from user account
  */
-export async function DELETE(req) {
+export async function DELETE(_req) {
   try {
     const session = await auth();
 
