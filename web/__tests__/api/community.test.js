@@ -3,7 +3,7 @@
  * Tests all endpoints related to migration 136 (evaluation_votes, token_rewards)
  */
 
-import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
+import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 
 const BASE_URL = process.env.TEST_BASE_URL || 'http://localhost:3000';
 const TEST_USER_EMAIL = 'test@safescoring.com';
