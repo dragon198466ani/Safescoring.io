@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
 
+const { hackLosses2024, accessControlLossPct, auditedHackedApprox, auditedHackedYear } = config.safe.stats;
+
 export const metadata = getSEOTags({
   title: `SAFE Methodology | ${config.appName}`,
   description: `The SAFE Framework: ${config.safe.stats.totalNorms} security norms across 4 pillars - Security, Adversity, Fidelity, and Efficiency. Learn how we evaluate crypto product security.`,
@@ -11,44 +13,45 @@ export const metadata = getSEOTags({
 const pillarEducationalContent = {
   S: {
     title: "Security",
-    subtitle: "Cryptographic Foundations",
+    subtitle: "Cryptographic Armor",
     introduction:
-      "This pillar evaluates how a product protects your cryptographic assets at the most fundamental level. A high Security score means the product uses proven, battle-tested cryptographic standards.",
+      `This pillar evaluates the cryptographic foundations protecting your assets. In ${auditedHackedYear} alone, ${hackLosses2024} was stolen in crypto hacks — with compromised keys and access controls responsible for over ${accessControlLossPct} of losses. A high Security score means the product uses battle-tested, audited cryptographic implementations — not homegrown algorithms that crumble under real-world attacks.`,
     whyItMatters:
-      "Cryptographic security is the foundation of all digital asset protection. Weak encryption or poor key management can compromise everything else, regardless of other security measures.",
+      "Cryptography is the only thing standing between your assets and a hacker. A single weak algorithm, a poorly seeded random number generator, or unprotected key storage can turn a 'secure' wallet into an open vault. Most users never see the code — this pillar does it for them.",
     essentialStandards: [
       {
         name: "NIST SP 800-57",
-        description: "Key Management Recommendations - Guidelines for cryptographic key generation, storage, and lifecycle management.",
+        description: "Key Management Recommendations — the gold standard for how cryptographic keys should be generated, stored, rotated, and destroyed.",
       },
       {
         name: "FIPS 140-2/3",
-        description: "Security Requirements for Cryptographic Modules - Federal standard ensuring cryptographic implementations meet strict security criteria.",
+        description: "Federal standard for cryptographic modules. If a hardware wallet doesn't meet this, its 'secure element' claim is meaningless.",
       },
       {
         name: "BIP-32/39/44",
-        description: "Bitcoin Improvement Proposals for hierarchical deterministic wallets, mnemonic seed phrases, and derivation paths.",
+        description: "Bitcoin standards for HD wallets, seed phrases, and derivation paths — the backbone of every wallet's key architecture.",
       },
       {
         name: "SLIP-0010/0039",
-        description: "Standards for universal private key derivation and Shamir's Secret Sharing implementation.",
+        description: "Standards for universal key derivation and Shamir's Secret Sharing — splitting keys so no single device holds everything.",
       },
     ],
     evaluationAreas: [
       "Encryption algorithms (AES-256, ChaCha20)",
       "Digital signature schemes (ECDSA, EdDSA)",
       "Hash functions (SHA-256, Keccak-256)",
-      "Key derivation and storage",
+      "Key derivation and secure storage",
       "Random number generation (CSPRNG)",
+      "Secure element / TEE usage",
     ],
   },
   A: {
     title: "Adversity",
     subtitle: "Duress & Coercion Resistance",
     introduction:
-      "This pillar measures how well a product protects users under physical threat or coercion. A high Adversity score means the product has features to protect you even when forced to unlock your device.",
+      "This pillar measures how well a product protects users under physical threat or coercion. In 2025, crypto-related kidnappings surged worldwide, with France becoming the most targeted country in Europe. Victims are targeted because criminals assume they can force an instant transfer. A high Adversity score means the product makes this impossible, protecting your life by making your funds technically inaccessible under duress.",
     whyItMatters:
-      "Physical attacks and coercion are real threats, especially for high-value targets. Products should provide mechanisms to protect users even when they cannot refuse access.",
+      "The $5 wrench attack is no longer theoretical. Kidnappings, home invasions, and torture targeting crypto holders are escalating worldwide. Products that implement time-locks, multi-signature, and duress mechanisms break the criminal business model: if funds cannot be moved instantly, the kidnapping becomes worthless. Choosing a product with a high Adversity score is a life-safety decision.",
     essentialStandards: [
       {
         name: "OWASP Mobile Security",
@@ -62,78 +65,85 @@ const pillarEducationalContent = {
         name: "ETSI TS 103 097",
         description: "Security protocols for protected communication channels and authentication under adverse conditions.",
       },
+      {
+        name: "BIP-11 / BIP-65 (Multisig & Timelocks)",
+        description: "Bitcoin standards for multi-signature transactions and time-locked outputs — the technical foundation that prevents forced instant transfers.",
+      },
     ],
     evaluationAreas: [
       "Duress PIN functionality",
       "Hidden/decoy wallets",
       "Plausible deniability features",
-      "Time-locked access controls",
+      "Time-locked transfers (CLTV, timelock vaults)",
+      "Multi-signature requirements",
       "Emergency wipe capabilities",
       "Multi-location key storage",
+      "Dead man's switch mechanisms",
     ],
   },
   F: {
     title: "Fidelity",
-    subtitle: "Trust & Long-term Reliability",
+    subtitle: "Proven Track Record, Not Promises",
     introduction:
-      "This pillar assesses the trustworthiness and long-term viability of a product. A high Fidelity score indicates the product has been independently verified and is actively maintained.",
+      `${auditedHackedApprox} of hacked projects in ${auditedHackedYear} had passed at least one security audit. An audit is a snapshot in time — it tells you nothing about what happened after. This pillar measures what actually matters: does the team fix vulnerabilities fast? Do they maintain transparency when things go wrong? Is the project still actively defended?`,
     whyItMatters:
-      "Security is not a one-time achievement. Products must be continuously audited, updated, and maintained to address new vulnerabilities and threats as they emerge.",
+      "Crypto security is a moving target. New exploits emerge weekly. A product that was secure in January can be compromised by March if the team stopped patching. Fidelity measures the ongoing commitment to security — because the projects that survive hacks aren't the ones with the best audits, they're the ones with the best response teams.",
     essentialStandards: [
       {
         name: "SOC 2 Type II",
-        description: "Service Organization Control report verifying security, availability, and confidentiality controls over time.",
+        description: "Not a one-time check — this report verifies that security controls actually work over an extended period. The 'Type II' distinction is critical.",
       },
       {
         name: "ISO 27001",
-        description: "International standard for information security management systems (ISMS) and continuous improvement.",
+        description: "International standard for information security management systems (ISMS) — proving security is a continuous process, not a one-off event.",
       },
       {
         name: "CryptoCurrency Security Standard (CCSS)",
-        description: "Specific security standard for cryptocurrency storage systems, covering key generation, storage, and usage.",
+        description: "The only security standard specifically designed for cryptocurrency custody — covering key generation, storage, usage, and compromise protocols.",
       },
       {
-        name: "Bug Bounty Programs",
-        description: "Structured vulnerability disclosure programs following responsible disclosure best practices.",
+        name: "Responsible Disclosure & Bug Bounties",
+        description: "Active bug bounty programs incentivize white-hat hackers to find vulnerabilities before black-hats do. No bounty program = no safety net.",
       },
     ],
     evaluationAreas: [
-      "Independent security audits",
-      "Bug bounty program existence",
-      "Update frequency and process",
-      "Open source code availability",
-      "Team transparency and track record",
-      "Incident response history",
+      "Independent security audits (frequency & recency)",
+      "Bug bounty program scope and payouts",
+      "Patch speed after critical vulnerabilities",
+      "Open source code & transparent governance",
+      "Team track record & incident history",
+      "Post-hack response and user compensation",
     ],
   },
   E: {
     title: "Efficiency",
-    subtitle: "Usability & Accessibility",
+    subtitle: "Security You Can Actually Use",
     introduction:
-      "This pillar evaluates how accessible and user-friendly the product is while maintaining security. A high Efficiency score means the product balances security with practical usability.",
+      "The most secure wallet in the world is worthless if it lets you send $50,000 to the wrong address because the confirmation screen was confusing. This pillar measures whether a product's security actually works in the hands of real users — not just in a lab. Clear transaction displays, address verification, error prevention, and accessible recovery are what separate usable security from theoretical security.",
     whyItMatters:
-      "The most secure product is useless if it's too complex to use correctly. Poor usability leads to user errors which can compromise security.",
+      "User errors — wrong chain, wrong address, misunderstood gas fees, lost seed phrases — cause billions in irreversible crypto losses every year. These aren't security failures, they're UX failures. A product that forces users to blind-sign transactions or offers no recovery path is insecure by design, no matter how strong its cryptography.",
     essentialStandards: [
       {
         name: "WCAG 2.1",
-        description: "Web Content Accessibility Guidelines ensuring products are usable by people with disabilities.",
+        description: "Accessibility guidelines — because security should work for everyone, including users with disabilities.",
       },
       {
         name: "ISO 9241-110",
-        description: "Ergonomics of human-system interaction - principles for user interface design and usability.",
+        description: "Ergonomic principles for human-system interaction — the science behind interfaces that prevent costly mistakes.",
       },
       {
-        name: "EIP Standards",
-        description: "Ethereum Improvement Proposals for multi-chain support, token standards, and interoperability.",
+        name: "EIP-712 / EIP-4361 (Sign-In with Ethereum)",
+        description: "Standards for typed structured data signing and authentication — replacing blind signing with verifiable, user-readable transaction details.",
       },
     ],
     evaluationAreas: [
-      "Transaction confirmation clarity",
-      "Address verification mechanisms",
-      "Multi-chain/multi-asset support",
-      "Backup and recovery process",
+      "Transaction confirmation clarity (no blind signing)",
+      "Address verification & whitelisting",
+      "Multi-chain / multi-asset support",
+      "Backup & recovery UX",
       "Cross-platform availability",
-      "Onboarding experience",
+      "Error prevention & undo mechanisms",
+      "Onboarding friction vs. security trade-off",
     ],
   },
 };

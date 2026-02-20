@@ -1,0 +1,173 @@
+name: Data Refresh Pipeline
+
+# Schedule based on data type:
+# - Prices: Daily at 6h UTC
+# - Products: Weekly on Monday at 2h UTC
+# - Norms: Monthly on 1st at 3h UTC
+# - Evaluations: After products refresh (Monday 4h UTC)
+
+on:
+  schedule:
+    # Daily price update at 6h UTC
+    - cron: '0 6 * * *'
+    # Weekly product scrape + evaluations (Monday 2h UTC)
+    - cron: '0 2 * * 1'
+    # Monthly norms refresh (1st of month at 3h UTC)
+    - cron: '0 3 1 * *'
+  workflow_dispatch:
+    inputs:
+      step:
+        description: 'Which step to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - norms
+          - products
+          - prices
+          - evaluations
+      limit:
+        description: 'Limit number of items'
+        required: false
+        default: '20'
+        type: string
+      force:
+        description: 'Force refresh even if data exists'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+  NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_KEY }}
+  MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+  GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+  GOOGLE_API_KEY_1: ${{ secrets.GOOGLE_API_KEY_1 }}
+  GOOGLE_API_KEY_2: ${{ secrets.GOOGLE_API_KEY_2 }}
+  GOOGLE_API_KEY_3: ${{ secrets.GOOGLE_API_KEY_3 }}
+  GOOGLE_API_KEY_4: ${{ secrets.GOOGLE_API_KEY_4 }}
+  GOOGLE_API_KEY_5: ${{ secrets.GOOGLE_API_KEY_5 }}
+  GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+  CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+
+jobs:
+  # Determine which step to run based on schedule
+  determine-step:
+    runs-on: ubuntu-latest
+    outputs:
+      step: ${{ steps.set-step.outputs.step }}
+      limit: ${{ steps.set-step.outputs.limit }}
+    steps:
+      - name: Determine step from schedule or input
+        id: set-step
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "step=${{ github.event.inputs.step }}" >> $GITHUB_OUTPUT
+            echo "limit=${{ github.event.inputs.limit }}" >> $GITHUB_OUTPUT
+          else
+            # Determine based on cron schedule
+            HOUR=$(date -u +%H)
+            DAY=$(date -u +%d)
+            WEEKDAY=$(date -u +%u)
+
+            if [ "$DAY" = "01" ] && [ "$HOUR" = "03" ]; then
+              echo "step=norms" >> $GITHUB_OUTPUT
+              echo "limit=50" >> $GITHUB_OUTPUT
+            elif [ "$WEEKDAY" = "1" ] && [ "$HOUR" = "02" ]; then
+              echo "step=products" >> $GITHUB_OUTPUT
+              echo "limit=30" >> $GITHUB_OUTPUT
+            elif [ "$HOUR" = "06" ]; then
+              echo "step=prices" >> $GITHUB_OUTPUT
+              echo "limit=50" >> $GITHUB_OUTPUT
+            else
+              echo "step=prices" >> $GITHUB_OUTPUT
+              echo "limit=20" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+  # Run the data refresh pipeline
+  refresh:
+    needs: determine-step
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run data refresh pipeline
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 60
+          max_attempts: 2
+          retry_wait_seconds: 180
+          command: |
+            python -m src.automation.data_refresh_pipeline \
+              --step ${{ needs.determine-step.outputs.step }} \
+              --limit ${{ needs.determine-step.outputs.limit }} \
+              ${{ github.event.inputs.force == 'true' && '--force' || '' }}
+
+      - name: Log completion
+        if: always()
+        run: |
+          echo "=========================================="
+          echo "Data Refresh Pipeline - Summary"
+          echo "=========================================="
+          echo "Step: ${{ needs.determine-step.outputs.step }}"
+          echo "Limit: ${{ needs.determine-step.outputs.limit }}"
+          echo "Status: ${{ job.status }}"
+          echo "Completed at: $(date -u)"
+          echo "=========================================="
+
+  # Run evaluations after Monday's product refresh
+  evaluations:
+    needs: [determine-step, refresh]
+    if: needs.determine-step.outputs.step == 'products'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run evaluations after product refresh
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 45
+          max_attempts: 2
+          retry_wait_seconds: 120
+          command: |
+            python -m src.automation.data_refresh_pipeline \
+              --step evaluations \
+              --limit 15
+
+      - name: Log completion
+        if: always()
+        run: |
+          echo "Evaluations completed at $(date -u)"
+          echo "Status: ${{ job.status }}"

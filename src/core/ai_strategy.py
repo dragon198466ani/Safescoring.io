@@ -26,6 +26,7 @@ class AIModel(Enum):
     GEMINI_PRO = "gemini_pro"     # FREE limited quota, expert, slower
     DEEPSEEK = "deepseek"         # $0.14/1M tokens, excellent quality
     CLAUDE_SONNET = "claude"      # $3/1M tokens, best reasoning
+    CLAUDE_CODE = "claude_code"   # FREE (subscription-based), Claude Code CLI local
     OLLAMA = "ollama"             # FREE local, variable quality
     OLLAMA_DEEPSEEK = "ollama_deepseek"  # FREE local, DeepSeek reasoning model
 
@@ -1378,7 +1379,9 @@ def estimate_cost(norm_codes: List[str], products_count: int = 100) -> Dict:
         AIModel.GEMINI_PRO: 0.0,      # FREE (within quota)
         AIModel.DEEPSEEK: 0.42,       # $0.14 input + $0.28 output
         AIModel.CLAUDE_SONNET: 18.0,  # $3 input + $15 output
+        AIModel.CLAUDE_CODE: 0.0,     # FREE (subscription-based CLI)
         AIModel.OLLAMA: 0.0,          # FREE (local)
+        AIModel.OLLAMA_DEEPSEEK: 0.0, # FREE (local)
     }
 
     # Estimate ~500 tokens per evaluation

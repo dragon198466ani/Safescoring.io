@@ -1,9 +1,10 @@
-/**
- * Design tokens for SAFE scoring pillars
- */
-export const PILLARS = [
-  { code: "S", label: "Security", primary: "#ef4444" },
-  { code: "A", label: "Autonomy", primary: "#f59e0b" },
-  { code: "F", label: "Freedom", primary: "#3b82f6" },
-  { code: "E", label: "Ecosystem", primary: "#10b981" },
-];
+import config from "@/config";
+
+export const PILLARS = config.safe.pillars.map((p) => ({
+  code: p.code,
+  name: p.name,
+  primary: p.color,
+  description: p.description,
+  shortDesc: p.shortDesc,
+  normCount: p.normCount,
+}));

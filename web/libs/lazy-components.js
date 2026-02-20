@@ -278,3 +278,20 @@ export const LazyNewsletterPopup = dynamic(
     ssr: false,
   }
 );
+
+// Strategic Analysis - AI-generated per-pillar narratives
+export const LazySAFEStrategicAnalysis = dynamic(
+  () => import("@/components/SAFEStrategicAnalysis"),
+  {
+    loading: () => <LoadingCard />,
+    ssr: false,
+  }
+);
+
+// Protection Guide - how to protect yourself with this product
+export const LazySAFEProtectionGuide = dynamic(
+  () => import("@/components/SAFEProtectionGuide"),
+  {
+    ssr: false,
+  }
+);

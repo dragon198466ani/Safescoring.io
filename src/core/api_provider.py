@@ -22,7 +22,23 @@ import re
 from .config import (
     DEEPSEEK_API_KEY, CLAUDE_API_KEY, GEMINI_API_KEY, GEMINI_API_KEYS,
     MISTRAL_API_KEY, GROQ_API_KEY, GROQ_API_KEYS, CEREBRAS_API_KEY, CEREBRAS_API_KEYS,
-    OLLAMA_URL, OLLAMA_MODEL, OLLAMA_MODEL_FAST
+    OLLAMA_URL, OLLAMA_MODEL, OLLAMA_MODEL_FAST,
+    CLAUDE_CODE_ONLY, CLAUDE_CODE_MODEL, CLAUDE_CODE_MODEL_EXPERT,
+    CLAUDE_CODE_TIMEOUT, CLAUDE_CODE_RPM,
+    AI_REQUEST_TIMEOUT, AI_MAX_RETRIES, AI_BACKOFF_FACTOR,
+    AI_POOL_CONNECTIONS, AI_POOL_MAXSIZE,
+    GEMINI_COOLDOWN_MINUTES, GEMINI_DAILY_COOLDOWN_HOURS,
+    GEMINI_QUOTA_CACHE_HOURS, GEMINI_QUOTA_FILE as GEMINI_QUOTA_FILE_PATH,
+    GEMINI_ROTATION_THRESHOLD, GEMINI_PRO_MODEL, GEMINI_FLASH_MODEL,
+    GROQ_MODEL, GROQ_RPM_PER_KEY,
+    CEREBRAS_MODEL, DEEPSEEK_MODEL, CLAUDE_API_MODEL, MISTRAL_MODEL,
+    TOKENS_CRITICAL, TOKENS_COMPLEX, TOKENS_MODERATE, TOKENS_SIMPLE,
+    TEMP_CRITICAL, TEMP_COMPLEX, TEMP_MODERATE, TEMP_SIMPLE,
+    EVAL_VALIDATION_TOKENS, RATE_LIMIT_WINDOW_SECONDS,
+    NARRATIVE_MODEL, NARRATIVE_EXPERT_MODEL,
+    NARRATIVE_MAX_TOKENS, NARRATIVE_TEMPERATURE,
+    NARRATIVE_RISK_MAX_TOKENS, NARRATIVE_RISK_TEMPERATURE,
+    NARRATIVE_REASON_MAX_LENGTH,
 )
 from .ai_strategy import (
     AIModel, TaskComplexity,
@@ -51,26 +67,26 @@ class AIProvider:
     Note: DeepSeek and Claude are on standby (disabled until profitable)
     """
 
-    # Wait time when all Gemini keys are rate-limited (1h05 = 65 minutes)
-    GEMINI_COOLDOWN_SECONDS = 65 * 60
-    # Wait time for daily quota reset (24h + 5min buffer)
-    GEMINI_DAILY_COOLDOWN_SECONDS = 24 * 60 * 60 + 5 * 60
+    # Wait time when all Gemini keys are rate-limited (from config)
+    GEMINI_COOLDOWN_SECONDS = GEMINI_COOLDOWN_MINUTES * 60
+    # Wait time for daily quota reset (from config + 5min buffer)
+    GEMINI_DAILY_COOLDOWN_SECONDS = GEMINI_DAILY_COOLDOWN_HOURS * 3600 + 300
 
-    # File to persist Gemini quota exhaustion state
-    GEMINI_QUOTA_FILE = 'config/.gemini_quota_exhausted'
+    # File to persist Gemini quota exhaustion state (from config)
+    GEMINI_QUOTA_FILE = GEMINI_QUOTA_FILE_PATH
 
     def __init__(self):
         # HTTP Connection Pooling - reuse connections for better performance
         self.session = requests.Session()
         retry_strategy = Retry(
-            total=2,
-            backoff_factor=0.5,
+            total=AI_MAX_RETRIES,
+            backoff_factor=AI_BACKOFF_FACTOR,
             status_forcelist=[500, 502, 503, 504],
             allowed_methods=["POST", "GET"]
         )
         adapter = HTTPAdapter(
-            pool_connections=10,
-            pool_maxsize=20,
+            pool_connections=AI_POOL_CONNECTIONS,
+            pool_maxsize=AI_POOL_MAXSIZE,
             max_retries=retry_strategy
         )
         self.session.mount('https://', adapter)
@@ -97,7 +113,7 @@ class AIProvider:
         self.groq_rate_limit_time = 0  # Time when all keys were rate-limited
         # Global Groq rate limiter: 30 req/min per key = 150 req/min for 5 keys
         self.groq_request_times = []  # List of request timestamps
-        self.groq_max_rpm = 25 * len(GROQ_API_KEYS) if GROQ_API_KEYS else 100  # Leave some buffer
+        self.groq_max_rpm = GROQ_RPM_PER_KEY * len(GROQ_API_KEYS) if GROQ_API_KEYS else 100  # Leave some buffer
 
     def _check_gemini_quota_file(self):
         """Check if Gemini quota was exhausted recently (within 20h)"""
@@ -108,7 +124,7 @@ class AIProvider:
             if os.path.exists(self.GEMINI_QUOTA_FILE):
                 mtime = os.path.getmtime(self.GEMINI_QUOTA_FILE)
                 file_time = datetime.fromtimestamp(mtime)
-                if datetime.now() - file_time < timedelta(hours=20):
+                if datetime.now() - file_time < timedelta(hours=GEMINI_QUOTA_CACHE_HOURS):
                     print("      [GEMINI] Quota exhausted (cached) - skipping")
                     return True
                 else:
@@ -151,6 +167,10 @@ class AIProvider:
 
         if prompt is None:
             return None
+
+        # CLAUDE_CODE_ONLY mode: route directly to Claude Code CLI
+        if CLAUDE_CODE_ONLY:
+            return self._call_claude_code(prompt, max_tokens, temperature, model=CLAUDE_CODE_MODEL)
 
         result = None
 
@@ -196,6 +216,10 @@ class AIProvider:
         - Adversity (A) pillar evaluations
         - TBD result reviews
         """
+        # CLAUDE_CODE_ONLY mode: use expert model
+        if CLAUDE_CODE_ONLY:
+            return self._call_claude_code(prompt, max_tokens, temperature, model=CLAUDE_CODE_MODEL_EXPERT)
+
         # Try Gemini Pro first
         result = self._call_gemini_pro_direct(prompt, max_tokens, temperature)
 
@@ -255,26 +279,26 @@ class AIProvider:
         model = strategy['model']
         complexity = strategy['complexity']
 
-        # QUALITY FIRST: Auto-adjust tokens and temperature by complexity
+        # QUALITY FIRST: Auto-adjust tokens and temperature by complexity (from config)
         if max_tokens is None:
             if complexity == TaskComplexity.CRITICAL:
-                max_tokens = 3500  # Maximum detail for security-critical
+                max_tokens = TOKENS_CRITICAL
             elif complexity == TaskComplexity.COMPLEX:
-                max_tokens = 2500  # High detail for complex analysis
+                max_tokens = TOKENS_COMPLEX
             elif complexity == TaskComplexity.MODERATE:
-                max_tokens = 2000  # Standard detail
+                max_tokens = TOKENS_MODERATE
             else:  # SIMPLE, TRIVIAL
-                max_tokens = 1500  # Sufficient for factual checks
+                max_tokens = TOKENS_SIMPLE
 
         if temperature is None:
             if complexity == TaskComplexity.CRITICAL:
-                temperature = 0.1  # Most deterministic for critical
+                temperature = TEMP_CRITICAL
             elif complexity == TaskComplexity.COMPLEX:
-                temperature = 0.15  # Slightly more creative for complex reasoning
+                temperature = TEMP_COMPLEX
             elif complexity == TaskComplexity.MODERATE:
-                temperature = 0.2  # Balanced
+                temperature = TEMP_MODERATE
             else:
-                temperature = 0.3  # Faster for simple factual checks
+                temperature = TEMP_SIMPLE
 
         # Select API based on model type
         result = self._call_by_model(model, prompt, max_tokens, temperature)
@@ -296,10 +320,12 @@ EVALUATION: {result[:500]}
 If the evaluation looks correct, respond with: CONFIRMED
 If there's an issue, respond with: REVIEW NEEDED - [reason]
 """
-                validation = self._call_by_model(AIModel.GROQ_LLAMA, validation_prompt, 200, 0.1)
+                validation_model = AIModel.CLAUDE_CODE if CLAUDE_CODE_ONLY else AIModel.GROQ_LLAMA
+                validation = self._call_by_model(validation_model, validation_prompt, EVAL_VALIDATION_TOKENS, TEMP_CRITICAL)
                 if validation and 'REVIEW NEEDED' in validation:
                     # Re-evaluate with expert model
-                    result = self._call_by_model(AIModel.GEMINI_PRO, prompt, max_tokens, 0.2)
+                    review_model = AIModel.CLAUDE_CODE if CLAUDE_CODE_ONLY else AIModel.GEMINI_PRO
+                    result = self._call_by_model(review_model, prompt, max_tokens, 0.2)
 
         return result
 
@@ -567,6 +593,67 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
 
         return result
 
+    def call_for_narrative(self, prompt: str, max_tokens: int = None,
+                           temperature: float = None, expert: bool = False) -> str:
+        """
+        Call AI for strategic narrative generation.
+        QUALITY FIRST: Needs nuanced, well-structured analysis text.
+
+        QUALITY PRIORITY for narrative (quality + structure):
+        1. Claude Code CLI - Best for nuanced strategic text
+        2. Gemini Pro - Excellent reasoning and structure
+        3. DeepSeek - Good analytical writing
+        4. Gemini Flash - Fast alternative
+        5. Groq - Speed fallback
+
+        Args:
+            prompt: The narrative generation prompt
+            max_tokens: Max tokens (default from NARRATIVE_MAX_TOKENS config)
+            temperature: Temperature (default from NARRATIVE_TEMPERATURE config)
+            expert: If True, use expert model for risk synthesis
+
+        Returns:
+            AI response text or None if all APIs fail
+        """
+        if max_tokens is None:
+            max_tokens = NARRATIVE_RISK_MAX_TOKENS if expert else NARRATIVE_MAX_TOKENS
+        if temperature is None:
+            temperature = NARRATIVE_RISK_TEMPERATURE if expert else NARRATIVE_TEMPERATURE
+
+        result = None
+
+        # CLAUDE_CODE_ONLY mode: route through Claude Code CLI
+        if CLAUDE_CODE_ONLY:
+            if 'ClaudeCode' not in self.disabled_apis:
+                model_name = NARRATIVE_EXPERT_MODEL if expert else NARRATIVE_MODEL
+                return self._call_claude_code(prompt, max_tokens, temperature, model=model_name)
+            return None
+
+        # QUALITY CHAIN for narrative generation
+        # 1. Try Gemini Pro (best reasoning for strategic analysis)
+        if len(GEMINI_API_KEYS) > 0 and not self.gemini_quota_exhausted and 'Gemini' not in self.disabled_apis:
+            result = self._call_gemini_rotation(prompt, max_tokens, temperature, model='pro')
+            if result:
+                return result
+
+        # 2. Try DeepSeek (good analytical writing)
+        if DEEPSEEK_API_KEY and 'DeepSeek' not in self.disabled_apis:
+            result = self._call_deepseek(prompt, max_tokens, temperature)
+            if result:
+                return result
+
+        # 3. Try Gemini Flash
+        if len(GEMINI_API_KEYS) > 0 and not self.gemini_quota_exhausted and 'Gemini' not in self.disabled_apis:
+            result = self._call_gemini_rotation(prompt, max_tokens, temperature, model='flash')
+            if result:
+                return result
+
+        # 4. Groq fallback
+        if len(GROQ_API_KEYS) > 0 and 'Groq' not in self.disabled_apis:
+            result = self._call_groq_rotation(prompt, max_tokens, temperature)
+
+        return result
+
     def _call_by_model(self, model: AIModel, prompt: str, max_tokens: int = 2000,
                        temperature: float = 0.1) -> str:
         """
@@ -583,6 +670,16 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
             AI response text or None
         """
         result = None
+
+        # CLAUDE_CODE_ONLY mode: route ALL calls through Claude Code CLI
+        if CLAUDE_CODE_ONLY:
+            if 'ClaudeCode' not in self.disabled_apis:
+                # Map model complexity to Claude Code model selection
+                claude_model = CLAUDE_CODE_MODEL  # default
+                if model in (AIModel.GEMINI_PRO, AIModel.DEEPSEEK, AIModel.CLAUDE_SONNET):
+                    claude_model = CLAUDE_CODE_MODEL_EXPERT  # expert tasks
+                return self._call_claude_code(prompt, max_tokens, temperature, model=claude_model)
+            return None
 
         # When Gemini is exhausted, skip cloud APIs and go directly to Ollama
         if self.gemini_quota_exhausted:
@@ -615,6 +712,10 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
         elif model == AIModel.CLAUDE_SONNET:
             if CLAUDE_API_KEY and 'Claude' not in self.disabled_apis:
                 result = self._call_claude(prompt, max_tokens, temperature)
+
+        elif model == AIModel.CLAUDE_CODE:
+            if 'ClaudeCode' not in self.disabled_apis:
+                result = self._call_claude_code(prompt, max_tokens, temperature)
 
         elif model == AIModel.OLLAMA:
             if self._check_ollama_available() and 'Ollama' not in self.disabled_apis:
@@ -666,7 +767,7 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
                 time.sleep(1.5)  # Slower rate for Pro
 
                 r = self.session.post(
-                    f'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-06-05:generateContent?key={api_key}',
+                    f'https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_PRO_MODEL}:generateContent?key={api_key}',
                     headers={'Content-Type': 'application/json'},
                     json={
                         'contents': [{'parts': [{'text': prompt}]}],
@@ -709,10 +810,10 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
             self.disabled_apis.add('Groq')
             return None
 
-        # Check if we should reset rate-limited keys (after 60 seconds)
+        # Check if we should reset rate-limited keys (after rate limit window)
         if self.groq_rate_limit_time > 0:
             elapsed = time.time() - self.groq_rate_limit_time
-            if elapsed >= 60:
+            if elapsed >= RATE_LIMIT_WINDOW_SECONDS:
                 # Reset rate-limited keys
                 self.groq_disabled_keys = self.groq_invalid_keys.copy()
                 self.groq_rate_limit_time = 0
@@ -722,13 +823,13 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
         available_keys = [k for k in valid_keys if k not in self.groq_disabled_keys]
 
         if not available_keys:
-            # All keys rate-limited - wait 60s and retry instead of falling back to poor quality models
+            # All keys rate-limited - wait and retry instead of falling back to poor quality models
             elapsed = time.time() - self.groq_rate_limit_time if self.groq_rate_limit_time > 0 else 0
-            wait_time = max(1, 60 - int(elapsed))
+            wait_time = max(1, RATE_LIMIT_WINDOW_SECONDS - int(elapsed))
 
             if self.groq_rate_limit_time == 0:
                 self.groq_rate_limit_time = time.time()
-                wait_time = 60
+                wait_time = RATE_LIMIT_WINDOW_SECONDS
 
             print(f"      Groq all keys rate-limited - waiting {wait_time}s...", flush=True)
             time.sleep(wait_time)
@@ -770,17 +871,17 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
         try:
             # Global rate limiter - clean old timestamps and check rate
             current_time = time.time()
-            self.groq_request_times = [t for t in self.groq_request_times if current_time - t < 60]
+            self.groq_request_times = [t for t in self.groq_request_times if current_time - t < RATE_LIMIT_WINDOW_SECONDS]
 
             # If approaching rate limit, wait until oldest request expires
             while len(self.groq_request_times) >= self.groq_max_rpm:
                 oldest = min(self.groq_request_times)
-                wait_time = 60 - (current_time - oldest) + 1
+                wait_time = RATE_LIMIT_WINDOW_SECONDS - (current_time - oldest) + 1
                 if wait_time > 0:
                     print(f"      Groq rate limit protection - waiting {int(wait_time)}s...", flush=True)
                     time.sleep(wait_time)
                 current_time = time.time()
-                self.groq_request_times = [t for t in self.groq_request_times if current_time - t < 60]
+                self.groq_request_times = [t for t in self.groq_request_times if current_time - t < RATE_LIMIT_WINDOW_SECONDS]
 
             # Record this request
             self.groq_request_times.append(current_time)
@@ -792,12 +893,12 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
                     'Content-Type': 'application/json'
                 },
                 json={
-                    'model': 'llama-3.3-70b-versatile',
+                    'model': GROQ_MODEL,
                     'messages': [{'role': 'user', 'content': prompt}],
                     'temperature': temperature,
                     'max_tokens': max_tokens
                 },
-                timeout=90
+                timeout=AI_REQUEST_TIMEOUT
             )
 
             if r.status_code == 200:
@@ -837,7 +938,7 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
         if ms_match:
             total_seconds += int(ms_match.group(1)) / 1000
 
-        return int(total_seconds) if total_seconds > 0 else 60  # Default 60s
+        return int(total_seconds) if total_seconds > 0 else RATE_LIMIT_WINDOW_SECONDS
 
     def _call_cerebras_rotation(self, prompt, max_tokens=4000, temperature=0.1):
         """
@@ -902,12 +1003,12 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
                     'Content-Type': 'application/json'
                 },
                 json={
-                    'model': 'llama-3.3-70b',
+                    'model': CEREBRAS_MODEL,
                     'messages': [{'role': 'user', 'content': prompt}],
                     'temperature': temperature,
                     'max_tokens': max_tokens
                 },
-                timeout=90
+                timeout=AI_REQUEST_TIMEOUT
             )
 
             if r.status_code == 200:
@@ -937,12 +1038,12 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
                     'Content-Type': 'application/json'
                 },
                 json={
-                    'model': 'deepseek-chat',
+                    'model': DEEPSEEK_MODEL,
                     'messages': [{'role': 'user', 'content': prompt}],
                     'temperature': temperature,
                     'max_tokens': max_tokens
                 },
-                timeout=90
+                timeout=AI_REQUEST_TIMEOUT
             )
 
             if r.status_code == 200:
@@ -967,12 +1068,12 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
                     'Content-Type': 'application/json'
                 },
                 json={
-                    'model': 'claude-sonnet-4-20250514',
+                    'model': CLAUDE_API_MODEL,
                     'max_tokens': max_tokens,
                     'temperature': temperature,
                     'messages': [{'role': 'user', 'content': prompt}]
                 },
-                timeout=90
+                timeout=AI_REQUEST_TIMEOUT
             )
 
             if r.status_code == 200:
@@ -984,6 +1085,121 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
                 print(f"      Claude HTTP {r.status_code}: {r.text[:200]}")
         except Exception as e:
             print(f"      Claude error: {e}")
+        return None
+
+    def _get_claude_cmd(self):
+        """Get the correct Claude CLI command for the current OS."""
+        import shutil
+        import platform
+
+        # On Windows, subprocess needs .cmd extension or shell=True
+        if platform.system() == 'Windows':
+            # Try claude.cmd first (npm global install on Windows)
+            claude_cmd = shutil.which('claude.cmd') or shutil.which('claude')
+            return claude_cmd or 'claude.cmd'
+        else:
+            return shutil.which('claude') or 'claude'
+
+    def _check_claude_code_available(self):
+        """Check if Claude Code CLI is installed and authenticated"""
+        import subprocess
+        try:
+            claude_cmd = self._get_claude_cmd()
+            result = subprocess.run(
+                [claude_cmd, '--version'],
+                capture_output=True, text=True, timeout=10,
+                encoding='utf-8'
+            )
+            return result.returncode == 0
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            return False
+
+    def _call_claude_code(self, prompt, max_tokens=4000, temperature=0.1, model=None):
+        """
+        Claude Code CLI call - uses local Claude Code subscription.
+        FREE (subscription-based), best quality, no API key needed.
+
+        Requires:
+        - Claude Code CLI installed and authenticated
+        - Active Claude subscription (Pro/Max/Team)
+
+        Args:
+            model: 'sonnet' (default), 'opus' (expert), 'haiku' (fast)
+        """
+        import subprocess
+
+        if 'ClaudeCode' in self.disabled_apis:
+            return None
+
+        if model is None:
+            model = CLAUDE_CODE_MODEL
+
+        # Rate limiting: max requests per minute (from config)
+        current_time = time.time()
+        self._claude_code_request_times = [
+            t for t in getattr(self, '_claude_code_request_times', [])
+            if current_time - t < RATE_LIMIT_WINDOW_SECONDS
+        ]
+        while len(self._claude_code_request_times) >= CLAUDE_CODE_RPM:
+            oldest = min(self._claude_code_request_times)
+            wait_time = RATE_LIMIT_WINDOW_SECONDS - (current_time - oldest) + 1
+            if wait_time > 0:
+                print(f"      [CLAUDE_CODE] Rate limit protection - attente {int(wait_time)}s...")
+                time.sleep(wait_time)
+            current_time = time.time()
+            self._claude_code_request_times = [
+                t for t in self._claude_code_request_times
+                if current_time - t < RATE_LIMIT_WINDOW_SECONDS
+            ]
+        self._claude_code_request_times.append(current_time)
+
+        try:
+            claude_cmd = self._get_claude_cmd()
+
+            # Always use stdin on Windows (cmd line length limit ~32KB)
+            # On Linux/Mac, use stdin for prompts > 8000 chars
+            import platform
+            use_stdin = platform.system() == 'Windows' or len(prompt) > 8000
+
+            cmd = [
+                claude_cmd,
+                '--print',
+                '--output-format', 'text',
+                '--model', model,
+                '--no-session-persistence',
+            ]
+
+            if not use_stdin:
+                cmd.append(prompt)
+
+            result = subprocess.run(
+                cmd,
+                input=prompt if use_stdin else None,
+                capture_output=True,
+                text=True,
+                timeout=CLAUDE_CODE_TIMEOUT,
+                encoding='utf-8'
+            )
+
+            if result.returncode == 0 and result.stdout.strip():
+                response = result.stdout.strip()
+                print(f"      [CLAUDE_CODE] {model} OK ({len(response)} chars)")
+                return response
+            else:
+                stderr = result.stderr[:200] if result.stderr else 'no output'
+                print(f"      [CLAUDE_CODE] Exit {result.returncode}: {stderr}")
+                # Check for auth errors
+                if result.stderr and any(kw in result.stderr.lower() for kw in ['auth', 'login', 'subscription', 'expired']):
+                    print("      [CLAUDE_CODE] Auth error - DISABLED")
+                    self.disabled_apis.add('ClaudeCode')
+
+        except subprocess.TimeoutExpired:
+            print("      [CLAUDE_CODE] Timeout (5min)")
+        except FileNotFoundError:
+            print("      [CLAUDE_CODE] CLI not found - install: npm install -g @anthropic-ai/claude-code")
+            self.disabled_apis.add('ClaudeCode')
+        except Exception as e:
+            print(f"      [CLAUDE_CODE] Error: {e}")
         return None
 
     def _call_gemini_rotation(self, prompt, max_tokens=4000, temperature=0.3, model='flash'):
@@ -1018,8 +1234,8 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
 
             # Only rate limited (per minute) - wait briefly then retry once
             if self.retry_count < 1:
-                print(f"      [GEMINI] Rate limit - attente 60s puis retry...")
-                time.sleep(60)  # Wait 1 minute instead of 1h05
+                print(f"      [GEMINI] Rate limit - attente {RATE_LIMIT_WINDOW_SECONDS}s puis retry...")
+                time.sleep(RATE_LIMIT_WINDOW_SECONDS)
                 # Reset rate-limited keys (but keep daily quota keys)
                 self.gemini_disabled_keys = self.gemini_invalid_keys | self.gemini_daily_quota_keys
                 self.retry_count += 1
@@ -1048,7 +1264,7 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
                 self.retry_count = 0
                 # Rotate to next key for next call (spread load)
                 self.gemini_request_count += 1
-                if self.gemini_request_count >= 50:  # Rotate every 50 requests
+                if self.gemini_request_count >= GEMINI_ROTATION_THRESHOLD:
                     self.gemini_key_index += 1
                     self.gemini_request_count = 0
                 return result
@@ -1136,13 +1352,13 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
             delay = 1.5 if model == 'pro' else 1.0
             time.sleep(delay)
 
-            # Select model endpoint
+            # Select model endpoint (from config)
             if model == 'pro':
-                model_name = 'gemini-2.5-pro-preview-06-05'
+                model_name = GEMINI_PRO_MODEL
                 timeout = 120  # Pro needs more time (thinking model)
             else:
-                model_name = 'gemini-2.0-flash'
-                timeout = 60
+                model_name = GEMINI_FLASH_MODEL
+                timeout = AI_REQUEST_TIMEOUT
 
             r = self.session.post(
                 f'https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}',
@@ -1322,12 +1538,12 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
                     'Content-Type': 'application/json'
                 },
                 json={
-                    'model': 'mistral-small-latest',
+                    'model': MISTRAL_MODEL,
                     'messages': [{'role': 'user', 'content': prompt}],
                     'temperature': temperature,
                     'max_tokens': max_tokens
                 },
-                timeout=60
+                timeout=AI_REQUEST_TIMEOUT
             )
 
             if r.status_code == 200:
@@ -1380,7 +1596,7 @@ def parse_evaluation_response(response):
             rest_of_line = line[result_match.end():].strip()
             reason_clean = re.sub(r'^[\s\|\-:]+', '', rest_of_line)
             if reason_clean:
-                reason = reason_clean[:200]
+                reason = reason_clean[:NARRATIVE_REASON_MAX_LENGTH]
 
             # Normalize result
             if value == 'YESP':

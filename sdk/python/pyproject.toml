@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "safescoring"
+version = "1.0.0"
+description = "Official Python SDK for SafeScoring API"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "SafeScoring", email = "api@safescoring.io"}]
+requires-python = ">=3.8"
+dependencies = ["requests>=2.25.0"]
+keywords = ["safescoring", "crypto", "security", "blockchain", "api"]
+
+[project.urls]
+Documentation = "https://safescoring.io/methodology"
+Repository = "https://github.com/safescoring/python-sdk"

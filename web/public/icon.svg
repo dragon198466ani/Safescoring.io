@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Gradient pour la bordure -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <!-- Gradient pour le S -->
+    <linearGradient id="sGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="35%" stop-color="#fbbf24"/>
+      <stop offset="65%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+    <!-- Masque pour créer l'anneau -->
+    <mask id="ringMask">
+      <rect x="0" y="0" width="512" height="512" rx="100" fill="white"/>
+      <rect x="20" y="20" width="472" height="472" rx="80" fill="black"/>
+    </mask>
+  </defs>
+
+  <!-- Anneau gradient avec fond transparent -->
+  <rect x="0" y="0" width="512" height="512" rx="100" fill="url(#borderGrad)" mask="url(#ringMask)"/>
+
+  <!-- S stylisé avec gradient -->
+  <path d="M330 155c-15-25-45-45-85-45-55 0-95 35-95 85 0 45 30 65 80 80l35 10c40 12 55 25 55 50 0 35-30 55-70 55-35 0-60-15-75-45l-50 30c25 45 70 70 125 70 65 0 110-40 110-100 0-50-35-75-90-90l-35-10c-35-10-45-20-45-40 0-25 20-40 50-40 25 0 45 12 55 35l50-25z"
+        fill="url(#sGrad)"
+        transform="translate(36, 36)"/>
+</svg>
