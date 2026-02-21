@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { articles, categories } from "@/app/blog/_assets/content";
 
 export default async function sitemap() {
   const baseUrl = "https://safescoring.io";
@@ -14,17 +15,35 @@ export default async function sitemap() {
     { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
     { url: `${baseUrl}/privacy-policy`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
     { url: `${baseUrl}/tos`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
-    // New marketing pages
+    // Marketing pages
     { url: `${baseUrl}/compare`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/leaderboard`, lastModified: new Date(), changeFrequency: "daily", priority: 0.7 },
     { url: `${baseUrl}/badge`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/api-docs`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/partners`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: `${baseUrl}/press`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/hacks`, lastModified: new Date(), changeFrequency: "daily", priority: 0.7 },
   ];
 
-  // Dynamic product pages
+  // Blog article pages (from static content)
+  const blogArticlePages = articles.map((article) => ({
+    url: `${baseUrl}/blog/${article.slug}`,
+    lastModified: article.publishedAt ? new Date(article.publishedAt) : new Date(),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  // Blog category pages
+  const blogCategoryPages = categories.map((category) => ({
+    url: `${baseUrl}/blog/category/${category.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.5,
+  }));
+
+  // Dynamic product pages + blog review pages
   let productPages = [];
+  let reviewPages = [];
   let comparisonPages = [];
   let categoryPages = [];
 
@@ -42,6 +61,14 @@ export default async function sitemap() {
           lastModified: product.updated_at ? new Date(product.updated_at) : new Date(),
           changeFrequency: "weekly",
           priority: 0.8,
+        }));
+
+        // Auto-generated blog review pages (SEO long-tail)
+        reviewPages = products.map((product) => ({
+          url: `${baseUrl}/blog/review/${product.slug}`,
+          lastModified: product.updated_at ? new Date(product.updated_at) : new Date(),
+          changeFrequency: "monthly",
+          priority: 0.6,
         }));
 
         // Generate comparison pages for top products
@@ -76,5 +103,13 @@ export default async function sitemap() {
     }
   }
 
-  return [...staticPages, ...productPages, ...comparisonPages, ...categoryPages];
+  return [
+    ...staticPages,
+    ...blogArticlePages,
+    ...blogCategoryPages,
+    ...productPages,
+    ...reviewPages,
+    ...comparisonPages,
+    ...categoryPages,
+  ];
 }

@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+}
 
 /**
  * GET /api/catalog/anonymous
@@ -23,6 +25,7 @@ export async function GET(request) {
     const limit = parseInt(searchParams.get("limit") || "24");
 
     // Build query for setups that opted into sharing
+    const supabase = getSupabase();
     let query = supabase
       .from("setups")
       .select(`
