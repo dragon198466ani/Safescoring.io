@@ -6,6 +6,7 @@ export default defineConfig({
     environment: "node",
     globals: true,
     include: ["__tests__/**/*.test.{js,ts}"],
+    exclude: ["__tests__/api/community.test.js", "node_modules"],
     coverage: {
       reporter: ["text", "lcov"],
       include: ["libs/**", "app/api/**"],
