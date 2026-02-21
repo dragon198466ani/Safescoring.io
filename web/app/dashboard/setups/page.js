@@ -26,11 +26,8 @@ const ROLES = [
   { id: "other", label: "Other", weight: "1x", color: "text-base-content/60" },
 ];
 
-const getScoreColor = (score) => {
-  if (score >= 80) return "text-green-400";
-  if (score >= 60) return "text-amber-400";
-  return "text-red-400";
-};
+// Score colors imported from single source of truth
+import { getScoreColor, getScoreBgClass, getScoreBorderClass } from "@/libs/score-utils";
 
 const getScoreBg = (score) => {
   if (score >= 80) return "from-green-500/20 to-green-500/5 border-green-500/30";

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
@@ -11,11 +12,15 @@ import {
   supportedLanguages,
   defaultLanguage,
 } from "@/libs/i18n";
+import { getScoreColor } from "@/libs/score-utils";
 // Critical components - loaded immediately
 import ScoreSecurityPanel from "@/components/ScoreSecurityPanel";
 import CommunityStats from "@/components/CommunityStats";
 import ProductLogo from "@/components/ProductLogo";
 import PricingDisplay from "@/components/PricingDisplay";
+import ScoreCircleFull from "@/components/ScoreCircleFull";
+import ProductPageNav from "@/components/ProductPageNav";
+import { SkeletonCard, SkeletonChart } from "@/components/common/LoadingSkeleton";
 // Heavy components - lazy loaded
 import {
   LazySecurityIncidents,
@@ -372,67 +377,8 @@ async function getProduct(slug, t) {
   }
 }
 
-const getScoreColor = (score) => {
-  if (score >= 80) return "text-green-400";
-  if (score >= 60) return "text-amber-400";
-  return "text-red-400";
-};
-
-const getScoreLabel = (score, t) => {
-  if (score >= 80) return { label: t("productDetail.scoreBands.excellentShort"), color: "text-green-400" };
-  if (score >= 60) return { label: t("productDetail.scoreBands.goodShort"), color: "text-amber-400" };
-  return { label: t("productDetail.scoreBands.atRisk"), color: "text-red-400" };
-};
-
-const ScoreCircle = ({ score, size = 140, strokeWidth = 10, lastUpdate, t, locale }) => {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const offset = circumference - (score / 100) * circumference;
-  const scoreInfo = getScoreLabel(score, t);
-  const strokeColor = score >= 80 ? "#22c55e" : score >= 60 ? "#f59e0b" : "#ef4444";
-
-  return (
-    <div className="flex flex-col items-center p-6 rounded-2xl bg-base-200/50 border border-base-content/10">
-      <div className="relative" style={{ width: size, height: size }}>
-        <svg className="score-circle" width={size} height={size}>
-          <circle
-            className="score-circle-bg"
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            strokeWidth={strokeWidth}
-          />
-          <circle
-            className="score-circle-progress"
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            strokeWidth={strokeWidth}
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            stroke={strokeColor}
-          />
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className={`text-4xl font-bold ${getScoreColor(score)}`}>
-            {score}
-          </span>
-        </div>
-      </div>
-      <div className="mt-4 text-center">
-        <div className="text-sm font-medium text-base-content/60 uppercase tracking-wider">
-          {t("product.safeScore")}
-        </div>
-        <div className={`text-base font-semibold mt-1 ${scoreInfo.color}`}>{scoreInfo.label}</div>
-      </div>
-      {lastUpdate && (
-        <div className="mt-3 text-xs text-base-content/40">
-          {t("product.updated", { date: new Date(lastUpdate).toLocaleDateString(locale || "en-US") })}
-        </div>
-      )}
-    </div>
-  );
-};
+// getScoreColor imported from @/libs/score-utils (single source of truth)
+// ScoreCircle extracted to @/components/ScoreCircleFull
 
 export default async function ProductPage({ params }) {
   const { slug } = await params;
@@ -514,7 +460,7 @@ export default async function ProductPage({ params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Header />
-      <main className="min-h-screen pt-24 pb-16 px-6 hero-bg">
+      <main id="main-content" className="min-h-screen pt-24 pb-20 lg:pb-16 px-6 hero-bg">
         <div className="max-w-5xl mx-auto">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-sm text-base-content/60 mb-8">
@@ -526,7 +472,7 @@ export default async function ProductPage({ params }) {
           </div>
 
           {/* Product header */}
-          <div className="flex flex-col lg:flex-row gap-8 mb-12">
+          <section id="overview" className="flex flex-col lg:flex-row gap-8 mb-12">
             {/* Left: Product info */}
             <div className="flex-1 min-w-0">
               {/* Logo + Title row */}
@@ -591,14 +537,14 @@ export default async function ProductPage({ params }) {
 
             {/* Right: SAFE Score Circle only */}
             <div className="shrink-0">
-              <ScoreCircle
+              <ScoreCircleFull
                 score={product.scores.total}
                 lastUpdate={product.lastUpdate}
                 t={t}
                 locale={lang}
               />
             </div>
-          </div>
+          </section>
 
           {/* Hero Section: Gallery + Pillar Scores côte à côte */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
@@ -631,6 +577,7 @@ export default async function ProductPage({ params }) {
                       key={pillar.code}
                       href={`/methodology#${pillar.code.toLowerCase()}`}
                       className="p-3 rounded-xl bg-base-200 border border-base-300 hover:border-primary/50 transition-all group"
+                      aria-label={`${pillarName}: ${score} out of 100`}
                     >
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-2">
@@ -743,41 +690,53 @@ export default async function ProductPage({ params }) {
           </div>
 
           {/* Strategic Analysis - AI-generated per-pillar narratives */}
-          <LazySAFEStrategicAnalysis
-            productSlug={product.slug}
-            pillarScores={{
-              S: product.scores?.s || 0,
-              A: product.scores?.a || 0,
-              F: product.scores?.f || 0,
-              E: product.scores?.e || 0,
-            }}
-          />
+          <section id="safe-analysis" className="mb-12">
+            <Suspense fallback={<SkeletonCard />}>
+              <LazySAFEStrategicAnalysis
+                productSlug={product.slug}
+                pillarScores={{
+                  S: product.scores?.s || 0,
+                  A: product.scores?.a || 0,
+                  F: product.scores?.f || 0,
+                  E: product.scores?.e || 0,
+                }}
+              />
+            </Suspense>
+          </section>
 
           {/* Protection Guide - how to stay safe with this product */}
-          <LazySAFEProtectionGuide productSlug={product.slug} />
+          <section id="protection" className="mb-12">
+            <Suspense fallback={<SkeletonCard />}>
+              <LazySAFEProtectionGuide productSlug={product.slug} />
+            </Suspense>
+          </section>
 
           {/* Score & Security + Security History - Side by side */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+          <section id="security-panel" className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
             {/* Score & Security Panel */}
             <ScoreSecurityPanel slug={product.slug} productName={product.name} />
 
             {/* Security Incidents */}
-            <LazySecurityIncidents slug={product.slug} />
-          </div>
+            <Suspense fallback={<SkeletonChart />}>
+              <LazySecurityIncidents slug={product.slug} />
+            </Suspense>
+          </section>
 
           {/* Community & External Data */}
-          <div className="mb-12">
+          <section id="community" className="mb-12">
             <CommunityStats productName={product.name} productSlug={product.slug} />
-          </div>
+          </section>
 
           {/* Help Improve - User Corrections (Closed-Loop Data) */}
-          <div className="mb-12">
-            <LazyCorrectionSection
-              productId={product.id}
-              productSlug={product.slug}
-              productName={product.name}
-            />
-          </div>
+          <section id="contribute" className="mb-12">
+            <Suspense fallback={<SkeletonCard />}>
+              <LazyCorrectionSection
+                productId={product.id}
+                productSlug={product.slug}
+                productName={product.name}
+              />
+            </Suspense>
+          </section>
 
           {/* CTA for full report */}
           <div className="rounded-xl bg-gradient-to-br from-primary/20 to-base-200 border border-base-300 p-8 text-center">
@@ -790,6 +749,9 @@ export default async function ProductPage({ params }) {
             </Link>
           </div>
         </div>
+
+        {/* Floating section navigation */}
+        <ProductPageNav />
       </main>
       <Footer />
     </>

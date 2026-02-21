@@ -2,16 +2,11 @@
 
 import Link from "next/link";
 import ProductLogo from "@/components/ProductLogo";
+import { getScoreColor } from "@/libs/score-utils";
 
 /**
  * SetupCard - Displays a single crypto setup with combined SAFE score
  */
-
-const getScoreColor = (score) => {
-  if (score >= 80) return "text-green-400";
-  if (score >= 60) return "text-amber-400";
-  return "text-red-400";
-};
 
 const getScoreBg = (score) => {
   if (score >= 80) return "bg-green-500/15 border-green-500/30";

@@ -15,10 +15,12 @@ import { useState, useEffect } from "react";
  */
 
 const ALL_SECTIONS = [
-  { id: "safe-analysis", label: "SAFE", icon: "🛡️" },
-  { id: "analytics", label: "Analytics", icon: "📊" },
-  { id: "sources", label: "Sources", icon: "🔗" },
-  { id: "incidents", label: "Incidents", icon: "⚠️" },
+  { id: "overview", label: "Overview", icon: "📋" },
+  { id: "safe-analysis", label: "Analysis", icon: "🛡️" },
+  { id: "protection", label: "Protection", icon: "🔒" },
+  { id: "security-panel", label: "Security", icon: "📊" },
+  { id: "community", label: "Community", icon: "👥" },
+  { id: "contribute", label: "Contribute", icon: "✏️" },
 ];
 
 export default function ProductPageNav() {
