@@ -103,8 +103,8 @@ describe('Community Voting API Tests', () => {
 
       expect(response.status).toBe(200);
       if (data.length > 0) {
-        data.forEach(eval => {
-          expect(eval.pillar).toBe('S');
+        data.forEach(item => {
+          expect(item.pillar).toBe('S');
         });
       }
     });
