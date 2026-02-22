@@ -136,6 +136,16 @@ export const API_TIERS = {
     price: 0, // Included with Enterprise plan
     overage: null, // No limits
   },
+  agent: {
+    name: "Agent (Pay-per-query)",
+    dailyLimit: -1,
+    monthlyLimit: -1,
+    ratePerMinute: 60,
+    price: 0,
+    queryPriceUSDC: 0.01,
+    analysisPriceUSDC: 0.10,
+    batchPriceUSDC: 0.005,
+  },
 };
 
 /**
