@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/libs/supabase/server';
+import { supabase } from '@/libs/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/libs/auth';
 
@@ -24,7 +24,6 @@ export async function POST(req) {
       );
     }
 
-    const supabase = createClient();
     const { data: result, error } = await supabase.rpc('process_evaluation_vote', {
       p_evaluation_id: evaluation_id,
       p_voter_hash: session.user.email,
