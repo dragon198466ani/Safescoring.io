@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+export const dynamic = 'force-dynamic';
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 /**
  * GET /api/catalog/anonymous
@@ -22,6 +26,10 @@ export async function GET(request) {
     const archetype = searchParams.get("archetype");
     const limit = parseInt(searchParams.get("limit") || "24");
 
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
     // Build query for setups that opted into sharing
     let query = supabase
       .from("setups")
@@ -105,6 +113,10 @@ export async function POST(request) {
       return NextResponse.json({ error: "Setup ID required" }, { status: 400 });
     }
 
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
     // Update setup's anonymous sharing preference
     const { error } = await supabase
       .from("setups")

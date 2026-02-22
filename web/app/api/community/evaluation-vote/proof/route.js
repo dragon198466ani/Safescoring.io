@@ -3,10 +3,14 @@ import { auth } from "@/libs/auth";
 import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+export const dynamic = 'force-dynamic';
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 const TOKENS_SOURCE_BONUS = 2;
 
@@ -21,6 +25,10 @@ const TOKENS_SOURCE_BONUS = 2;
  */
 export async function POST(req) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
     const session = await auth();
 
     if (!session?.user?.id) {
