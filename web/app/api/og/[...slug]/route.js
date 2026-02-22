@@ -354,7 +354,7 @@ function generateDefaultOG() {
           Crypto Security Ratings You Can Trust
         </div>
         <div style={{ fontSize: 24, color: COLORS.text, marginTop: 24 }}>
-          916 norms • 500+ products • Objective scores
+          2159 norms • 500+ products • Objective scores
         </div>
       </div>
     ),

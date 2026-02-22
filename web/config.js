@@ -15,9 +15,19 @@ const config = {
   appName: "SafeScoring",
   // REQUIRED: a short description of your app for SEO tags (can be overwritten)
   appDescription:
-    "The first unified security rating for all crypto products. 916 norms. 0 opinion. 1 score. Hardware wallets, software wallets, and DeFi protocols - all evaluated with the same rigorous SAFE methodology.",
+    "The first unified security rating for all crypto products. 2159 norms. 0 opinion. 1 score. Hardware wallets, software wallets, and DeFi protocols - all evaluated with the same rigorous SAFE methodology.",
   // REQUIRED (no https://, not trialing slash at the end, just the naked domain)
   domainName: "safescoring.io",
+  // Company info for trust/transparency page
+  company: {
+    name: "SafeScoring",
+    legalName: "SafeScoring SAS",
+    legalForm: "SAS",
+    state: "France",
+    country: "France",
+    founded: "2024",
+    email: "contact@safescoring.io",
+  },
   crisp: {
     // Crisp website ID. IF YOU DON'T USE CRISP: just remove this => Then add a support email in this config file (resend.supportEmail) otherwise customer support won't work.
     id: "",
@@ -47,10 +57,13 @@ const config = {
       },
       {
         variantId: process.env.LEMON_SQUEEZY_EXPLORER_VARIANT_ID || "explorer_variant",
+        variantIdAnnual: process.env.LEMON_SQUEEZY_EXPLORER_ANNUAL_VARIANT_ID || "explorer_annual_variant",
         name: "Explorer",
         description: "Compare and optimize your crypto security",
         price: 19,
+        priceAnnual: 171, // 19 * 12 * 0.75 = 25% off annual
         priceAnchor: 29,
+        priceAnchorAnnual: 348, // 29 * 12
         trialDays: 14,
         features: [
           { name: "Unlimited product comparisons" },
@@ -68,10 +81,13 @@ const config = {
       {
         isFeatured: true,
         variantId: process.env.LEMON_SQUEEZY_PRO_VARIANT_ID || "pro_variant",
+        variantIdAnnual: process.env.LEMON_SQUEEZY_PRO_ANNUAL_VARIANT_ID || "pro_annual_variant",
         name: "Professional",
         description: "Full security intelligence for your crypto stack",
         price: 49,
+        priceAnnual: 441, // 49 * 12 * 0.75
         priceAnchor: 99,
+        priceAnchorAnnual: 1188, // 99 * 12
         trialDays: 14,
         features: [
           { name: "Everything in Explorer" },
@@ -89,10 +105,13 @@ const config = {
       },
       {
         variantId: process.env.LEMON_SQUEEZY_ENTERPRISE_VARIANT_ID || "enterprise_variant",
+        variantIdAnnual: process.env.LEMON_SQUEEZY_ENTERPRISE_ANNUAL_VARIANT_ID || "enterprise_annual_variant",
         name: "Enterprise",
         description: "Security intelligence at scale",
         price: 299,
+        priceAnnual: 2691, // 299 * 12 * 0.75
         priceAnchor: 499,
+        priceAnchorAnnual: 5988, // 499 * 12
         features: [
           { name: "Everything in Professional" },
           { name: "Unlimited setups & products", highlight: true },
@@ -150,7 +169,7 @@ const config = {
   // SafeScoring specific config
   safe: {
     // Strategic tagline
-    tagline: "916 norms. 0 opinion. 1 score.",
+    tagline: "2159 norms. 0 opinion. 1 score.",
     taglineAlt: "Beyond the audit.",
 
     pillars: [
@@ -160,7 +179,7 @@ const config = {
         description: "Would your wallet survive a state-level attack? We verify encryption, key management, and cryptographic standards — because a single weak algorithm means everything you own is one exploit away from zero.",
         shortDesc: "Cryptographic armor",
         color: "#22c55e", // green
-        normCount: 269,
+        normCount: 794,
       },
       {
         code: "A",
@@ -168,7 +187,7 @@ const config = {
         description: "What happens when someone holds a gun to your head? We assess duress protection, anti-coercion mechanisms, time-locks, and physical security — because the real threat to crypto holders is no longer just hackers.",
         shortDesc: "Physical threat & coercion resistance",
         color: "#f59e0b", // amber
-        normCount: 193,
+        normCount: 353,
       },
       {
         code: "F",
@@ -176,7 +195,7 @@ const config = {
         description: `${STATS.auditedHackedApprox} of hacked projects in ${STATS.auditedHackedYear} had been audited. An audit is a snapshot — we measure what happens after. Update frequency, incident response, team track record, and whether they actually fix what breaks.`,
         shortDesc: "Proven reliability over time",
         color: "#3b82f6", // blue
-        normCount: 195,
+        normCount: 408,
       },
       {
         code: "E",
@@ -184,11 +203,11 @@ const config = {
         description: "The most secure wallet is worthless if you send funds to the wrong address because the UI was confusing. We measure whether security actually works in your hands — UX, clarity, multi-chain support, and error prevention.",
         shortDesc: "Security you can actually use",
         color: "#8b5cf6", // purple
-        normCount: 259,
+        normCount: 604,
       },
     ],
     stats: {
-      totalNorms: 916,
+      totalNorms: 2159,
       totalProducts: 100,
       totalProductTypes: 21,
       totalEvaluations: 50000,
@@ -236,6 +255,44 @@ const config = {
     monthlyLimit: 5,
     trialDays: 14,
     requireCard: true,
+  },
+  // Purchasing Power Parity — adaptive pricing per country
+  ppp: {
+    enabled: true,
+    proxyCheckApiKey: process.env.PROXYCHECK_API_KEY || null,
+    // Lemon Squeezy discount codes for cheaper countries (created by setup script)
+    discountCodes: {
+      tier1: process.env.PPP_DISCOUNT_TIER1 || null, // -20%
+      tier2: process.env.PPP_DISCOUNT_TIER2 || null, // -40%
+      tier3: process.env.PPP_DISCOUNT_TIER3 || null, // -60%
+      tier4: process.env.PPP_DISCOUNT_TIER4 || null, // -80%
+    },
+    // Lemon Squeezy variant IDs for surcharge countries (+20%)
+    surchargeVariantsPlus20: {
+      explorer: process.env.LS_EXPLORER_PLUS20_VARIANT || null,
+      professional: process.env.LS_PRO_PLUS20_VARIANT || null,
+      enterprise: process.env.LS_ENTERPRISE_PLUS20_VARIANT || null,
+    },
+    // Lemon Squeezy variant IDs for surcharge countries (+40%)
+    surchargeVariantsPlus40: {
+      explorer: process.env.LS_EXPLORER_PLUS40_VARIANT || null,
+      professional: process.env.LS_PRO_PLUS40_VARIANT || null,
+      enterprise: process.env.LS_ENTERPRISE_PLUS40_VARIANT || null,
+    },
+    // Annual surcharge variant IDs (+20%)
+    surchargeVariantsPlus20Annual: {
+      explorer: process.env.LS_EXPLORER_PLUS20_ANNUAL_VARIANT || null,
+      professional: process.env.LS_PRO_PLUS20_ANNUAL_VARIANT || null,
+      enterprise: process.env.LS_ENTERPRISE_PLUS20_ANNUAL_VARIANT || null,
+    },
+    // Annual surcharge variant IDs (+40%)
+    surchargeVariantsPlus40Annual: {
+      explorer: process.env.LS_EXPLORER_PLUS40_ANNUAL_VARIANT || null,
+      professional: process.env.LS_PRO_PLUS40_ANNUAL_VARIANT || null,
+      enterprise: process.env.LS_ENTERPRISE_PLUS40_ANNUAL_VARIANT || null,
+    },
+    // Only call proxycheck.io API for tiers with >= this discount (save API quota)
+    proxyCheckMinTier: -2, // i.e., -40% discount or more
   },
 };
 

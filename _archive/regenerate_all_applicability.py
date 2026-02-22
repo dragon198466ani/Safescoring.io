@@ -13,7 +13,7 @@ Usage:
     python scripts/regenerate_all_applicability.py --missing          # Types sans règles
     python scripts/regenerate_all_applicability.py --all --force      # Force réécriture
 
-IMPORTANT: Ce script va générer ~71,000 règles (78 types × 916 normes)
+IMPORTANT: Ce script va générer ~71,000 règles (78 types × 2159 normes)
 Temps estimé: ~2-4 heures avec rate limiting
 """
 

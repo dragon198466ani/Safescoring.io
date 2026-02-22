@@ -37,7 +37,7 @@ export async function generateMetadata({ params }) {
   const productB = products.find(p => p.slug === slugB);
 
   const title = `${productA.name} vs ${productB.name} - Security Comparison | SafeScoring`;
-  const description = `Compare ${productA.name} and ${productB.name} security scores. See which is safer based on 916 security criteria across Security, Adversity, Fidelity & Efficiency.`;
+  const description = `Compare ${productA.name} and ${productB.name} security scores. See which is safer based on 2159 security criteria across Security, Adversity, Fidelity & Efficiency.`;
 
   return {
     title,
@@ -203,7 +203,7 @@ export default async function ComparePage({ params }) {
               {productA.name} vs {productB.name}
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              Security comparison based on 916 criteria across Security, Adversity, Fidelity & Efficiency pillars.
+              Security comparison based on 2159 criteria across Security, Adversity, Fidelity & Efficiency pillars.
             </p>
           </div>
 
@@ -365,13 +365,13 @@ export default async function ComparePage({ params }) {
               <div>
                 <h3 className="font-semibold mb-2">Which is safer: {productA.name} or {productB.name}?</h3>
                 <p className="text-base-content/70">
-                  Based on our 916-criteria security evaluation, {winners.total === 'tie' ? 'both products have similar security levels' : `${winners.total === 'A' ? productA.name : productB.name} has a higher security score (${winners.total === 'A' ? productA.scores.total : productB.scores.total}/100)`}.
+                  Based on our 2159-criteria security evaluation, {winners.total === 'tie' ? 'both products have similar security levels' : `${winners.total === 'A' ? productA.name : productB.name} has a higher security score (${winners.total === 'A' ? productA.scores.total : productB.scores.total}/100)`}.
                 </p>
               </div>
               <div>
                 <h3 className="font-semibold mb-2">What is the SAFE Score?</h3>
                 <p className="text-base-content/70">
-                  The SAFE Score evaluates crypto products across 4 pillars: Security, Adversity, Fidelity, and Efficiency. It&apos;s based on 916 security norms evaluated by AI and human experts.
+                  The SAFE Score evaluates crypto products across 4 pillars: Security, Adversity, Fidelity, and Efficiency. It&apos;s based on 2159 security norms evaluated by AI and human experts.
                 </p>
               </div>
               <div>

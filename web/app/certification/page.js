@@ -13,7 +13,7 @@ const certificationTiers = [
     priceYearly: 790,
     description: "For emerging projects seeking credibility",
     features: [
-      "Full SAFE evaluation (916 norms)",
+      "Full SAFE evaluation (2159 norms)",
       "Public score on SafeScoring.io",
       "Starter Badge for your website",
       "Quarterly re-evaluation",
@@ -108,8 +108,8 @@ const BadgePreview = ({ type }) => {
 };
 
 const stats = [
-  { value: "~50%", label: "of hacked projects had audits" },
-  { value: "916", label: "security norms evaluated" },
+  { value: "87%", label: "of hacked projects had audits" },
+  { value: "2159", label: "security norms evaluated" },
   { value: "100+", label: "products already scored" },
   { value: "0", label: "bias in our methodology" },
 ];
@@ -184,7 +184,7 @@ export default function CertificationPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">916 Security Norms</h3>
+                <h3 className="text-lg font-semibold mb-2">2159 Security Norms</h3>
                 <p className="text-base-content/70">
                   We evaluate cryptography, adversity resistance, reliability, AND usability. The most comprehensive security assessment in crypto.
                 </p>
@@ -293,7 +293,7 @@ export default function CertificationPage() {
             <div className="space-y-8">
               {[
                 { step: 1, title: "Apply", desc: "Submit your project details and choose your plan" },
-                { step: 2, title: "Evaluation", desc: "Our AI evaluates your product against 916 security norms" },
+                { step: 2, title: "Evaluation", desc: "Our AI evaluates your product against 2159 security norms" },
                 { step: 3, title: "Review", desc: "Our team verifies results and prepares your improvement roadmap" },
                 { step: 4, title: "Certification", desc: "Receive your badge, score, and public listing within 7 days" },
               ].map((item, i) => (

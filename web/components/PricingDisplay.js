@@ -68,7 +68,7 @@ const enhanceBtcFeeDetails = (details) => {
 
 export default function PricingDisplay({ priceEur, details }) {
   const [currency, setCurrency] = useState('EUR');
-  const [locale, setLocale] = useState('fr-FR');
+  const [locale, setLocale] = useState('en-US');
   const [displayPrice, setDisplayPrice] = useState(priceEur);
   const [enhancedDetails, setEnhancedDetails] = useState(details);
 

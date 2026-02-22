@@ -1,16 +1,121 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import config from "@/config";
 import ButtonCheckout from "./ButtonCheckout";
+import PPPBanner from "./PPPBanner";
 
 const Pricing = () => {
   // Use lemonsqueezy plans (stripe.plans is deprecated/empty)
   const allPlans = config?.lemonsqueezy?.plans || config?.stripe?.plans || [];
 
+  // Billing cycle: default to annual (higher conversion)
+  const [billingCycle, setBillingCycle] = useState("annual");
+
+  // PPP state
+  const [ppp, setPpp] = useState(null);
+  const [pppLoading, setPppLoading] = useState(false);
+
+  useEffect(() => {
+    detectPPP();
+  }, []);
+
+  async function detectPPP() {
+    try {
+      // Read PPP tier from cookie (set by middleware)
+      const cookies = document.cookie.split(";").reduce((acc, c) => {
+        const [key, val] = c.trim().split("=");
+        acc[key] = val;
+        return acc;
+      }, {});
+
+      const tier = parseInt(cookies.ppp_tier || "0", 10);
+      const country = cookies.ppp_country || "";
+
+      // If tier 0 (US base price), no need for API call
+      if (tier === 0 || !country) {
+        setPpp(null);
+        return;
+      }
+
+      // Call server-side PPP detection with browser signals for VPN check
+      setPppLoading(true);
+      const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const browserLanguage = navigator.language;
+      const browserLanguages = [...(navigator.languages || [browserLanguage])];
+
+      const res = await fetch("/api/ppp/detect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ browserTimezone, browserLanguage, browserLanguages }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        // Only show PPP if tier != 0 after VPN check
+        if (data.tier !== 0) {
+          setPpp(data);
+        } else {
+          setPpp(null); // VPN detected or tier 0
+        }
+      }
+    } catch (e) {
+      console.error("PPP detection error:", e);
+    } finally {
+      setPppLoading(false);
+    }
+  }
+
+  /**
+   * Get PPP-adjusted price for a plan, accounting for billing cycle.
+   * Returns { displayPrice, originalPrice, discountCode, pppVariantId }
+   */
+  function getPPPPrice(plan) {
+    const isAnnual = billingCycle === "annual";
+    const basePrice = isAnnual ? (plan.priceAnnual || plan.price * 9) : plan.price;
+
+    if (!ppp || ppp.tier === 0) {
+      return { displayPrice: basePrice, originalPrice: null, discountCode: null, pppVariantId: null };
+    }
+
+    const planKey = plan.name.toLowerCase() === "professional" ? "professional" : plan.name.toLowerCase();
+    const priceSet = isAnnual ? ppp.pricesAnnual : ppp.prices;
+    const pppPrice = priceSet?.[planKey];
+
+    if (pppPrice === undefined || pppPrice === basePrice) {
+      return { displayPrice: basePrice, originalPrice: null, discountCode: null, pppVariantId: null };
+    }
+
+    // Surcharge tiers (+1, +2): use alternative variant ID
+    if (ppp.tier > 0 && ppp.surchargeVariants) {
+      const variants = isAnnual ? ppp.surchargeVariantsAnnual : ppp.surchargeVariants;
+      return {
+        displayPrice: pppPrice,
+        originalPrice: basePrice,
+        discountCode: null,
+        pppVariantId: variants?.[planKey] || null,
+      };
+    }
+
+    // Discount tiers (-1 to -4): same percentage discount code works on monthly or annual
+    return {
+      displayPrice: pppPrice,
+      originalPrice: basePrice,
+      discountCode: ppp.discountCode || null,
+      pppVariantId: null,
+    };
+  }
+
+  function handlePPPDismiss() {
+    setPpp(null);
+  }
+
   return (
     <section className="py-24 px-6" id="pricing">
       <div className="max-w-7xl mx-auto">
         {/* Section header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-8">
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
             Pricing
           </span>
@@ -22,6 +127,46 @@ const Pricing = () => {
             Upgrade for unlimited access and advanced features.
           </p>
         </div>
+
+        {/* Monthly / Annual Toggle */}
+        <div className="flex justify-center mb-8">
+          <div className="bg-base-200 p-1 rounded-xl inline-flex items-center gap-1">
+            <button
+              onClick={() => setBillingCycle("monthly")}
+              className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                billingCycle === "monthly"
+                  ? "bg-base-100 text-base-content shadow-sm"
+                  : "text-base-content/60 hover:text-base-content"
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setBillingCycle("annual")}
+              className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                billingCycle === "annual"
+                  ? "bg-base-100 text-base-content shadow-sm"
+                  : "text-base-content/60 hover:text-base-content"
+              }`}
+            >
+              Annual
+              <span className="ml-1.5 px-2 py-0.5 text-xs bg-success/20 text-success rounded-full font-semibold">
+                -25%
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* PPP Banner */}
+        {ppp && (
+          <PPPBanner
+            country={ppp.country}
+            countryName={ppp.countryName}
+            countryFlag={ppp.countryFlag}
+            discount={ppp.discount}
+            onDismiss={handlePPPDismiss}
+          />
+        )}
 
         {/* Show message if no plans */}
         {allPlans.length === 0 && (
@@ -40,6 +185,19 @@ const Pricing = () => {
             const planId = plan.priceId || plan.variantId;
             const isFreemium = planId === "free";
             const isFeatured = plan.isFeatured;
+
+            // Get PPP-adjusted price for current billing cycle
+            const { displayPrice, originalPrice, discountCode, pppVariantId } = getPPPPrice(plan);
+
+            // Determine the correct variant ID for checkout
+            const checkoutVariantId = billingCycle === "annual" && !isFreemium
+              ? (plan.variantIdAnnual || planId)
+              : planId;
+
+            // Anchor price for current billing cycle
+            const anchorPrice = billingCycle === "annual"
+              ? (plan.priceAnchorAnnual || (plan.priceAnchor ? plan.priceAnchor * 12 : null))
+              : plan.priceAnchor;
 
             return (
               <div
@@ -74,17 +232,39 @@ const Pricing = () => {
                   <p className="text-base-content/60 text-sm min-h-[40px]">{plan.description}</p>
                 </div>
 
-                {/* Price */}
+                {/* Price — PPP adjusted */}
                 <div className="mb-6">
                   <div className="flex items-baseline gap-2">
-                    {plan.priceAnchor && (
-                      <span className="text-lg text-base-content/40 line-through">
-                        ${plan.priceAnchor}
-                      </span>
+                    {/* Show original price as strikethrough if PPP active */}
+                    {originalPrice !== null ? (
+                      <>
+                        <span className="text-lg text-base-content/40 line-through">
+                          ${originalPrice}
+                        </span>
+                        <span className="text-4xl font-bold text-success">${displayPrice}</span>
+                      </>
+                    ) : (
+                      <>
+                        {anchorPrice && (
+                          <span className="text-lg text-base-content/40 line-through">
+                            ${anchorPrice}
+                          </span>
+                        )}
+                        <span className={`text-4xl font-bold ${pppLoading && !isFreemium ? "opacity-50" : ""}`}>
+                          ${displayPrice}
+                        </span>
+                      </>
                     )}
-                    <span className="text-4xl font-bold">${plan.price}</span>
-                    <span className="text-base-content/60 text-sm">/month</span>
+                    <span className="text-base-content/60 text-sm">
+                      {isFreemium ? "" : billingCycle === "annual" ? "/year" : "/month"}
+                    </span>
                   </div>
+                  {/* Monthly equivalent for annual pricing */}
+                  {billingCycle === "annual" && !isFreemium && displayPrice > 0 && (
+                    <div className="text-sm text-base-content/50 mt-1">
+                      ${(displayPrice / 12).toFixed(2)}/mo equivalent
+                    </div>
+                  )}
                   {plan.trialDays && (
                     <div className="flex items-center gap-2 mt-2">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-primary">
@@ -102,6 +282,14 @@ const Pricing = () => {
                       </svg>
                       <span className="text-xs text-success font-medium">
                         No card required
+                      </span>
+                    </div>
+                  )}
+                  {/* PPP savings badge */}
+                  {ppp && ppp.discount > 0 && !isFreemium && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-xs text-success font-medium">
+                        {ppp.countryFlag} {ppp.discount}% local discount
                       </span>
                     </div>
                   )}
@@ -148,7 +336,9 @@ const Pricing = () => {
                   </Link>
                 ) : (
                   <ButtonCheckout
-                    priceId={planId}
+                    priceId={checkoutVariantId}
+                    pppVariantId={pppVariantId}
+                    discountCode={discountCode}
                     mode="subscription"
                     className={`w-full mt-auto ${
                       isFeatured ? "btn-primary" : "btn-outline"

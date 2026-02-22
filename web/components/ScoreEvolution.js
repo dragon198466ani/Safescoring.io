@@ -207,7 +207,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
                             {record.safe_score?.toFixed(1)}%
                           </div>
                           <div className="text-base-content/60">
-                            {new Date(record.recorded_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                            {new Date(record.recorded_at).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}
                           </div>
                           {record.score_change && (
                             <div
@@ -235,7 +235,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
             <span>
               {chartData[0]?.recorded_at
                 ? new Date(chartData[0].recorded_at).toLocaleDateString(
-                    "fr-FR",
+                    "en-US",
                     { day: "numeric", month: "short" }
                   )
                 : ""}
@@ -244,7 +244,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
               {chartData[chartData.length - 1]?.recorded_at
                 ? new Date(
                     chartData[chartData.length - 1].recorded_at
-                  ).toLocaleDateString("fr-FR", {
+                  ).toLocaleDateString("en-US", {
                     day: "numeric",
                     month: "short",
                   })

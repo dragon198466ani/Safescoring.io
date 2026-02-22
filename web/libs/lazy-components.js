@@ -320,3 +320,19 @@ export const LazySAFEProtectionGuide = dynamic(
     ssr: false,
   }
 );
+
+// Community features
+export const LazyEvaluationVoting = dynamic(
+  () => import("@/components/EvaluationVoting"),
+  { loading: () => <LoadingCard />, ssr: false }
+);
+
+export const LazyCommunityLeaderboard = dynamic(
+  () => import("@/components/CommunityLeaderboard"),
+  { loading: () => <LoadingCard />, ssr: false }
+);
+
+export const LazyRewardsDashboard = dynamic(
+  () => import("@/components/RewardsDashboard"),
+  { loading: () => <LoadingCard />, ssr: false }
+);

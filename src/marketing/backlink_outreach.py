@@ -77,7 +77,7 @@ Hi {name},
 
 I noticed {site} covers crypto security topics - your recent piece on {topic} was excellent.
 
-I wanted to share something that might interest your readers: SafeScoring is a new platform that rates 500+ crypto products (wallets, exchanges, DeFi protocols) across 916 security norms.
+I wanted to share something that might interest your readers: SafeScoring is a new platform that rates 500+ crypto products (wallets, exchanges, DeFi protocols) across 2159 security norms.
 
 Some angles that might work:
 • "How Safe Is Your Crypto Wallet? New Tool Reveals Security Scores"
@@ -100,7 +100,7 @@ Hi {name},
 
 I came across {site}'s wallet comparison guides - really helpful content!
 
-I wanted to suggest a resource that could add value to your reviews: SafeScoring provides objective security scores for 500+ crypto products based on 916 security norms.
+I wanted to suggest a resource that could add value to your reviews: SafeScoring provides objective security scores for 500+ crypto products based on 2159 security norms.
 
 You could:
 • Embed our security badges in your reviews
@@ -123,7 +123,7 @@ Hi {name},
 
 Love what you're doing at {site}! Your posts on crypto topics are always insightful.
 
-I'm {sender_name} from SafeScoring - we analyze crypto security across 916 norms. I'd love to contribute a guest post on a topic like:
+I'm {sender_name} from SafeScoring - we analyze crypto security across 2159 norms. I'd love to contribute a guest post on a topic like:
 
 • "5 Security Red Flags to Check Before Using Any DeFi Protocol"
 • "Hardware Wallet Security: What the Specs Don't Tell You"

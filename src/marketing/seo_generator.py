@@ -33,28 +33,28 @@ class SEOGenerator:
         'is_safe': {
             'title': 'Is {product} Safe? Security Analysis {year}',
             'h1': 'Is {product} Safe to Use in {year}?',
-            'meta_desc': 'Independent security analysis of {product}. SafeScore: {score}/100. See detailed breakdown of {product} security across 916 criteria.',
+            'meta_desc': 'Independent security analysis of {product}. SafeScore: {score}/100. See detailed breakdown of {product} security across 2159 criteria.',
             'keywords': ['is {product} safe', '{product} security', '{product} review {year}', '{product} hack', '{product} safe to use'],
             'search_volume': 'high'
         },
         'review': {
             'title': '{product} Review {year}: Security Score & Analysis',
             'h1': '{product} Security Review {year}',
-            'meta_desc': 'Comprehensive {product} security review. Score: {score}/100 based on 916 security norms. Updated {month} {year}.',
+            'meta_desc': 'Comprehensive {product} security review. Score: {score}/100 based on 2159 security norms. Updated {month} {year}.',
             'keywords': ['{product} review', '{product} review {year}', '{product} security review', '{product} analysis'],
             'search_volume': 'high'
         },
         'vs': {
             'title': '{product_a} vs {product_b}: Security Comparison {year}',
             'h1': '{product_a} vs {product_b}: Which is Safer?',
-            'meta_desc': 'Compare {product_a} and {product_b} security scores. Side-by-side analysis based on 916 criteria. See which is safer.',
+            'meta_desc': 'Compare {product_a} and {product_b} security scores. Side-by-side analysis based on 2159 criteria. See which is safer.',
             'keywords': ['{product_a} vs {product_b}', '{product_b} vs {product_a}', '{product_a} or {product_b}', 'compare {product_a} {product_b}'],
             'search_volume': 'very_high'
         },
         'best': {
             'title': 'Best {category} {year}: Top {count} by Security Score',
             'h1': 'Best {category} in {year} (Ranked by Security)',
-            'meta_desc': 'Top {count} most secure {category} in {year}. Ranked by SafeScore based on 916 security criteria. Updated monthly.',
+            'meta_desc': 'Top {count} most secure {category} in {year}. Ranked by SafeScore based on 2159 security criteria. Updated monthly.',
             'keywords': ['best {category}', 'safest {category}', 'top {category} {year}', 'most secure {category}'],
             'search_volume': 'very_high'
         },
@@ -259,7 +259,7 @@ CLASSEMENT:
 
 STRUCTURE:
 1. Introduction (importance de la securite)
-2. Methodologie (916 criteres SafeScore)
+2. Methodologie (2159 criteres SafeScore)
 3. Top 10 avec analyse de chaque produit
 4. Tableau recapitulatif
 5. Comment choisir?
@@ -416,7 +416,7 @@ FORMAT: Markdown"""
 
 ## Conclusion
 
-Based on our analysis of 916 security criteria, {product} scores {score}/100.
+Based on our analysis of 2159 security criteria, {product} scores {score}/100.
 
 [View full security report on SafeScoring →](https://safescoring.io/products/{product.lower().replace(' ', '-')})
 """

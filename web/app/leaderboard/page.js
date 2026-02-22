@@ -7,7 +7,7 @@ export const revalidate = 3600; // Revalidate every hour
 
 export const metadata = {
   title: "Security Leaderboard - Top Rated Crypto Products | SafeScoring",
-  description: "See the most secure crypto wallets, exchanges, and DeFi protocols ranked by SafeScore. Updated monthly based on 916 security criteria.",
+  description: "See the most secure crypto wallets, exchanges, and DeFi protocols ranked by SafeScore. Updated monthly based on 2159 security criteria.",
 };
 
 async function getLeaderboardData() {
@@ -90,7 +90,7 @@ export default async function LeaderboardPage() {
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
               The most secure crypto products ranked by SafeScore.
-              Updated monthly based on 916 security criteria.
+              Updated monthly based on 2159 security criteria.
             </p>
           </div>
 
@@ -238,7 +238,7 @@ export default async function LeaderboardPage() {
           {/* Methodology note */}
           <div className="mt-12 text-center">
             <p className="text-sm text-base-content/50 mb-4">
-              Rankings based on SafeScore methodology: 916 security norms across Security, Adversity, Fidelity & Efficiency.
+              Rankings based on SafeScore methodology: 2159 security norms across Security, Adversity, Fidelity & Efficiency.
             </p>
             <Link href="/methodology" className="text-primary hover:underline text-sm">
               Learn about our methodology →

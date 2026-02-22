@@ -5,6 +5,11 @@ import config from "@/config";
 import Leaderboard from "@/components/Leaderboard";
 import TokenTeaser from "@/components/TokenTeaser";
 import SeniorityTracker from "@/components/SeniorityTracker";
+import StreakTracker from "@/components/StreakTracker";
+import AchievementBadges from "@/components/AchievementBadges";
+import SetupHealthScore from "@/components/SetupHealthScore";
+import DailyChallenge from "@/components/DailyChallenge";
+import QuestPanel from "@/components/QuestPanel";
 
 const getScoreColor = (score) => {
   if (score >= 80) return "text-green-400";
@@ -14,7 +19,7 @@ const getScoreColor = (score) => {
 
 async function getDashboardData(userId) {
   if (!supabaseAdmin) {
-    return { topProducts: [], stats: { products: 0, setups: 0, alerts: 0, incidents: 0 } };
+    return { topProducts: [], stats: { products: 0, setups: 0, alerts: 0, incidents: 0 }, firstSetupId: null };
   }
 
   // Fetch data in parallel for performance
@@ -24,6 +29,7 @@ async function getDashboardData(userId) {
     alertsResult,
     incidentsResult,
     topProductsResult,
+    firstSetupResult,
   ] = await Promise.all([
     // Total products count
     supabaseAdmin
@@ -69,6 +75,15 @@ async function getDashboardData(userId) {
       .not("note_finale", "is", null)
       .order("note_finale", { ascending: false })
       .limit(5),
+    // User's first setup (for health score widget)
+    userId
+      ? supabaseAdmin
+          .from("user_setups")
+          .select("id")
+          .eq("user_id", userId)
+          .order("created_at", { ascending: true })
+          .limit(1)
+      : Promise.resolve({ data: [] }),
   ]);
 
   // Format top products
@@ -89,6 +104,7 @@ async function getDashboardData(userId) {
       alerts: alertsResult.count || 0,
       incidents: incidentsResult.count || 0,
     },
+    firstSetupId: firstSetupResult.data?.[0]?.id || null,
   };
 }
 
@@ -96,7 +112,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Dashboard() {
   const session = await auth();
-  const { topProducts, stats } = await getDashboardData(session?.user?.id);
+  const { topProducts, stats, firstSetupId } = await getDashboardData(session?.user?.id);
 
   return (
     <div className="space-y-8">
@@ -117,6 +133,11 @@ export default async function Dashboard() {
           Explore Products
         </Link>
       </div>
+
+      {/* Setup Health Score */}
+      {firstSetupId && (
+        <SetupHealthScore setupId={firstSetupId} />
+      )}
 
       {/* Stats overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -193,17 +214,33 @@ export default async function Dashboard() {
         </div>
       </div>
 
+      {/* Daily Challenge & Streak Section */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <StreakTracker />
+        </div>
+        <div>
+          <DailyChallenge />
+        </div>
+      </div>
+
+      {/* Seniority */}
+      <SeniorityTracker />
+
       {/* Token & Reputation Section */}
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Token Teaser - takes 2 columns */}
         <div className="lg:col-span-2">
           <TokenTeaser />
         </div>
-        {/* Seniority Tracker */}
+        {/* Achievements */}
         <div>
-          <SeniorityTracker />
+          <AchievementBadges showAll={false} />
         </div>
       </div>
+
+      {/* Quest Paths */}
+      <QuestPanel />
 
       {/* Leaderboard */}
       <Leaderboard limit={5} />
