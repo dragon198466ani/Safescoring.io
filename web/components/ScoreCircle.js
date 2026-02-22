@@ -1,5 +1,24 @@
 "use client";
 
+export function getScoreColor(score) {
+  if (score >= 80) return "text-green-400";
+  if (score >= 60) return "text-amber-400";
+  return "text-red-400";
+}
+
+export function getScoreBg(score) {
+  if (score >= 80) return "bg-green-400/10";
+  if (score >= 60) return "bg-amber-400/10";
+  return "bg-red-400/10";
+}
+
+export const SAFEPillars = [
+  { code: "S", name: "Security", color: "#3b82f6" },
+  { code: "A", name: "Audit", color: "#8b5cf6" },
+  { code: "F", name: "Financial", color: "#f59e0b" },
+  { code: "E", name: "Experience", color: "#22c55e" },
+];
+
 export const MiniScoreCircle = ({ score, size = 72, strokeWidth = 6 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;

@@ -140,6 +140,16 @@ export function unauthorizedResponse(message = "Unauthorized") {
 }
 
 /**
+ * Check if the current session user is an admin
+ * @returns {Promise<boolean>}
+ */
+export async function isAdmin() {
+  const session = await auth();
+  if (!session?.user?.email) return false;
+  return isAdminEmail(session.user.email);
+}
+
+/**
  * Create forbidden response
  * @param {string} message
  * @returns {Response}

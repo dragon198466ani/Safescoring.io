@@ -6,10 +6,10 @@ export const dynamic = 'force-dynamic';
 
 // Lazy-init Supabase with service role for presence management
 function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
 }
 
 // Activity labels for display
@@ -30,6 +30,9 @@ const ACTIVITY_LABELS = {
 export async function GET(request) {
   try {
     const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
     const { searchParams } = new URL(request.url);
     const includeDetails = searchParams.get("details") === "true";
 
@@ -136,6 +139,9 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
     const body = await request.json();
     const {
       sessionId,
@@ -221,6 +227,9 @@ export async function POST(request) {
 export async function DELETE(request) {
   try {
     const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get("sessionId");
 

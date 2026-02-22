@@ -1,5 +1,19 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "public": true
+  "public": true,
+  "crons": [
+    {
+      "path": "/api/cron/retention",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/crypto-retention",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/compat-refresh",
+      "schedule": "0 6 * * *"
+    }
+  ]
 }

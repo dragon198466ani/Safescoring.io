@@ -54,10 +54,10 @@ const BLOCKCHAIN_APIS = {
 
 // Lazy Supabase initialization
 function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
 }
 
 // Fetch current crypto prices
@@ -201,6 +201,9 @@ export async function POST(request) {
   }
 
   const supabase = getSupabase();
+  if (!supabase) {
+    return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+  }
   const results = { btc: { synced: 0, errors: [] }, eth: { synced: 0, errors: [] } };
 
   try {

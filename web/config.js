@@ -223,6 +223,16 @@ const config = {
       { name: "Reviews", covers: "Subjective opinions", limitation: "Sponsored, not reproducible" },
     ],
   },
+  // Company information
+  company: {
+    name: "SafeScoring",
+    legalName: "SafeScoring SAS",
+    legalForm: "SAS",
+    state: "France",
+    country: "France",
+    founded: "2024",
+    email: "contact@safescoring.io",
+  },
   // Freemium configuration
   freemium: {
     monthlyLimit: 5,

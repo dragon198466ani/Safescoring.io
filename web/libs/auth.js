@@ -10,7 +10,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const isSupabaseConfigured = supabaseUrl && supabaseServiceKey;
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+const nextAuthResult = NextAuth({
   // Set any random key in .env.local
   secret: process.env.NEXTAUTH_SECRET,
 
@@ -106,3 +106,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/signin",
   },
 });
+
+export const { handlers, auth, signIn, signOut } = nextAuthResult;
+
+// Backward compatibility: some files import { authOptions } from "@/libs/auth"
+export const authOptions = {
+  providers: [],
+  session: { strategy: "jwt" },
+};
