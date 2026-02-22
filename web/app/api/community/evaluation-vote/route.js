@@ -3,11 +3,15 @@ import { auth } from "@/libs/auth";
 import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 
-// Supabase admin client (service role for RLS bypass)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+export const dynamic = "force-dynamic";
+
+// Lazy Supabase admin client (service role for RLS bypass)
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 /**
  * Mapping des résultats d'évaluation IA vers scores numériques
@@ -48,6 +52,11 @@ const VOTE_CONFIG = {
  */
 export async function GET(req) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
+
     const { searchParams } = new URL(req.url);
     const productId = searchParams.get("productId");
     const productSlug = searchParams.get("productSlug");
@@ -296,6 +305,11 @@ export async function GET(req) {
  */
 export async function POST(req) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
+
     const session = await auth();
 
     if (!session?.user?.id) {
