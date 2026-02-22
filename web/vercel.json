@@ -1,35 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "public": true,
-  "crons": [
-    {
-      "path": "/api/cron/retention",
-      "schedule": "0 8 * * *"
-    },
-    {
-      "path": "/api/cron/crypto-retention",
-      "schedule": "0 9 * * *"
-    },
-    {
-      "path": "/api/cron/compat-refresh",
-      "schedule": "0 6 * * *"
-    },
-    {
-      "path": "/api/cron/score-watch",
-      "schedule": "0 12 * * *"
-    },
-    {
-      "path": "/api/cron/weekly-digest",
-      "schedule": "0 10 * * 1"
-    },
-    {
-      "path": "/api/cron/monthly-report",
-      "schedule": "0 10 1 * *"
-    },
-    {
-      "path": "/api/cron/streak-reminder",
-      "schedule": "0 20 * * *"
-    }
-  ]
+  "public": true
 }
