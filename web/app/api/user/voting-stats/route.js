@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/libs/supabase/server';
+import { supabase } from '@/libs/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/libs/auth';
 import { applyUserRateLimit } from "@/libs/rate-limiters";
@@ -18,7 +18,6 @@ export async function GET(req) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    const supabase = createClient();
     const { data: stats } = await supabase
       .from('token_rewards')
       .select('*')
