@@ -20,10 +20,10 @@ import { requireAdmin } from "@/libs/admin-auth";
 
 // Lazy initialization to avoid build-time errors
 function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
 }
 
 // SECURITY: Safe error formatting
@@ -44,6 +44,9 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const action = searchParams.get("action");
     const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
 
     if (action === "stats") {
       // Get incident statistics
@@ -194,6 +197,9 @@ export async function POST(request) {
 
     const { action, source, incident_ids } = body;
     const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
 
     switch (action) {
       // Queue a scraping task

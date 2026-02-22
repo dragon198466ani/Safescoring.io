@@ -4,10 +4,10 @@ import { quickProtect } from "@/libs/api-protection";
 
 // Lazy initialization
 function getSupabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
 }
 
 // Cache donation stats for 5 minutes
@@ -25,6 +25,9 @@ export async function GET(request) {
 
   try {
     const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
 
     // Try to get stats from materialized view first
     let stats = null;

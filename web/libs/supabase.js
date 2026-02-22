@@ -19,4 +19,19 @@ export const isSupabaseConfigured = () => {
   return !!(supabaseUrl && supabaseAnonKey);
 };
 
+// Backward compatibility exports
+export { createClient };
+
+export function getSupabase() {
+  return supabase;
+}
+
+export function getSupabaseAdmin() {
+  return supabaseAdmin;
+}
+
+export function getSupabaseServer() {
+  return supabaseAdmin;
+}
+
 export default supabase;

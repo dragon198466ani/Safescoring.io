@@ -288,5 +288,22 @@ export async function quickProtect(request, limitType = "public") {
   return { blocked: false, clientId, remaining };
 }
 
+/**
+ * Sleep helper for rate-limited requests
+ * @param {number} ms - Milliseconds to wait
+ */
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Calculate delay for public (unauthenticated) API requests
+ * @param {number} requestCount - Number of requests made
+ * @returns {number} Delay in milliseconds
+ */
+export function calculatePublicDelay(requestCount) {
+  return Math.min(requestCount * 100, 5000);
+}
+
 // Re-export getClientId for use in API routes
 export { getClientId } from "./rate-limit";

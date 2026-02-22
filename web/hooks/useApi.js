@@ -124,4 +124,17 @@ export function useApi(url, options = {}) {
   };
 }
 
+/**
+ * Hook for fetching user setups
+ * @param {Object} options - Options passed to useApi
+ * @returns {Object} { setups, ...rest } where setups is the data array
+ */
+export function useUserSetups(options = {}) {
+  const result = useApi("/api/user-setups", options);
+  return {
+    ...result,
+    setups: result.data?.setups || result.data || [],
+  };
+}
+
 export default useApi;

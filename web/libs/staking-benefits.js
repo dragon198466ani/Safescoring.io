@@ -259,6 +259,28 @@ export function getStakingSavings(totalStaked) {
   };
 }
 
+/**
+ * Calculate weekly reward based on staked amount and tier
+ * @param {number} totalStaked - Total $SAFE staked
+ * @returns {number} Weekly reward in $SAFE tokens
+ */
+export function calculateWeeklyReward(totalStaked) {
+  const tier = getStakingTier(totalStaked);
+  if (!tier) return 0;
+
+  // Base reward rates per tier (weekly % of staked amount)
+  const rewardRates = {
+    bronze: 0.001,    // 0.1% weekly
+    silver: 0.0015,   // 0.15% weekly
+    gold: 0.002,      // 0.2% weekly
+    platinum: 0.0025, // 0.25% weekly
+    diamond: 0.003,   // 0.3% weekly
+  };
+
+  const rate = rewardRates[tier.key] || 0;
+  return Math.floor(totalStaked * rate);
+}
+
 export default {
   STAKING_TIERS,
   TIER_ORDER,
@@ -268,4 +290,5 @@ export default {
   getProgressToNextTier,
   getEquivalentPlan,
   getStakingSavings,
+  calculateWeeklyReward,
 };
