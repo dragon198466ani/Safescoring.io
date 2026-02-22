@@ -1,9 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-const _sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const _sbKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const supabase = _sbUrl && _sbKey ? createClient(_sbUrl, _sbKey) : null;
+export const dynamic = "force-dynamic";
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 const RISK_COLORS = {
   very_low: "#22c55e",
@@ -16,6 +21,11 @@ const RISK_COLORS = {
 
 export async function GET(request) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ success: false, error: "Database not configured" }, { status: 503 });
+    }
+
     const { searchParams } = new URL(request.url);
     const countryCode = searchParams.get("country");
     const includeIncidents = searchParams.get("incidents") !== "false";

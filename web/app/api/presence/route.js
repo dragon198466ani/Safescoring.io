@@ -2,10 +2,15 @@ import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 
-// Initialize Supabase with service role for presence management
-const _sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const _sbKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const supabase = _sbUrl && _sbKey ? createClient(_sbUrl, _sbKey) : null;
+export const dynamic = "force-dynamic";
+
+// Lazy Supabase client initialization (avoids build-time crash when env vars are missing)
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 // Activity labels for display
 const ACTIVITY_LABELS = {
@@ -24,6 +29,11 @@ const ACTIVITY_LABELS = {
 // GET: Fetch active users for map display
 export async function GET(request) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ success: false, error: "Database not configured" }, { status: 503 });
+    }
+
     const { searchParams } = new URL(request.url);
     const includeDetails = searchParams.get("details") === "true";
 
@@ -129,6 +139,11 @@ export async function GET(request) {
 // POST: Update user presence (heartbeat)
 export async function POST(request) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ success: false, error: "Database not configured" }, { status: 503 });
+    }
+
     const body = await request.json();
     const {
       sessionId,
@@ -213,6 +228,11 @@ export async function POST(request) {
 // DELETE: Remove user presence (on disconnect)
 export async function DELETE(request) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json({ success: false, error: "Database not configured" }, { status: 503 });
+    }
+
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get("sessionId");
 
