@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -96,8 +96,14 @@ export async function GET(request) {
   try {
     const supabase = getSupabase();
     if (!supabase) {
-      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+      return NextResponse.json({
+        success: true,
+        countries: getFallbackData(),
+        stats: { totalCountries: 17, veryFriendly: 5, friendly: 6, neutral: 2, restrictive: 3, hostile: 2, veryHostile: 5 },
+        stanceColors: STANCE_COLORS,
+      });
     }
+
     // Fetch country crypto profiles and legislation stats in parallel
     const [profilesResult, statsResult] = await Promise.all([
       supabase

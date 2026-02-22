@@ -279,6 +279,31 @@ export const LazyNewsletterPopup = dynamic(
   }
 );
 
+// Community voting & rewards components
+export const LazyEvaluationVoting = dynamic(
+  () => import("@/components/EvaluationVoting"),
+  {
+    loading: () => <LoadingSkeleton height="300px" />,
+    ssr: false,
+  }
+);
+
+export const LazyCommunityLeaderboard = dynamic(
+  () => import("@/components/CommunityLeaderboard"),
+  {
+    loading: () => <LoadingSkeleton height="250px" />,
+    ssr: false,
+  }
+);
+
+export const LazyRewardsDashboard = dynamic(
+  () => import("@/components/RewardsDashboard"),
+  {
+    loading: () => <LoadingSkeleton height="200px" />,
+    ssr: false,
+  }
+);
+
 // Strategic Analysis - AI-generated per-pillar narratives
 export const LazySAFEStrategicAnalysis = dynamic(
   () => import("@/components/SAFEStrategicAnalysis"),

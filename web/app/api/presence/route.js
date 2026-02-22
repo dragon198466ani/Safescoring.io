@@ -2,9 +2,9 @@ import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-// Lazy-init Supabase with service role for presence management
+// Lazy Supabase client initialization (avoids build-time crash when env vars are missing)
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -31,8 +31,9 @@ export async function GET(request) {
   try {
     const supabase = getSupabase();
     if (!supabase) {
-      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+      return NextResponse.json({ success: false, error: "Database not configured" }, { status: 503 });
     }
+
     const { searchParams } = new URL(request.url);
     const includeDetails = searchParams.get("details") === "true";
 
@@ -140,8 +141,9 @@ export async function POST(request) {
   try {
     const supabase = getSupabase();
     if (!supabase) {
-      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+      return NextResponse.json({ success: false, error: "Database not configured" }, { status: 503 });
     }
+
     const body = await request.json();
     const {
       sessionId,
@@ -228,8 +230,9 @@ export async function DELETE(request) {
   try {
     const supabase = getSupabase();
     if (!supabase) {
-      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+      return NextResponse.json({ success: false, error: "Database not configured" }, { status: 503 });
     }
+
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get("sessionId");
 

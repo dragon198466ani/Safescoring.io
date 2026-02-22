@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -23,8 +23,9 @@ export async function GET(request) {
   try {
     const supabase = getSupabase();
     if (!supabase) {
-      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+      return NextResponse.json({ success: false, error: "Database not configured" }, { status: 503 });
     }
+
     const { searchParams } = new URL(request.url);
     const countryCode = searchParams.get("country");
     const includeIncidents = searchParams.get("incidents") !== "false";

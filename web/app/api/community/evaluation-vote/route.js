@@ -3,9 +3,9 @@ import { auth } from "@/libs/auth";
 import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-// Lazy-init Supabase admin client (service role for RLS bypass)
+// Lazy Supabase admin client (service role for RLS bypass)
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -56,6 +56,7 @@ export async function GET(req) {
     if (!supabase) {
       return NextResponse.json({ error: "Database not configured" }, { status: 503 });
     }
+
     const { searchParams } = new URL(req.url);
     const productId = searchParams.get("productId");
     const productSlug = searchParams.get("productSlug");
@@ -308,6 +309,7 @@ export async function POST(req) {
     if (!supabase) {
       return NextResponse.json({ error: "Database not configured" }, { status: 503 });
     }
+
     const session = await auth();
 
     if (!session?.user?.id) {

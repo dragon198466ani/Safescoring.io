@@ -3,7 +3,7 @@ import { auth } from "@/libs/auth";
 import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -29,6 +29,7 @@ export async function POST(req) {
     if (!supabase) {
       return NextResponse.json({ error: "Database not configured" }, { status: 503 });
     }
+
     const session = await auth();
 
     if (!session?.user?.id) {

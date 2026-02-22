@@ -1,3 +1,7 @@
+/**
+ * Server-side Supabase client factory
+ * Used in API routes: import { createClient } from '@/libs/supabase/server'
+ */
 import { createClient as supabaseCreateClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -5,23 +9,18 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 /**
- * Creates a server-side Supabase client.
+ * Create a server-side Supabase client.
  * Uses service role key if available, otherwise falls back to anon key.
+ * Returns null if Supabase is not configured (safe for build-time).
  */
 export function createClient() {
-  const key = supabaseServiceKey || supabaseAnonKey;
-  if (!supabaseUrl || !key) {
-    // Return a mock client that returns empty results when Supabase is not configured
-    return {
-      from: () => ({
-        select: () => ({ data: [], error: null }),
-        insert: () => ({ data: null, error: null }),
-        update: () => ({ data: null, error: null }),
-        delete: () => ({ data: null, error: null }),
-        upsert: () => ({ data: null, error: null }),
-      }),
-      rpc: () => ({ data: null, error: null }),
-    };
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !key) {
+    console.warn("[Supabase] Not configured — missing URL or key.");
+    return null;
   }
-  return supabaseCreateClient(supabaseUrl, key);
+
+  return supabaseCreateClient(url, key);
 }

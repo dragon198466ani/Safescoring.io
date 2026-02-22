@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -30,6 +30,7 @@ export async function GET(request) {
     if (!supabase) {
       return NextResponse.json({ error: "Database not configured" }, { status: 503 });
     }
+
     // Build query for setups that opted into sharing
     let query = supabase
       .from("setups")
@@ -117,6 +118,7 @@ export async function POST(request) {
     if (!supabase) {
       return NextResponse.json({ error: "Database not configured" }, { status: 503 });
     }
+
     // Update setup's anonymous sharing preference
     const { error } = await supabase
       .from("setups")
