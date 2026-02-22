@@ -6,12 +6,7 @@ import ShareButtons from "@/components/ShareButtons";
 import { useTranslation } from "@/libs/i18n/LanguageProvider";
 import config from "@/config";
 
-// Score color helper
-const getScoreColor = (score) => {
-  if (score >= 80) return "text-green-400";
-  if (score >= 60) return "text-amber-400";
-  return "text-red-400";
-};
+import { getScoreColor } from "@/libs/score-utils";
 
 const getScoreBg = (score) => {
   if (score >= 80) return "bg-green-500/20 border-green-500/30";

@@ -2,12 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-
-const getScoreColor = (score) => {
-  if (score >= 80) return "text-green-400";
-  if (score >= 60) return "text-amber-400";
-  return "text-red-400";
-};
+import { getScoreColor } from "@/libs/score-utils";
 
 const ScoreCircle = ({ score, size = 48, strokeWidth = 4 }) => {
   const validScore = score ?? 0;

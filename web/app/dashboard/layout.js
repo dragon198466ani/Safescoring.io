@@ -1,7 +1,15 @@
 import { auth } from "@/libs/auth";
 import Link from "next/link";
 import ButtonAccount from "@/components/ButtonAccount";
+import GlobalSearch from "@/components/GlobalSearch";
 import UsageBanner from "@/components/UsageBanner";
+
+const dashboardLinks = [
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/dashboard/setups", label: "Setups" },
+  { href: "/products", label: "Products" },
+  { href: "/dashboard/favorites", label: "Favorites" },
+];
 
 // Dashboard layout with sidebar - Freemium accessible
 export default async function LayoutPrivate({ children }) {
@@ -25,34 +33,20 @@ export default async function LayoutPrivate({ children }) {
               </div>
               <span className="font-bold text-lg">SafeScoring</span>
             </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link
-                href="/dashboard"
-                className="text-sm font-medium text-base-content/70 hover:text-base-content transition-colors"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/dashboard/setups"
-                className="text-sm font-medium text-base-content/70 hover:text-base-content transition-colors"
-              >
-                Setups
-              </Link>
-              <Link
-                href="/products"
-                className="text-sm font-medium text-base-content/70 hover:text-base-content transition-colors"
-              >
-                Products
-              </Link>
-              <Link
-                href="/dashboard/favorites"
-                className="text-sm font-medium text-base-content/70 hover:text-base-content transition-colors"
-              >
-                Favorites
-              </Link>
+            <nav className="hidden md:flex items-center gap-6" aria-label="Dashboard navigation">
+              {dashboardLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-medium text-base-content/70 hover:text-base-content transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <GlobalSearch />
             {session ? (
               <ButtonAccount />
             ) : (
@@ -65,7 +59,7 @@ export default async function LayoutPrivate({ children }) {
       </header>
 
       {/* Main content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main id="main-content" className="max-w-7xl mx-auto px-6 py-8">
         <UsageBanner />
         {children}
       </main>

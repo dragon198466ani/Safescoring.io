@@ -13,13 +13,7 @@ import { useTranslation } from "@/libs/i18n/LanguageProvider";
  * RÈGLE #3: Upsell vers rapports payants
  */
 
-// Score color helper
-const getScoreColor = (score) => {
-  if (score >= 80) return "text-green-500";
-  if (score >= 60) return "text-amber-500";
-  if (score >= 40) return "text-orange-500";
-  return "text-red-500";
-};
+import { getScoreColor } from "@/libs/score-utils";
 
 const getScoreBg = (score) => {
   if (score >= 80) return "bg-green-500/10 border-green-500/30";

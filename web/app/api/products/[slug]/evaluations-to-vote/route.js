@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/libs/supabase/server';
+import { supabase } from '@/libs/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/libs/auth';
 
@@ -14,7 +14,6 @@ export async function GET(req, { params }) {
     const limit = parseInt(searchParams.get('limit') || '20');
     const pillar = searchParams.get('pillar'); // Optional filter
 
-    const supabase = createClient();
     const session = await getServerSession(authOptions);
 
     // Get product

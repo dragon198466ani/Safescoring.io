@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/libs/supabase/server';
+import { supabase } from '@/libs/supabase';
 
 /**
  * GET /api/products/[slug]/community-stats
@@ -8,7 +8,6 @@ import { createClient } from '@/libs/supabase/server';
 export async function GET(req, { params }) {
   try {
     const { slug } = params;
-    const supabase = createClient();
 
     // Get product
     const { data: product } = await supabase
