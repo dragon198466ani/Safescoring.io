@@ -249,6 +249,7 @@ CLAUDE_PROJECT_CONTEXT.md
 
 # One-off scripts (local use only)
 _*.py
+!__init__.py
 _*.js
 _*.py.template
 
