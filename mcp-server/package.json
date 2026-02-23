@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "node --test test/*.test.mjs 2>/dev/null || echo 'No tests yet'",
-    "prepublishOnly": "node -e \"require('./index.js')\" || true",
+    "prepublishOnly": "node -e \"import('./index.js')\" || true",
     "version": "echo $npm_package_version"
   },
   "files": [

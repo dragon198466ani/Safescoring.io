@@ -3,81 +3,24 @@
   "framework": "nextjs",
   "public": true,
   "crons": [
-    {
-      "path": "/api/cron/alert-checker",
-      "schedule": "*/15 * * * *"
-    },
-    {
-      "path": "/api/cron/watchlist-alerts",
-      "schedule": "*/30 * * * *"
-    },
-    {
-      "path": "/api/cron/check-incidents",
-      "schedule": "0 */2 * * *"
-    },
-    {
-      "path": "/api/cron/sync-donations",
-      "schedule": "0 */6 * * *"
-    },
-    {
-      "path": "/api/cron/recalculate-scores",
-      "schedule": "0 5 * * *"
-    },
-    {
-      "path": "/api/cron/staking-rewards",
-      "schedule": "0 6 * * *"
-    },
-    {
-      "path": "/api/cron/retention",
-      "schedule": "0 7 * * *"
-    },
-    {
-      "path": "/api/cron/newsletter",
-      "schedule": "0 8 * * 1"
-    },
-    {
-      "path": "/api/cron/newsletter-personalized",
-      "schedule": "0 8 * * 3"
-    },
-    {
-      "path": "/api/cron/reengagement",
-      "schedule": "0 9 * * *"
-    },
-    {
-      "path": "/api/cron/crypto-retention",
-      "schedule": "0 10 * * *"
-    },
-    {
-      "path": "/api/cron/process-payouts",
-      "schedule": "0 11 * * *"
-    },
-    {
-      "path": "/api/cron/process-certifications",
-      "schedule": "0 12 * * *"
-    },
-    {
-      "path": "/api/cron/enterprise-invites",
-      "schedule": "0 13 * * *"
-    },
-    {
-      "path": "/api/cron/verify-predictions",
-      "schedule": "0 14 * * *"
-    },
-    {
-      "path": "/api/cron/security-cleanup",
-      "schedule": "0 3 * * *"
-    },
-    {
-      "path": "/api/cron/compat-refresh",
-      "schedule": "0 3 * * 0"
-    },
-    {
-      "path": "/api/cron/certification-reevaluate",
-      "schedule": "0 4 * * 0"
-    },
-    {
-      "path": "/api/cron/rgpd-cleanup",
-      "schedule": "0 2 1 * *"
-    }
+    { "path": "/api/cron/alert-checker", "schedule": "0 0 * * *" },
+    { "path": "/api/cron/watchlist-alerts", "schedule": "0 1 * * *" },
+    { "path": "/api/cron/check-incidents", "schedule": "0 2 * * *" },
+    { "path": "/api/cron/security-cleanup", "schedule": "0 3 * * *" },
+    { "path": "/api/cron/sync-donations", "schedule": "0 4 * * *" },
+    { "path": "/api/cron/recalculate-scores", "schedule": "0 5 * * *" },
+    { "path": "/api/cron/staking-rewards", "schedule": "0 6 * * *" },
+    { "path": "/api/cron/retention", "schedule": "0 7 * * *" },
+    { "path": "/api/cron/newsletter", "schedule": "0 8 * * 1" },
+    { "path": "/api/cron/newsletter-personalized", "schedule": "0 8 * * 3" },
+    { "path": "/api/cron/reengagement", "schedule": "0 9 * * *" },
+    { "path": "/api/cron/crypto-retention", "schedule": "0 10 * * *" },
+    { "path": "/api/cron/process-payouts", "schedule": "0 11 * * *" },
+    { "path": "/api/cron/process-certifications", "schedule": "0 12 * * *" },
+    { "path": "/api/cron/enterprise-invites", "schedule": "0 13 * * *" },
+    { "path": "/api/cron/verify-predictions", "schedule": "0 14 * * *" },
+    { "path": "/api/cron/compat-refresh", "schedule": "0 3 * * 0" },
+    { "path": "/api/cron/certification-reevaluate", "schedule": "0 4 * * 0" },
+    { "path": "/api/cron/rgpd-cleanup", "schedule": "0 2 1 * *" }
   ]
 }

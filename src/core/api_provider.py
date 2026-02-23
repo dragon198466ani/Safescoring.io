@@ -1142,29 +1142,51 @@ class AIProvider:
             if not use_stdin:
                 cmd.append(prompt)
 
-            result = subprocess.run(
+            # Use longer timeout for opus (expert) model — it's slower
+            effective_timeout = CLAUDE_CODE_TIMEOUT
+            if model in ('opus', 'claude-3-opus', 'claude-3-5-opus'):
+                effective_timeout = max(CLAUDE_CODE_TIMEOUT, 600)  # 10 min minimum for opus
+
+            # Use Popen for proper cleanup on timeout (subprocess.run doesn't kill children on Windows)
+            proc = subprocess.Popen(
                 cmd,
-                input=prompt if use_stdin else None,
-                capture_output=True,
+                stdin=subprocess.PIPE if use_stdin else None,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 text=True,
-                timeout=CLAUDE_CODE_TIMEOUT,
                 encoding='utf-8'
             )
 
-            if result.returncode == 0 and result.stdout.strip():
-                response = result.stdout.strip()
+            try:
+                stdout, stderr = proc.communicate(
+                    input=prompt if use_stdin else None,
+                    timeout=effective_timeout
+                )
+            except subprocess.TimeoutExpired:
+                # Kill the process tree properly
+                proc.kill()
+                try:
+                    proc.communicate(timeout=10)  # Reap the process
+                except:
+                    pass
+                timeout_min = effective_timeout // 60
+                print(f"      [CLAUDE_CODE] Timeout ({timeout_min}min) - process killed")
+                return None
+
+            if proc.returncode == 0 and stdout.strip():
+                response = stdout.strip()
                 print(f"      [CLAUDE_CODE] {model} OK ({len(response)} chars)")
                 return response
             else:
-                stderr = result.stderr[:200] if result.stderr else 'no output'
-                print(f"      [CLAUDE_CODE] Exit {result.returncode}: {stderr}")
+                stderr_msg = stderr[:200] if stderr else 'no output'
+                print(f"      [CLAUDE_CODE] Exit {proc.returncode}: {stderr_msg}")
                 # Check for auth errors
-                if result.stderr and any(kw in result.stderr.lower() for kw in ['auth', 'login', 'subscription', 'expired']):
+                if stderr and any(kw in stderr.lower() for kw in ['auth', 'login', 'subscription', 'expired']):
                     print("      [CLAUDE_CODE] Auth error - DISABLED")
                     self.disabled_apis.add('ClaudeCode')
 
         except subprocess.TimeoutExpired:
-            print("      [CLAUDE_CODE] Timeout (5min)")
+            print("      [CLAUDE_CODE] Timeout")
         except FileNotFoundError:
             print("      [CLAUDE_CODE] CLI not found - install: npm install -g @anthropic-ai/claude-code")
             self.disabled_apis.add('ClaudeCode')
