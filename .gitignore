@@ -238,7 +238,7 @@ web/build_*.txt
 web/test_*.txt
 web/ci_*.txt
 web/npm_*.txt
-web/C\357\200\272*
+web/C*UsersalexaDesktop*
 test-output.txt
 ci_logs*
 
@@ -249,11 +249,16 @@ CLAUDE_PROJECT_CONTEXT.md
 # One-off scripts (local use only)
 _*.py
 _*.js
+_*.py.template
+
+# Unicode-mangled temp files (Claude Code path artifacts)
+C*tempnodes_test.json
 
 # Data exports and batch files (too large / ephemeral)
 data/*.json
 data/*.sql
 data/*.txt
+data/*.md
 data/eval_*
 data/sql_batches/
 !data/README.md
