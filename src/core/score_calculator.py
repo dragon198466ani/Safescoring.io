@@ -329,6 +329,15 @@ class ScoreCalculator:
             )
             print(f"[HISTORY] {history_result['success']} snapshots recorded")
 
+        # Generate static snapshot for frontend fallback
+        if success_count > 0:
+            try:
+                from .snapshot_generator import generate_snapshot
+                print("\n[SNAPSHOT] Generating static fallback snapshot...")
+                generate_snapshot()
+            except Exception as e:
+                print(f"[SNAPSHOT] Warning: Could not generate snapshot: {e}")
+
         self.print_summary()
 
     def print_summary(self):
