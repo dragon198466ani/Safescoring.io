@@ -80,6 +80,10 @@ export async function GET(request, { params }) {
       days,
       data,
       count: data.length,
+    }, {
+      headers: {
+        "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=7200",
+      },
     });
   } catch (error) {
     console.error("[API] Chart data error:", error);

@@ -27,8 +27,9 @@ import {
 } from "@/libs/lazy-components";
 
 // Enable ISR caching for better SEO and Google crawl efficiency
-// Product scores don't change frequently, so 1 hour cache is reasonable
-export const revalidate = 3600; // 1 hour
+// Product scores change at most once per day during batch evaluation runs
+// 24h cache reduces Supabase API calls by ~97% (stays within free tier)
+export const revalidate = 86400; // 24 hours
 
 const getLangFromHeaders = () => {
   const acceptLanguage = headers().get("accept-language") || "";

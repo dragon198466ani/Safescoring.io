@@ -27,7 +27,7 @@ export async function GET(request, { params }) {
   const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET",
-    "Cache-Control": "public, max-age=60, s-maxage=60",
+    "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=7200",
   };
 
   if (!isSupabaseConfigured()) {

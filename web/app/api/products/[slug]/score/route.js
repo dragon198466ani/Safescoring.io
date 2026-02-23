@@ -20,7 +20,7 @@ export async function GET(request, { params }) {
   const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET",
-    "Cache-Control": "public, max-age=3600, s-maxage=3600",
+    "Cache-Control": "public, max-age=86400, s-maxage=86400, stale-while-revalidate=172800",
   };
 
   try {

@@ -13,6 +13,7 @@ WORKFLOW: Applicability (TRUE/FALSE) -> Smart Evaluator (YES/NO/N/A/TBD) -> Scor
 
 import requests
 import time
+import random
 from datetime import datetime
 
 # Import from common modules
@@ -132,6 +133,12 @@ RELIABILITY EVALUATION:
    - Active customer support (chat, email, docs) = YES
    - Warranty for hardware = YES if specified
    - Company backing / funding = relevant for longevity norms
+
+YESp GUIDELINES FOR PILLAR F:
+- Regulatory compliance inherent to a specific license type (e.g. EU MiCA = KYC/AML) = YESp
+- Open-source code on a public repository = YESp for code transparency norms
+- Licensed/regulated entity = YESp for basic compliance norms required by the license
+- Protocol-level auditability (e.g. on-chain transactions are publicly verifiable) = YESp
 """
 
 # PILIER E - EFFICIENCY (Usabilite) - PROMPT STANDARD
@@ -160,6 +167,13 @@ USABILITY EVALUATION:
    - Good onboarding / tutorials = YES
    - Customer support channels = YES
    - Mobile-friendly = YESp for mobile apps
+
+YESp GUIDELINES FOR PILLAR E:
+- Mobile app inherently supports touch input, push notifications, biometric auth = YESp
+- Web-based product inherently supports browser access, responsive design = YESp
+- EVM product inherently supports ETH, ERC-20, ERC-721, common EIP standards = YESp
+- Bitcoin product inherently supports BTC, Lightning (if built on Lightning) = YESp
+- Multi-chain wallet inherently supports cross-chain transfers between its chains = YESp
 """
 
 # Mapping pilier -> prompt
@@ -213,10 +227,10 @@ class SmartEvaluator:
         self.product_types = {t['id']: t for t in types}
         print(f"   {len(self.product_types)} product types")
 
-        # Norms (paginated - loads ALL 2159+ norms with official summaries)
+        # Norms (paginated - loads ALL 2159+ norms with official summaries + full text)
         self.norms = fetch_all(
             'norms',
-            select='id,code,pillar,title,description,is_essential,consumer',
+            select='id,code,pillar,title,description,full,is_essential,consumer',
             order='pillar.asc,code.asc'
         )
         self.norms_by_id = {n['id']: n for n in self.norms}
@@ -419,14 +433,23 @@ class SmartEvaluator:
         norms_lines = []
         for n in norms_batch:
             line = f"- {n['code']}: {n['title']}"
+            if n.get('is_essential'):
+                line += " [ESSENTIAL]"
             if n.get('description'):
                 line += f" - {n['description']}"
+            # Include full norm text when it provides more detail than the description
+            full_text = n.get('full', '')
+            if full_text and isinstance(full_text, str) and len(full_text) > len(n.get('description', '') or ''):
+                full_short = full_text[:300].strip()
+                if len(full_text) > 300:
+                    full_short += "..."
+                line += f"\n  [DETAIL]: {full_short}"
             # Include official documentation summary for better evaluation accuracy
             official_summary = self.norms_by_id.get(n['id'], {}).get('official_doc_summary', '')
             if official_summary:
-                # Truncate to keep prompt manageable (max 200 chars per norm)
-                summary_short = official_summary[:200].strip()
-                if len(official_summary) > 200:
+                # Truncate to keep prompt manageable (max 500 chars per norm for sufficient context)
+                summary_short = official_summary[:500].strip()
+                if len(official_summary) > 500:
                     summary_short += "..."
                 line += f"\n  [OFFICIAL]: {summary_short}"
             norms_lines.append(line)
@@ -478,6 +501,7 @@ EVALUATION RULES:
 5. Use YESp for features inherent to the product's protocol/technology stack
 6. Use TBD sparingly — only when truly impossible to determine
 7. Provide a BRIEF justification for each answer
+8. Norms marked [ESSENTIAL] are critical safety requirements — be especially thorough and evidence-based
 
 IMPORTANT NUANCES:
 - Industry-standard practices for this product category count (e.g. all regulated exchanges have KYC)
@@ -533,19 +557,30 @@ Evaluate:"""
         no_critical = len(norms_to_review) - tbd_count - no_essential
         print(f"   [PASS 2] Expert review: {len(norms_to_review)} norms ({tbd_count} TBD, {no_essential} NO-essential, {no_critical} NO-critical)")
 
-        # Process in batches of 50 (same as Pass 1)
+        # Group norms by pillar for pillar-specific prompts (consistency with Pass 1)
+        norms_by_pillar = {}
+        for n in norms_to_review:
+            pillar = n.get('pillar', 'S')
+            norms_by_pillar.setdefault(pillar, []).append(n)
+
         total_corrections = 0
-        for i in range(0, len(norms_to_review), EVAL_BATCH_SIZE):
-            batch = norms_to_review[i:i+EVAL_BATCH_SIZE]
+        website_section = f"\nPRODUCT DOCUMENTATION:\n{website_content[:5000]}\n" if website_content else ""
 
-            norms_text = "\n".join([
-                f"- {n['code']}: {n['title']} - {n.get('description', '')} | Current: {evaluations.get(n['code'], ('?', ''))[0]}"
-                for n in batch
-            ])
+        for pillar, pillar_norms in norms_by_pillar.items():
+            # Use the SAME pillar-specific prompt as Pass 1 for consistency
+            system_prompt = PILLAR_PROMPTS.get(pillar, SYSTEM_PROMPT_BASE)
 
-            website_section = f"\nDOCUMENTATION:\n{website_content[:5000]}\n" if website_content else ""
+            for i in range(0, len(pillar_norms), EVAL_BATCH_SIZE):
+                batch = pillar_norms[i:i+EVAL_BATCH_SIZE]
 
-            review_prompt = f"""You are a SENIOR CRYPTO SECURITY AUDITOR performing expert review.
+                norms_text = "\n".join([
+                    f"- {n['code']}: {n['title']}{' [ESSENTIAL]' if n.get('is_essential') else ''} - {n.get('description', '')} | Current: {evaluations.get(n['code'], ('?', ''))[0]}"
+                    for n in batch
+                ])
+
+                review_prompt = f"""{system_prompt}
+
+You are performing EXPERT REVIEW (Pass 2) of previous evaluations.
 
 TASK: Review and validate/correct these security evaluations.
 Some were marked NO but may be false negatives. Some are TBD and need resolution.
@@ -553,46 +588,50 @@ Some were marked NO but may be false negatives. Some are TBD and need resolution
 PRODUCT: {product_info['name']} ({product_info['type']})
 WEBSITE: {product_info['url']}
 {website_section}
+PILLAR: {pillar}
+
 EVALUATIONS TO REVIEW:
 {norms_text}
 
-INSTRUCTIONS:
-1. TBD results MUST be resolved to YES, YESp, or NO
+REVIEW INSTRUCTIONS:
+1. TBD results MUST be resolved to YES, YESp, or NO — TBD is not acceptable
 2. For NO results on essential/critical norms, verify this is correct:
    - Could this be inferred from the product's technology? (-> YESp)
    - Could this be an industry standard for this product category? (-> YES)
    - Is there truly zero indication? (-> confirm NO)
-3. Be FAIR AND BALANCED — same standards as initial evaluation
-4. Provide clear justification for any changes
+3. Apply the SAME evaluation standards as the initial evaluation above
+4. N/A is FORBIDDEN — these norms were pre-filtered as applicable
+5. Norms marked [ESSENTIAL] require especially thorough evidence-based review
+6. Provide clear justification for any changes
 
-FORMAT:
+FORMAT (one line per norm):
 CODE: RESULT | Detailed justification
 
 Review:"""
 
-            # Single expert call for the batch
-            result = self.ai_provider.call_expert(review_prompt)
+                # Single expert call for the batch
+                result = self.ai_provider.call_expert(review_prompt)
 
-            if not result:
-                continue
+                if not result:
+                    continue
 
-            # Parse and merge corrections
-            corrections = parse_evaluation_response(result)
+                # Parse and merge corrections
+                corrections = parse_evaluation_response(result)
 
-            batch_corrections = 0
-            for code, new_eval in corrections.items():
-                if code in evaluations:
-                    old_result = evaluations[code][0] if isinstance(evaluations[code], tuple) else evaluations[code]
-                    new_result = new_eval[0] if isinstance(new_eval, tuple) else new_eval
-                    if old_result != new_result:
-                        batch_corrections += 1
-                    evaluations[code] = new_eval
+                batch_corrections = 0
+                for code, new_eval in corrections.items():
+                    if code in evaluations:
+                        old_result = evaluations[code][0] if isinstance(evaluations[code], tuple) else evaluations[code]
+                        new_result = new_eval[0] if isinstance(new_eval, tuple) else new_eval
+                        if old_result != new_result:
+                            batch_corrections += 1
+                        evaluations[code] = new_eval
 
-            total_corrections += batch_corrections
-            if batch_corrections > 0:
-                print(f"      Batch {i//EVAL_BATCH_SIZE + 1}: {batch_corrections} corrections")
+                total_corrections += batch_corrections
+                if batch_corrections > 0:
+                    print(f"      Pillar {pillar} batch {i//EVAL_BATCH_SIZE + 1}: {batch_corrections} corrections")
 
-            time.sleep(EVAL_BATCH_DELAY)
+                time.sleep(EVAL_BATCH_DELAY)
 
         print(f"   [PASS 2] Total corrections: {total_corrections}")
         return evaluations
@@ -648,6 +687,9 @@ Review:"""
 
             pillar_results = {}
 
+            # Shuffle norms within pillar to avoid position bias across products
+            random.shuffle(pillar_norms)
+
             for i in range(0, len(pillar_norms), EVAL_BATCH_SIZE):
                 batch = pillar_norms[i:i+EVAL_BATCH_SIZE]
                 pillar_label = f"{pillar}*" if pillar in CRITICAL_PILLARS else pillar
@@ -663,7 +705,7 @@ Review:"""
             no_count = sum(1 for v in pillar_results.values() if v[0] == 'NO')
             tbd_count = sum(1 for v in pillar_results.values() if v[0] == 'TBD')
             score_base = yes_count + yesp_count + no_count
-            pct = (yes_count + yesp_count) * 100 // score_base if score_base > 0 else 0
+            pct = round((yes_count + yesp_count) / score_base * 100, 1) if score_base > 0 else 0
 
             print(f"   {pillar}: {yes_count} YES, {yesp_count} YESp, {no_count} NO, {tbd_count} TBD ({pct}%)")
 
@@ -674,6 +716,24 @@ Review:"""
             all_evaluations = self.review_critical_evaluations(
                 product_info, all_evaluations, applicable_norms, website_content
             )
+
+        # === POST-PASS 2: Force remaining TBD → NO ===
+        # "No information = not implemented" is the safest assumption for security products.
+        # This ensures consistent scoring — products aren't rewarded for lack of data.
+        tbd_forced = 0
+        for code, eval_data in all_evaluations.items():
+            result = eval_data[0] if isinstance(eval_data, tuple) else eval_data
+            if result == 'TBD':
+                all_evaluations[code] = ('NO', 'Unresolved after expert review — defaulting to NO (no evidence of implementation)')
+                tbd_forced += 1
+        if tbd_forced > 0:
+            print(f"   [POST] Forced {tbd_forced} remaining TBD → NO (no evidence = not implemented)")
+
+        # === N/A MONITORING ===
+        na_count = sum(1 for v in all_evaluations.values() if (v[0] if isinstance(v, tuple) else v) == 'N/A')
+        total_evals = len(all_evaluations)
+        if total_evals > 0 and na_count / total_evals > 0.05:
+            print(f"   ⚠️  WARNING: {na_count}/{total_evals} ({na_count*100//total_evals}%) evaluations are N/A — check norm applicability filtering")
 
         return all_evaluations, applicable_norms
 
@@ -735,7 +795,7 @@ Review:"""
         # Upsert using on_conflict=product_id,norm_id to handle the UNIQUE constraint
         # This resolves 409 errors for products that already have evaluations with different IDs
         upsert_headers = get_supabase_headers('resolution=merge-duplicates,return=minimal')
-        batch_size = 500
+        batch_size = 1000  # OPT-7: Increased from 500 to reduce API calls (3 calls instead of 5 per product)
         inserted = 0
         max_retries = 3
 
@@ -815,8 +875,13 @@ Review:"""
             offset += 1000
         return all_ids
 
-    def run(self, product_name=None, type_id=None, limit=None, skip_evaluated=False, start_index=0, worker_id=0):
-        """Runs automated evaluation."""
+    def run(self, product_name=None, type_id=None, limit=None, skip_evaluated=False, start_index=0, worker_id=0, product_ids=None):
+        """Runs automated evaluation.
+
+        Args:
+            product_ids: List of specific product IDs to evaluate (from orchestrator).
+                         When provided, overrides product_name/type_id/limit filters.
+        """
         worker_prefix = f"[W{worker_id}] " if worker_id > 0 else ""
 
         print(f"""
@@ -836,8 +901,13 @@ Review:"""
             evaluated_ids = self.get_evaluated_product_ids()
             print(f"   {len(evaluated_ids)} already evaluated")
 
-        # Filter products
-        if product_name:
+        # Filter products — specific IDs from orchestrator take priority
+        if product_ids:
+            # Orchestrator mode: evaluate exactly these product IDs
+            id_set = set(product_ids)
+            products_to_eval = [p for p in self.products if p['id'] in id_set]
+            print(f"\n{worker_prefix}Orchestrator mode: {len(products_to_eval)} products from IDs file")
+        elif product_name:
             products_to_eval = [p for p in self.products if product_name.lower() in p['name'].lower()]
         elif type_id:
             # Filter by type (check both old type_id and new mapping)
@@ -850,7 +920,9 @@ Review:"""
             all_products = self.products[start_index:] if start_index > 0 else self.products
             products_to_eval = all_products[:limit] if limit else all_products
 
-        if skip_evaluated:
+        if skip_evaluated and not product_ids:
+            # Only skip already evaluated when NOT in orchestrator mode
+            # (orchestrator already handles selection)
             products_to_eval = [p for p in products_to_eval if p['id'] not in evaluated_ids]
 
         print(f"\n{len(products_to_eval)} product(s) to evaluate")
@@ -876,7 +948,7 @@ Review:"""
                     no = sum(1 for v in evaluations.values() if get_result(v) == 'NO')
                     tbd = sum(1 for v in evaluations.values() if get_result(v) == 'TBD')
                     score_base = yes + yesp + no
-                    score = (yes + yesp) * 100 // score_base if score_base > 0 else 0
+                    score = round((yes + yesp) / score_base * 100, 1) if score_base > 0 else 0
                     na_count = len(self.norms) - len(applicable_norms)
 
                     print(f"   {saved} evaluations saved ({na_count} auto N/A)")
@@ -914,8 +986,16 @@ def main():
     parser.add_argument('--resume', action='store_true', help='Skip already evaluated products')
     parser.add_argument('--start', type=int, default=0, help='Start index')
     parser.add_argument('--worker', type=int, default=0, help='Worker ID')
+    parser.add_argument('--ids-file', type=str, default=None, help='JSON file with specific product IDs to evaluate')
 
     args = parser.parse_args()
+
+    # Load specific product IDs from file if provided
+    product_ids = None
+    if args.ids_file:
+        import json as _json
+        with open(args.ids_file, 'r') as f:
+            product_ids = _json.load(f)
 
     try:
         evaluator = SmartEvaluator()
@@ -925,7 +1005,8 @@ def main():
             limit=args.limit,
             skip_evaluated=args.resume,
             start_index=args.start,
-            worker_id=args.worker
+            worker_id=args.worker,
+            product_ids=product_ids
         )
     except Exception as e:
         print(f"\n[FATAL ERROR] Worker {args.worker}: {e}")

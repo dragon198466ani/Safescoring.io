@@ -12,8 +12,8 @@ import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import { auth } from "@/libs/auth";
 
-// Cache for 10 minutes (analysis doesn't change often)
-export const revalidate = 600;
+// Cache for 24 hours (analysis changes at most once per day during batch evaluation)
+export const revalidate = 86400;
 
 export async function GET(request, { params }) {
   const { slug } = await params;
@@ -162,7 +162,7 @@ export async function GET(request, { params }) {
 
     return NextResponse.json(response, {
       headers: {
-        "Cache-Control": "public, max-age=600, s-maxage=600, stale-while-revalidate=1200",
+        "Cache-Control": "public, max-age=86400, s-maxage=86400, stale-while-revalidate=172800",
       },
     });
 
