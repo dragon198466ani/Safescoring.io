@@ -1576,7 +1576,7 @@ def parse_evaluation_response(response):
             elif value == 'TBD':
                 result = 'TBD'
             elif value in ['NA', 'N/A']:
-                result = 'TBD'  # Convert N/A to TBD for applicable norms
+                result = 'N/A'  # Keep N/A as-is (norm may genuinely not apply despite pre-filtering)
             elif value in ['NO', 'NON']:
                 result = 'NO'
             else:

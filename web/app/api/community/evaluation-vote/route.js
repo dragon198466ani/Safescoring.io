@@ -499,8 +499,8 @@ export async function POST(req) {
     // Si consensus atteint, comparer avec l'IA
     if (validationTriggered && communityDecision !== "tie") {
       // Comparer la décision communautaire avec l'évaluation IA
-      const aiSaysYes = evaluation.result === "YES";
-      const aiSaysNo = evaluation.result === "NO";
+      const aiSaysYes = evaluation.result === "YES" || evaluation.result === "YESp";
+      const aiSaysNo = evaluation.result === "NO" || evaluation.result === "N";
       const communityAgreesWithAI =
         (aiSaysYes && communityDecision === "yes") ||
         (aiSaysNo && communityDecision === "no");

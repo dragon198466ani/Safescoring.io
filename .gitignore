@@ -217,3 +217,69 @@ paywall_norm_ids.json
 supabase/.branches
 supabase/.temp
 nul
+
+# -----------------------------------------------------------------------------
+# SafeScoring — Temp & Generated Files
+# -----------------------------------------------------------------------------
+
+# Temp files from evaluation/scraping sessions
+temp_*
+.~lock.*
+
+# Excel data files at repo root (data sources — too large for git)
+*.xlsx
+*.xls
+
+# Worker logs from parallel evaluation
+worker_*.log
+
+# Build/test output files (CI debugging artifacts)
+web/build_*.txt
+web/test_*.txt
+web/ci_*.txt
+web/npm_*.txt
+web/C\357\200\272*
+test-output.txt
+ci_logs*
+
+# Claude project context (auto-generated)
+CLAUDE_PROJECT_CONTEXT.md
+.claude/
+
+# One-off scripts (local use only)
+_*.py
+_*.js
+
+# Data exports and batch files (too large / ephemeral)
+data/*.json
+data/*.sql
+data/*.txt
+data/eval_*
+data/sql_batches/
+!data/README.md
+
+# Generated reports and PDFs
+reports/
+audit_reports/
+comparatif_*.pdf
+
+# Archived/fallback scripts
+_archive/
+
+# Norm documentation downloads
+norm_docs/
+norm_pdfs/
+norm_full_dump.json
+
+# Misc evaluation scripts at root
+eval_*.py
+fix_*.py
+run_*.py
+!run_parallel.py
+select_*.py
+set_*.py
+apply_*.py
+launch_workers.bat
+products_to_evaluate.json
+applicability_*.txt
+claude_applicability_output.txt

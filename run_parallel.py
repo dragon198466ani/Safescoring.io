@@ -1,106 +1,151 @@
 #!/usr/bin/env python3
 """
-SAFESCORING.IO - Évaluation parallèle
-Lance plusieurs instances de l'évaluateur pour accélérer le traitement
-Chaque instance traite une plage spécifique de produits
+SAFESCORING.IO - Parallel Evaluation
+Launches multiple SmartEvaluator instances to speed up product evaluation.
+Each worker processes a specific range of products.
+
+Fixed: Supabase key from config, correct -m command, paginated progress check.
 """
 
 import subprocess
 import sys
+import os
 import time
 import requests
-from collections import Counter
 import argparse
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
-# Configuration Supabase
-SUPABASE_URL = 'https://ajdncttomdqojlozxjxu.supabase.co'
-SUPABASE_KEY = 'REVOKED_ROTATE_ON_DASHBOARD'
+# Import credentials from config module
+from src.core.config import SUPABASE_URL, SUPABASE_SERVICE_KEY
 
 HEADERS = {
-    'apikey': SUPABASE_KEY,
-    'Authorization': f'Bearer {SUPABASE_KEY}',
+    'apikey': SUPABASE_SERVICE_KEY,
+    'Authorization': f'Bearer {SUPABASE_SERVICE_KEY}',
 }
+
+# Reusable session with retry
+session = requests.Session()
+retry = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+session.mount('https://', HTTPAdapter(max_retries=retry))
+
+
+def fetch_all_paginated(endpoint, select, extra_filter=""):
+    """Fetch all rows with pagination (avoid 1000 row limit)."""
+    all_rows = []
+    offset = 0
+    while True:
+        url = f"{SUPABASE_URL}/rest/v1/{endpoint}?select={select}&limit=1000&offset={offset}{extra_filter}"
+        r = session.get(url, headers=HEADERS, timeout=60)
+        if r.status_code != 200:
+            print(f"   [WARN] fetch {endpoint}: {r.status_code}")
+            break
+        data = r.json()
+        if not data:
+            break
+        all_rows.extend(data)
+        if len(data) < 1000:
+            break
+        offset += len(data)
+    return all_rows
 
 
 def get_progress():
-    """Récupère la progression actuelle"""
-    r = requests.get(f'{SUPABASE_URL}/rest/v1/evaluations?select=product_id', headers=HEADERS)
-    evals = r.json()
-    counts = Counter(e['product_id'] for e in evals)
-    
-    r = requests.get(f'{SUPABASE_URL}/rest/v1/products?select=id,name&order=name.asc', headers=HEADERS)
-    products = r.json()
-    
-    evaluated = [p for p in products if counts.get(p['id'], 0) > 0]
-    not_evaluated = [p for p in products if counts.get(p['id'], 0) == 0]
-    
+    """Get current evaluation progress (lightweight: count per product)."""
+    # Get product list (paginated)
+    products = fetch_all_paginated("products", "id,name", "&order=id")
+
+    # Get distinct evaluated product IDs (paginated)
+    eval_pids = set()
+    offset = 0
+    while True:
+        r = session.get(
+            f"{SUPABASE_URL}/rest/v1/evaluations?select=product_id&limit=1000&offset={offset}",
+            headers=HEADERS, timeout=60
+        )
+        if r.status_code != 200 or not r.json():
+            break
+        data = r.json()
+        for e in data:
+            eval_pids.add(e['product_id'])
+        if len(data) < 1000:
+            break
+        offset += len(data)
+
+    evaluated = [p for p in products if p['id'] in eval_pids]
+    not_evaluated = [p for p in products if p['id'] not in eval_pids]
+
     return evaluated, not_evaluated, products
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Évaluation parallèle')
-    parser.add_argument('--workers', type=int, default=4, help='Nombre de workers (défaut: 4)')
+    parser = argparse.ArgumentParser(description='Parallel evaluation')
+    parser.add_argument('--workers', type=int, default=5, help='Number of workers (default: 5)')
+    parser.add_argument('--product-ids', type=str, help='Comma-separated product IDs to evaluate')
     args = parser.parse_args()
-    
-    print("""
-╔══════════════════════════════════════════════════════════════╗
-║     🚀 SAFE SCORING - ÉVALUATION PARALLÈLE                   ║
-╚══════════════════════════════════════════════════════════════╝
-""")
-    
-    # Vérifier la progression
+
+    print("=" * 60)
+    print("  SAFE SCORING - PARALLEL EVALUATION")
+    print("=" * 60)
+
+    # Check progress
     evaluated, not_evaluated, products = get_progress()
-    print(f"📊 Progression: {len(evaluated)}/{len(products)} produits évalués")
-    print(f"   Restants: {len(not_evaluated)}")
-    
-    if not not_evaluated:
-        print("✅ Tous les produits sont déjà évalués!")
-        return
-    
-    # Nombre de workers
-    num_workers = min(args.workers, len(not_evaluated))
-    
-    # Calculer les plages pour chaque worker
-    # Chaque worker commence à un index différent et traite sa portion
-    chunk_size = len(products) // num_workers
-    
-    print(f"\n🔧 Lancement de {num_workers} workers...")
-    print(f"   Chaque worker traite ~{chunk_size} produits")
-    
-    # Lancer les workers
+    print(f"\nProgress: {len(evaluated)}/{len(products)} products evaluated")
+    print(f"Remaining: {len(not_evaluated)}")
+
+    if args.product_ids:
+        target_ids = [int(x.strip()) for x in args.product_ids.split(",")]
+        products_to_eval = [p for p in products if p['id'] in target_ids]
+        print(f"Targeting {len(products_to_eval)} specific products")
+    else:
+        products_to_eval = not_evaluated
+        if not products_to_eval:
+            print("All products already evaluated!")
+            return
+
+    num_workers = min(args.workers, len(products_to_eval))
+    chunk_size = len(products_to_eval) // num_workers
+
+    print(f"\nLaunching {num_workers} workers...")
+    print(f"Each worker processes ~{chunk_size} products")
+
+    # Find all product indices in the full list
+    all_product_ids = [p['id'] for p in products]
+
     processes = []
     for i in range(num_workers):
-        start_idx = i * chunk_size
-        # Le dernier worker prend tout ce qui reste
-        limit = chunk_size if i < num_workers - 1 else len(products) - start_idx
-        
-        # Trouver le premier produit de cette plage
-        first_product = products[start_idx]['name'] if start_idx < len(products) else "N/A"
-        
-        print(f"\n   Worker {i+1}: index {start_idx} -> {start_idx + limit - 1}")
-        print(f"      Premier: {first_product}")
-        print(f"      Limite: {limit} produits")
-        
-        # Lancer le worker avec -u pour unbuffered output
+        # Calculate which products this worker handles
+        start = i * chunk_size
+        end = start + chunk_size if i < num_workers - 1 else len(products_to_eval)
+        worker_products = products_to_eval[start:end]
+
+        if not worker_products:
+            continue
+
+        # Find start index in full product list
+        first_pid = worker_products[0]['id']
+        start_idx = all_product_ids.index(first_pid) if first_pid in all_product_ids else 0
+
+        print(f"\n  Worker {i+1}: {len(worker_products)} products (start index {start_idx})")
+        print(f"    First: {worker_products[0]['name']}")
+
+        # Launch worker using correct -m module syntax
         cmd = [
             sys.executable,
-            '-u',  # Unbuffered output
-            'src/core/smart_evaluator.py',
+            '-u',
+            '-m', 'src.core.smart_evaluator',
             '--start', str(start_idx),
-            '--limit', str(limit),
-            '--worker', str(i+1),
+            '--limit', str(len(worker_products)),
+            '--worker', str(i + 1),
             '--resume'
         ]
-        
-        # Créer un fichier log pour chaque worker
+
         log_file = open(f'worker_{i+1}.log', 'w', encoding='utf-8')
-        
-        # Définir l'environnement avec UTF-8 et unbuffered
-        import os
+
         env = os.environ.copy()
         env['PYTHONIOENCODING'] = 'utf-8'
         env['PYTHONUNBUFFERED'] = '1'
-        
+
         proc = subprocess.Popen(
             cmd,
             stdout=log_file,
@@ -108,60 +153,68 @@ def main():
             text=True,
             encoding='utf-8',
             env=env,
-            cwd='c:\\Users\\alexa\\Desktop\\SafeScoring'
+            cwd=os.path.dirname(os.path.abspath(__file__))
         )
-        processes.append((i+1, proc, log_file, first_product))
-    
-    print(f"\n✅ {len(processes)} workers lancés!")
-    print("   Logs: worker_1.log, worker_2.log, ...")
-    print("\n📊 Surveillance de la progression (Ctrl+C pour arrêter)...")
-    
-    last_count = len(evaluated)
+        processes.append((i + 1, proc, log_file, worker_products[0]['name']))
+
+    print(f"\n{len(processes)} workers launched!")
+    print("Logs: worker_1.log, worker_2.log, ...")
+    print("\nMonitoring progress (Ctrl+C to stop)...")
+
+    initial_count = len(evaluated)
     start_time = time.time()
-    
+
     try:
         while True:
             time.sleep(30)
-            
-            # Vérifier la progression
-            evaluated, not_evaluated, _ = get_progress()
-            current_count = len(evaluated)
-            
-            # Calculer la vitesse
+
+            try:
+                evaluated, not_evaluated, _ = get_progress()
+                current_count = len(evaluated)
+            except Exception:
+                continue
+
             elapsed = time.time() - start_time
-            speed = (current_count - last_count) / (elapsed / 60) if elapsed > 60 else 0
-            
-            # Estimer le temps restant
+            new_evals = current_count - initial_count
+            speed = new_evals / (elapsed / 60) if elapsed > 60 else 0
+
             if speed > 0:
-                eta_minutes = len(not_evaluated) / speed
+                remaining = len(products_to_eval) - new_evals
+                eta_minutes = remaining / speed if speed > 0 else 0
                 eta_str = f"~{eta_minutes:.0f}min" if eta_minutes < 60 else f"~{eta_minutes/60:.1f}h"
             else:
-                eta_str = "calcul..."
-            
-            # Vérifier quels workers sont encore actifs
+                eta_str = "calculating..."
+
             active_workers = sum(1 for _, p, _, _ in processes if p.poll() is None)
-            
-            print(f"\r   📊 {current_count}/{len(products)} ({current_count*100//len(products)}%) | "
-                  f"Restants: {len(not_evaluated)} | "
-                  f"Workers actifs: {active_workers}/{len(processes)} | "
+
+            print(f"\r  {current_count}/{len(products)} ({current_count*100//max(len(products),1)}%) | "
+                  f"+{new_evals} new | "
+                  f"Workers: {active_workers}/{len(processes)} | "
                   f"ETA: {eta_str}     ", end="", flush=True)
-            
-            # Vérifier si tous les workers ont terminé
+
             all_done = all(p.poll() is not None for _, p, _, _ in processes)
-            if all_done or len(not_evaluated) == 0:
-                print(f"\n\n✅ Terminé! {current_count} produits évalués.")
+            if all_done:
+                print(f"\n\nDone! {current_count} products evaluated (+{new_evals} new).")
                 break
-                
+
     except KeyboardInterrupt:
-        print("\n\n⚠️ Arrêt demandé...")
+        print("\n\nStopping workers...")
         for i, proc, log_file, _ in processes:
             proc.terminate()
             log_file.close()
-        print("   Workers arrêtés.")
-    
-    # Fermer les fichiers log
+        print("Workers stopped.")
+        return
+
+    # Close log files
     for _, _, log_file, _ in processes:
         log_file.close()
+
+    # Print worker exit codes
+    print("\nWorker results:")
+    for wid, proc, _, first_product in processes:
+        code = proc.returncode
+        status = "OK" if code == 0 else f"ERROR (exit {code})"
+        print(f"  Worker {wid}: {status} - started with {first_product}")
 
 
 if __name__ == '__main__':

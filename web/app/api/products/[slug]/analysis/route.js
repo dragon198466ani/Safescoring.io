@@ -72,10 +72,7 @@ export async function GET(request, { params }) {
           id,
           result,
           why_this_result,
-          detailed_justification,
-          evidence_sources,
-          risk_impact,
-          evaluated_at,
+          evaluation_date,
           norms (
             id,
             code,

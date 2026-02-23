@@ -100,10 +100,13 @@ export async function GET(request, { params }) {
       };
 
       const result = (ev.result || "").toUpperCase();
-      if (result === "YES") {
+      if (result === "YES" || result === "YESP") {
         pillarData[norm.pillar].yes.push(entry);
-      } else if (result === "NO") {
+      } else if (result === "NO" || result === "N") {
         pillarData[norm.pillar].no.push(entry);
+      } else if (result === "N/A" || result === "NA") {
+        // N/A = not applicable — excluded from score calculation
+        continue;
       } else {
         pillarData[norm.pillar].tbd.push(entry);
       }
@@ -133,8 +136,8 @@ export async function GET(request, { params }) {
         user_question: "Suis-je vraiment propriétaire de mes cryptos ?"
       },
       E: {
-        name: "Ecosystem",
-        full_name: "Écosystème",
+        name: "Efficiency",
+        full_name: "Efficacité",
         icon: "🌐",
         context: "Compatibilité et facilité d'utilisation",
         user_question: "Est-ce facile à utiliser au quotidien ?"
@@ -157,7 +160,9 @@ export async function GET(request, { params }) {
 
       if (total === 0) continue;
 
-      const score = (yesCount / total) * 100;
+      // Score = YES / (YES + NO) — TBD excluded (matches backend formula)
+      const scoreBase = yesCount + noCount;
+      const score = scoreBase > 0 ? (yesCount / scoreBase) * 100 : 0;
 
       // Risk assessment
       let riskLevel, riskLabel, riskColor;
@@ -244,7 +249,9 @@ export async function GET(request, { params }) {
 
     // 7. Calculate overall metrics
     const totalChecks = totalYes + totalNo + totalTbd;
-    const overallScore = totalChecks > 0 ? (totalYes / totalChecks) * 100 : 0;
+    // Overall score = YES / (YES + NO) — TBD excluded (matches backend formula)
+    const overallScoreBase = totalYes + totalNo;
+    const overallScore = overallScoreBase > 0 ? (totalYes / overallScoreBase) * 100 : 0;
 
     // Overall grade
     let overallGrade;

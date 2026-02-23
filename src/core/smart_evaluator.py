@@ -794,15 +794,26 @@ Review:"""
         return inserted
 
     def get_evaluated_product_ids(self):
-        """Gets IDs of already evaluated products"""
-        r = requests.get(
-            f"{SUPABASE_URL}/rest/v1/evaluations?select=product_id",
-            headers=self.headers
-        )
-        if r.status_code == 200:
+        """Gets IDs of already evaluated products (paginated to handle >1000 rows)."""
+        all_ids = set()
+        offset = 0
+        while True:
+            r = requests.get(
+                f"{SUPABASE_URL}/rest/v1/evaluations?select=product_id&limit=1000&offset={offset}",
+                headers=self.headers,
+                timeout=60
+            )
+            if r.status_code != 200:
+                break
             evals = r.json()
-            return set(e['product_id'] for e in evals)
-        return set()
+            if not evals:
+                break
+            for e in evals:
+                all_ids.add(e['product_id'])
+            if len(evals) < 1000:
+                break
+            offset += 1000
+        return all_ids
 
     def run(self, product_name=None, type_id=None, limit=None, skip_evaluated=False, start_index=0, worker_id=0):
         """Runs automated evaluation."""
