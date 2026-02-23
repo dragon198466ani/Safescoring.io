@@ -128,7 +128,7 @@ ACQUISITION_STRATEGIES = [
         'time_to_results': 'days',
         'examples': [
             '"Thread: 5 security features your wallet MUST have"',
-            '"Thread: How we analyze 916 security criteria"',
+            '"Thread: How we analyze 2376 security criteria"',
         ],
         'safescoring_application': 'Weekly educational threads with soft CTA to site'
     },
@@ -377,7 +377,7 @@ HOOK_TYPES = {
         'examples': [
             "Only 12% of wallets have all 3: audit, open source, bug bounty.",
             "87% of hacked projects in 2024 had been audited.",
-            "The average wallet scores 67% on our 916-point security check.",
+            "The average wallet scores 67% on our 2376-point security check.",
             "A $50M hack happens every 11 days in crypto.",
         ],
     },
@@ -417,7 +417,7 @@ HOOK_TYPES = {
         'psychology': 'Expertise builds trust',
         'examples': [
             "After analyzing 100+ wallets, here's what matters.",
-            "916 security criteria. Here's what most wallets miss.",
+            "2376 security criteria. Here's what most wallets miss.",
             "We've rated every major wallet. The results are public.",
         ],
     },
@@ -570,7 +570,7 @@ COMPETITOR_ANALYSIS = {
         'what_they_do': 'Smart contract audits',
         'their_strength': 'Brand recognition in audits',
         'their_weakness': 'Only code audits, not comprehensive security',
-        'our_angle': 'We rate 916 criteria, not just code',
+        'our_angle': 'We rate 2376 criteria, not just code',
     },
     'defisafety': {
         'what_they_do': 'DeFi protocol ratings',

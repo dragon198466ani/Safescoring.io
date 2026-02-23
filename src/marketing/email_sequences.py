@@ -47,7 +47,7 @@ Stay safe,
 The SafeScoring Team
 
 ---
-916 norms. 0 opinions. 1 score.
+2376 norms. 0 opinions. 1 score.
 """
     },
     {

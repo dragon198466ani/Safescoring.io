@@ -18,7 +18,7 @@ BRAND = {
 
     # Key differentiators
     'unique_value': [
-        '916 security norms - most comprehensive in the industry',
+        '2376 security norms - most comprehensive in the industry',
         'Objective methodology - no pay-to-play ratings',
         'SAFE framework - Security, Audit, Functionality, Experience',
         'Real-time updates - scores change as products evolve',

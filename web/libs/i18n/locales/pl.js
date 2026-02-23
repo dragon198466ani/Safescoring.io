@@ -118,7 +118,7 @@ export default {
       },
       rigor: {
         title: "Rygor",
-        desc: "916 norm w 4 filarach. Bez skrótów, bez subiektywnych opinii.",
+        desc: "{totalNorms} norm w 4 filarach. Bez skrótów, bez subiektywnych opinii.",
       },
       accessibility: {
         title: "Dostępność",
@@ -516,7 +516,7 @@ export default {
       },
       norms: {
         title: "Global standards, not opinions",
-        body: "916 norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
+        body: "{totalNorms} norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
       },
       trust: {
         title: "Trust you can prove",
@@ -592,7 +592,7 @@ export default {
         },
         evaluate: {
           title: "Evaluate",
-          desc: "We score your product against 916 security norms.",
+          desc: "We score your product against {totalNorms} security norms.",
         },
         review: {
           title: "Review",
@@ -622,6 +622,39 @@ export default {
       body: "Join teams worldwide using SAFE Certification to prove security with data.",
       primary: "Apply Now",
       secondary: "Talk to Sales",
+    },
+  },
+  // KYC Security
+  kyc: {
+    card: {
+      title: "Ekspozycja KYC",
+      noKyc: "Zadna platforma w tej konfiguracji nie wymaga weryfikacji tozsamosci.",
+      requireKyc: "wymagaja weryfikacji tozsamosci",
+      incidentProvider: "uzywaja dostawcy z znanym incydentem danych",
+      hide: "Ukryj",
+      view: "Pokaz",
+      details: "szczegoly",
+      via: "przez",
+      incidentReported: "Incydent zgloszony",
+      noIncidents: "Brak incydentow",
+      dataTypesAffected: "Potencjalnie narazone typy danych:",
+      upgradeCta: "Zaktualizuj aby zobaczyc szczegolowe informacje o dostawcach.",
+    },
+    dataTypes: {
+      passport: "Paszport / Dowod",
+      selfie: "Selfie / Zdjecie",
+      address: "Adres",
+      phone: "Numer telefonu",
+      bankAccount: "Konto bankowe",
+      ssn: "Numer podatkowy",
+      email: "Email",
+    },
+    risk: {
+      critical: "Krytyczny",
+      high: "Wysoki",
+      moderate: "Sredni",
+      low: "Niski",
+      none: "Brak KYC",
     },
   },
 };

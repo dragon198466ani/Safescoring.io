@@ -118,7 +118,7 @@ export default {
       },
       rigor: {
         title: "Strengheid",
-        desc: "916 normen over 4 pijlers. Geen shortcuts, geen subjectieve meningen.",
+        desc: "{totalNorms} normen over 4 pijlers. Geen shortcuts, geen subjectieve meningen.",
       },
       accessibility: {
         title: "Toegankelijkheid",
@@ -516,7 +516,7 @@ export default {
       },
       norms: {
         title: "Global standards, not opinions",
-        body: "916 norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
+        body: "{totalNorms} norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
       },
       trust: {
         title: "Trust you can prove",
@@ -592,7 +592,7 @@ export default {
         },
         evaluate: {
           title: "Evaluate",
-          desc: "We score your product against 916 security norms.",
+          desc: "We score your product against {totalNorms} security norms.",
         },
         review: {
           title: "Review",
@@ -622,6 +622,39 @@ export default {
       body: "Join teams worldwide using SAFE Certification to prove security with data.",
       primary: "Apply Now",
       secondary: "Talk to Sales",
+    },
+  },
+  // KYC Security
+  kyc: {
+    card: {
+      title: "KYC-blootstelling",
+      noKyc: "Geen platforms in deze setup vereisen identiteitsverificatie.",
+      requireKyc: "vereisen identiteitsverificatie",
+      incidentProvider: "gebruiken een aanbieder met een bekend data-incident",
+      hide: "Verbergen",
+      view: "Bekijken",
+      details: "details",
+      via: "via",
+      incidentReported: "Incident gemeld",
+      noIncidents: "Geen incidenten",
+      dataTypesAffected: "Mogelijk getroffen datatypes:",
+      upgradeCta: "Upgrade voor gedetailleerde aanbiederinformatie.",
+    },
+    dataTypes: {
+      passport: "Paspoort / ID",
+      selfie: "Selfie / Foto",
+      address: "Adres",
+      phone: "Telefoonnummer",
+      bankAccount: "Bankrekening",
+      ssn: "Fiscaal nummer",
+      email: "E-mail",
+    },
+    risk: {
+      critical: "Kritiek",
+      high: "Hoog",
+      moderate: "Gemiddeld",
+      low: "Laag",
+      none: "Geen KYC",
     },
   },
 };

@@ -10,8 +10,7 @@
 
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/libs/auth";
+import { auth } from "@/libs/auth";
 
 // Cache for 10 minutes (analysis doesn't change often)
 export const revalidate = 600;
@@ -62,7 +61,7 @@ export async function GET(request, { params }) {
       .single();
 
     // Check if user is authenticated (for detailed justifications)
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     let evaluationDetails = null;
 
     if (session?.user) {
@@ -83,7 +82,9 @@ export async function GET(request, { params }) {
             title,
             pillar,
             description,
-            is_essential
+            is_essential,
+            official_link,
+            official_doc_summary
           )
         `)
         .eq("product_id", product.id)

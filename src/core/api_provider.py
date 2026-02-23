@@ -257,20 +257,16 @@ class AIProvider:
                       temperature: float = None, pass2_override: bool = False) -> str:
         """
         Call AI with strategic model selection based on norm complexity.
-        QUALITY FIRST: Tokens and temperature auto-adjusted by complexity.
+        Tokens and temperature auto-adjusted by complexity.
 
-        Uses NORM_MODEL_STRATEGY to select optimal model for each norm:
-        - CRITICAL norms (S01-S40, A01-A30): 3500 tokens, temp 0.1, Gemini Pro + review
-        - COMPLEX norms: 2500 tokens, temp 0.15, Gemini Flash/DeepSeek
-        - MODERATE norms: 2000 tokens, temp 0.2, Gemini Flash
-        - SIMPLE/TRIVIAL norms: 1500 tokens, temp 0.3, Groq (FREE)
+        In CLAUDE_CODE_ONLY mode: direct call, no intermediate validation.
 
         Args:
             norm_code: Norm code like 'S01', 'A150', 'F200'
             prompt: The evaluation prompt
             max_tokens: Override auto-calculated tokens (optional)
             temperature: Override auto-calculated temperature (optional)
-            pass2_override: Force second pass review (for TBD results)
+            pass2_override: Force expert model (for Pass 2 review)
 
         Returns:
             AI response text or None if all APIs fail
@@ -279,53 +275,27 @@ class AIProvider:
         model = strategy['model']
         complexity = strategy['complexity']
 
-        # QUALITY FIRST: Auto-adjust tokens and temperature by complexity (from config)
+        # Auto-adjust tokens and temperature by complexity
         if max_tokens is None:
-            if complexity == TaskComplexity.CRITICAL:
-                max_tokens = TOKENS_CRITICAL
-            elif complexity == TaskComplexity.COMPLEX:
-                max_tokens = TOKENS_COMPLEX
-            elif complexity == TaskComplexity.MODERATE:
-                max_tokens = TOKENS_MODERATE
-            else:  # SIMPLE, TRIVIAL
-                max_tokens = TOKENS_SIMPLE
+            max_tokens = {
+                TaskComplexity.CRITICAL: TOKENS_CRITICAL,
+                TaskComplexity.COMPLEX: TOKENS_COMPLEX,
+                TaskComplexity.MODERATE: TOKENS_MODERATE,
+            }.get(complexity, TOKENS_SIMPLE)
 
         if temperature is None:
-            if complexity == TaskComplexity.CRITICAL:
-                temperature = TEMP_CRITICAL
-            elif complexity == TaskComplexity.COMPLEX:
-                temperature = TEMP_COMPLEX
-            elif complexity == TaskComplexity.MODERATE:
-                temperature = TEMP_MODERATE
-            else:
-                temperature = TEMP_SIMPLE
+            temperature = {
+                TaskComplexity.CRITICAL: TEMP_CRITICAL,
+                TaskComplexity.COMPLEX: TEMP_COMPLEX,
+                TaskComplexity.MODERATE: TEMP_MODERATE,
+            }.get(complexity, TEMP_SIMPLE)
 
-        # Select API based on model type
+        # Direct call — no intermediate validation step
         result = self._call_by_model(model, prompt, max_tokens, temperature)
 
         # If failed, try fallback
         if not result and 'fallback' in strategy:
-            fallback_model = strategy['fallback']
-            result = self._call_by_model(fallback_model, prompt, max_tokens, temperature)
-
-        # Second pass review for CRITICAL norms or TBD override
-        if result and (strategy.get('pass2_review') or pass2_override):
-            if complexity == TaskComplexity.CRITICAL or pass2_override:
-                # Quick validation with different model
-                validation_prompt = f"""Verify this evaluation is correct:
-
-NORM: {norm_code}
-EVALUATION: {result[:500]}
-
-If the evaluation looks correct, respond with: CONFIRMED
-If there's an issue, respond with: REVIEW NEEDED - [reason]
-"""
-                validation_model = AIModel.CLAUDE_CODE if CLAUDE_CODE_ONLY else AIModel.GROQ_LLAMA
-                validation = self._call_by_model(validation_model, validation_prompt, EVAL_VALIDATION_TOKENS, TEMP_CRITICAL)
-                if validation and 'REVIEW NEEDED' in validation:
-                    # Re-evaluate with expert model
-                    review_model = AIModel.CLAUDE_CODE if CLAUDE_CODE_ONLY else AIModel.GEMINI_PRO
-                    result = self._call_by_model(review_model, prompt, max_tokens, 0.2)
+            result = self._call_by_model(strategy['fallback'], prompt, max_tokens, temperature)
 
         return result
 

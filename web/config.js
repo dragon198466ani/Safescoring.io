@@ -15,7 +15,7 @@ const config = {
   appName: "SafeScoring",
   // REQUIRED: a short description of your app for SEO tags (can be overwritten)
   appDescription:
-    "The first unified security rating for all crypto products. 916 norms. 0 opinion. 1 score. Hardware wallets, software wallets, and DeFi protocols - all evaluated with the same rigorous SAFE methodology.",
+    "The first unified security rating for all crypto products. {totalNorms} norms. 0 opinion. 1 score. Hardware wallets, software wallets, and DeFi protocols - all evaluated with the same rigorous SAFE methodology.",
   // REQUIRED (no https://, not trialing slash at the end, just the naked domain)
   domainName: "safescoring.io",
   crisp: {
@@ -150,7 +150,7 @@ const config = {
   // SafeScoring specific config
   safe: {
     // Strategic tagline
-    tagline: "916 norms. 0 opinion. 1 score.",
+    tagline: "{totalNorms} norms. 0 opinion. 1 score.",
     taglineAlt: "Beyond the audit.",
 
     pillars: [
@@ -160,7 +160,7 @@ const config = {
         description: "Would your wallet survive a state-level attack? We verify encryption, key management, and cryptographic standards — because a single weak algorithm means everything you own is one exploit away from zero.",
         shortDesc: "Cryptographic armor",
         color: "#22c55e", // green
-        normCount: 269,
+        normCount: 872,
       },
       {
         code: "A",
@@ -168,7 +168,7 @@ const config = {
         description: "What happens when someone holds a gun to your head? We assess duress protection, anti-coercion mechanisms, time-locks, and physical security — because the real threat to crypto holders is no longer just hackers.",
         shortDesc: "Physical threat & coercion resistance",
         color: "#f59e0b", // amber
-        normCount: 193,
+        normCount: 540,
       },
       {
         code: "F",
@@ -176,7 +176,7 @@ const config = {
         description: `${STATS.auditedHackedApprox} of hacked projects in ${STATS.auditedHackedYear} had been audited. An audit is a snapshot — we measure what happens after. Update frequency, incident response, team track record, and whether they actually fix what breaks.`,
         shortDesc: "Proven reliability over time",
         color: "#3b82f6", // blue
-        normCount: 195,
+        normCount: 346,
       },
       {
         code: "E",
@@ -184,14 +184,14 @@ const config = {
         description: "The most secure wallet is worthless if you send funds to the wrong address because the UI was confusing. We measure whether security actually works in your hands — UX, clarity, multi-chain support, and error prevention.",
         shortDesc: "Security you can actually use",
         color: "#8b5cf6", // purple
-        normCount: 259,
+        normCount: 618,
       },
     ],
     stats: {
-      totalNorms: 916,
-      totalProducts: 100,
-      totalProductTypes: 21,
-      totalEvaluations: 50000,
+      totalNorms: 2376,
+      totalProducts: 1535,
+      totalProductTypes: 78,
+      totalEvaluations: 500000,
       // Pillar-specific sourced stats (from STATS constant above)
       ...STATS,
     },

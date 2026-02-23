@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useStats } from "@/hooks/useStats";
+import { useGlobalStats } from "@/libs/StatsProvider";
 import {
   detectLanguage,
   getTranslations,
@@ -68,7 +68,7 @@ const comparisonData = [
 
 export default function EnterprisePage() {
   const [showComparison, setShowComparison] = useState(false);
-  const { stats } = useStats();
+  const { stats } = useGlobalStats();
   const [lang, setLang] = useState(defaultLanguage);
 
   useEffect(() => {

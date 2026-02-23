@@ -109,7 +109,7 @@ Les scores sont gratuits. La personnalisation est payante.
 **Besoin:** "Ce produit n'est pas sur SafeScoring, je veux savoir s'il est safe"
 
 - Soumets un produit à évaluer
-- Évaluation complète par l'IA (916 normes)
+- Évaluation complète par l'IA (2376 normes)
 - Publié sur SafeScoring pour tous
 - Ton nom comme "contributeur" (optionnel)
 

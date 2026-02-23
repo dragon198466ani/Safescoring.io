@@ -118,7 +118,7 @@ export default {
       },
       rigor: {
         title: "Titizlik",
-        desc: "4 sütunda 916 norm. Kestirme yok, öznel görüş yok.",
+        desc: "4 sütunda {totalNorms} norm. Kestirme yok, öznel görüş yok.",
       },
       accessibility: {
         title: "Erişilebilirlik",
@@ -516,7 +516,7 @@ export default {
       },
       norms: {
         title: "Global standards, not opinions",
-        body: "916 norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
+        body: "{totalNorms} norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
       },
       trust: {
         title: "Trust you can prove",
@@ -592,7 +592,7 @@ export default {
         },
         evaluate: {
           title: "Evaluate",
-          desc: "We score your product against 916 security norms.",
+          desc: "We score your product against {totalNorms} security norms.",
         },
         review: {
           title: "Review",
@@ -622,6 +622,39 @@ export default {
       body: "Join teams worldwide using SAFE Certification to prove security with data.",
       primary: "Apply Now",
       secondary: "Talk to Sales",
+    },
+  },
+  // KYC Security
+  kyc: {
+    card: {
+      title: "KYC Maruziyeti",
+      noKyc: "Bu yapilandirmadaki hicbir platform kimlik dogrulamasi gerektirmiyor.",
+      requireKyc: "kimlik dogrulamasi gerektiriyor",
+      incidentProvider: "bilinen bir veri olayina sahip saglayici kullaniyor",
+      hide: "Gizle",
+      view: "Goruntule",
+      details: "detaylar",
+      via: "uzerinden",
+      incidentReported: "Olay raporlandi",
+      noIncidents: "Olay yok",
+      dataTypesAffected: "Potansiyel olarak etkilenen veri turleri:",
+      upgradeCta: "Saglayici detaylarini gormek icin yukseltin.",
+    },
+    dataTypes: {
+      passport: "Pasaport / Kimlik",
+      selfie: "Selfie / Fotograf",
+      address: "Adres",
+      phone: "Telefon numarasi",
+      bankAccount: "Banka hesabi",
+      ssn: "Vergi numarasi",
+      email: "E-posta",
+    },
+    risk: {
+      critical: "Kritik",
+      high: "Yuksek",
+      moderate: "Orta",
+      low: "Dusuk",
+      none: "KYC yok",
     },
   },
 };

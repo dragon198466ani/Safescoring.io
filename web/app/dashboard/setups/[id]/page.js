@@ -19,6 +19,7 @@ import SetupRecommendations from "@/components/SetupRecommendations";
 import SetupScoreEvolution from "@/components/SetupScoreEvolution";
 import NotificationSettings from "@/components/NotificationSettings";
 import SetupSAFEAnalysis from "@/components/SetupSAFEAnalysis";
+import KycExposureCard from "@/components/KycExposureCard";
 import { getScoreColor } from "@/components/ScoreCircle";
 
 // Hooks
@@ -525,6 +526,12 @@ export default function SetupDetailPage() {
                 weaknesses={weaknesses}
                 isPaid={userAccess.isPaid}
                 onUpgradeClick={handleLimitReached}
+              />
+
+              {/* KYC Exposure Risk */}
+              <KycExposureCard
+                products={productDetails}
+                userAccess={userAccess}
               />
             </div>
 

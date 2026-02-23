@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useStats } from "@/hooks/useStats";
+import { useGlobalStats } from "@/libs/StatsProvider";
 import config from "@/config";
 import NotAPonzi from "@/components/NotAPonzi";
 import {
@@ -99,7 +99,7 @@ function VerifiedItem({ label, value, verified = true, link }) {
 }
 
 export default function TrustPage() {
-  const { stats, loading } = useStats();
+  const { stats, loading } = useGlobalStats();
   const [lang, setLang] = useState(defaultLanguage);
 
   useEffect(() => {
@@ -219,7 +219,7 @@ export default function TrustPage() {
                     <h3 className="font-semibold mb-3">{t("trust.methodology.publish.title")}</h3>
                     <ul className="space-y-2">
                       {[
-                        t("trust.methodology.publish.norms", { count: loading ? "2354" : stats.totalNorms }),
+                        t("trust.methodology.publish.norms", { count: stats.totalNorms }),
                         t("trust.methodology.publish.pillars"),
                         t("trust.methodology.publish.weighting"),
                         t("trust.methodology.publish.classifications"),

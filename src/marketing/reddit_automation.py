@@ -79,7 +79,7 @@ class RedditMarketing:
 Full details and security analysis: [SafeScoring Report]({url})
 
 ---
-*SafeScoring rates 500+ crypto products across 916 security norms*
+*SafeScoring rates 500+ crypto products across 2376 security norms*
             """.strip(),
 
             'comparison_post': """

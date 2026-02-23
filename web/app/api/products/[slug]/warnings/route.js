@@ -54,7 +54,7 @@ export async function GET(request, { params }) {
     const normIds = [...new Set(evaluations.map(e => e.norm_id))];
     const { data: norms, error: normError } = await supabase
       .from("norms")
-      .select("id, code, title, pillar, is_essential")
+      .select("id, code, title, pillar, is_essential, official_link, official_doc_summary")
       .in("id", normIds);
 
     if (normError) {
@@ -87,6 +87,7 @@ export async function GET(request, { params }) {
         norm_code: norm.code,
         title: norm.title,
         is_essential: norm.is_essential,
+        official_link: norm.official_link || null,
         reason: ev.why_this_result?.substring(0, 200) || null
       };
 

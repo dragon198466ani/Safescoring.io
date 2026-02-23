@@ -117,7 +117,7 @@ export default {
       },
       rigor: {
         title: "严谨性",
-        desc: "4 大支柱共 916 条规范。没有捷径，没有主观意见。",
+        desc: "4 大支柱共 {totalNorms} 条规范。没有捷径，没有主观意见。",
       },
       accessibility: {
         title: "可及性",
@@ -515,7 +515,7 @@ export default {
       },
       norms: {
         title: "Global standards, not opinions",
-        body: "916 norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
+        body: "{totalNorms} norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
       },
       trust: {
         title: "Trust you can prove",
@@ -591,7 +591,7 @@ export default {
         },
         evaluate: {
           title: "Evaluate",
-          desc: "We score your product against 916 security norms.",
+          desc: "We score your product against {totalNorms} security norms.",
         },
         review: {
           title: "Review",
@@ -621,6 +621,39 @@ export default {
       body: "Join teams worldwide using SAFE Certification to prove security with data.",
       primary: "Apply Now",
       secondary: "Talk to Sales",
+    },
+  },
+  // KYC Security
+  kyc: {
+    card: {
+      title: "KYC风险暴露",
+      noKyc: "此配置中没有平台需要身份验证。",
+      requireKyc: "需要身份验证",
+      incidentProvider: "使用存在数据事件的提供商",
+      hide: "隐藏",
+      view: "查看",
+      details: "详情",
+      via: "通过",
+      incidentReported: "已报告事件",
+      noIncidents: "无事件",
+      dataTypesAffected: "可能受影响的数据类型:",
+      upgradeCta: "升级以查看提供商详细信息。",
+    },
+    dataTypes: {
+      passport: "护照 / 身份证",
+      selfie: "自拍 / 照片",
+      address: "地址",
+      phone: "电话号码",
+      bankAccount: "银行账户",
+      ssn: "税号",
+      email: "电子邮件",
+    },
+    risk: {
+      critical: "严重",
+      high: "高",
+      moderate: "中等",
+      low: "低",
+      none: "无KYC",
     },
   },
 };

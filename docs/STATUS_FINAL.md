@@ -17,7 +17,7 @@
 | Reclassification S↔A | ✅ 100% | 7/7 normes modifiées |
 | Nouvelles normes F | ✅ 100% | 5/5 normes créées (F200-F204) |
 | norm_applicability | ✅ 100% | 110/110 règles ajoutées |
-| Distribution finale | ✅ 100% | 916 normes (S:269, A:193, F:195, E:259) |
+| Distribution finale | ✅ 100% | 2376 normes (S:872, A:530, F:339, E:613) |
 
 **Validation technique**:
 ```bash
@@ -310,7 +310,7 @@ python monitor_1inch_v2.py
 ✅ **Classification claire**: S vs A bien défini, plus d'ambiguïté
 ✅ **Documentation complète**: Guide détaillé pour évaluateurs et IA
 ✅ **Système automatique**: Intégration transparente avec infrastructure existante
-✅ **Validation technique**: Tous les tests passent (916 normes, 506 applicables DEX)
+✅ **Validation technique**: Tous les tests passent (2376 normes, 506 applicables DEX)
 
 ### Impact Attendu
 

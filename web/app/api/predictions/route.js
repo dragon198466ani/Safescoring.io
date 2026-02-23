@@ -1,160 +1,276 @@
+/**
+ * API: /api/predictions
+ * Public predictions tracking for Data Moat (Phase 3.6)
+ *
+ * GET  - List predictions (public, filterable by status/product/limit)
+ * POST - Create prediction (admin only)
+ *
+ * Predictions are public statements about crypto product security.
+ * When predictions come true, they build credibility and create
+ * an irreplicable data moat for SafeScoring.
+ */
+
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { auth } from "@/libs/auth";
+import { isAdminEmail } from "@/libs/admin-auth";
 
-/**
- * Predictions API
- *
- * GET - Get verified predictions and accuracy stats
- *
- * This data proves SafeScoring's predictive accuracy over time.
- * All predictions are cryptographically committed to blockchain BEFORE events.
- */
+export const dynamic = "force-dynamic";
+
+// ─── GET: List predictions (public) ─────────────────────────────
 
 export async function GET(request) {
   if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
+    return NextResponse.json({
+      predictions: [],
+      stats: getDefaultStats(),
+    });
   }
 
-  const { searchParams } = new URL(request.url);
-  const status = searchParams.get("status"); // active, validated, expired
-  const riskLevel = searchParams.get("risk"); // CRITICAL, HIGH, MEDIUM, LOW, MINIMAL
-  const productSlug = searchParams.get("product");
-  const limit = parseInt(searchParams.get("limit") || "50", 10);
-
   try {
-    // Build query
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get("status");
+    const product = searchParams.get("product");
+    const limit = Math.min(parseInt(searchParams.get("limit") || "20", 10), 100);
+
+    // Build query for score_predictions
     let query = supabase
-      .from("predictions")
-      .select(`
-        id,
-        product_id,
-        prediction_date,
-        safe_score_at_prediction,
-        risk_level,
-        incident_probability,
-        prediction_window_days,
-        expires_at,
-        weakest_pillar,
-        weakest_pillar_score,
-        confidence,
-        commitment_hash,
-        blockchain_tx_hash,
-        blockchain_network,
-        blockchain_block_number,
-        status,
-        validated_at,
-        incident_occurred,
-        accuracy,
-        methodology_version,
-        products (
-          id,
-          name,
-          slug,
-          url
-        )
-      `)
-      .order("prediction_date", { ascending: false })
+      .from("score_predictions")
+      .select("*")
+      .order("created_at", { ascending: false })
       .limit(limit);
 
     // Apply filters
-    if (status) {
+    if (status && ["pending", "confirmed", "missed"].includes(status)) {
       query = query.eq("status", status);
     }
-    if (riskLevel) {
-      query = query.eq("risk_level", riskLevel);
-    }
-    if (productSlug) {
-      query = query.eq("products.slug", productSlug);
+
+    if (product) {
+      query = query.eq("product_slug", product);
     }
 
     const { data: predictions, error } = await query;
 
-    if (error) {
-      console.error("Predictions query error:", error);
-      return NextResponse.json({ error: "Failed to fetch predictions" }, { status: 500 });
+    if (error) throw error;
+
+    // Fetch product names for all unique slugs in results
+    const slugs = [...new Set((predictions || []).map((p) => p.product_slug))];
+    let productMap = {};
+
+    if (slugs.length > 0) {
+      const { data: products } = await supabase
+        .from("products")
+        .select("slug, name")
+        .in("slug", slugs);
+
+      if (products) {
+        productMap = Object.fromEntries(products.map((p) => [p.slug, p.name]));
+      }
     }
 
-    // Get accuracy stats from materialized view
-    const { data: statsData } = await supabase
-      .from("prediction_accuracy_stats")
-      .select("*")
-      .single();
+    // Format predictions for response
+    const formattedPredictions = (predictions || []).map((p) => ({
+      id: p.id,
+      product_slug: p.product_slug,
+      product_name: productMap[p.product_slug] || p.product_slug,
+      prediction: p.prediction,
+      category: p.category,
+      confidence: p.confidence,
+      created_at: p.created_at,
+      deadline: p.deadline,
+      status: p.status,
+      outcome: p.outcome || null,
+      outcome_date: p.outcome_date || null,
+      related_score: p.related_pillar
+        ? { pillar: p.related_pillar, score_at_prediction: p.score_at_prediction }
+        : null,
+    }));
 
-    const stats = statsData || {
-      total_predictions: predictions?.length || 0,
-      completed_predictions: 0,
-      correct_positive: 0,
-      correct_negative: 0,
-      false_positive: 0,
-      false_negative: 0,
-      overall_accuracy_percent: null,
-    };
+    // Calculate stats from all predictions (unfiltered)
+    const { data: allPredictions, error: statsError } = await supabase
+      .from("score_predictions")
+      .select("status");
 
-    // Calculate additional stats
-    const byRiskLevel = {};
-    const byStatus = {};
+    if (statsError) throw statsError;
 
-    for (const pred of predictions || []) {
-      const risk = pred.risk_level || "UNKNOWN";
-      const st = pred.status || "unknown";
-
-      byRiskLevel[risk] = (byRiskLevel[risk] || 0) + 1;
-      byStatus[st] = (byStatus[st] || 0) + 1;
-    }
+    const all = allPredictions || [];
+    const total = all.length;
+    const confirmed = all.filter((p) => p.status === "confirmed").length;
+    const missed = all.filter((p) => p.status === "missed").length;
+    const pending = all.filter((p) => p.status === "pending").length;
+    const resolved = confirmed + missed;
+    const accuracyRate = resolved > 0 ? Math.round((confirmed / resolved) * 100) : 0;
 
     return NextResponse.json({
-      predictions: (predictions || []).map((p) => ({
-        id: p.id,
-        productId: p.product_id,
-        product: p.products
-          ? {
-              id: p.products.id,
-              name: p.products.name,
-              slug: p.products.slug,
-            }
-          : null,
-        predictionDate: p.prediction_date,
-        safeScoreAtPrediction: p.safe_score_at_prediction,
-        riskLevel: p.risk_level,
-        incidentProbability: p.incident_probability,
-        windowDays: p.prediction_window_days,
-        expiresAt: p.expires_at,
-        weakestPillar: p.weakest_pillar,
-        weakestPillarScore: p.weakest_pillar_score,
-        confidence: p.confidence,
-        commitmentHash: p.commitment_hash,
-        blockchain: p.blockchain_tx_hash
-          ? {
-              txHash: p.blockchain_tx_hash,
-              network: p.blockchain_network,
-              blockNumber: p.blockchain_block_number,
-            }
-          : null,
-        status: p.status,
-        validatedAt: p.validated_at,
-        incidentOccurred: p.incident_occurred,
-        accuracy: p.accuracy,
-        methodology: p.methodology_version,
-      })),
+      predictions: formattedPredictions,
       stats: {
-        total: stats.total_predictions,
-        completed: stats.completed_predictions,
-        correctPositive: stats.correct_positive,
-        correctNegative: stats.correct_negative,
-        falsePositive: stats.false_positive,
-        falseNegative: stats.false_negative,
-        accuracyPercent: stats.overall_accuracy_percent,
-        byRiskLevel,
-        byStatus,
-      },
-      meta: {
-        limit,
-        returned: predictions?.length || 0,
-        filters: { status, riskLevel, productSlug },
+        total,
+        confirmed,
+        missed,
+        pending,
+        accuracy_rate: accuracyRate,
       },
     });
   } catch (error) {
-    console.error("Predictions API error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("[Predictions API] GET error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
+}
+
+// ─── POST: Create prediction (admin only) ───────────────────────
+
+export async function POST(request) {
+  try {
+    // Authentication check
+    const session = await auth();
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    // Admin role check
+    if (!isAdminEmail(session.user.email)) {
+      return NextResponse.json(
+        { error: "Admin access required" },
+        { status: 403 }
+      );
+    }
+
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json(
+        { error: "Database not configured" },
+        { status: 503 }
+      );
+    }
+
+    const body = await request.json();
+    const {
+      product_slug,
+      prediction,
+      category,
+      confidence,
+      deadline,
+      related_pillar,
+      score_at_prediction,
+    } = body;
+
+    // Validate required fields
+    if (!product_slug || !prediction || !deadline) {
+      return NextResponse.json(
+        { error: "Missing required fields: product_slug, prediction, deadline" },
+        { status: 400 }
+      );
+    }
+
+    // Validate confidence value
+    if (confidence && !["low", "medium", "high"].includes(confidence)) {
+      return NextResponse.json(
+        { error: "Invalid confidence value. Must be: low, medium, or high" },
+        { status: 400 }
+      );
+    }
+
+    // Validate related_pillar
+    if (related_pillar && !["S", "A", "F", "E"].includes(related_pillar)) {
+      return NextResponse.json(
+        { error: "Invalid related_pillar. Must be: S, A, F, or E" },
+        { status: 400 }
+      );
+    }
+
+    // Validate deadline is in the future
+    const deadlineDate = new Date(deadline);
+    if (isNaN(deadlineDate.getTime()) || deadlineDate <= new Date()) {
+      return NextResponse.json(
+        { error: "Deadline must be a valid future date" },
+        { status: 400 }
+      );
+    }
+
+    // Verify product exists
+    const { data: product, error: productError } = await supabase
+      .from("products")
+      .select("slug, name")
+      .eq("slug", product_slug)
+      .single();
+
+    if (productError || !product) {
+      return NextResponse.json(
+        { error: `Product not found: ${product_slug}` },
+        { status: 404 }
+      );
+    }
+
+    // Insert prediction
+    const { data: newPrediction, error: insertError } = await supabase
+      .from("score_predictions")
+      .insert({
+        product_slug,
+        prediction,
+        category: category || "incident_risk",
+        confidence: confidence || "medium",
+        deadline: deadlineDate.toISOString(),
+        related_pillar: related_pillar || null,
+        score_at_prediction: score_at_prediction || null,
+        created_by: session.user.id || null,
+        status: "pending",
+      })
+      .select()
+      .single();
+
+    if (insertError) {
+      console.error("[Predictions API] Insert error:", insertError);
+      return NextResponse.json(
+        { error: "Failed to create prediction" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        prediction: {
+          id: newPrediction.id,
+          product_slug: newPrediction.product_slug,
+          product_name: product.name,
+          prediction: newPrediction.prediction,
+          category: newPrediction.category,
+          confidence: newPrediction.confidence,
+          deadline: newPrediction.deadline,
+          status: newPrediction.status,
+          related_score: newPrediction.related_pillar
+            ? {
+                pillar: newPrediction.related_pillar,
+                score_at_prediction: newPrediction.score_at_prediction,
+              }
+            : null,
+          created_at: newPrediction.created_at,
+        },
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("[Predictions API] POST error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────
+
+function getDefaultStats() {
+  return {
+    total: 0,
+    confirmed: 0,
+    missed: 0,
+    pending: 0,
+    accuracy_rate: 0,
+  };
 }

@@ -21,42 +21,43 @@ import config from "@/config";
  */
 
 // Setup archetypes based on product categories and scores
+// Descriptions are now i18n keys under "archetypes.*"
 const ARCHETYPES = {
   hardwareMaximalist: {
     id: "hardwareMaximalist",
     icon: "🔐",
     gradient: "from-amber-500 to-orange-600",
-    description: "Heavy focus on hardware security",
+    i18nKey: "archetypes.hardwareMaximalist",
   },
   defiNative: {
     id: "defiNative",
     icon: "🌐",
     gradient: "from-purple-500 to-indigo-600",
-    description: "DeFi protocols & smart contracts",
+    i18nKey: "archetypes.defiNative",
   },
   balanced: {
     id: "balanced",
     icon: "⚖️",
     gradient: "from-blue-500 to-cyan-600",
-    description: "Mix of hardware & software",
+    i18nKey: "archetypes.balanced",
   },
   privacyFirst: {
     id: "privacyFirst",
     icon: "👁️",
     gradient: "from-slate-600 to-gray-800",
-    description: "Privacy-focused selections",
+    i18nKey: "archetypes.privacyFirst",
   },
   beginner: {
     id: "beginner",
     icon: "🌱",
     gradient: "from-green-500 to-emerald-600",
-    description: "Simple, entry-level setup",
+    i18nKey: "archetypes.beginner",
   },
   advanced: {
     id: "advanced",
     icon: "🚀",
     gradient: "from-rose-500 to-pink-600",
-    description: "Complex multi-layer security",
+    i18nKey: "archetypes.advanced",
   },
 };
 
@@ -101,7 +102,7 @@ const AnonymousSetupCard = ({ setup, onCompare, onInspire }) => {
                 {t(`archetypes.${archetype.id}`) || archetype.id}
               </h3>
               <p className="text-xs text-base-content/50">
-                {t(`archetypes.${archetype.id}Desc`) || archetype.description}
+                {t(archetype.i18nKey)}
               </p>
             </div>
           </div>

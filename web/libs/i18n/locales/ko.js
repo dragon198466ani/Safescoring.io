@@ -118,7 +118,7 @@ export default {
       },
       rigor: {
         title: "엄격함",
-        desc: "4개 기둥, 916개 규범. 지름길도, 주관도 없습니다.",
+        desc: "4개 기둥, {totalNorms}개 규범. 지름길도, 주관도 없습니다.",
       },
       accessibility: {
         title: "접근성",
@@ -516,7 +516,7 @@ export default {
       },
       norms: {
         title: "Global standards, not opinions",
-        body: "916 norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
+        body: "{totalNorms} norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
       },
       trust: {
         title: "Trust you can prove",
@@ -592,7 +592,7 @@ export default {
         },
         evaluate: {
           title: "Evaluate",
-          desc: "We score your product against 916 security norms.",
+          desc: "We score your product against {totalNorms} security norms.",
         },
         review: {
           title: "Review",
@@ -622,6 +622,39 @@ export default {
       body: "Join teams worldwide using SAFE Certification to prove security with data.",
       primary: "Apply Now",
       secondary: "Talk to Sales",
+    },
+  },
+  // KYC Security
+  kyc: {
+    card: {
+      title: "KYC 노출",
+      noKyc: "이 설정의 플랫폼은 본인 인증이 필요하지 않습니다.",
+      requireKyc: "본인 인증 필요",
+      incidentProvider: "데이터 사고가 있는 제공업체 사용",
+      hide: "숨기기",
+      view: "보기",
+      details: "세부사항",
+      via: "경유",
+      incidentReported: "사고 보고됨",
+      noIncidents: "사고 없음",
+      dataTypesAffected: "영향을 받을 수 있는 데이터 유형:",
+      upgradeCta: "제공업체 상세 정보를 보려면 업그레이드하세요.",
+    },
+    dataTypes: {
+      passport: "여권 / 신분증",
+      selfie: "셀피 / 사진",
+      address: "주소",
+      phone: "전화번호",
+      bankAccount: "은행 계좌",
+      ssn: "세금 번호",
+      email: "이메일",
+    },
+    risk: {
+      critical: "심각",
+      high: "높음",
+      moderate: "보통",
+      low: "낮음",
+      none: "KYC 없음",
     },
   },
 };

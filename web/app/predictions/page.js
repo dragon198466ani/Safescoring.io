@@ -2,6 +2,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { getStats } from "@/libs/stats";
 
 export const revalidate = 3600;
 
@@ -131,6 +132,7 @@ function getAccuracyBadge(accuracy) {
 }
 
 export default async function PredictionsPage() {
+  const platformStats = await getStats();
   const { predictions, stats } = await getPredictions();
 
   const accuracy = stats.overall_accuracy_percent || 0;
@@ -172,7 +174,7 @@ export default async function PredictionsPage() {
                 <div className="text-3xl mb-2">1</div>
                 <div className="font-semibold">Analyze</div>
                 <div className="text-sm text-base-content/60">
-                  We evaluate products on 1110 security criteria
+                  We evaluate products on {platformStats.totalNorms} security criteria
                 </div>
               </div>
               <div className="text-center">

@@ -45,7 +45,7 @@ The cryptocurrency industry lacks standardized methods for evaluating product se
 The SAFE (Security, Adversity, Fidelity, Efficiency) Framework is a novel computer-implemented method for evaluating cryptocurrency product security through:
 
 1. **Multi-pillar architecture** - Four balanced evaluation domains
-2. **Norm-based evaluation** - 916+ standardized evaluation criteria
+2. **Norm-based evaluation** - 2376+ standardized evaluation criteria
 3. **Weighted scoring algorithm** - Criticality-based norm weighting
 4. **Type-specific applicability** - 50+ product type classifications
 5. **Three-tier output** - Essential, Consumer, and Full scoring modes
@@ -64,7 +64,7 @@ The SAFE (Security, Adversity, Fidelity, Efficiency) Framework is a novel comput
 │  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐        │
 │  │  Product     │   │  Norm        │   │  Evaluation  │        │
 │  │  Database    │──▶│  Database    │──▶│  Engine      │        │
-│  │  (150+)      │   │  (916+)      │   │  (AI-powered)│        │
+│  │  (150+)      │   │  (2376+)      │   │  (AI-powered)│        │
 │  └──────────────┘   └──────────────┘   └──────────────┘        │
 │         │                 │                   │                 │
 │         ▼                 ▼                   ▼                 │
@@ -246,7 +246,7 @@ With essential norm bonus/malus:
 
 **Use case:** Consumer purchasing decisions
 
-#### 5.4.3 Full Tier (916+ norms)
+#### 5.4.3 Full Tier (2376+ norms)
 
 **Purpose:** Comprehensive security evaluation.
 
@@ -347,7 +347,7 @@ The method of Claim 1, further comprising three-tier scoring:
 ### Claim 5
 A system for evaluating cryptocurrency product security, comprising:
 - A product database storing product metadata
-- A norm database storing 916+ evaluation criteria
+- A norm database storing 2376+ evaluation criteria
 - An applicability engine determining applicable norms per product type
 - A scoring engine calculating weighted pillar and composite scores
 - A user interface displaying scores and evaluation details
@@ -356,7 +356,7 @@ A system for evaluating cryptocurrency product security, comprising:
 
 ## 7. ABSTRACT
 
-A computer-implemented system and method for evaluating the security posture of cryptocurrency products using a multi-pillar weighted scoring framework. The SAFE (Security, Adversity, Fidelity, Efficiency) methodology evaluates products against 916+ standardized norms, with norm weights based on criticality (3.0x for cryptographic fundamentals to 1.0x for minor features). The system includes product type classification with applicability rules, three-tier scoring (Essential, Consumer, Full), and balanced pillar weighting (25% each). The invention provides transparent, reproducible, and comparable security scores for hardware wallets, software wallets, DeFi protocols, exchanges, and other cryptocurrency products.
+A computer-implemented system and method for evaluating the security posture of cryptocurrency products using a multi-pillar weighted scoring framework. The SAFE (Security, Adversity, Fidelity, Efficiency) methodology evaluates products against 2376+ standardized norms, with norm weights based on criticality (3.0x for cryptographic fundamentals to 1.0x for minor features). The system includes product type classification with applicability rules, three-tier scoring (Essential, Consumer, Full), and balanced pillar weighting (25% each). The invention provides transparent, reproducible, and comparable security scores for hardware wallets, software wallets, DeFi protocols, exchanges, and other cryptocurrency products.
 
 ---
 
@@ -438,7 +438,7 @@ class ScoringEngine:
 ### 9.2 Database Schema
 
 - `products`: Product metadata and type classification
-- `norms`: 916+ evaluation criteria with pillar, weight, tier
+- `norms`: 2376+ evaluation criteria with pillar, weight, tier
 - `evaluations`: YES/YESp/NO/N/A/TBD results per product-norm
 - `safe_scoring_results`: Calculated scores by tier
 

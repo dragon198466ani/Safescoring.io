@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useStats } from "@/hooks/useStats";
+import { useGlobalStats } from "@/libs/StatsProvider";
 
 const HybridApproach = () => {
-  const { stats } = useStats();
+  const { stats } = useGlobalStats();
 
   return (
     <section className="py-12 px-6 relative overflow-hidden">

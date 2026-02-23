@@ -266,7 +266,7 @@ class StrategySelector:
         topics = [
             "The 5 security features every wallet needs",
             "Why audits aren't enough (with data)",
-            "How we analyze 916 security criteria",
+            "How we analyze 2376 security criteria",
             "The difference between safe and unsafe wallets",
             "What the data says about hardware vs software wallets",
         ]

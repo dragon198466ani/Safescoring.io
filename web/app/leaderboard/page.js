@@ -2,13 +2,17 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { getStats } from "@/libs/stats";
 
 export const revalidate = 3600; // Revalidate every hour
 
-export const metadata = {
-  title: "Security Leaderboard - Top Rated Crypto Products | SafeScoring",
-  description: "See the most secure crypto wallets, exchanges, and DeFi protocols ranked by SafeScore. Updated monthly based on 916 security criteria.",
-};
+export async function generateMetadata() {
+  const stats = await getStats();
+  return {
+    title: "Security Leaderboard - Top Rated Crypto Products | SafeScoring",
+    description: `See the most secure crypto wallets, exchanges, and DeFi protocols ranked by SafeScore. Updated monthly based on ${stats.totalNorms} security criteria.`,
+  };
+}
 
 async function getLeaderboardData() {
   if (!isSupabaseConfigured()) return { products: [], contributors: [] };
@@ -68,6 +72,7 @@ const getRankBadge = (rank) => {
 };
 
 export default async function LeaderboardPage() {
+  const platformStats = await getStats();
   const { products } = await getLeaderboardData();
 
   // Group by category
@@ -90,7 +95,7 @@ export default async function LeaderboardPage() {
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
               The most secure crypto products ranked by SafeScore.
-              Updated monthly based on 916 security criteria.
+              Updated monthly based on {platformStats.totalNorms} security criteria.
             </p>
           </div>
 
@@ -238,7 +243,7 @@ export default async function LeaderboardPage() {
           {/* Methodology note */}
           <div className="mt-12 text-center">
             <p className="text-sm text-base-content/50 mb-4">
-              Rankings based on SafeScore methodology: 916 security norms across Security, Adversity, Fidelity & Efficiency.
+              Rankings based on SafeScore methodology: {platformStats.totalNorms} security norms across Security, Adversity, Fidelity & Efficiency.
             </p>
             <Link href="/methodology" className="text-primary hover:underline text-sm">
               Learn about our methodology →

@@ -42,10 +42,10 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest tests/ -v --cov=src --cov-report=xml || true
+          pytest tests/ -v --cov=src --cov-report=xml
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Upload coverage
         uses: codecov/codecov-action@v3

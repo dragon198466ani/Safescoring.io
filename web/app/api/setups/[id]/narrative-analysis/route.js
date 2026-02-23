@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/libs/supabase';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/libs/auth';
+import { auth } from '@/libs/auth';
 
 /**
  * GET /api/setups/[id]/narrative-analysis
@@ -23,7 +22,7 @@ export async function GET(req, { params }) {
     }
 
     // Check authentication
-    const session = await getServerSession(authOptions);
+    const session = await auth();
 
     // Fetch the setup to verify access
     const { data: setup, error: setupError } = await supabase

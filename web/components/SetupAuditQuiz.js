@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useUserSetups, useApi } from "@/hooks/useApi";
+import { useApi } from "@/hooks/useApi";
 
 /**
  * SetupAuditQuiz - Quiz pour utilisateurs CONNECTÉS
@@ -471,7 +471,10 @@ export default function SetupAuditQuiz({ className = "", onClose }) {
   const [selectedOption, setSelectedOption] = useState(null);
 
   // Use useApi for setups (shared cache)
-  const { data: setupsData, isLoading: loadingSetups } = useUserSetups();
+  const { data: setupsData, isLoading: loadingSetups } = useApi(
+    session?.user?.id ? "/api/setups" : null,
+    { ttl: 5 * 60 * 1000 }
+  );
 
   // Get first setup ID
   const mainSetupId = useMemo(() => {

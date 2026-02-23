@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/libs/supabase/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/libs/auth';
+import { auth } from '@/libs/auth';
 
 /**
  * GET /api/products/[slug]/evaluations-to-vote
@@ -15,7 +14,7 @@ export async function GET(req, { params }) {
     const pillar = searchParams.get('pillar'); // Optional filter
 
     const supabase = createClient();
-    const session = await getServerSession(authOptions);
+    const session = await auth();
 
     // Get product
     const { data: product } = await supabase
@@ -35,7 +34,7 @@ export async function GET(req, { params }) {
         id,
         result,
         why_this_result,
-        norms!inner(code, title, pillar)
+        norms!inner(code, title, pillar, official_link, official_doc_summary)
       `)
       .eq('product_id', product.id)
       .in('result', ['YES', 'NO']) // Exclude TBD
@@ -97,6 +96,8 @@ export async function GET(req, { params }) {
         norm_code: e.norms.code,
         norm_title: e.norms.title,
         pillar: e.norms.pillar,
+        official_link: e.norms.official_link || null,
+        official_doc_summary: e.norms.official_doc_summary || null,
         agree_count: voteStats[e.id]?.agree || 0,
         disagree_count: voteStats[e.id]?.disagree || 0,
         vote_count: (voteStats[e.id]?.agree || 0) + (voteStats[e.id]?.disagree || 0),

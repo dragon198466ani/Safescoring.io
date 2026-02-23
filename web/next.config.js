@@ -154,9 +154,18 @@ const nextConfig = {
         protocol: "https",
         hostname: "www.google.com",
       },
+      // Crypto product logos
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "*.coinmarketcap.com",
+      },
+      {
+        protocol: "https",
+        hostname: "assets.coingecko.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cryptologos.cc",
       },
     ],
   },

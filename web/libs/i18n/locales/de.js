@@ -110,7 +110,7 @@ export default {
       },
       rigor: {
         title: "Strenge",
-        desc: "916 Normen über 4 Säulen. Keine Abkürzungen, keine subjektiven Meinungen.",
+        desc: "{totalNorms} Normen über 4 Säulen. Keine Abkürzungen, keine subjektiven Meinungen.",
       },
       accessibility: {
         title: "Zugänglichkeit",
@@ -1164,7 +1164,7 @@ export default {
       },
       norms: {
         title: "Global standards, not opinions",
-        body: "916 norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
+        body: "{totalNorms} norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
       },
       trust: {
         title: "Trust you can prove",
@@ -1240,7 +1240,7 @@ export default {
         },
         evaluate: {
           title: "Evaluate",
-          desc: "We score your product against 916 security norms.",
+          desc: "We score your product against {totalNorms} security norms.",
         },
         review: {
           title: "Review",
@@ -1270,6 +1270,39 @@ export default {
       body: "Join teams worldwide using SAFE Certification to prove security with data.",
       primary: "Apply Now",
       secondary: "Talk to Sales",
+    },
+  },
+  // KYC Security
+  kyc: {
+    card: {
+      title: "KYC-Exposition",
+      noKyc: "Keine Plattformen in diesem Setup erfordern eine Identitaetspruefung.",
+      requireKyc: "erfordern eine Identitaetspruefung",
+      incidentProvider: "nutzen einen Anbieter mit bekanntem Datenvorfall",
+      hide: "Ausblenden",
+      view: "Anzeigen",
+      details: "Details",
+      via: "ueber",
+      incidentReported: "Vorfall gemeldet",
+      noIncidents: "Keine Vorfaelle",
+      dataTypesAffected: "Potenziell betroffene Datentypen:",
+      upgradeCta: "Upgraden Sie fuer detaillierte Anbieterinformationen.",
+    },
+    dataTypes: {
+      passport: "Reisepass / Ausweis",
+      selfie: "Selfie / Foto",
+      address: "Adresse",
+      phone: "Telefonnummer",
+      bankAccount: "Bankkonto",
+      ssn: "Steuernummer",
+      email: "E-Mail",
+    },
+    risk: {
+      critical: "Kritisch",
+      high: "Hoch",
+      moderate: "Mittel",
+      low: "Niedrig",
+      none: "Kein KYC",
     },
   },
 };

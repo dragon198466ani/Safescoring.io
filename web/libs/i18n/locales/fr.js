@@ -51,7 +51,7 @@ export default {
 
   // Hero
   hero: {
-    tagline: "1110 normes. 0 opinion. 1 score.",
+    tagline: "{totalNorms} normes. 0 opinion. 1 score.",
     taglineAlt: "Au-delà de l'audit.",
     title: "Le premier rating de sécurité",
     titleHighlight: "crypto unifié",
@@ -590,5 +590,81 @@ export default {
     errorMessage: "Désolé, j'ai rencontré une erreur. Veuillez réessayer dans un instant.",
     connectionError: "Erreur de connexion",
     connectionErrorMessage: "Désolé, j'ai du mal à me connecter. Vérifiez votre connexion et réessayez.",
+  },
+
+  // KYC Security
+  kyc: {
+    card: {
+      title: "Exposition KYC",
+      noKyc: "Aucune plateforme de ce setup ne requiert de verification d'identite.",
+      requireKyc: "requierent une verification d'identite",
+      incidentProvider: "utilisent un prestataire ayant connu un incident de donnees",
+      hide: "Masquer",
+      view: "Voir",
+      details: "les details",
+      via: "via",
+      incidentReported: "Incident signale",
+      noIncidents: "Aucun incident",
+      dataTypesAffected: "Types de donnees potentiellement exposes :",
+      upgradeCta: "Passez a un plan superieur pour voir les informations detaillees sur les prestataires.",
+    },
+    dataTypes: {
+      passport: "Passeport / Piece d'identite",
+      selfie: "Selfie / Photo",
+      address: "Adresse",
+      phone: "Numero de telephone",
+      bankAccount: "Compte bancaire",
+      ssn: "Numero fiscal",
+      email: "Email",
+    },
+    risk: {
+      critical: "Critique",
+      high: "Eleve",
+      moderate: "Modere",
+      low: "Faible",
+      none: "Pas de KYC",
+    },
+    page: {
+      title: "Securite KYC : Protegez votre identite",
+      subtitle: "Comprenez comment les plateformes crypto gerent vos donnees personnelles",
+      heroDesc: "Plus d'un milliard d'enregistrements d'identite ont ete exposes via des incidents de prestataires KYC. SafeScoring evalue {totalNorms} normes de securite pour vous aider a choisir des plateformes plus sures.",
+      stats: {
+        norms: "normes de securite KYC",
+        providers: "prestataires evalues",
+        dataTypes: "types de donnees suivis",
+      },
+      sections: {
+        riskTitle: "Comprendre le risque KYC",
+        riskDesc: "Lorsque vous utilisez une plateforme crypto qui exige une verification d'identite (KYC), vos donnees personnelles sont partagees avec des prestataires tiers. Si ces prestataires subissent un incident, vos informations peuvent etre exposees.",
+        methodTitle: "Comment SafeScoring evalue la securite KYC",
+        methodDesc: "Notre methodologie comprend 22 normes dediees reparties en 3 categories, concues pour evaluer la protection de vos donnees d'identite.",
+        kycprot: "Protection des donnees KYC",
+        kycprotDesc: "10 normes evaluant le stockage, le chiffrement et la gestion de vos documents d'identite.",
+        breach: "Reponse aux incidents",
+        breachDesc: "7 normes mesurant la rapidite et la transparence de la reponse aux incidents.",
+        idprot: "Protection de l'identite (UX)",
+        idprotDesc: "5 normes evaluant les fonctionnalites qui protegent votre identite.",
+        providersTitle: "Prestataires KYC evalues",
+        providersDesc: "Nous suivons les principaux prestataires de verification KYC utilises dans l'industrie crypto.",
+        protectTitle: "Protegez-vous",
+        protectDesc: "Prenez le controle de la securite de votre identite avec ces etapes pratiques.",
+        tip1: "Verifiez quelles plateformes de votre portefeuille exigent le KYC",
+        tip2: "Surveillez l'historique des incidents des prestataires",
+        tip3: "Utilisez des plateformes avec de bons scores de protection des donnees",
+        tip4: "Minimisez le partage d'identite non necessaire",
+        ctaDashboard: "Analysez votre setup",
+        ctaSignup: "Commencez gratuitement",
+      },
+    },
+  },
+
+  // Archetypes de setup (AnonymousCatalog)
+  archetypes: {
+    hardwareMaximalist: "Securite hardware au maximum",
+    defiNative: "Protocoles DeFi & smart contracts",
+    balanced: "Mix hardware & logiciel",
+    privacyFirst: "Selections axees confidentialite",
+    beginner: "Setup simple pour debuter",
+    advanced: "Securite multi-couche avancee",
   },
 };

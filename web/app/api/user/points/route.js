@@ -3,9 +3,8 @@
  * Gestion des points $SAFE
  */
 
-import { createClient } from "@/libs/supabase";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/libs/auth";
+import { supabase } from "@/libs/supabase";
+import { auth } from "@/libs/auth";
 import { NextResponse } from "next/server";
 import { applyUserRateLimit } from "@/libs/rate-limiters";
 
@@ -21,12 +20,11 @@ export async function GET(request) {
 
   
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const supabase = createClient();
     const userId = session.user.id;
 
     // Points et stats

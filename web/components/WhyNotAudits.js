@@ -1,6 +1,11 @@
+"use client";
+
 import config from "@/config";
+import { useGlobalStats } from "@/libs/StatsProvider";
 
 const WhyNotAudits = () => {
+  const { stats } = useGlobalStats();
+
   return (
     <section className="py-24 px-6 bg-base-200/30" id="why-audits">
       <div className="max-w-6xl mx-auto">
@@ -51,7 +56,7 @@ const WhyNotAudits = () => {
                 {
                   criteria: "Methodology",
                   audit: "Varies by auditor",
-                  safe: "916 standardized norms",
+                  safe: `${stats.totalNorms} standardized norms`,
                   safeWins: true,
                 },
                 {
@@ -75,7 +80,7 @@ const WhyNotAudits = () => {
                 {
                   criteria: "Cost",
                   audit: "$50K - $500K+ (manual audit)",
-                  safe: "From $29/month (automated monitoring)*",
+                  safe: "From $19/month (automated monitoring)*",
                   safeWins: true,
                 },
                 {
@@ -128,7 +133,7 @@ const WhyNotAudits = () => {
             </div>
           </div>
           <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20">
-            <div className="text-4xl font-bold text-primary mb-2">916</div>
+            <div className="text-4xl font-bold text-primary mb-2">{stats.totalNorms}</div>
             <div className="text-sm text-base-content/60">
               standardized norms across security, resilience, trust & usability
             </div>

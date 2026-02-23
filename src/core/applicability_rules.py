@@ -56,6 +56,14 @@ WALLET_ONLY_CATEGORIES = [
     'Decoy',          # A168-A171: Decoy wallets
 ]
 
+# Norm categories that ONLY apply to KYC-COLLECTING SERVICES
+# (exchanges, custodial wallets, custody services, payment services, neobanks)
+KYC_COLLECTING_CATEGORIES = [
+    'KYCPROT',        # KYCPROT01-KYCPROT10: KYC data protection
+    'BREACH',         # BREACH01-BREACH07: Data incident response
+    'IDPROT',         # IDPROT01-IDPROT05: Identity protection UX
+]
+
 # Norm categories that ONLY apply to PHYSICAL BACKUPS (metal plates)
 BACKUP_PHYSICAL_ONLY = [
     'Chimique',       # Chemical resistance

@@ -68,7 +68,7 @@ export async function GET(request, { params }) {
     const normIds = [...new Set(evaluations.map(e => e.norm_id))];
     const { data: norms } = await supabase
       .from("norms")
-      .select("id, code, title, pillar, is_essential, description")
+      .select("id, code, title, pillar, is_essential, description, official_link, official_doc_summary")
       .in("id", normIds);
 
     const normMap = {};
@@ -94,6 +94,8 @@ export async function GET(request, { params }) {
         title: norm.title,
         description: norm.description,
         is_essential: norm.is_essential || false,
+        official_link: norm.official_link || null,
+        official_doc_summary: norm.official_doc_summary || null,
         reason: ev.why_this_result || null
       };
 
@@ -216,7 +218,9 @@ export async function GET(request, { params }) {
           title: p.title,
           code: p.code,
           is_essential: p.is_essential,
-          description: p.description
+          description: p.description,
+          official_link: p.official_link,
+          official_doc_summary: p.official_doc_summary
         })),
         // Points faibles (top 10)
         weaknesses: results.no.sort(sortByEssential).slice(0, 10).map(p => ({
@@ -224,6 +228,8 @@ export async function GET(request, { params }) {
           code: p.code,
           is_essential: p.is_essential,
           description: p.description,
+          official_link: p.official_link,
+          official_doc_summary: p.official_doc_summary,
           reason: p.reason
         })),
         // En attente de vérification

@@ -133,7 +133,7 @@ Translated post:
         website_content = {
             'hero': {
                 'title': 'Crypto Security Ratings You Can Trust',
-                'subtitle': 'We analyze 500+ crypto products across 916 security norms so you can make safer choices.',
+                'subtitle': 'We analyze 500+ crypto products across 2376 security norms so you can make safer choices.',
                 'cta_primary': 'Explore Products',
                 'cta_secondary': 'View Methodology'
             },

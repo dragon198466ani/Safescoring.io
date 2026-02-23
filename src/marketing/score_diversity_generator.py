@@ -260,7 +260,7 @@ safescoring.io/products/{top['slug']}"""
         return {
             'title': f"We rated {total} {product_type} - here's the honest breakdown",
             'subreddit': 'CryptoCurrency',
-            'body': f"""I run SafeScoring.io where we evaluate crypto products against 916 security norms.
+            'body': f"""I run SafeScoring.io where we evaluate crypto products against 2376 security norms.
 
 Here's what we found for {product_type}:
 
@@ -315,7 +315,7 @@ We've evaluated {self.score_data['count']}+ crypto products. The results might s
 
 This isn't about FUD. It's about facts.
 
-At SafeScoring, we rate every product against 916 security norms. Same standards for everyone. No pay-to-play.
+At SafeScoring, we rate every product against 2376 security norms. Same standards for everyone. No pay-to-play.
 
 Some products don't like their scores. But our job isn't to make friends—it's to help users make informed decisions.
 

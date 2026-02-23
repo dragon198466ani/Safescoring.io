@@ -15,7 +15,7 @@ HACK_THREAD_TEMPLATES = {
         "What went wrong:\n\n• {point1}\n• {point2}\n• {point3}",
         "Could this have been prevented?\n\nYes. Our SafeScore for {project} was only {score}/100.\n\nHere's what we flagged:",
         "How to protect yourself:\n\n1. Always verify security scores before depositing\n2. Diversify across multiple protocols\n3. Use hardware wallets for large amounts",
-        "Check if your wallets and protocols are safe → safescoring.io\n\n916 security criteria. 0 opinions. 1 score.\n\n#crypto #security #DeFi"
+        "Check if your wallets and protocols are safe → safescoring.io\n\n2376 security criteria. 0 opinions. 1 score.\n\n#crypto #security #DeFi"
     ],
 
     'analysis': [
@@ -23,7 +23,7 @@ HACK_THREAD_TEMPLATES = {
         "The attack vector: {vulnerability}\n\nThis is a common weakness we've seen in {percentage}% of similar protocols.",
         "Red flags we identified:\n\n🚩 {flag1}\n🚩 {flag2}\n🚩 {flag3}",
         "The harsh truth: 87% of hacked projects passed their audits.\n\nAudits check code. SafeScoring checks EVERYTHING.",
-        "Our 916 security norms cover:\n\n• Code security\n• Team reputation\n• Incident history\n• Operational security\n• Much more...",
+        "Our 2376 security norms cover:\n\n• Code security\n• Team reputation\n• Incident history\n• Operational security\n• Much more...",
         "Don't be the next victim.\n\nVerify before you deposit → safescoring.io"
     ]
 }
@@ -49,7 +49,7 @@ EDUCATIONAL_TEMPLATES = {
         "Key differences:\n\n{difference1}\n{difference2}\n{difference3}",
         "Where {winner} wins:\n\n• {strength1}\n• {strength2}",
         "Where {loser} needs improvement:\n\n• {weakness1}\n• {weakness2}",
-        "Full comparison with 916 criteria → safescoring.io/{comparison_link}\n\n#crypto #{product_a_tag} #{product_b_tag}"
+        "Full comparison with 2376 criteria → safescoring.io/{comparison_link}\n\n#crypto #{product_a_tag} #{product_b_tag}"
     ]
 }
 
@@ -75,12 +75,12 @@ ENGAGEMENT_TEMPLATES = {
 
 CTA_TEMPLATES = {
     'soft': "Curious about your wallet's security score? → safescoring.io",
-    'medium': "Check if your crypto setup is secure → safescoring.io\n\n916 criteria. Independent. Free.",
+    'medium': "Check if your crypto setup is secure → safescoring.io\n\n2376 criteria. Independent. Free.",
     'strong': "🚨 Don't wait for a hack to check your security.\n\nVerify NOW → safescoring.io",
     'urgency': "⚠️ {amount}M was stolen this week alone.\n\nIs your wallet on the safe list? → safescoring.io",
     'social_proof': "Join {number}+ crypto users who verify their security on SafeScoring → safescoring.io",
     # HYBRID AI+HUMAN MESSAGING
-    'hybrid_trust': "916 criteria analyzed by AI. Critical scores verified by experts.\n\n→ safescoring.io",
+    'hybrid_trust': "2376 criteria analyzed by AI. Critical scores verified by experts.\n\n→ safescoring.io",
     'hybrid_method': "AI for speed. Humans for judgment. Full transparency.\n\n→ safescoring.io",
     'hybrid_diff': "Not 100% robot. Not 100% manual. The best of both.\n\n→ safescoring.io",
 }
@@ -91,8 +91,8 @@ CTA_TEMPLATES = {
 
 HYBRID_TEMPLATES = {
     'methodology_thread': [
-        "How do we score 150+ crypto products on 916 security criteria?\n\nA thread on our hybrid AI+human approach 🧵",
-        "Step 1: AI does the heavy lifting\n\nOur system analyzes each product against 916 security norms.\n\nSpeed: minutes, not weeks.\nCost: ~$0.03 per product.\nConsistency: same criteria, every time.",
+        "How do we score 150+ crypto products on 2376 security criteria?\n\nA thread on our hybrid AI+human approach 🧵",
+        "Step 1: AI does the heavy lifting\n\nOur system analyzes each product against 2376 security norms.\n\nSpeed: minutes, not weeks.\nCost: ~$0.03 per product.\nConsistency: same criteria, every time.",
         "Step 2: Humans handle uncertainty\n\nWhen the AI says 'I'm not sure' (TBD), experts review.\n\nCritical security norms? Double-checked by humans.\nNew product types? Manual verification.",
         "Step 3: Community corrections\n\nFound an error? Submit a correction with evidence.\n\nExperts review. Good corrections = reputation points.\nTransparency: see every correction in the changelog.",
         "Why hybrid?\n\n100% human = slow, expensive, inconsistent\n100% AI = hallucinations, no judgment, blind spots\n\nHybrid = speed + accuracy + trust",
@@ -109,9 +109,9 @@ HYBRID_TEMPLATES = {
     ],
 
     'single_hybrid': {
-        'method': "How we score 916 security criteria:\n\n1. AI analyzes at scale\n2. Experts verify critical scores\n3. Community corrects errors\n\nNot a black box → safescoring.io",
+        'method': "How we score 2376 security criteria:\n\n1. AI analyzes at scale\n2. Experts verify critical scores\n3. Community corrects errors\n\nNot a black box → safescoring.io",
         'trust': "Our scores aren't just AI guesses.\n\nCritical norms = human verified\nUncertain results = expert review\nErrors = community corrected\n\n→ safescoring.io",
-        'diff': "Other ratings: AI-only or slow human reviews.\n\nSafeScoring: AI speed + human judgment.\n\n916 criteria. Verified. Transparent.\n\n→ safescoring.io"
+        'diff': "Other ratings: AI-only or slow human reviews.\n\nSafeScoring: AI speed + human judgment.\n\n2376 criteria. Verified. Transparent.\n\n→ safescoring.io"
     }
 }
 
@@ -148,7 +148,7 @@ WEEKLY_RECAP_TEMPLATE = [
 SINGLE_TWEETS = {
     'hack_alert': "🚨 {project} hacked for ${amount}M via {method}.\n\nOur SafeScore: {score}/100\n\nVerify your protocols → safescoring.io",
 
-    'stat': "📊 {stat}\n\nThis is why we built SafeScoring.\n\n916 security criteria. 0 opinions. 1 score.\n\n→ safescoring.io",
+    'stat': "📊 {stat}\n\nThis is why we built SafeScoring.\n\n2376 security criteria. 0 opinions. 1 score.\n\n→ safescoring.io",
 
     'tip': "💡 Crypto security tip:\n\n{tip}\n\nMore tips and security scores → safescoring.io",
 

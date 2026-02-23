@@ -83,7 +83,7 @@ class NarrativeGenerator:
         self.session.mount("http://", adapter)
 
     def load_data(self):
-        """Load all necessary data from Supabase."""
+        """Load all necessary data from Supabase (evaluations loaded per-product for performance)."""
         print("[NARRATIVE] Loading data...")
 
         # Load products
@@ -94,9 +94,16 @@ class NarrativeGenerator:
         self.norms = fetch_all('norms', select='id,code,title,pillar,description,is_essential', order='id')
         print(f"   {len(self.norms)} norms")
 
-        # Load evaluations (all)
-        self.evaluations = fetch_all('evaluations', select='id,product_id,norm_id,result,why_this_result,evaluated_by', order='id')
-        print(f"   {len(self.evaluations)} evaluations")
+        # Load scores from safe_scoring_results (lightweight)
+        self.scores_data = fetch_all('safe_scoring_results', select='product_id,note_finale,score_s,score_a,score_f,score_e', order='product_id')
+        self.scores_by_product = {s['product_id']: s for s in self.scores_data}
+        print(f"   {len(self.scores_data)} product scores loaded")
+
+        # OPTIMIZATION: Do NOT load all evaluations at once (2.9M rows)
+        # Instead, load per-product in _get_product_evaluations()
+        self.evaluations = []  # Empty - loaded on demand
+        self._evals_cache = {}  # Cache per product_id
+        print(f"   Evaluations: on-demand loading (optimized)")
 
         # Load product types
         self.product_types = fetch_all('product_types', select='id,name,description', order='id')
@@ -108,11 +115,38 @@ class NarrativeGenerator:
         self.types_by_id = {t['id']: t for t in self.product_types}
 
     def _get_product_evaluations(self, product_id):
-        """Get all evaluations for a product, enriched with norm data."""
-        evals = [e for e in self.evaluations if e['product_id'] == product_id]
+        """Get all evaluations for a product, enriched with norm data.
+        Loads from Supabase on-demand if not cached (optimization for 2.9M+ rows)."""
+        # Check cache first
+        if product_id in self._evals_cache:
+            return self._evals_cache[product_id]
+
+        # Load from Supabase on demand (much faster than loading all 2.9M rows)
+        evals = []
+        if not self.evaluations:
+            # On-demand mode: fetch from Supabase
+            import requests
+            offset = 0
+            while True:
+                r = self.session.get(
+                    f"{SUPABASE_URL}/rest/v1/evaluations?select=norm_id,result,why_this_result&product_id=eq.{product_id}&limit=1000&offset={offset}",
+                    headers=SUPABASE_HEADERS,
+                    timeout=60
+                )
+                if r.status_code != 200 or not r.json():
+                    break
+                evals.extend(r.json())
+                offset += 1000
+                if len(r.json()) < 1000:
+                    break
+        else:
+            # Legacy mode: filter from pre-loaded evaluations
+            evals = [e for e in self.evaluations if e['product_id'] == product_id]
+
         enriched = []
         for e in evals:
-            norm = self.norms_by_id.get(e['norm_id'])
+            norm_id = e.get('norm_id')
+            norm = self.norms_by_id.get(norm_id)
             if norm:
                 enriched.append({
                     'result': e['result'],
@@ -123,6 +157,9 @@ class NarrativeGenerator:
                     'is_essential': norm.get('is_essential', False),
                     'description': norm.get('description', ''),
                 })
+
+        # Cache the result
+        self._evals_cache[product_id] = enriched
         return enriched
 
     def _build_pillar_data(self, product_id, pillar):
@@ -372,19 +409,20 @@ IMPORTANT:
         product_id = product['id']
         product_name = product['name']
 
-        # Get scores
+        # Get scores (prefer safe_scoring_results over product fields)
+        score_data = self.scores_by_product.get(product_id, {}) if hasattr(self, 'scores_by_product') else {}
         scores = {
-            'safe_score': product.get('safe_score', 0),
-            'score_s': product.get('score_s', 0),
-            'score_a': product.get('score_a', 0),
-            'score_f': product.get('score_f', 0),
-            'score_e': product.get('score_e', 0),
+            'safe_score': score_data.get('note_finale') or product.get('safe_score', 0) or 0,
+            'score_s': score_data.get('score_s') or product.get('score_s', 0) or 0,
+            'score_a': score_data.get('score_a') or product.get('score_a', 0) or 0,
+            'score_f': score_data.get('score_f') or product.get('score_f', 0) or 0,
+            'score_e': score_data.get('score_e') or product.get('score_e', 0) or 0,
         }
 
-        print(f"\n   [PRODUCT] {product_name} (SAFE: {scores['safe_score']})")
+        print(f"\n   [PRODUCT] {product_name} (SAFE: {scores['safe_score']}%)")
 
-        # Check if product has evaluations
-        product_evals = [e for e in self.evaluations if e['product_id'] == product_id]
+        # Check if product has evaluations (use on-demand loading)
+        product_evals = self._get_product_evaluations(product_id)
         if not product_evals:
             print(f"      No evaluations found - skipping")
             return None

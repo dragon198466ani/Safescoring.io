@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/libs/supabase/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/libs/auth';
+import { auth } from '@/libs/auth';
 
 export async function POST(req) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }

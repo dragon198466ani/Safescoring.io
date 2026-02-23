@@ -198,7 +198,7 @@ However, [PRODUCT_LOSER] might be better if [specific use case where it wins].
 
 ## Methodology
 
-This comparison is based on SafeScoring's evaluation of 1110 security criteria across the SAFE framework:
+This comparison is based on SafeScoring's evaluation of 2376 security criteria across the SAFE framework:
 
 - **S**ecurity - Technical protection measures
 - **A**dversity - Resistance to attacks

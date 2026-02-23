@@ -25,9 +25,9 @@ FREE_FEATURES = {
     },
     'methodology': {
         'name': 'SAFE Methodology',
-        'description': '916 security norms, transparent evaluation',
+        'description': '2376 security norms, transparent evaluation',
         'marketing_phrases': [
-            '916 security norms',
+            '2376 security norms',
             'Transparent methodology',
             'See exactly how we rate products',
             'Open evaluation criteria',
@@ -105,7 +105,7 @@ MARKETING_RULES = {
         'Scores are visible to everyone',
         'Transparent methodology',
         'Some products fail (proves objectivity)',
-        '916 security norms analyzed',
+        '2376 security norms analyzed',
         'Independent evaluation',
     ],
 
@@ -296,7 +296,7 @@ Curious how that compares to alternatives?
 safescoring.io/products/{slug}""",
 
     # Authority + transparency
-    """916 security criteria.
+    """2376 security criteria.
 {count}+ products analyzed.
 All results public.
 
@@ -327,7 +327,7 @@ FREEMIUM_REDDIT_TEMPLATES = [
         'title': 'Found a site that publicly rates wallet security (interesting data)',
         'body': """Been researching wallet security and stumbled on safescoring.io
 
-They analyze wallets against 916 security criteria. All scores are public.
+They analyze wallets against 2376 security criteria. All scores are public.
 
 What caught my attention:
 - Some well-known wallets scored surprisingly low
@@ -344,7 +344,7 @@ What wallet are you using? Curious to see how it scores."""
 
 Checked mine on safescoring.io - was not expecting that score.
 
-They check 916 things apparently. Some wallets fail basic checks.
+They check 2376 things apparently. Some wallets fail basic checks.
 
 Might be worth looking up yours before something happens."""
     },

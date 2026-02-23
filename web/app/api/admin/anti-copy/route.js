@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
-import { isAdmin } from "@/libs/admin-auth";
+import { isAdminEmail } from "@/libs/admin-auth";
 import {
   getSuspiciousClients,
   getClientStats,
@@ -22,7 +22,7 @@ export async function GET(request) {
   try {
     // Auth check
     const session = await auth();
-    if (!session?.user?.email || !isAdmin(session.user.email)) {
+    if (!session?.user?.email || !isAdminEmail(session.user.email)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -101,7 +101,7 @@ export async function POST(request) {
   try {
     // Auth check
     const session = await auth();
-    if (!session?.user?.email || !isAdmin(session.user.email)) {
+    if (!session?.user?.email || !isAdminEmail(session.user.email)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

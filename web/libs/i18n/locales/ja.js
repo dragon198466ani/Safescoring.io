@@ -676,7 +676,7 @@ export default {
       },
       rigor: {
         title: "厳格さ",
-        desc: "4本柱で916基準。近道も主観もありません。",
+        desc: "4本柱で{totalNorms}基準。近道も主観もありません。",
       },
       accessibility: {
         title: "アクセシビリティ",
@@ -1099,7 +1099,7 @@ export default {
       },
       norms: {
         title: "Global standards, not opinions",
-        body: "916 norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
+        body: "{totalNorms} norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
       },
       trust: {
         title: "Trust you can prove",
@@ -1175,7 +1175,7 @@ export default {
         },
         evaluate: {
           title: "Evaluate",
-          desc: "We score your product against 916 security norms.",
+          desc: "We score your product against {totalNorms} security norms.",
         },
         review: {
           title: "Review",
@@ -1205,6 +1205,39 @@ export default {
       body: "Join teams worldwide using SAFE Certification to prove security with data.",
       primary: "Apply Now",
       secondary: "Talk to Sales",
+    },
+  },
+  // KYC Security
+  kyc: {
+    card: {
+      title: "KYC露出",
+      noKyc: "このセットアップのプラットフォームは本人確認を必要としません。",
+      requireKyc: "本人確認が必要",
+      incidentProvider: "データインシデントのあるプロバイダーを使用",
+      hide: "非表示",
+      view: "表示",
+      details: "詳細",
+      via: "経由",
+      incidentReported: "インシデント報告済み",
+      noIncidents: "インシデントなし",
+      dataTypesAffected: "影響を受ける可能性のあるデータタイプ:",
+      upgradeCta: "プロバイダーの詳細情報を見るにはアップグレードしてください。",
+    },
+    dataTypes: {
+      passport: "パスポート / ID",
+      selfie: "セルフィー / 写真",
+      address: "住所",
+      phone: "電話番号",
+      bankAccount: "銀行口座",
+      ssn: "マイナンバー",
+      email: "メール",
+    },
+    risk: {
+      critical: "深刻",
+      high: "高",
+      moderate: "中",
+      low: "低",
+      none: "KYCなし",
     },
   },
 };

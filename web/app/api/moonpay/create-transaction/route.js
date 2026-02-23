@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { generateMoonPayURL } from "@/libs/moonpay-commerce";
-import { createClient } from "@/libs/supabase";
+import { supabaseAdmin } from "@/libs/supabase";
 
 /**
  * Create a MoonPay transaction for crypto payment
@@ -66,8 +66,7 @@ export async function POST(request) {
     const externalTransactionId = `ss_${session.user.id}_${plan}_${billingPeriod}_${Date.now()}`;
 
     // Store pending transaction in database
-    const supabase = createClient();
-    const { error: dbError } = await supabase
+    const { error: dbError } = await supabaseAdmin
       .from("crypto_transactions")
       .insert({
         user_id: session.user.id,

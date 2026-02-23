@@ -6,6 +6,7 @@ const footerLinks = {
     { label: "Products", href: "/products" },
     { label: "Score Transparency", href: "/transparency" },
     { label: "Methodology", href: "/methodology" },
+    { label: "KYC Security", href: "/kyc-security" },
     { label: "API", href: "/api-docs" },
   ],
   company: [

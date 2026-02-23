@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import config from "@/config";
+import { useGlobalStats } from "@/libs/StatsProvider";
 import PillarInfoModal from "./PillarInfoModal";
 import PillarIllustrations, { ExampleIcons } from "./PillarIllustrations";
 
@@ -51,6 +52,7 @@ const pillarDetails = {
 
 const Pillars = () => {
   const [selectedPillar, setSelectedPillar] = useState(null);
+  const { stats } = useGlobalStats();
 
   const openModal = (pillarCode) => {
     setSelectedPillar(pillarCode);
@@ -78,7 +80,7 @@ const Pillars = () => {
             The <span className="text-gradient-safe">SAFE</span> Framework
           </h2>
           <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
-            Four pillars of comprehensive security evaluation. Each product is scored against {config.safe.stats.totalNorms} norms across these dimensions.
+            Four pillars of comprehensive security evaluation. Each product is scored against {stats.totalNorms} norms across these dimensions.
           </p>
         </div>
 
@@ -211,7 +213,7 @@ const Pillars = () => {
             href="/methodology"
             className="btn btn-outline btn-primary"
           >
-            View All {config.safe.stats.totalNorms} Norms
+            View All {stats.totalNorms} Norms
           </a>
         </div>
       </div>

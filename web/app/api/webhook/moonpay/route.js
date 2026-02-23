@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyWebhookSignature, getTransactionStatus } from "@/libs/moonpay-commerce";
-import { createClient } from "@/libs/supabase";
+import { supabaseAdmin } from "@/libs/supabase";
 
 /**
  * MoonPay Webhook Handler
@@ -67,11 +67,9 @@ export async function POST(request) {
  * Handle completed transaction
  */
 async function handleTransactionCompleted(transaction) {
-  const supabase = createClient();
-
   try {
     // Find transaction in database
-    const { data: dbTransaction, error: findError } = await supabase
+    const { data: dbTransaction, error: findError } = await supabaseAdmin
       .from("crypto_transactions")
       .select("*")
       .eq("external_id", transaction.externalTransactionId)
@@ -83,7 +81,7 @@ async function handleTransactionCompleted(transaction) {
     }
 
     // Update transaction status
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseAdmin
       .from("crypto_transactions")
       .update({
         status: "completed",
@@ -104,7 +102,7 @@ async function handleTransactionCompleted(transaction) {
       ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
       : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-    const { error: subError } = await supabase
+    const { error: subError } = await supabaseAdmin
       .from("users")
       .update({
         subscription_plan: dbTransaction.plan,
@@ -136,10 +134,8 @@ async function handleTransactionCompleted(transaction) {
  * Handle failed transaction
  */
 async function handleTransactionFailed(transaction) {
-  const supabase = createClient();
-
   try {
-    await supabase
+    await supabaseAdmin
       .from("crypto_transactions")
       .update({
         status: "failed",
@@ -160,10 +156,8 @@ async function handleTransactionFailed(transaction) {
  * Handle pending transaction
  */
 async function handleTransactionPending(transaction) {
-  const supabase = createClient();
-
   try {
-    await supabase
+    await supabaseAdmin
       .from("crypto_transactions")
       .update({
         status: "pending",

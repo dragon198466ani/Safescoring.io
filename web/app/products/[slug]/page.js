@@ -16,6 +16,7 @@ import ScoreSecurityPanel from "@/components/ScoreSecurityPanel";
 import CommunityStats from "@/components/CommunityStats";
 import ProductLogo from "@/components/ProductLogo";
 import PricingDisplay from "@/components/PricingDisplay";
+import ProductScoreTierView from "@/components/ProductScoreTierView";
 // Heavy components - lazy loaded
 import {
   LazySecurityIncidents,
@@ -353,6 +354,20 @@ async function getProduct(slug, t) {
       f: Math.round(safeScoring?.score_f || 0),
       e: Math.round(safeScoring?.score_e || 0),
     },
+    consumerScores: {
+      total: Math.round(safeScoring?.note_consumer || 0),
+      s: Math.round(safeScoring?.s_consumer || 0),
+      a: Math.round(safeScoring?.a_consumer || 0),
+      f: Math.round(safeScoring?.f_consumer || 0),
+      e: Math.round(safeScoring?.e_consumer || 0),
+    },
+    essentialScores: {
+      total: Math.round(safeScoring?.note_essential || 0),
+      s: Math.round(safeScoring?.s_essential || 0),
+      a: Math.round(safeScoring?.a_essential || 0),
+      f: Math.round(safeScoring?.f_essential || 0),
+      e: Math.round(safeScoring?.e_essential || 0),
+    },
     verified: safeScoring?.note_finale != null,
     // DATES CLAIRES - Chaque produit a des dates uniques et spécifiques
     dates: {
@@ -589,13 +604,26 @@ export default async function ProductPage({ params }) {
               </div>
             </div>
 
-            {/* Right: SAFE Score Circle only */}
-            <div className="shrink-0">
-              <ScoreCircle
-                score={product.scores.total}
+            {/* Right: SAFE Score with Tier Selector (Full/Consumer/Essential) */}
+            <div className="shrink-0 w-[240px]">
+              <ProductScoreTierView
+                scores={product.scores}
+                consumerScores={product.consumerScores}
+                essentialScores={product.essentialScores}
                 lastUpdate={product.lastUpdate}
-                t={t}
                 locale={lang}
+                pillars={config.safe.pillars}
+                pillarKeyMap={PILLAR_KEY_MAP}
+                translations={{
+                  safeScore: t("product.safeScore"),
+                  updatedPrefix: t("product.updatedPrefix") || "Updated",
+                  pillarNames: {
+                    S: t("pillars.security"),
+                    A: t("pillars.adversity"),
+                    F: t("pillars.fidelity"),
+                    E: t("pillars.efficiency"),
+                  },
+                }}
               />
             </div>
           </div>

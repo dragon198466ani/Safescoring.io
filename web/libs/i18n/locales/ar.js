@@ -120,7 +120,7 @@ export default {
       },
       rigor: {
         title: "الصرامة",
-        desc: "916 معيارًا عبر 4 أعمدة. لا اختصارات ولا آراء شخصية.",
+        desc: "{totalNorms} معيارًا عبر 4 أعمدة. لا اختصارات ولا آراء شخصية.",
       },
       accessibility: {
         title: "الإتاحة",
@@ -518,7 +518,7 @@ export default {
       },
       norms: {
         title: "Global standards, not opinions",
-        body: "916 norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
+        body: "{totalNorms} norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
       },
       trust: {
         title: "Trust you can prove",
@@ -594,7 +594,7 @@ export default {
         },
         evaluate: {
           title: "Evaluate",
-          desc: "We score your product against 916 security norms.",
+          desc: "We score your product against {totalNorms} security norms.",
         },
         review: {
           title: "Review",
@@ -624,6 +624,39 @@ export default {
       body: "Join teams worldwide using SAFE Certification to prove security with data.",
       primary: "Apply Now",
       secondary: "Talk to Sales",
+    },
+  },
+  // KYC Security
+  kyc: {
+    card: {
+      title: "تعرض KYC",
+      noKyc: "لا توجد منصات في هذا الاعداد تتطلب التحقق من الهوية.",
+      requireKyc: "تتطلب التحقق من الهوية",
+      incidentProvider: "تستخدم مزودا تعرض لحادث بيانات",
+      hide: "اخفاء",
+      view: "عرض",
+      details: "التفاصيل",
+      via: "عبر",
+      incidentReported: "تم الابلاغ عن حادث",
+      noIncidents: "لا حوادث",
+      dataTypesAffected: "انواع البيانات المحتمل تعرضها:",
+      upgradeCta: "قم بالترقية لرؤية معلومات مفصلة عن مزودي الخدمة.",
+    },
+    dataTypes: {
+      passport: "جواز السفر / الهوية",
+      selfie: "صورة شخصية",
+      address: "العنوان",
+      phone: "رقم الهاتف",
+      bankAccount: "الحساب البنكي",
+      ssn: "الرقم الضريبي",
+      email: "البريد الالكتروني",
+    },
+    risk: {
+      critical: "حرج",
+      high: "مرتفع",
+      moderate: "متوسط",
+      low: "منخفض",
+      none: "بدون KYC",
     },
   },
 };

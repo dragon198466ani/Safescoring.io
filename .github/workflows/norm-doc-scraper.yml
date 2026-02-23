@@ -41,7 +41,7 @@ jobs:
         env:
           # Supabase
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
           # Groq (15 keys)
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -108,7 +108,7 @@ jobs:
           "
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Log completion
         if: always()

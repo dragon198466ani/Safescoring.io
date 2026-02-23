@@ -3,12 +3,15 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import ProductLogo from "@/components/ProductLogo";
+import { getStats } from "@/libs/stats";
 
 export const revalidate = 3600; // Revalidate every hour
 
-export const metadata = {
-  title: "Compare Crypto Products - Security Comparison Tool | SafeScoring",
-  description: "Compare security scores of crypto wallets, exchanges, and DeFi protocols. See side-by-side SAFE Score analysis based on 916 security criteria.",
+export async function generateMetadata() {
+  const stats = await getStats();
+  return {
+    title: "Compare Crypto Products - Security Comparison Tool | SafeScoring",
+    description: `Compare security scores of crypto wallets, exchanges, and DeFi protocols. See side-by-side SAFE Score analysis based on ${stats.totalNorms} security criteria.`,
   keywords: [
     "crypto comparison",
     "wallet comparison",
@@ -18,7 +21,8 @@ export const metadata = {
     "security comparison",
     "SAFE score",
   ],
-};
+  };
+}
 
 // Get logo URL helper
 const getLogoUrl = (url) => {
@@ -81,6 +85,7 @@ async function getTopProducts() {
 }
 
 export default async function CompareLandingPage() {
+  const platformStats = await getStats();
   const products = await getTopProducts();
 
   // Group by category
@@ -109,7 +114,7 @@ export default async function CompareLandingPage() {
               Compare Crypto Security Scores
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              Side-by-side comparison of wallets, exchanges, and DeFi protocols based on 916 security criteria.
+              Side-by-side comparison of wallets, exchanges, and DeFi protocols based on {platformStats.totalNorms} security criteria.
             </p>
           </div>
 
