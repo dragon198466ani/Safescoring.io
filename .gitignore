@@ -230,8 +230,9 @@ temp_*
 *.xlsx
 *.xls
 
-# Worker logs from parallel evaluation
+# Worker logs and data from parallel evaluation
 worker_*.log
+worker_*.json
 
 # Build/test output files (CI debugging artifacts)
 web/build_*.txt

@@ -117,14 +117,30 @@ async function handleTransactionCompleted(transaction) {
       return;
     }
 
-    console.log("✅ Subscription activated:", {
+    console.log("Subscription activated:", {
       userId: dbTransaction.user_id,
       plan: dbTransaction.plan,
       expiresAt,
     });
 
-    // TODO: Send confirmation email
-    // TODO: Log in audit trail
+    // Send confirmation email
+    await sendTransactionEmail(dbTransaction.user_id, "completed", {
+      plan: dbTransaction.plan,
+      expiresAt: expiresAt.toISOString(),
+      amount: transaction.baseCurrencyAmount,
+      currency: transaction.baseCurrency?.toUpperCase() || "USD",
+      cryptoAmount: transaction.cryptoAmount,
+      cryptoCurrency: transaction.cryptoCurrency?.toUpperCase(),
+    });
+
+    // Log in audit trail
+    await logAudit(dbTransaction.user_id, "subscription_activated", {
+      plan: dbTransaction.plan,
+      provider: "moonpay",
+      transaction_id: transaction.id,
+      external_id: transaction.externalTransactionId,
+      expires_at: expiresAt.toISOString(),
+    });
   } catch (error) {
     console.error("Error handling completed transaction:", error);
   }
@@ -144,9 +160,28 @@ async function handleTransactionFailed(transaction) {
       })
       .eq("external_id", transaction.externalTransactionId);
 
-    console.log("❌ Transaction failed:", transaction.externalTransactionId);
+    console.log("Transaction failed:", transaction.externalTransactionId);
 
-    // TODO: Send failure notification email
+    // Find user for email notification
+    const { data: dbTx } = await supabaseAdmin
+      .from("crypto_transactions")
+      .select("user_id")
+      .eq("external_id", transaction.externalTransactionId)
+      .single();
+
+    if (dbTx?.user_id) {
+      await sendTransactionEmail(dbTx.user_id, "failed", {
+        reason: transaction.failureReason || "Unknown error",
+        external_id: transaction.externalTransactionId,
+      });
+
+      await logAudit(dbTx.user_id, "payment_failed", {
+        provider: "moonpay",
+        transaction_id: transaction.id,
+        external_id: transaction.externalTransactionId,
+        reason: transaction.failureReason,
+      });
+    }
   } catch (error) {
     console.error("Error handling failed transaction:", error);
   }
@@ -165,8 +200,83 @@ async function handleTransactionPending(transaction) {
       })
       .eq("external_id", transaction.externalTransactionId);
 
-    console.log("⏳ Transaction pending:", transaction.externalTransactionId);
+    console.log("Transaction pending:", transaction.externalTransactionId);
   } catch (error) {
     console.error("Error handling pending transaction:", error);
+  }
+}
+
+/**
+ * Send transaction email notification via Resend
+ */
+async function sendTransactionEmail(userId, status, details) {
+  try {
+    if (!process.env.RESEND_API_KEY) return;
+
+    // Get user email
+    const { data: user } = await supabaseAdmin
+      .from("users")
+      .select("email, name")
+      .eq("id", userId)
+      .single();
+
+    if (!user?.email) return;
+
+    const { Resend } = await import("resend");
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    const userName = user.name || "there";
+
+    if (status === "completed") {
+      await resend.emails.send({
+        from: "SafeScoring <noreply@safescoring.io>",
+        to: user.email,
+        subject: "Payment confirmed - Your subscription is active!",
+        html: `
+          <h2>Payment confirmed</h2>
+          <p>Hi ${userName},</p>
+          <p>Your crypto payment has been confirmed and your <strong>${details.plan}</strong> subscription is now active!</p>
+          <ul>
+            <li><strong>Amount:</strong> ${details.cryptoAmount} ${details.cryptoCurrency} (~${details.amount} ${details.currency})</li>
+            <li><strong>Plan:</strong> ${details.plan}</li>
+            <li><strong>Valid until:</strong> ${new Date(details.expiresAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</li>
+          </ul>
+          <p>Thank you for supporting SafeScoring!</p>
+          <p><a href="https://safescoring.io/dashboard">Go to your dashboard</a></p>
+        `,
+      });
+    } else if (status === "failed") {
+      await resend.emails.send({
+        from: "SafeScoring <noreply@safescoring.io>",
+        to: user.email,
+        subject: "Payment issue - Action required",
+        html: `
+          <h2>Payment issue</h2>
+          <p>Hi ${userName},</p>
+          <p>Unfortunately, your crypto payment could not be completed.</p>
+          <p><strong>Reason:</strong> ${details.reason}</p>
+          <p>You can try again from your dashboard or contact us if you need help.</p>
+          <p><a href="https://safescoring.io/pricing">Try again</a></p>
+        `,
+      });
+    }
+  } catch (error) {
+    console.error("Failed to send transaction email:", error);
+  }
+}
+
+/**
+ * Log event in audit trail
+ */
+async function logAudit(userId, action, metadata) {
+  try {
+    await supabaseAdmin.from("audit_log").insert({
+      user_id: userId,
+      action,
+      metadata,
+      created_at: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("Failed to log audit:", error);
   }
 }

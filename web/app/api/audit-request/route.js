@@ -187,7 +187,7 @@ export async function POST(request) {
       // Don't fail - we can still process manually
     }
 
-    // Send notification (TODO: integrate with Slack/Discord webhook)
+    // Send notification via Discord/Slack webhooks (implemented below)
     await sendAuditNotification({
       reference,
       project_name,

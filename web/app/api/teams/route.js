@@ -197,14 +197,44 @@ export async function POST(request) {
 
         if (inviteError) throw inviteError;
 
-        // TODO: Send invite email
+        const inviteLink = `${process.env.NEXTAUTH_URL}/team/join?code=${inviteCode}`;
+
+        // Send invite email via Resend
+        if (process.env.RESEND_API_KEY) {
+          try {
+            const { Resend } = await import("resend");
+            const resend = new Resend(process.env.RESEND_API_KEY);
+
+            // Get team name for the email
+            const { data: team } = await supabase
+              .from("teams")
+              .select("name")
+              .eq("id", teamId)
+              .single();
+
+            await resend.emails.send({
+              from: "SafeScoring <noreply@safescoring.io>",
+              to: email.toLowerCase(),
+              subject: `You're invited to join ${team?.name || "a team"} on SafeScoring`,
+              html: `
+                <h2>Team Invitation</h2>
+                <p>You've been invited to join <strong>${team?.name || "a team"}</strong> on SafeScoring as <strong>${role}</strong>.</p>
+                <p>Click the link below to accept the invitation:</p>
+                <p><a href="${inviteLink}" style="display:inline-block;padding:12px 24px;background:#6366f1;color:#fff;border-radius:8px;text-decoration:none;">Accept Invitation</a></p>
+                <p style="color:#666;font-size:12px;">This invitation expires in 7 days.</p>
+              `,
+            });
+          } catch (emailError) {
+            console.error("Failed to send invite email:", emailError);
+          }
+        }
 
         return NextResponse.json({
           invite: {
             id: invite.id,
             email: invite.email,
             role: invite.role,
-            inviteLink: `${process.env.NEXTAUTH_URL}/team/join?code=${inviteCode}`,
+            inviteLink,
           },
         });
       }

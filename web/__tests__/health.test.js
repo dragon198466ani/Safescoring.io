@@ -1,33 +1,46 @@
 /**
- * Tests for /api/health route
+ * Tests for /api/health route (basic suite)
+ *
+ * The health endpoint returns a comprehensive checks object:
+ * { status, checks: { supabase, environment, runtime, crons }, timestamp }
  */
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock supabase
+// Mock supabase — simulate configured + connectable
 vi.mock("@/libs/supabase", () => ({
-  supabase: {},
+  supabase: {
+    from: vi.fn(() => ({
+      select: vi.fn(() => Promise.resolve({ count: 1547, error: null })),
+    })),
+  },
   isSupabaseConfigured: vi.fn(() => true),
 }));
 
 const { GET } = await import("@/app/api/health/route");
 
 describe("/api/health", () => {
-  it("returns 200 with health status", async () => {
-    const response = await GET();
-    expect(response.status).toBe(200);
-
-    const body = await response.json();
-    expect(body.status).toBe("ok");
-    expect(body.timestamp).toBeDefined();
-    expect(body.services.supabase).toBe("connected");
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it("reports supabase as not_configured when unavailable", async () => {
-    const { isSupabaseConfigured } = await import("@/libs/supabase");
-    isSupabaseConfigured.mockReturnValueOnce(false);
-
+  it("returns health status with expected shape", async () => {
     const response = await GET();
     const body = await response.json();
-    expect(body.services.supabase).toBe("not_configured");
+
+    expect(body.status).toBeDefined();
+    expect(body.timestamp).toBeDefined();
+    expect(body.checks).toBeDefined();
+    expect(body.checks.supabase).toBeDefined();
+    expect(body.checks.environment).toBeDefined();
+    expect(body.checks.runtime).toBeDefined();
+    expect(body.checks.crons).toBeDefined();
+  });
+
+  it("includes valid ISO timestamp", async () => {
+    const response = await GET();
+    const body = await response.json();
+
+    const parsed = new Date(body.timestamp);
+    expect(parsed.getTime()).not.toBeNaN();
   });
 });

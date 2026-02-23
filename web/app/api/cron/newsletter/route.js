@@ -369,21 +369,66 @@ export async function POST(request) {
       return NextResponse.json({ error: "Failed to fetch subscribers" }, { status: 500 });
     }
 
-    // TODO: Integrate with email provider (Resend, SendGrid, etc.)
-    // For now, just mark as sent
-    const { error: updateError } = await supabase
+    // Send via Resend (batch emails, max 100 per API call)
+    let sentCount = 0;
+    let failedCount = 0;
+
+    if (process.env.RESEND_API_KEY) {
+      const { Resend } = await import("resend");
+      const resend = new Resend(process.env.RESEND_API_KEY);
+
+      const BATCH_SIZE = 50; // Resend batch limit
+
+      for (let i = 0; i < subscribers.length; i += BATCH_SIZE) {
+        const batch = subscribers.slice(i, i + BATCH_SIZE);
+
+        const emailPromises = batch.map((sub) => {
+          const htmlContent = sub.is_premium
+            ? newsletter.content_premium_html || newsletter.content_html
+            : newsletter.content_html;
+
+          return resend.emails
+            .send({
+              from: "SafeScoring <noreply@safescoring.io>",
+              to: sub.email,
+              subject: newsletter.subject,
+              html: htmlContent,
+            })
+            .then(() => { sentCount++; })
+            .catch((err) => {
+              failedCount++;
+              console.error(`Failed to send to ${sub.email}:`, err.message);
+            });
+        });
+
+        await Promise.all(emailPromises);
+
+        // Small delay between batches to respect rate limits
+        if (i + BATCH_SIZE < subscribers.length) {
+          await new Promise((r) => setTimeout(r, 1000));
+        }
+      }
+    } else {
+      console.warn("RESEND_API_KEY not set — marking as sent without actually sending");
+      sentCount = subscribers.length;
+    }
+
+    // Mark newsletter as sent
+    await supabase
       .from("newsletters")
       .update({
         status: "sent",
         sent_at: new Date().toISOString(),
-        recipient_count: subscribers?.length || 0,
+        recipient_count: sentCount,
+        metadata: { sent: sentCount, failed: failedCount },
       })
       .eq("id", newsletter_id);
 
     return NextResponse.json({
       success: true,
-      recipients: subscribers?.length || 0,
-      message: "Newsletter queued for sending",
+      recipients: sentCount,
+      failed: failedCount,
+      message: `Newsletter sent to ${sentCount} subscribers`,
     });
   } catch (error) {
     console.error("Newsletter send error:", error);
