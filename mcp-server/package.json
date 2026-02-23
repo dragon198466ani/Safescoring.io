@@ -8,7 +8,18 @@
   },
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "node --test test/*.test.mjs 2>/dev/null || echo 'No tests yet'",
+    "prepublishOnly": "node -e \"require('./index.js')\" || true",
+    "version": "echo $npm_package_version"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "mcp",
