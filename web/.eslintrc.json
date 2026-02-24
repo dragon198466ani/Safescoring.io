@@ -6,7 +6,7 @@
     "es6": true
   },
   "rules": {
-    // Your specific rules.
-    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_", "destructuredArrayIgnorePattern": "^_" }]
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_", "destructuredArrayIgnorePattern": "^_" }],
+    "react/no-unescaped-entities": "warn"
   }
 }
