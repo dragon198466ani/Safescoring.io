@@ -34,6 +34,8 @@ jobs:
         run: npm install
 
       - name: Validate entry point
+        env:
+          SAFESCORING_API_KEY: sk_test_ci_validation
         run: node -e "import('./index.js').then(() => console.log('✅ MCP server loads OK')).catch(e => { console.error('❌', e.message); process.exit(1); })"
 
       - name: Run tests
