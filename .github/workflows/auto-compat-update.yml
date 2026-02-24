@@ -1,9 +1,8 @@
 name: Auto Update Compatibility
 
 on:
-  schedule:
-    # Daily 3 AM UTC (was every 30min — too expensive for CI minutes)
-    - cron: '0 3 * * *'
+  # schedule:                    # Disabled — free tier (2000 min/month)
+  #   - cron: '0 3 * * *'       # Was: daily 3 AM UTC
   workflow_dispatch:
 
 jobs:

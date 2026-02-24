@@ -7,13 +7,10 @@ name: Data Refresh Pipeline
 # - Evaluations: After products refresh (Monday 4h UTC)
 
 on:
-  schedule:
-    # Daily price update at 6h UTC
-    - cron: '0 6 * * *'
-    # Weekly product scrape + evaluations (Monday 2h UTC)
-    - cron: '0 2 * * 1'
-    # Monthly norms refresh (1st of month at 3h UTC)
-    - cron: '0 3 1 * *'
+  # schedule:                    # Disabled — free tier (2000 min/month)
+  #   - cron: '0 6 * * *'       # Was: daily price update
+  #   - cron: '0 2 * * 1'       # Was: weekly product scrape
+  #   - cron: '0 3 1 * *'       # Was: monthly norms refresh
   workflow_dispatch:
     inputs:
       step:

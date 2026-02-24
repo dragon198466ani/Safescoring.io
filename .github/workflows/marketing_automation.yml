@@ -4,41 +4,17 @@ name: Marketing Automation
 # No server needed - GitHub Actions runs everything on schedule
 
 on:
-  schedule:
-    # =============================================
-    # PLANNING RÉALISTE - PAS DE SPAM
-    # =============================================
-
-    # Content monitoring - 2x par jour (matin + soir)
-    - cron: '0 8,18 * * *'
-
-    # SEO generation - 1 article par jour à 7h
-    - cron: '0 7 * * *'
-
-    # Email sequences - 2x par jour
-    - cron: '0 9,15 * * *'
-
-    # Weekly report - Lundi 9h
-    - cron: '0 9 * * 1'
-
-    # Social listening - 3x par jour (pas toutes les 15min!)
-    - cron: '0 10,14,20 * * *'
-
-    # Backlink outreach - 3x par semaine (Lun, Mer, Ven)
-    - cron: '0 10 * * 1,3,5'
-
-    # Reddit - 1x par jour max (évite le spam)
-    - cron: '0 16 * * *'
-
-    # Video generation - 2x par semaine (Mardi, Vendredi)
-    - cron: '0 8 * * 2,5'
-
-    # Testimonials - 1x par semaine (Jeudi)
-    - cron: '0 11 * * 4'
-
-    # Translation - 1x par mois (1er dimanche)
-    - cron: '0 4 1-7 * 0'
-
+  # schedule:                    # Disabled — free tier (2000 min/month)
+  #   - cron: '0 8,18 * * *'    # Content monitoring 2x/day
+  #   - cron: '0 7 * * *'       # SEO generation daily
+  #   - cron: '0 9,15 * * *'    # Email sequences 2x/day
+  #   - cron: '0 9 * * 1'       # Weekly report Monday
+  #   - cron: '0 10,14,20 * * *' # Social listening 3x/day
+  #   - cron: '0 10 * * 1,3,5'  # Backlink outreach 3x/week
+  #   - cron: '0 16 * * *'      # Reddit daily
+  #   - cron: '0 8 * * 2,5'     # Video generation 2x/week
+  #   - cron: '0 11 * * 4'      # Testimonials weekly
+  #   - cron: '0 4 1-7 * 0'     # Translation monthly
   workflow_dispatch:
     inputs:
       task:

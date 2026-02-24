@@ -1,10 +1,8 @@
 name: Norm Summary Regeneration (Quality)
 
 on:
-  # Weekly Monday 4 AM UTC (was every 6h — too expensive for CI minutes)
-  schedule:
-    - cron: '0 4 * * 1'
-  # Manual trigger
+  # schedule:                    # Disabled — free tier (2000 min/month)
+  #   - cron: '0 4 * * 1'       # Was: weekly Monday 4 AM UTC
   workflow_dispatch:
     inputs:
       batch_size:

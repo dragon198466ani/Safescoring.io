@@ -1,9 +1,8 @@
 name: Incident Scraper
 
 on:
-  schedule:
-    # All sources: every 2 hours (removed 30-min Twitter schedule — too expensive for CI minutes)
-    - cron: '0 */2 * * *'
+  # schedule:                    # Disabled — free tier (2000 min/month)
+  #   - cron: '0 */2 * * *'     # Was: every 2 hours
   workflow_dispatch:
     inputs:
       source:

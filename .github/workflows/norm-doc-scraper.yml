@@ -2,8 +2,8 @@ name: Norm Documentation Scraper
 
 # Weekly + manual (was every 6h but 350min timeout × 4 runs = ~1400 min/day, blowing through free tier)
 on:
-  schedule:
-    - cron: '0 3 * * 0'  # Weekly Sunday 3 AM UTC
+  # schedule:                    # Disabled — free tier (2000 min/month)
+  #   - cron: '0 3 * * 0'       # Was: weekly Sunday 3 AM UTC
   workflow_dispatch:  # Permet de lancer manuellement
 
 jobs:

@@ -109,7 +109,6 @@ export default function DashboardStats() {
               incidents: totalIncidents,
             });
           }
-        }
       } catch (err) {
         console.error("Failed to fetch dashboard stats:", err);
         // Fallback to demo mode

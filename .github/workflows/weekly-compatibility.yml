@@ -1,8 +1,8 @@
 name: Weekly Compatibility Analysis
 
 on:
-  schedule:
-    - cron: '0 3 * * 0'  # Dimanche à 3h UTC
+  # schedule:                    # Disabled — free tier (2000 min/month)
+  #   - cron: '0 3 * * 0'       # Was: weekly Sunday 3h UTC
   workflow_dispatch:  # Lancement manuel possible
 
 jobs:

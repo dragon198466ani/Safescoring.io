@@ -75,7 +75,7 @@ export default function ProductSAFEAnalysisDemo({ product, slug }) {
         </button>
         <button
           onClick={() => setActiveTab('vote')}
-          className={`tab tab-lg ${activeTab === 'vote' ? 'tab-active'} gap-2`}
+          className={`tab tab-lg ${activeTab === 'vote' ? 'tab-active' : ''} gap-2`}
         >
           🗳️ Voter & Gagner des $SAFE
           {!session && <span className="badge badge-sm badge-warning">Connexion requise</span>}

@@ -4,10 +4,8 @@
 name: Competitor Monitor
 
 on:
-  schedule:
-    # Run every 6 hours
-    - cron: '0 */6 * * *'
-
+  # schedule:                    # Disabled — free tier (2000 min/month)
+  #   - cron: '0 */6 * * *'     # Was: every 6 hours
   workflow_dispatch:
     inputs:
       competitor:
