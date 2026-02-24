@@ -2,8 +2,8 @@ name: Auto Update Compatibility
 
 on:
   schedule:
-    # Every 30 minutes
-    - cron: '*/30 * * * *'
+    # Daily 3 AM UTC (was every 30min — too expensive for CI minutes)
+    - cron: '0 3 * * *'
   workflow_dispatch:
 
 jobs:

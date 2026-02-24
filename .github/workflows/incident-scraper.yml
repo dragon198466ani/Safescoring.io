@@ -2,10 +2,8 @@ name: Incident Scraper
 
 on:
   schedule:
-    # Primary sources: every 2 hours (faster detection)
+    # All sources: every 2 hours (removed 30-min Twitter schedule — too expensive for CI minutes)
     - cron: '0 */2 * * *'
-    # Twitter/Grok: every 30 minutes (REAL-TIME - competitive advantage)
-    - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
       source:

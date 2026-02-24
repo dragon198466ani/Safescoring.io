@@ -1,9 +1,9 @@
 name: Norm Summary Regeneration (Quality)
 
 on:
-  # Run every 6 hours
+  # Weekly Monday 4 AM UTC (was every 6h — too expensive for CI minutes)
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 4 * * 1'
   # Manual trigger
   workflow_dispatch:
     inputs:

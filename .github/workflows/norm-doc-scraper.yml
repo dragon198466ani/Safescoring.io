@@ -1,9 +1,9 @@
 name: Norm Documentation Scraper
 
-# Tourne automatiquement toutes les 6 heures + manuellement
+# Weekly + manual (was every 6h but 350min timeout × 4 runs = ~1400 min/day, blowing through free tier)
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Toutes les 6h (0h, 6h, 12h, 18h UTC)
+    - cron: '0 3 * * 0'  # Weekly Sunday 3 AM UTC
   workflow_dispatch:  # Permet de lancer manuellement
 
 jobs:
