@@ -6,6 +6,7 @@ import ProductLogo from "@/components/ProductLogo";
 import { getScoreColor } from "@/components/ScoreCircle";
 import { useAnimatedScore } from "@/hooks/useSetupScores";
 import { SortableList, TrashZone, DragDropProvider } from "@/components/common/DragDrop";
+import { useScoringSetup } from "@/libs/ScoringSetupProvider";
 
 /**
  * Role configuration
@@ -76,7 +77,11 @@ const ProductItem = memo(function ProductItem({
   isRemoving = false,
 }) {
   const roleInfo = ROLES[role] || ROLES.other;
-  const score = product.scores?.note_finale || product.score;
+  const { computeSAFE, isCustom } = useScoringSetup();
+  const rawScore = product.scores?.note_finale || product.score;
+  const score = isCustom && product.scores
+    ? (computeSAFE({ s: product.scores.score_s, a: product.scores.score_a, f: product.scores.score_f, e: product.scores.score_e }) ?? rawScore)
+    : rawScore;
 
   return (
     <div

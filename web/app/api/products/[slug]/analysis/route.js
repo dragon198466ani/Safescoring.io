@@ -12,8 +12,8 @@ import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import { auth } from "@/libs/auth";
 
-// Cache for 24 hours (analysis changes at most once per day during batch evaluation)
-export const revalidate = 86400;
+// Revalidate every 5 minutes
+export const revalidate = 300;
 
 export async function GET(request, { params }) {
   const { slug } = await params;

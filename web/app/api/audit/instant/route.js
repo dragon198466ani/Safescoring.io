@@ -167,9 +167,7 @@ export async function POST(request) {
       links: {
         fullReport: `https://safescoring.io/products/${product.slug}`,
         compareUrl: `https://safescoring.io/compare?p1=${product.slug}`,
-        pdfReport: session?.user
-          ? `https://safescoring.io/api/reports/generate?product=${product.slug}`
-          : null,
+        pdfReport: null, // PDF reports coming soon
         methodology: "https://safescoring.io/methodology",
       },
     };

@@ -6,11 +6,13 @@ import ProductLogo from "@/components/ProductLogo";
 import { PILLARS } from "@/libs/design-tokens";
 import { MiniScoreCircle as ScoreCircle } from "@/components/ScoreCircle";
 import { formatDate } from "./constants";
+import { useScoringSetup } from "@/libs/ScoringSetupProvider";
 
 // Memoized ProductCard — Vertical minimal design
 // Clean layout: Header → Score → Pillar bars → Footer
 const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack = false }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const { computeSAFE, isCustom } = useScoringSetup();
 
   const scores = useMemo(() => {
     switch (scoreType) {
@@ -20,7 +22,7 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
     }
   }, [product.consumerScores, product.essentialScores, product.scores, scoreType]);
 
-  const totalScore = scores?.total ?? 0;
+  const totalScore = isCustom ? (computeSAFE(scores) ?? scores?.total ?? 0) : (scores?.total ?? 0);
   const productTypes = product.types?.slice(0, 2) || [];
   const productName = product.name || "Unknown Product";
 

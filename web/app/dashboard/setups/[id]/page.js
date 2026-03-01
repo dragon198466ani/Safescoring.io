@@ -21,6 +21,7 @@ import NotificationSettings from "@/components/NotificationSettings";
 import SetupSAFEAnalysis from "@/components/SetupSAFEAnalysis";
 import KycExposureCard from "@/components/KycExposureCard";
 import { getScoreColor } from "@/components/ScoreCircle";
+import { useScoringSetup } from "@/libs/ScoringSetupProvider";
 
 // Hooks
 import { useSetupSubscription, useSetupHistorySubscription } from "@/hooks/useSupabaseSubscription";
@@ -50,6 +51,9 @@ export default function SetupDetailPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
   const [activeTab, setActiveTab] = useState("overview"); // overview, history, notifications
+
+  // Custom scoring weights
+  const { computeSAFE, isCustom } = useScoringSetup();
 
   // Enriched data from API
   const [incidents, setIncidents] = useState([]);
@@ -343,8 +347,13 @@ export default function SetupDetailPage() {
   // Get product details and IDs
   const productDetails = setup.productDetails || [];
   const addedProductIds = productDetails.map(p => p.id);
-  const score = liveScores?.note_finale || setup.combinedScore?.note_finale;
-  const combinedScore = liveScores || setup.combinedScore;
+  const rawCombined = liveScores || setup.combinedScore;
+  const rawScore = rawCombined?.note_finale;
+  // Apply custom weights if active
+  const score = isCustom && rawCombined
+    ? (computeSAFE({ s: rawCombined.score_s, a: rawCombined.score_a, f: rawCombined.score_f, e: rawCombined.score_e }) ?? rawScore)
+    : rawScore;
+  const combinedScore = rawCombined;
 
   return (
     <div className="space-y-6">

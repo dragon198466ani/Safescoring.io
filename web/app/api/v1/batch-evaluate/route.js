@@ -642,7 +642,7 @@ export async function POST(request) {
         data: {
           evaluations,
           ...(comparison ? { comparison } : {}),
-          reportUrl: `https://safescoring.io/api/reports/generate?batch=${batchId}`,
+          reportUrl: null, // PDF reports coming soon
           pricing,
         },
         warnings: {
