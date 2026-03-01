@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import Link from "next/link";
 import ProductLogo from "@/components/ProductLogo";
 import SetupQuiz from "@/components/SetupQuiz";
@@ -8,6 +8,7 @@ import SetupAssistant from "@/components/SetupAssistant";
 import { DragDropProvider, DraggableItem, DropZone, TrashZone } from "@/components/common/DragDrop";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useScoringSetup } from "@/libs/ScoringSetupProvider";
+import { useProductScoreSubscription } from "@/hooks/useSupabaseSubscription";
 
 /**
  * Setups Dashboard - Split view with catalog + setup builder
@@ -270,21 +271,22 @@ export default function SetupsPage() {
   const [scoreDeltas, setScoreDeltas] = useState(null);
   const [isScoreAnimating, setIsScoreAnimating] = useState(false);
 
-  // Fetch products catalog
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("/api/products?limit=100");
-        if (res.ok) {
-          const data = await res.json();
-          setProducts(data.products || []);
-        }
-      } catch (err) {
-        console.error("Failed to fetch products:", err);
+  // Fetch products catalog (extracted for reuse by real-time subscription)
+  const fetchProducts = useCallback(async () => {
+    try {
+      const res = await fetch("/api/products?limit=100");
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(data.products || []);
       }
-      setLoadingProducts(false);
-    };
+    } catch (err) {
+      console.error("Failed to fetch products:", err);
+    }
+    setLoadingProducts(false);
+  }, []);
 
+  // Initial data load
+  useEffect(() => {
     const fetchLimits = async () => {
       try {
         const res = await fetch("/api/setups");
@@ -299,7 +301,15 @@ export default function SetupsPage() {
 
     fetchProducts();
     fetchLimits();
-  }, []);
+  }, [fetchProducts]);
+
+  // INCEPTION: Real-time subscription to product score changes
+  // When any product's score is updated in Supabase, refetch the catalog
+  // so scores in the builder reflect the latest data instantly
+  const { isConnected: realtimeConnected } = useProductScoreSubscription({
+    onUpdate: fetchProducts,
+    enabled: products.length > 0,
+  });
 
   // Filter products
   const filteredProducts = useMemo(() => {
@@ -312,6 +322,24 @@ export default function SetupsPage() {
       return matchesSearch && matchesType;
     });
   }, [products, searchQuery, selectedType]);
+
+  // INCEPTION: Sync setup products with latest catalog data when scores update
+  // When real-time subscription triggers a catalog refetch, the products in the
+  // setup builder need their scores updated too (they hold stale references)
+  useEffect(() => {
+    if (products.length === 0 || setupProducts.length === 0) return;
+    const productMap = new Map(products.map(p => [p.id, p]));
+    let changed = false;
+    const synced = setupProducts.map(({ product, role }) => {
+      const fresh = productMap.get(product.id);
+      if (fresh && fresh.scores?.total !== product.scores?.total) {
+        changed = true;
+        return { product: fresh, role };
+      }
+      return { product, role };
+    });
+    if (changed) setSetupProducts(synced);
+  }, [products]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Add product to setup
   const handleAddProduct = (product) => {

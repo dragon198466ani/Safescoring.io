@@ -5,6 +5,7 @@ import config from "@/config";
 import Leaderboard from "@/components/Leaderboard";
 import TokenTeaser from "@/components/TokenTeaser";
 import SeniorityTracker from "@/components/SeniorityTracker";
+import DashboardSetupsOverview from "@/components/DashboardSetupsOverview";
 
 const getScoreColor = (score) => {
   if (score >= 80) return "text-green-400";
@@ -168,6 +169,10 @@ export default async function Dashboard() {
           <div className="text-3xl font-bold">{stats.incidents}</div>
         </div>
       </div>
+
+      {/* User's setups overview — INCEPTION: Dashboard = combination of setups */}
+      {/* Real-time: subscribes to product score changes → recalculates setup scores */}
+      <DashboardSetupsOverview />
 
       {/* SAFE Pillars overview */}
       <div className="rounded-2xl bg-base-200 border border-base-300 p-6">

@@ -2,8 +2,11 @@ import { auth } from "@/libs/auth";
 import Link from "next/link";
 import ButtonAccount from "@/components/ButtonAccount";
 import UsageBanner from "@/components/UsageBanner";
+import DashboardClient from "@/components/DashboardClient";
 
 // Dashboard layout with sidebar - Freemium accessible
+// DashboardClient wraps children with RealtimeStackProvider for inception-style
+// real-time propagation: Product scores → Setup scores → Dashboard
 export default async function LayoutPrivate({ children }) {
   const session = await auth();
 
@@ -70,10 +73,12 @@ export default async function LayoutPrivate({ children }) {
         </div>
       </header>
 
-      {/* Main content */}
+      {/* Main content — wrapped in DashboardClient for real-time inception */}
       <main className="max-w-7xl mx-auto px-6 py-8">
         <UsageBanner />
-        {children}
+        <DashboardClient>
+          {children}
+        </DashboardClient>
       </main>
     </div>
   );

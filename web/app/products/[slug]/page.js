@@ -17,6 +17,7 @@ import CommunityStats from "@/components/CommunityStats";
 import ProductLogo from "@/components/ProductLogo";
 import PricingDisplay from "@/components/PricingDisplay";
 import ProductScoreTierView from "@/components/ProductScoreTierView";
+import ProductRealtimeScores from "@/components/ProductRealtimeScores";
 // Heavy components - lazy loaded
 import {
   LazySecurityIncidents,
@@ -607,27 +608,36 @@ export default async function ProductPage({ params }) {
               </div>
             </div>
 
-            {/* Right: SAFE Score with Tier Selector (Full/Consumer/Essential) */}
+            {/* Right: SAFE Score with Tier Selector + Real-time updates */}
             <div className="shrink-0 w-full md:w-[240px]">
-              <ProductScoreTierView
-                scores={product.scores}
-                consumerScores={product.consumerScores}
-                essentialScores={product.essentialScores}
-                lastUpdate={product.lastUpdate}
-                locale={lang}
-                pillars={config.safe.pillars}
-                pillarKeyMap={PILLAR_KEY_MAP}
-                translations={{
-                  safeScore: t("product.safeScore"),
-                  updatedPrefix: t("product.updatedPrefix") || "Updated",
-                  pillarNames: {
-                    S: t("pillars.security"),
-                    A: t("pillars.adversity"),
-                    F: t("pillars.fidelity"),
-                    E: t("pillars.efficiency"),
-                  },
-                }}
-              />
+              <ProductRealtimeScores
+                productId={product.id}
+                initialScores={product.scores}
+                initialConsumerScores={product.consumerScores}
+                initialEssentialScores={product.essentialScores}
+              >
+                {({ scores: liveScores, consumerScores: liveCon, essentialScores: liveEss }) => (
+                  <ProductScoreTierView
+                    scores={liveScores}
+                    consumerScores={liveCon}
+                    essentialScores={liveEss}
+                    lastUpdate={product.lastUpdate}
+                    locale={lang}
+                    pillars={config.safe.pillars}
+                    pillarKeyMap={PILLAR_KEY_MAP}
+                    translations={{
+                      safeScore: t("product.safeScore"),
+                      updatedPrefix: t("product.updatedPrefix") || "Updated",
+                      pillarNames: {
+                        S: t("pillars.security"),
+                        A: t("pillars.adversity"),
+                        F: t("pillars.fidelity"),
+                        E: t("pillars.efficiency"),
+                      },
+                    }}
+                  />
+                )}
+              </ProductRealtimeScores>
             </div>
           </div>
 
