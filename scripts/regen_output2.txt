@@ -1,0 +1,1006 @@
+Loading norms with summary_status=needs_rescrape and reference_content...
+Found 200 norms, 200 with content > 200 chars
+
+[1/200] F-ADD-029: Design life 10 years...
+      [CLAUDE_CODE] sonnet OK (3486 chars)
+  Generated 3486 chars
+  SAVED to database
+
+[2/200] F-ADD-030: Design life 20 years...
+      [CLAUDE_CODE] sonnet OK (3068 chars)
+  Generated 3068 chars
+  SAVED to database
+
+[3/200] F-ADD-033: Flash retention 10 years...
+      [CLAUDE_CODE] sonnet OK (3183 chars)
+  Generated 3183 chars
+  SAVED to database
+
+[4/200] F-ADD-036: Endurance 100K writes...
+      [CLAUDE_CODE] sonnet OK (2566 chars)
+  Generated 2566 chars
+  SAVED to database
+
+[5/200] F-ADD-037: Endurance 1M writes...
+      [CLAUDE_CODE] sonnet OK (3038 chars)
+  Generated 3038 chars
+  SAVED to database
+
+[6/200] F-ADD-043: IPC-A-610 Class 3...
+      [CLAUDE_CODE] sonnet OK (1263 chars)
+  Generated 1263 chars
+  SAVED to database
+
+[7/200] FIDO001: FIDO2...
+      [CLAUDE_CODE] sonnet OK (3405 chars)
+  Generated 3405 chars
+  SAVED to database
+
+[8/200] FIDO002: FIDO UAF 1.2...
+      [CLAUDE_CODE] sonnet OK (6357 chars)
+  Generated 6357 chars
+  SAVED to database
+
+[9/200] FIDO003: FIDO U2F...
+      [CLAUDE_CODE] sonnet OK (6232 chars)
+  Generated 6232 chars
+  SAVED to database
+
+[10/200] FIDO005: CTAP 2.1...
+      [CLAUDE_CODE] sonnet OK (5024 chars)
+  Generated 5024 chars
+  SAVED to database
+
+[11/200] FIDO006: FIDO Authenticator Cert...
+      [CLAUDE_CODE] sonnet OK (5327 chars)
+  Generated 5327 chars
+  SAVED to database
+
+[12/200] FIDO007: FIDO Metadata Service...
+      [CLAUDE_CODE] sonnet OK (5558 chars)
+  Generated 5558 chars
+  SAVED to database
+
+[13/200] FIPS002: FIPS 180-4...
+      [CLAUDE_CODE] sonnet OK (1722 chars)
+  Generated 1722 chars
+  SAVED to database
+
+[14/200] FIPS003: FIPS 186-5...
+      [CLAUDE_CODE] sonnet OK (2596 chars)
+  Generated 2596 chars
+  SAVED to database
+
+[15/200] FIPS004: FIPS 197...
+      [CLAUDE_CODE] sonnet OK (2159 chars)
+  Generated 2159 chars
+  SAVED to database
+
+[16/200] FIPS005: FIPS 198-1...
+      [CLAUDE_CODE] sonnet OK (2121 chars)
+  Generated 2121 chars
+  SAVED to database
+
+[17/200] FIPS006: FIPS 199...
+      [CLAUDE_CODE] sonnet OK (3045 chars)
+  Generated 2884 chars
+  SAVED to database
+
+[18/200] FIPS007: FIPS 200...
+      [CLAUDE_CODE] sonnet OK (3970 chars)
+  Generated 3970 chars
+  SAVED to database
+
+[19/200] FIPS008: FIPS 201-3...
+      [CLAUDE_CODE] sonnet OK (3716 chars)
+  Generated 3716 chars
+  SAVED to database
+
+[20/200] FIPS009: FIPS 202...
+      [CLAUDE_CODE] sonnet OK (3412 chars)
+  Generated 3412 chars
+  SAVED to database
+
+[21/200] FIPS010: FIPS 203 ML-KEM...
+      [CLAUDE_CODE] sonnet OK (3067 chars)
+  Generated 3067 chars
+  SAVED to database
+
+[22/200] FIPS011: FIPS 204 ML-DSA...
+      [CLAUDE_CODE] sonnet OK (3126 chars)
+  Generated 3126 chars
+  SAVED to database
+
+[23/200] FIPS012: FIPS 205 SLH-DSA...
+      [CLAUDE_CODE] sonnet OK (3008 chars)
+  Generated 3008 chars
+  SAVED to database
+
+[24/200] FIRE001: UL 94 V-0...
+      [CLAUDE_CODE] sonnet OK (3742 chars)
+  Generated 3742 chars
+  SAVED to database
+
+[25/200] FIRE002: UL 94 V-1...
+      [CLAUDE_CODE] sonnet OK (2204 chars)
+  Generated 2204 chars
+  SAVED to database
+
+[26/200] G01: ERC-20 Token Standard...
+      [CLAUDE_CODE] sonnet OK (5123 chars)
+  Generated 5123 chars
+  SAVED to database
+
+[27/200] G02: ERC-721 NFT Voting...
+      [CLAUDE_CODE] sonnet OK (3772 chars)
+  Generated 3772 chars
+  SAVED to database
+
+[28/200] G03: EIP-712 Signed Voting...
+      [CLAUDE_CODE] sonnet OK (5660 chars)
+  Generated 5660 chars
+  SAVED to database
+
+[29/200] G04: Compound Governor...
+      [CLAUDE_CODE] sonnet OK (4974 chars)
+  Generated 4974 chars
+  SAVED to database
+
+[30/200] G05: OpenZeppelin Governor...
+      [CLAUDE_CODE] sonnet OK (4045 chars)
+  Generated 4045 chars
+  SAVED to database
+
+[31/200] G06: Snapshot Voting...
+      [CLAUDE_CODE] sonnet OK (1970 chars)
+  Generated 1970 chars
+  SAVED to database
+
+[32/200] G08: Quadratic Voting...
+      [CLAUDE_CODE] sonnet OK (3785 chars)
+  Generated 3785 chars
+  SAVED to database
+
+[33/200] G09: Tally Dashboard...
+      [CLAUDE_CODE] sonnet OK (2552 chars)
+  Generated 2552 chars
+  SAVED to database
+
+[34/200] G11: Timelock Controller...
+      [CLAUDE_CODE] sonnet OK (3704 chars)
+  Generated 3704 chars
+  SAVED to database
+
+[35/200] G12: Delegation Registry...
+      [CLAUDE_CODE] sonnet OK (4312 chars)
+  Generated 4312 chars
+  SAVED to database
+
+[36/200] GM01: ERC-1155 Multi-Token...
+      [CLAUDE_CODE] sonnet OK (4961 chars)
+  Generated 4961 chars
+  SAVED to database
+
+[37/200] GM05: Immutable X...
+      [CLAUDE_CODE] sonnet OK (2834 chars)
+  Generated 2834 chars
+  SAVED to database
+
+[38/200] HSM01: FIPS 140-3 Level 3...
+      [CLAUDE_CODE] sonnet OK (4919 chars)
+  Generated 4919 chars
+  SAVED to database
+
+[39/200] HSM02: FIPS 140-3 Level 4...
+      [CLAUDE_CODE] sonnet OK (3756 chars)
+  Generated 3756 chars
+  SAVED to database
+
+[40/200] HSM03: PKCS#11...
+      [CLAUDE_CODE] sonnet OK (2982 chars)
+  Generated 2982 chars
+  SAVED to database
+
+[41/200] HSM04: KMIP 2.1...
+      [CLAUDE_CODE] sonnet OK (3078 chars)
+  Generated 3078 chars
+  SAVED to database
+
+[42/200] HSM05: AWS CloudHSM...
+      [CLAUDE_CODE] sonnet OK (5666 chars)
+  Generated 5666 chars
+  SAVED to database
+
+[43/200] HSM06: Azure Dedicated HSM...
+      [CLAUDE_CODE] sonnet OK (4602 chars)
+  Generated 4602 chars
+  SAVED to database
+
+[44/200] HSM07: Hashicorp Vault...
+      [CLAUDE_CODE] sonnet OK (2997 chars)
+  Generated 2997 chars
+  SAVED to database
+
+[45/200] HSM08: Thales Luna HSM...
+      [CLAUDE_CODE] sonnet OK (7159 chars)
+  Generated 7159 chars
+  SAVED to database
+
+[46/200] HW01: TPM 2.0...
+      [CLAUDE_CODE] sonnet OK (6232 chars)
+  Generated 6232 chars
+  SAVED to database
+
+[47/200] HW02: GlobalPlatform TEE...
+      [CLAUDE_CODE] sonnet OK (1308 chars)
+  Generated 1308 chars
+  SAVED to database
+
+[48/200] HW04: RISC-V PMP...
+      [CLAUDE_CODE] sonnet OK (1106 chars)
+  Generated 1106 chars
+  SAVED to database
+
+[49/200] HW05: Java Card...
+      [CLAUDE_CODE] sonnet OK (5212 chars)
+  Generated 5212 chars
+  SAVED to database
+
+[50/200] HW06: MULTOS...
+      [CLAUDE_CODE] sonnet OK (4245 chars)
+  Generated 4245 chars
+  SAVED to database
+
+[51/200] INF01: Ethereum JSON-RPC...
+      [CLAUDE_CODE] sonnet OK (4641 chars)
+  Generated 4641 chars
+  SAVED to database
+
+[52/200] INF02: The Graph Protocol...
+      [CLAUDE_CODE] sonnet OK (2728 chars)
+  Generated 2728 chars
+  SAVED to database
+
+[53/200] INF03: Chainlink CCIP...
+      [CLAUDE_CODE] sonnet OK (4632 chars)
+  Generated 4632 chars
+  SAVED to database
+
+[54/200] INF05: Chainlink Data Feeds...
+      [CLAUDE_CODE] sonnet OK (4838 chars)
+  Generated 4838 chars
+  SAVED to database
+
+[55/200] INF06: Pyth Network...
+      [CLAUDE_CODE] sonnet OK (2240 chars)
+  Generated 2240 chars
+  SAVED to database
+
+[56/200] INF08: TWAP Oracle...
+      [CLAUDE_CODE] sonnet OK (3834 chars)
+  Generated 3834 chars
+  SAVED to database
+
+[57/200] L202: ZK-Rollup...
+      [CLAUDE_CODE] sonnet OK (1973 chars)
+  Generated 1973 chars
+  SAVED to database
+
+[58/200] L203: EIP-4844 Blobs...
+      [CLAUDE_CODE] sonnet OK (5345 chars)
+  Generated 5345 chars
+  SAVED to database
+
+[59/200] L204: Arbitrum Nitro...
+      [CLAUDE_CODE] sonnet OK (2630 chars)
+  Generated 2630 chars
+  SAVED to database
+
+[60/200] LIQ04: Impermanent Loss...
+      [CLAUDE_CODE] sonnet OK (2504 chars)
+  Generated 2504 chars
+  SAVED to database
+
+[61/200] MOB01: OWASP MASVS...
+      [CLAUDE_CODE] sonnet OK (3257 chars)
+  Generated 3257 chars
+  SAVED to database
+
+[62/200] NET01: TLS 1.3...
+      [CLAUDE_CODE] sonnet OK (3544 chars)
+  Generated 3544 chars
+  SAVED to database
+
+[63/200] NET02: DNSSEC...
+      [CLAUDE_CODE] sonnet OK (5865 chars)
+  Generated 5865 chars
+  SAVED to database
+
+[64/200] NET03: QUIC Protocol...
+      [CLAUDE_CODE] sonnet OK (4722 chars)
+  Generated 4722 chars
+  SAVED to database
+
+[65/200] NET04: HTTP/3...
+      [CLAUDE_CODE] sonnet OK (4980 chars)
+  Generated 4980 chars
+  SAVED to database
+
+[66/200] NIST006: NIST SP 800-38B...
+      [CLAUDE_CODE] sonnet OK (2536 chars)
+  Generated 2536 chars
+  SAVED to database
+
+[67/200] NIST007: NIST SP 800-38C...
+      [CLAUDE_CODE] sonnet OK (3539 chars)
+  Generated 3539 chars
+  SAVED to database
+
+[68/200] NIST008: NIST SP 800-38D...
+      [CLAUDE_CODE] sonnet OK (3255 chars)
+  Generated 3255 chars
+  SAVED to database
+
+[69/200] NIST009: NIST SP 800-38F...
+      [CLAUDE_CODE] sonnet OK (3332 chars)
+  Generated 3332 chars
+  SAVED to database
+
+[70/200] NIST011: NIST SP 800-53...
+      [CLAUDE_CODE] sonnet OK (5561 chars)
+  Generated 5561 chars
+  SAVED to database
+
+[71/200] NIST012: NIST SP 800-53A...
+      [CLAUDE_CODE] sonnet OK (3293 chars)
+  Generated 3293 chars
+  SAVED to database
+
+[72/200] NIST013: NIST SP 800-53B...
+      [CLAUDE_CODE] sonnet OK (3462 chars)
+  Generated 3462 chars
+  SAVED to database
+
+[73/200] NIST014: NIST SP 800-56A...
+      [CLAUDE_CODE] sonnet OK (3145 chars)
+  Generated 3145 chars
+  SAVED to database
+
+[74/200] NIST015: NIST SP 800-56B...
+      [CLAUDE_CODE] sonnet OK (3977 chars)
+  Generated 3977 chars
+  SAVED to database
+
+[75/200] NIST016: NIST SP 800-56C...
+      [CLAUDE_CODE] sonnet OK (2849 chars)
+  Generated 2849 chars
+  SAVED to database
+
+[76/200] NIST017: NIST SP 800-57 Part 1...
+      [CLAUDE_CODE] sonnet OK (3420 chars)
+  Generated 3420 chars
+  SAVED to database
+
+[77/200] NIST018: NIST SP 800-57 Part 2...
+      [CLAUDE_CODE] sonnet OK (3319 chars)
+  Generated 3319 chars
+  SAVED to database
+
+[78/200] NIST019: NIST SP 800-57 Part 3...
+      [CLAUDE_CODE] sonnet OK (2434 chars)
+  Generated 2434 chars
+  SAVED to database
+
+[79/200] NIST021: NIST SP 800-63A...
+      [CLAUDE_CODE] sonnet OK (2872 chars)
+  Generated 2872 chars
+  SAVED to database
+
+[80/200] NIST022: NIST SP 800-63B...
+      [CLAUDE_CODE] sonnet OK (3684 chars)
+  Generated 3684 chars
+  SAVED to database
+
+[81/200] NIST023: NIST SP 800-63C...
+      [CLAUDE_CODE] sonnet OK (3061 chars)
+  Generated 3061 chars
+  SAVED to database
+
+[82/200] NIST024: NIST SP 800-82...
+      [CLAUDE_CODE] sonnet OK (2779 chars)
+  Generated 2779 chars
+  SAVED to database
+
+[83/200] NIST025: NIST SP 800-88...
+      [CLAUDE_CODE] sonnet OK (2291 chars)
+  Generated 2291 chars
+  SAVED to database
+
+[84/200] NIST026: NIST SP 800-90A...
+      [CLAUDE_CODE] sonnet OK (2079 chars)
+  Generated 2079 chars
+  SAVED to database
+
+[85/200] NIST027: NIST SP 800-90B...
+      [CLAUDE_CODE] sonnet OK (2843 chars)
+  Generated 2843 chars
+  SAVED to database
+
+[86/200] NIST029: NIST SP 800-92...
+      [CLAUDE_CODE] sonnet OK (2731 chars)
+  Generated 2731 chars
+  SAVED to database
+
+[87/200] NIST030: NIST SP 800-108...
+      [CLAUDE_CODE] sonnet OK (2580 chars)
+  Generated 2580 chars
+  SAVED to database
+
+[88/200] NIST031: NIST SP 800-115...
+      [CLAUDE_CODE] sonnet OK (3060 chars)
+  Generated 3060 chars
+  SAVED to database
+
+[89/200] NIST032: NIST SP 800-121...
+      [CLAUDE_CODE] sonnet OK (2383 chars)
+  Generated 2292 chars
+  SAVED to database
+
+[90/200] NIST033: NIST SP 800-122...
+      [CLAUDE_CODE] sonnet OK (3096 chars)
+  Generated 3096 chars
+  SAVED to database
+
+[91/200] NIST034: NIST SP 800-123...
+      [CLAUDE_CODE] sonnet OK (2131 chars)
+  Generated 2131 chars
+  SAVED to database
+
+[92/200] NIST035: NIST SP 800-124...
+      [CLAUDE_CODE] sonnet OK (3187 chars)
+  Generated 3187 chars
+  SAVED to database
+
+[93/200] NIST036: NIST SP 800-125...
+      [CLAUDE_CODE] sonnet OK (2635 chars)
+  Generated 2635 chars
+  SAVED to database
+
+[94/200] NIST037: NIST SP 800-128...
+      [CLAUDE_CODE] sonnet OK (2915 chars)
+  Generated 2915 chars
+  SAVED to database
+
+[95/200] NIST038: NIST SP 800-130...
+      [CLAUDE_CODE] sonnet OK (2447 chars)
+  Generated 2447 chars
+  SAVED to database
+
+[96/200] NIST039: NIST SP 800-131A...
+      [CLAUDE_CODE] sonnet OK (4001 chars)
+  Generated 4001 chars
+  SAVED to database
+
+[97/200] NIST040: NIST SP 800-132...
+      [CLAUDE_CODE] sonnet OK (2435 chars)
+  Generated 2435 chars
+  SAVED to database
+
+[98/200] NIST041: NIST SP 800-135...
+      [CLAUDE_CODE] sonnet OK (3215 chars)
+  Generated 3215 chars
+  SAVED to database
+
+[99/200] NIST042: NIST SP 800-147...
+      [CLAUDE_CODE] sonnet OK (3727 chars)
+  Generated 3727 chars
+  SAVED to database
+
+[100/200] NIST043: NIST SP 800-152...
+      [CLAUDE_CODE] sonnet OK (2506 chars)
+  Generated 2506 chars
+  SAVED to database
+
+[101/200] NIST044: NIST SP 800-160...
+      [CLAUDE_CODE] sonnet OK (2954 chars)
+  Generated 2954 chars
+  SAVED to database
+
+[102/200] NIST045: NIST SP 800-171...
+      [CLAUDE_CODE] sonnet OK (3715 chars)
+  Generated 3715 chars
+  SAVED to database
+
+[103/200] NIST046: NIST SP 800-184...
+      [CLAUDE_CODE] sonnet OK (4081 chars)
+  Generated 4081 chars
+  SAVED to database
+
+[104/200] NIST047: NIST SP 800-188...
+      [CLAUDE_CODE] sonnet OK (5473 chars)
+  Generated 5473 chars
+  SAVED to database
+
+[105/200] NIST048: NIST SP 800-190...
+      [CLAUDE_CODE] sonnet OK (3219 chars)
+  Generated 3219 chars
+  SAVED to database
+
+[106/200] NIST049: NIST SP 800-193...
+      [CLAUDE_CODE] sonnet OK (3730 chars)
+  Generated 3730 chars
+  SAVED to database
+
+[107/200] NIST050: NIST SP 800-207...
+      [CLAUDE_CODE] sonnet OK (3104 chars)
+  Generated 3104 chars
+  SAVED to database
+
+[108/200] OWASP11: OWASP Dependency-Check...
+      [CLAUDE_CODE] sonnet OK (3777 chars)
+  Generated 3777 chars
+  SAVED to database
+
+[109/200] OWASP13: OWASP Testing Guide...
+      [CLAUDE_CODE] sonnet OK (3006 chars)
+  Generated 3006 chars
+  SAVED to database
+
+[110/200] OWASP14: OWASP Proactive Controls...
+      [CLAUDE_CODE] sonnet OK (2895 chars)
+  Generated 2895 chars
+  SAVED to database
+
+[111/200] OWASP15: OWASP CSRF Prevention...
+      [CLAUDE_CODE] sonnet OK (6976 chars)
+  Generated 6976 chars
+  SAVED to database
+
+[112/200] OWASP16: OWASP XSS Prevention...
+      [CLAUDE_CODE] sonnet OK (7029 chars)
+  Generated 7029 chars
+  SAVED to database
+
+[113/200] OWASP17: OWASP SQL Injection Prevention...
+      [CLAUDE_CODE] sonnet OK (3518 chars)
+  Generated 3518 chars
+  SAVED to database
+
+[114/200] OWASP18: OWASP Input Validation...
+      [CLAUDE_CODE] sonnet OK (6518 chars)
+  Generated 6518 chars
+  SAVED to database
+
+[115/200] OWASP19: OWASP Authentication...
+      [CLAUDE_CODE] sonnet OK (8174 chars)
+  Generated 8174 chars
+  SAVED to database
+
+[116/200] OWASP20: OWASP Session Management...
+      [CLAUDE_CODE] sonnet OK (5757 chars)
+  Generated 5757 chars
+  SAVED to database
+
+[117/200] PQC01: CRYSTALS-Kyber...
+      [CLAUDE_CODE] sonnet OK (3754 chars)
+  Generated 3754 chars
+  SAVED to database
+
+[118/200] PQC02: CRYSTALS-Dilithium...
+      [CLAUDE_CODE] sonnet OK (3235 chars)
+  Generated 3235 chars
+  SAVED to database
+
+[119/200] PQC03: SPHINCS+...
+      [CLAUDE_CODE] sonnet OK (2689 chars)
+  Generated 2689 chars
+  SAVED to database
+
+[120/200] RFC001: RFC 8446 TLS 1.3...
+      [CLAUDE_CODE] sonnet OK (4562 chars)
+  Generated 4562 chars
+  SAVED to database
+
+[121/200] RFC002: RFC 9000 QUIC...
+      [CLAUDE_CODE] sonnet OK (4848 chars)
+  Generated 4848 chars
+  SAVED to database
+
+[122/200] RFC003: RFC 9001 QUIC-TLS...
+      [CLAUDE_CODE] sonnet OK (5793 chars)
+  Generated 5793 chars
+  SAVED to database
+
+[123/200] RFC004: RFC 9114 HTTP/3...
+      [CLAUDE_CODE] sonnet OK (5142 chars)
+  Generated 5142 chars
+  SAVED to database
+
+[124/200] RFC005: RFC 6749 OAuth 2.0...
+      [CLAUDE_CODE] sonnet OK (5140 chars)
+  Generated 5140 chars
+  SAVED to database
+
+[125/200] RFC006: RFC 7519 JWT...
+      [CLAUDE_CODE] sonnet OK (5196 chars)
+  Generated 5196 chars
+  SAVED to database
+
+[126/200] RFC007: RFC 7515 JWS...
+      [CLAUDE_CODE] sonnet OK (3901 chars)
+  Generated 3901 chars
+  SAVED to database
+
+[127/200] RFC008: RFC 7516 JWE...
+      [CLAUDE_CODE] sonnet OK (3839 chars)
+  Generated 3839 chars
+  SAVED to database
+
+[128/200] RFC009: RFC 7517 JWK...
+      [CLAUDE_CODE] sonnet OK (3902 chars)
+  Generated 3902 chars
+  SAVED to database
+
+[129/200] RFC010: RFC 8032 EdDSA...
+      [CLAUDE_CODE] sonnet OK (7059 chars)
+  Generated 7059 chars
+  SAVED to database
+
+[130/200] RFC011: RFC 7748 X25519/X448...
+      [CLAUDE_CODE] sonnet OK (6368 chars)
+  Generated 6368 chars
+  SAVED to database
+
+[131/200] RFC012: RFC 6238 TOTP...
+      [CLAUDE_CODE] sonnet OK (5703 chars)
+  Generated 5703 chars
+  SAVED to database
+
+[132/200] RFC013: RFC 4226 HOTP...
+      [CLAUDE_CODE] sonnet OK (4616 chars)
+  Generated 4616 chars
+  SAVED to database
+
+[133/200] RFC014: RFC 5280 X.509...
+      [CLAUDE_CODE] sonnet OK (3859 chars)
+  Generated 3859 chars
+  SAVED to database
+
+[134/200] RFC015: RFC 6960 OCSP...
+      [CLAUDE_CODE] sonnet OK (4632 chars)
+  Generated 4632 chars
+  SAVED to database
+
+[135/200] RFC016: RFC 6962 CT...
+      [CLAUDE_CODE] sonnet OK (5755 chars)
+  Generated 5755 chars
+  SAVED to database
+
+[136/200] RFC017: RFC 4033 DNSSEC...
+      [CLAUDE_CODE] sonnet OK (4776 chars)
+  Generated 4776 chars
+  SAVED to database
+
+[137/200] RFC018: RFC 8484 DoH...
+      [CLAUDE_CODE] sonnet OK (5360 chars)
+  Generated 5360 chars
+  SAVED to database
+
+[138/200] RFC019: RFC 7858 DoT...
+      [CLAUDE_CODE] sonnet OK (5734 chars)
+  Generated 5734 chars
+  SAVED to database
+
+[139/200] RFC020: RFC 9180 HPKE...
+      [CLAUDE_CODE] sonnet OK (6728 chars)
+  Generated 6728 chars
+  SAVED to database
+
+[140/200] RFC021: RFC 9420 MLS...
+      [CLAUDE_CODE] sonnet OK (6593 chars)
+  Generated 6593 chars
+  SAVED to database
+
+[141/200] RFC022: RFC 9106 Argon2...
+      [CLAUDE_CODE] sonnet OK (6785 chars)
+  Generated 6785 chars
+  SAVED to database
+
+[142/200] RFC023: RFC 8439 ChaCha20-Poly1305...
+      [CLAUDE_CODE] sonnet OK (4688 chars)
+  Generated 4688 chars
+  SAVED to database
+
+[143/200] RFC024: RFC 5869 HKDF...
+      [CLAUDE_CODE] sonnet OK (7116 chars)
+  Generated 7116 chars
+  SAVED to database
+
+[144/200] RFC025: RFC 8017 PKCS #1...
+      [CLAUDE_CODE] sonnet OK (5913 chars)
+  Generated 5913 chars
+  SAVED to database
+
+[145/200] RFC026: RFC 8018 PKCS #5...
+      [CLAUDE_CODE] sonnet OK (5038 chars)
+  Generated 5038 chars
+  SAVED to database
+
+[146/200] RFC027: RFC 7914 scrypt...
+      [CLAUDE_CODE] sonnet OK (5606 chars)
+  Generated 5606 chars
+  SAVED to database
+
+[147/200] RFC028: RFC 7693 BLAKE2...
+      [CLAUDE_CODE] sonnet OK (6271 chars)
+  Generated 6271 chars
+  SAVED to database
+
+[148/200] RFC029: RFC 7539...
+      [CLAUDE_CODE] sonnet OK (4812 chars)
+  Generated 4812 chars
+  SAVED to database
+
+[149/200] RFC030: RFC 8391 XMSS...
+      [CLAUDE_CODE] sonnet OK (7102 chars)
+  Generated 7102 chars
+  SAVED to database
+
+[150/200] RWA01: ERC-3643 T-REX...
+      [CLAUDE_CODE] sonnet OK (6051 chars)
+  Generated 6051 chars
+  SAVED to database
+
+[151/200] RWA02: ERC-1400 Security Token...
+      [CLAUDE_CODE] sonnet OK (6487 chars)
+  Generated 6487 chars
+  SAVED to database
+
+[152/200] S-ADD-008: Temperature attack protection...
+      [CLAUDE_CODE] sonnet OK (1209 chars)
+  Generated 1209 chars
+  SAVED to database
+
+[153/200] S-ADD-009: FIB attack resistance...
+      [CLAUDE_CODE] sonnet OK (1348 chars)
+  Generated 1348 chars
+  SAVED to database
+
+[154/200] S-ADD-010: Probing attack resistance...
+      [CLAUDE_CODE] sonnet OK (1303 chars)
+  Generated 1303 chars
+  SAVED to database
+
+[155/200] S-ADD-011: X-ray attack resistance...
+      [CLAUDE_CODE] sonnet OK (1030 chars)
+  Generated 1030 chars
+  SAVED to database
+
+[156/200] S-ADD-012: Power analysis countermeasures...
+      [CLAUDE_CODE] sonnet OK (1209 chars)
+  Generated 1209 chars
+  SAVED to database
+
+[157/200] S-ADD-013: EM analysis countermeasures...
+      [CLAUDE_CODE] sonnet OK (1135 chars)
+  Generated 1135 chars
+  SAVED to database
+
+[158/200] S-ADD-014: Timing attack countermeasures...
+      [CLAUDE_CODE] sonnet OK (1111 chars)
+  Generated 1111 chars
+  SAVED to database
+
+[159/200] S-ADD-015: Fault injection countermeasures...
+      [CLAUDE_CODE] sonnet OK (1118 chars)
+  Generated 1118 chars
+  SAVED to database
+
+[160/200] S-ADD-018: Secure memory encryption...
+      [CLAUDE_CODE] sonnet OK (1256 chars)
+  Generated 1256 chars
+  SAVED to database
+
+[161/200] S-ADD-019: Secure key storage...
+      [CLAUDE_CODE] sonnet OK (1091 chars)
+  Generated 1091 chars
+  SAVED to database
+
+[162/200] S-ADD-020: Isolated crypto processor...
+      [CLAUDE_CODE] sonnet OK (1289 chars)
+  Generated 1289 chars
+  SAVED to database
+
+[163/200] S-ADD-021: Hardware firewall...
+      [CLAUDE_CODE] sonnet OK (1374 chars)
+  Generated 1374 chars
+  SAVED to database
+
+[164/200] S-ADD-022: Secure debug disabled...
+      [CLAUDE_CODE] sonnet OK (1268 chars)
+  Generated 1268 chars
+  SAVED to database
+
+[165/200] S-ADD-023: JTAG disabled...
+      [CLAUDE_CODE] sonnet OK (993 chars)
+  Generated 993 chars
+  SAVED to database
+
+[166/200] S-ADD-024: SWD disabled...
+      [CLAUDE_CODE] sonnet OK (1460 chars)
+  Generated 1460 chars
+  SAVED to database
+
+[167/200] S-ADD-025: Capacitive fingerprint...
+      [CLAUDE_CODE] sonnet OK (1141 chars)
+  Generated 1141 chars
+  SAVED to database
+
+[168/200] S-ADD-026: Optical fingerprint...
+      [CLAUDE_CODE] sonnet OK (1265 chars)
+  Generated 1265 chars
+  SAVED to database
+
+[169/200] S-ADD-027: Ultrasonic fingerprint...
+      [CLAUDE_CODE] sonnet OK (1108 chars)
+  Generated 1108 chars
+  SAVED to database
+
+[170/200] S-ADD-028: Multi-finger support...
+      [CLAUDE_CODE] sonnet OK (1085 chars)
+  Generated 1085 chars
+  SAVED to database
+
+[171/200] S-ADD-029: FAR <0.001%...
+      [CLAUDE_CODE] sonnet OK (3526 chars)
+  Generated 3143 chars
+  SAVED to database
+
+[172/200] S-ADD-030: FRR <1%...
+      [CLAUDE_CODE] sonnet OK (3427 chars)
+  Generated 3427 chars
+  SAVED to database
+
+[173/200] S-ADD-031: Thermal noise RNG...
+      [CLAUDE_CODE] sonnet OK (2195 chars)
+  Generated 955 chars
+  SAVED to database
+
+[174/200] S-ADD-032: Shot noise RNG...
+      [CLAUDE_CODE] sonnet OK (1374 chars)
+  Generated 1374 chars
+  SAVED to database
+
+[175/200] S-ADD-033: Ring oscillator RNG...
+      [CLAUDE_CODE] sonnet OK (1009 chars)
+  Generated 1009 chars
+  SAVED to database
+
+[176/200] S-ADD-034: NIST SP 800-90B compliant...
+      [CLAUDE_CODE] sonnet OK (956 chars)
+  Generated 956 chars
+  SAVED to database
+
+[177/200] S-ADD-035: Immutable bootloader...
+      [CLAUDE_CODE] sonnet OK (1331 chars)
+  Generated 1331 chars
+  SAVED to database
+
+[178/200] S-ADD-036: Measured boot...
+      [CLAUDE_CODE] sonnet OK (1256 chars)
+  Generated 1256 chars
+  SAVED to database
+
+[179/200] S-ADD-037: Hardware root of trust...
+      [CLAUDE_CODE] sonnet OK (1243 chars)
+  Generated 1243 chars
+  SAVED to database
+
+[180/200] S-ADD-038: Secure boot chain...
+      [CLAUDE_CODE] sonnet OK (1101 chars)
+  Generated 1101 chars
+  SAVED to database
+
+[181/200] S-ADD-041: FIPS 140-3 Level 2...
+      [CLAUDE_CODE] sonnet OK (1080 chars)
+  Generated 1080 chars
+  SAVED to database
+
+[182/200] S-ADD-042: FIPS 140-3 Level 3...
+      [CLAUDE_CODE] sonnet OK (1286 chars)
+  Generated 1286 chars
+  SAVED to database
+
+[183/200] S-ADD-043: FIPS 140-3 Level 4...
+      [CLAUDE_CODE] sonnet OK (855 chars)
+  Generated 855 chars
+  SAVED to database
+
+[184/200] S-ADD-044: Tamper-responsive HSM...
+      [CLAUDE_CODE] sonnet OK (938 chars)
+  Generated 938 chars
+  SAVED to database
+
+[185/200] S-ADD-045: Key zeroization...
+      [CLAUDE_CODE] sonnet OK (1320 chars)
+  Generated 1320 chars
+  SAVED to database
+
+[186/200] S-ADD-046: Battery-backed key storage...
+      [CLAUDE_CODE] sonnet OK (1124 chars)
+  Generated 1124 chars
+  SAVED to database
+
+[187/200] S-ADD-047: Secure enclave...
+      [CLAUDE_CODE] sonnet OK (1096 chars)
+  Generated 1096 chars
+  SAVED to database
+
+[188/200] S-ADD-048: Memory isolation...
+      [CLAUDE_CODE] sonnet OK (1391 chars)
+  Generated 1391 chars
+  SAVED to database
+
+[189/200] S-ADD-049: Secure world isolation...
+      [CLAUDE_CODE] sonnet OK (1323 chars)
+  Generated 1323 chars
+  SAVED to database
+
+[190/200] S-ADD-050: Remote attestation...
+      [CLAUDE_CODE] sonnet OK (1228 chars)
+  Generated 1228 chars
+  SAVED to database
+
+[191/200] S-NEW-001: Dedicated crypto chip...
+      [CLAUDE_CODE] sonnet OK (1081 chars)
+  Generated 1081 chars
+  SAVED to database
+
+[192/200] S-NEW-002: Shielded PCB...
+      [CLAUDE_CODE] sonnet OK (1088 chars)
+  Generated 1088 chars
+  SAVED to database
+
+[193/200] S-NEW-003: Potted electronics...
+      [CLAUDE_CODE] sonnet OK (1120 chars)
+  Generated 1120 chars
+  SAVED to database
+
+[194/200] S-NEW-004: Light sensor protection...
+      [CLAUDE_CODE] sonnet OK (1361 chars)
+  Generated 1361 chars
+  SAVED to database
+
+[195/200] S-NEW-005: Voltage glitch detection...
+      [CLAUDE_CODE] sonnet OK (1059 chars)
+  Generated 1059 chars
+  SAVED to database
+
+[196/200] S-NEW-006: Clock glitch detection...
+      [CLAUDE_CODE] sonnet OK (1068 chars)
+  Generated 1068 chars
+  SAVED to database
+
+[197/200] S-NEW-007: Dual SE architecture...
+      [CLAUDE_CODE] sonnet OK (990 chars)
+  Generated 990 chars
+  SAVED to database
+
+[198/200] S-NEW-008: Dual entropy source...
+      [CLAUDE_CODE] sonnet OK (1035 chars)
+  Generated 1035 chars
+  SAVED to database
+
+[199/200] S-NEW-009: Liveness detection...
+      [CLAUDE_CODE] sonnet OK (1129 chars)
+  Generated 1129 chars
+  SAVED to database
+
+[200/200] S-NEW-010: On-device biometric processing...
+      [CLAUDE_CODE] sonnet OK (1102 chars)
+  Generated 1102 chars
+  SAVED to database
+
+============================================================
+Success: 200, Failed: 0
+============================================================

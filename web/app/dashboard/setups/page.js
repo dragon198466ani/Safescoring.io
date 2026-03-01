@@ -6,6 +6,7 @@ import SetupQuiz from "@/components/SetupQuiz";
 import SetupAssistant from "@/components/SetupAssistant";
 import { DragDropProvider, DraggableItem, DropZone, TrashZone } from "@/components/common/DragDrop";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useScoringSetup } from "@/libs/ScoringSetupProvider";
 
 /**
  * Setups Dashboard - Split view with catalog + setup builder
@@ -162,7 +163,9 @@ function AnimatedPillarScore({ value, code, color, delta }) {
 
 // Product card in catalog
 function ProductCard({ product, onAdd, isAdded }) {
-  const score = product.scores?.total;
+  const { computeSAFE, isCustom } = useScoringSetup();
+  const rawScore = product.scores?.total;
+  const score = isCustom ? (computeSAFE(product.scores) ?? rawScore) : rawScore;
   return (
     <div
       className={`p-3 rounded-xl border transition-all cursor-pointer ${
@@ -202,7 +205,9 @@ function ProductCard({ product, onAdd, isAdded }) {
 // Setup product item
 function SetupProductItem({ product, role, onRemove, onRoleChange }) {
   const _roleInfo = ROLES.find(r => r.id === role) || ROLES[3];
-  const score = product.scores?.total;
+  const { computeSAFE, isCustom } = useScoringSetup();
+  const rawScore = product.scores?.total;
+  const score = isCustom ? (computeSAFE(product.scores) ?? rawScore) : rawScore;
 
   return (
     <div className="flex items-center gap-3 p-3 rounded-xl bg-base-300/50 border border-base-300">
@@ -239,6 +244,7 @@ function SetupProductItem({ product, role, onRemove, onRoleChange }) {
 export default function SetupsPage() {
   // Enable drag only on tablet+ (mobile keeps tap-to-add)
   const isDragEnabled = useMediaQuery("(min-width: 768px)");
+  const { computeSAFE, isCustom, activeSetup } = useScoringSetup();
 
   // Catalog state
   const [products, setProducts] = useState([]);
@@ -332,36 +338,44 @@ export default function SetupsPage() {
     ));
   };
 
-  // Calculate combined score
+  // Calculate combined score (respects custom pillar weights from scoring setup)
   const combinedScore = useMemo(() => {
     if (setupProducts.length === 0) return null;
 
     let totalWeight = 0;
-    let weightedSum = { S: 0, A: 0, F: 0, E: 0, total: 0 };
+    let weightedSum = { S: 0, A: 0, F: 0, E: 0 };
 
     setupProducts.forEach(({ product, role }) => {
-      const totalScore = product.scores?.total;
-      if (totalScore == null) return;
-      const weight = role === "wallet" ? 2 : 1;
-      totalWeight += weight;
+      const s = product.scores?.s;
+      const a = product.scores?.a;
+      const f = product.scores?.f;
+      const e = product.scores?.e;
+      if (s == null && a == null) return;
+      const roleWeight = role === "wallet" ? 2 : 1;
+      totalWeight += roleWeight;
 
-      weightedSum.total += totalScore * weight;
-      weightedSum.S += (product.scores?.s ?? totalScore) * weight;
-      weightedSum.A += (product.scores?.a ?? totalScore) * weight;
-      weightedSum.F += (product.scores?.f ?? totalScore) * weight;
-      weightedSum.E += (product.scores?.e ?? totalScore) * weight;
+      weightedSum.S += (s ?? 0) * roleWeight;
+      weightedSum.A += (a ?? 0) * roleWeight;
+      weightedSum.F += (f ?? 0) * roleWeight;
+      weightedSum.E += (e ?? 0) * roleWeight;
     });
 
     if (totalWeight === 0) return null;
 
-    return {
-      total: Math.round(weightedSum.total / totalWeight),
+    const pillarAvg = {
       S: Math.round(weightedSum.S / totalWeight),
       A: Math.round(weightedSum.A / totalWeight),
       F: Math.round(weightedSum.F / totalWeight),
       E: Math.round(weightedSum.E / totalWeight),
     };
-  }, [setupProducts]);
+
+    // Apply custom pillar weights from scoring setup, or default equal weights
+    const total = isCustom
+      ? (computeSAFE({ s: pillarAvg.S, a: pillarAvg.A, f: pillarAvg.F, e: pillarAvg.E }) ?? Math.round((pillarAvg.S + pillarAvg.A + pillarAvg.F + pillarAvg.E) / 4))
+      : Math.round((pillarAvg.S + pillarAvg.A + pillarAvg.F + pillarAvg.E) / 4);
+
+    return { total, ...pillarAvg };
+  }, [setupProducts, isCustom, computeSAFE]);
 
   // Track score changes for delta display
   useEffect(() => {
