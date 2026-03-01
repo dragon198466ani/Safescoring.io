@@ -16,9 +16,13 @@ const footerLinks = {
   ],
   legal: [
     { label: "Legal Notice", href: "/legal" },
-    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/tos" },
+    { label: "Terms of Sale (CGV)", href: "/cgv" },
     { label: "Cookie Policy", href: "/cookies" },
+    { label: "Accessibility", href: "/accessibility" },
+    { label: "Security Policy", href: "/security" },
+    { label: "Do Not Sell My Info", href: "/privacy/ccpa" },
   ],
 };
 
@@ -129,14 +133,27 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Disclaimer */}
-        <div className="mt-12 p-4 bg-base-300/30 rounded-lg border border-base-300">
-          <p className="text-xs text-base-content/50 text-center">
-            <strong>Disclaimer:</strong> This website does not provide investment advice.
-            The information presented is for informational purposes only and does not constitute
-            a recommendation to buy, sell, or hold any digital assets.
-            Always do your own research before making any investment decisions.
-          </p>
+        {/* Disclaimers */}
+        <div className="mt-12 space-y-3">
+          <div className="p-4 bg-base-300/30 rounded-lg border border-base-300">
+            <p className="text-xs text-base-content/50 text-center">
+              <strong>Disclaimer:</strong> This website does not provide investment advice, financial advice, or any form of professional advice.
+              The scores, ratings, and information presented are for educational and informational purposes only and do not constitute
+              a recommendation to buy, sell, or hold any cryptocurrency or digital asset.
+              Cryptocurrency investments are highly volatile and involve substantial risk of loss. Always do your own research (DYOR).
+            </p>
+          </div>
+          <div className="p-3 bg-base-300/20 rounded-lg border border-base-300">
+            <p className="text-xs text-base-content/40 text-center">
+              SafeScoring is not a registered Credit Rating Agency under EU Regulation 1060/2009 (CRA).
+              Our scores are not credit ratings and are not supervised by ESMA, SEC, FCA, or AMF.
+              SafeScoring is not authorized or regulated by any financial regulatory authority.
+              UK users: Don&apos;t invest unless you&apos;re prepared to lose all the money you invest.{" "}
+              <a href="https://www.fca.org.uk/investsmart" target="_blank" rel="noopener noreferrer" className="underline hover:text-base-content/60">
+                Learn more (FCA)
+              </a>.
+            </p>
+          </div>
         </div>
 
         {/* Bottom bar */}

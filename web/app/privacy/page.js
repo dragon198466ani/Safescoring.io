@@ -38,15 +38,26 @@ const Privacy = () => {
           className="leading-relaxed whitespace-pre-wrap"
           style={{ fontFamily: "sans-serif" }}
         >
-          {`Last Updated: January 4, 2026
+          {`Last Updated: March 2, 2026
 
 SafeScoring is committed to protecting your privacy and ensuring compliance with global data protection laws including GDPR (EU), CCPA/CPRA (California), LGPD (Brazil), UK GDPR, PIPEDA (Canada), and APPI (Japan).
 
 1. DATA CONTROLLER
 
-SafeScoring
+SafeScoring LLC
+30 N Gould St, Ste R
+Sheridan, WY 82801, United States
 Email: privacy@safescoring.io
 Website: https://safescoring.io
+
+1.1 EU/EEA REPRESENTATIVE (GDPR Art. 27)
+
+In accordance with Article 27 of the General Data Protection Regulation (EU) 2016/679, SafeScoring has designated the following representative within the European Union:
+
+SafeScoring EU Representative
+Email: eu-representative@safescoring.io
+
+This representative serves as the point of contact for data subjects in the EU/EEA and for supervisory authorities regarding all issues related to the processing of personal data.
 
 2. DATA WE COLLECT
 
@@ -56,7 +67,7 @@ Website: https://safescoring.io
 - Password (encrypted)
 
 2.2 Payment Information
-- For card payments: Processed by Stripe (we do not store card details)
+- For card payments: Processed by Lemon Squeezy LLC (Merchant of Record — we do not store card details)
 - For crypto payments: Wallet address and transaction details
 - Billing email address
 
@@ -128,7 +139,7 @@ To exercise these rights, contact: privacy@safescoring.io
 
 7.1 Third-Party Processors
 We share data only with essential service providers:
-- Stripe: Payment processing (EU-based, GDPR-compliant)
+- Lemon Squeezy: Payment processing (Merchant of Record, GDPR-compliant)
 - Supabase: Database hosting (EU region, GDPR-compliant)
 - Vercel: Website hosting (Standard Contractual Clauses for EU-US transfers)
 

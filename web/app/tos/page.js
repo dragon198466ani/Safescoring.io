@@ -34,15 +34,19 @@ const TOS = () => {
           className="leading-relaxed whitespace-pre-wrap"
           style={{ fontFamily: "sans-serif" }}
         >
-          {`Last Updated: December 2024
+          {`Last Updated: March 2, 2026
 
 Welcome to SafeScoring!
 
-These Terms of Service ("Terms") govern your use of the SafeScoring website at https://safescoring.io ("Website") and the services provided by SafeScoring. By using our Website and services, you agree to these Terms.
+These Terms of Service ("Terms") govern your use of the SafeScoring website at https://safescoring.io ("Website") and the services provided by SafeScoring LLC. By using our Website and services, you agree to these Terms.
+
+For subscription purchases, additional Terms of Sale (CGV) apply: /cgv
 
 1. Description of SafeScoring
 
 SafeScoring is a platform providing unified security ratings for cryptocurrency products including hardware wallets, software wallets, exchanges, and DeFi protocols. We evaluate products using 2376 security norms across four pillars: Security, Adversity, Fidelity, and Efficiency (SAFE).
+
+IMPORTANT: SafeScoring is NOT a Credit Rating Agency under EU Regulation 1060/2009 or any equivalent regulation. Our security scores are independent editorial assessments and are not supervised by ESMA, SEC, FCA, AMF, or any other financial authority.
 
 2. Service Tiers
 
@@ -74,7 +78,8 @@ SafeScoring is a platform providing unified security ratings for cryptocurrency 
 6.1 Paid subscriptions are billed monthly or annually.
 6.2 You may cancel your subscription at any time through your account settings.
 6.3 Refunds are available within 14 days of purchase (EU Consumer Rights Directive).
-6.4 Payments are processed securely through Stripe.
+6.4 Payments are processed securely through Lemon Squeezy LLC (Merchant of Record).
+6.5 For detailed purchase terms, see our Terms of Sale (CGV): /cgv
 
 7. Data Protection and Privacy
 
@@ -99,10 +104,27 @@ Any disputes will be resolved through arbitration in accordance with EU regulati
 
 We may update these Terms from time to time. Users will be notified of significant changes via email.
 
-12. Contact
+12. Sanctions and Export Controls
+
+12.1 You may not use SafeScoring if you are located in, or a resident of, a country subject to comprehensive U.S., EU, or UN sanctions.
+12.2 You represent that you are not on any restricted party list maintained by the U.S. (OFAC SDN), EU, or UN.
+
+13. Force Majeure
+
+SafeScoring shall not be liable for any failure or delay resulting from circumstances beyond our reasonable control, including but not limited to: blockchain network outages, regulatory changes, natural disasters, pandemics, or government actions.
+
+14. Contact
 
 For any questions regarding these Terms of Service, please contact us at:
 Email: support@safescoring.io
+
+Related Legal Documents:
+— Privacy Policy: /privacy
+— Terms of Sale (CGV): /cgv
+— Cookie Policy: /cookies
+— Legal Notice: /legal
+— Accessibility: /accessibility
+— Security Policy: /security
 
 Thank you for using SafeScoring!`}
         </pre>
