@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
+import Link from "next/link";
 import ProductLogo from "@/components/ProductLogo";
 import SetupQuiz from "@/components/SetupQuiz";
 import SetupAssistant from "@/components/SetupAssistant";
@@ -477,7 +478,7 @@ export default function SetupsPage() {
           {!showQuiz && (
             <button
               onClick={() => setShowQuiz(true)}
-              className="w-full p-4 rounded-xl bg-gradient-to-r from-primary/20 to-purple-500/20 border border-primary/30 hover:border-primary/50 transition-all text-left group"
+              className="w-full p-4 rounded-xl bg-base-200 border border-base-300 hover:border-base-content/30 transition-all text-left group"
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -628,13 +629,23 @@ export default function SetupsPage() {
                   ))}
                 </div>
 
-                {/* Live indicator */}
-                <div className="flex items-center justify-center gap-2 mt-3 text-xs text-base-content/40">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                {/* Live indicator + custom weights badge */}
+                <div className="flex items-center justify-center gap-3 mt-3 text-xs text-base-content/40">
+                  <span className="flex items-center gap-1.5">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    Live calculation
                   </span>
-                  Live calculation
+                  {isCustom && activeSetup && (
+                    <Link href="/dashboard/scoring-setups" className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                      </svg>
+                      {activeSetup.name || "Custom weights"}
+                    </Link>
+                  )}
                 </div>
               </div>
             ) : (
