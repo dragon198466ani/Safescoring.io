@@ -19,8 +19,41 @@ const CRYPTO_PLAN_KEYS = {
   Enterprise: "enterprise",
 };
 
+// Simple BTC/ETH checkout button via NOWPayments
+function ButtonCryptoCheckout({ plan, className = "", children }) {
+  const [loading, setLoading] = useState(false);
+
+  const handleClick = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/crypto/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan, billingPeriod: "monthly" }),
+      });
+      const data = await res.json();
+      if (data.invoiceUrl) {
+        window.location.href = data.invoiceUrl;
+      } else {
+        // Not logged in or error — redirect to sign in
+        window.location.href = "/api/auth/signin?callbackUrl=/pricing";
+      }
+    } catch {
+      window.location.href = "/api/auth/signin?callbackUrl=/pricing";
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button onClick={handleClick} disabled={loading} className={`btn ${className}`}>
+      {loading ? <span className="loading loading-spinner loading-sm" /> : children || "Pay with Crypto"}
+    </button>
+  );
+}
+
 const Pricing = () => {
-  const [method, setMethod] = useState("card"); // card | crypto
+  const [method, setMethod] = useState("card"); // card | crypto | btc
   const allPlans = config?.lemonsqueezy?.plans || [];
 
   return (
@@ -61,11 +94,23 @@ const Pricing = () => {
             >
               USDC
             </button>
+            <button
+              onClick={() => setMethod("btc")}
+              className={`px-5 py-2 rounded-md text-sm font-medium transition-all ${
+                method === "btc"
+                  ? "bg-white text-black shadow-sm"
+                  : "text-base-content/60 hover:text-base-content"
+              }`}
+            >
+              BTC / ETH
+            </button>
           </div>
           <p className="text-xs text-base-content/40 mt-2">
             {method === "card"
               ? "Credit card via LemonSqueezy. Cancel anytime."
-              : "Stream USDC per second via Superfluid on Polygon. Cancel anytime."}
+              : method === "crypto"
+              ? "Stream USDC per second via Superfluid on Polygon. Cancel anytime."
+              : "Pay with BTC, ETH, or 100+ cryptocurrencies via NOWPayments."}
           </p>
         </div>
 
@@ -127,7 +172,11 @@ const Pricing = () => {
                     )}
                     <span className="text-4xl font-bold">${plan.price}</span>
                     <span className="text-base-content/60 text-sm">
-                      {method === "crypto" && plan.price > 0 ? "USDC/mo" : "/month"}
+                      {method === "crypto" && plan.price > 0
+                        ? "USDC/mo"
+                        : method === "btc" && plan.price > 0
+                        ? "USD/mo"
+                        : "/month"}
                     </span>
                   </div>
                   {/* Card: trial info */}
@@ -196,6 +245,13 @@ const Pricing = () => {
                     mode="subscription"
                     className={`w-full mt-auto ${isFeatured ? "btn-primary" : "btn-outline"}`}
                   />
+                ) : method === "btc" && cryptoKey ? (
+                  <ButtonCryptoCheckout
+                    plan={cryptoKey}
+                    className={`w-full mt-auto ${isFeatured ? "btn-primary" : "btn-outline"}`}
+                  >
+                    Pay with Crypto
+                  </ButtonCryptoCheckout>
                 ) : cryptoKey ? (
                   <ButtonSubscribeCrypto
                     plan={cryptoKey}
@@ -222,7 +278,9 @@ const Pricing = () => {
             </svg>
             {method === "card"
               ? "14-day trial with card required (EU compliant)"
-              : "USDC on Polygon via Superfluid. No middleman."}
+              : method === "crypto"
+              ? "USDC on Polygon via Superfluid. No middleman."
+              : "BTC, ETH, USDT & 100+ cryptos. Hosted by NOWPayments."}
           </div>
           <p className="text-base-content/50 text-sm">
             Need a custom solution?{" "}
