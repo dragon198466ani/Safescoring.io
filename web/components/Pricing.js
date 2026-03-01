@@ -1,25 +1,71 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import config from "@/config";
 import ButtonCheckout from "./ButtonCheckout";
 
+// Lazy-load crypto button (wagmi/rainbowkit are heavy)
+const ButtonSubscribeCrypto = dynamic(
+  () => import("./ButtonSubscribeCrypto"),
+  { ssr: false, loading: () => <button className="btn btn-outline w-full" disabled>Loading wallet...</button> }
+);
+
+// Plan name → Superfluid key
+const CRYPTO_PLAN_KEYS = {
+  Explorer: "explorer",
+  Professional: "professional",
+  Enterprise: "enterprise",
+};
+
 const Pricing = () => {
-  // Use lemonsqueezy plans
+  const [method, setMethod] = useState("card"); // card | crypto
   const allPlans = config?.lemonsqueezy?.plans || [];
 
   return (
     <section className="py-24 px-6" id="pricing">
       <div className="max-w-7xl mx-auto">
         {/* Section header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-base-content/10 text-base-content/70">
             Pricing
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
             Start free, upgrade when ready
           </h2>
-          <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
+          <p className="text-lg text-base-content/60 max-w-2xl mx-auto mb-8">
             Explore SafeScoring for free with 5 products per month.
             Upgrade for unlimited access and advanced features.
+          </p>
+
+          {/* Payment method toggle — minimal pill */}
+          <div className="inline-flex bg-base-200 rounded-lg p-1 border border-base-300">
+            <button
+              onClick={() => setMethod("card")}
+              className={`px-5 py-2 rounded-md text-sm font-medium transition-all ${
+                method === "card"
+                  ? "bg-white text-black shadow-sm"
+                  : "text-base-content/60 hover:text-base-content"
+              }`}
+            >
+              Card
+            </button>
+            <button
+              onClick={() => setMethod("crypto")}
+              className={`px-5 py-2 rounded-md text-sm font-medium transition-all ${
+                method === "crypto"
+                  ? "bg-white text-black shadow-sm"
+                  : "text-base-content/60 hover:text-base-content"
+              }`}
+            >
+              USDC
+            </button>
+          </div>
+          <p className="text-xs text-base-content/40 mt-2">
+            {method === "card"
+              ? "Credit card via LemonSqueezy. Cancel anytime."
+              : "Stream USDC per second via Superfluid on Polygon. Cancel anytime."}
           </p>
         </div>
 
@@ -27,19 +73,16 @@ const Pricing = () => {
         {allPlans.length === 0 && (
           <div className="text-center py-12 bg-base-200 rounded-lg">
             <p className="text-base-content/60">No pricing plans found</p>
-            <p className="text-xs text-base-content/40 mt-2">
-              Try restarting the dev server (npm run dev)
-            </p>
           </div>
         )}
 
-        {/* All plans in unified grid */}
+        {/* Plans grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {allPlans.map((plan) => {
-            // Support variantId (lemonsqueezy)
             const planId = plan.variantId || plan.priceId;
             const isFreemium = planId === "free";
             const isFeatured = plan.isFeatured;
+            const cryptoKey = CRYPTO_PLAN_KEYS[plan.name];
 
             return (
               <div
@@ -83,9 +126,12 @@ const Pricing = () => {
                       </span>
                     )}
                     <span className="text-4xl font-bold">${plan.price}</span>
-                    <span className="text-base-content/60 text-sm">/month</span>
+                    <span className="text-base-content/60 text-sm">
+                      {method === "crypto" && plan.price > 0 ? "USDC/mo" : "/month"}
+                    </span>
                   </div>
-                  {plan.trialDays && (
+                  {/* Card: trial info */}
+                  {method === "card" && plan.trialDays && (
                     <div className="flex items-center gap-2 mt-2">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-white">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -94,6 +140,12 @@ const Pricing = () => {
                         {plan.trialDays}-day free trial
                       </span>
                     </div>
+                  )}
+                  {/* Crypto: streaming info */}
+                  {method === "crypto" && plan.price > 0 && (
+                    <p className="text-xs text-base-content/40 mt-2">
+                      ~${(plan.price / 30).toFixed(2)}/day &middot; streaming
+                    </p>
                   )}
                   {isFreemium && (
                     <div className="flex items-center gap-2 mt-2">
@@ -115,7 +167,7 @@ const Pricing = () => {
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"
                         fill="currentColor"
-                        className={`w-4 h-4 flex-shrink-0 mt-0.5 text-base-content/50`}
+                        className="w-4 h-4 flex-shrink-0 mt-0.5 text-base-content/50"
                       >
                         <path
                           fillRule="evenodd"
@@ -130,7 +182,7 @@ const Pricing = () => {
                   ))}
                 </ul>
 
-                {/* CTA */}
+                {/* CTA — switches based on payment method */}
                 {isFreemium ? (
                   <Link
                     href="/api/auth/signin?callbackUrl=/onboarding"
@@ -138,13 +190,23 @@ const Pricing = () => {
                   >
                     Get Started Free
                   </Link>
+                ) : method === "card" ? (
+                  <ButtonCheckout
+                    priceId={planId}
+                    mode="subscription"
+                    className={`w-full mt-auto ${isFeatured ? "btn-primary" : "btn-outline"}`}
+                  />
+                ) : cryptoKey ? (
+                  <ButtonSubscribeCrypto
+                    plan={cryptoKey}
+                    className={`w-full mt-auto ${isFeatured ? "" : ""}`}
+                    onSuccess={() => window.location.reload()}
+                  />
                 ) : (
                   <ButtonCheckout
                     priceId={planId}
                     mode="subscription"
-                    className={`w-full mt-auto ${
-                      isFeatured ? "btn-primary" : "btn-outline"
-                    }`}
+                    className={`w-full mt-auto ${isFeatured ? "btn-primary" : "btn-outline"}`}
                   />
                 )}
               </div>
@@ -158,7 +220,9 @@ const Pricing = () => {
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
-            14-day trial with card required (EU compliant)
+            {method === "card"
+              ? "14-day trial with card required (EU compliant)"
+              : "USDC on Polygon via Superfluid. No middleman."}
           </div>
           <p className="text-base-content/50 text-sm">
             Need a custom solution?{" "}
