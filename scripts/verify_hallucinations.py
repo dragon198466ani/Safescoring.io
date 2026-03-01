@@ -26,7 +26,7 @@ from html.parser import HTMLParser
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.core.config import SUPABASE_URL, get_supabase_headers
+from src.core.config import SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_KEY, get_supabase_headers
 from src.core.api_provider import AIProvider
 
 
@@ -62,7 +62,13 @@ class HallucinationVerifier:
     """
 
     def __init__(self):
-        self.headers = get_supabase_headers()
+        # Use service key to bypass RLS
+        _key = SUPABASE_SERVICE_KEY or SUPABASE_KEY
+        self.headers = {
+            'apikey': _key,
+            'Authorization': f'Bearer {_key}',
+            'Content-Type': 'application/json',
+        }
         self.ai_provider = AIProvider()
         self.request_headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -80,8 +86,8 @@ class HallucinationVerifier:
     def load_unchecked_norms(self, limit=None, pillar=None):
         """Load norms that need hallucination verification (with official_link)."""
         url = f"{SUPABASE_URL}/rest/v1/norms"
-        url += "?select=id,code,pillar,title,description,summary,official_link"
-        url += "&summary=not.is.null"
+        url += "?select=id,code,pillar,title,description,official_doc_summary,official_link"
+        url += "&official_doc_summary=not.is.null"
         url += "&official_link=not.is.null"  # Must have source link
         url += "&or=(hallucination_checked.is.null,hallucination_checked.eq.false)"
         
@@ -159,7 +165,7 @@ class HallucinationVerifier:
         Verify a norm's summary against FRESHLY SCRAPED source content.
         Returns (score, issues) where score is 0-1 (0=no hallucination, 1=severe)
         """
-        summary = norm.get('summary', '')
+        summary = norm.get('official_doc_summary', '')
         if not summary:
             return None, "No summary to verify"
 

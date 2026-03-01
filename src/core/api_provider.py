@@ -216,9 +216,9 @@ class AIProvider:
         - Adversity (A) pillar evaluations
         - TBD result reviews
         """
-        # CLAUDE_CODE_ONLY mode: use expert model
+        # CLAUDE_CODE_ONLY mode: use sonnet for expert review (opus too slow/timeout-prone)
         if CLAUDE_CODE_ONLY:
-            return self._call_claude_code(prompt, max_tokens, temperature, model=CLAUDE_CODE_MODEL_EXPERT)
+            return self._call_claude_code(prompt, max_tokens, temperature, model=CLAUDE_CODE_MODEL)
 
         # Try Gemini Pro first
         result = self._call_gemini_pro_direct(prompt, max_tokens, temperature)
@@ -1559,6 +1559,10 @@ def parse_evaluation_response(response):
     Parse AI evaluation response.
     Returns dict: {norm_code: (result, reason)}
     Handles multiple formats including multi-line responses.
+
+    Supports BOTH code formats:
+    - Numeric: S01, A150, F200, E50
+    - Textual: A-CC-001, A-OWASP-MASVS, S-AES-256, F-AUDIT-001
     """
     evaluations = {}
     lines = response.split('\n')
@@ -1570,11 +1574,15 @@ def parse_evaluation_response(response):
             continue
 
         # Try to find a norm code on this line
-        code_match = re.search(r'\b([SAFE])[-_]?(\d+)\b', line, re.IGNORECASE)
+        # Pattern 1: Textual codes like A-CC-001, A-OWASP-MASVS, S-AES-256, F-AUDIT-001
+        code_match = re.search(r'\b([SAFE])-([A-Z][A-Z0-9_]+-[A-Z0-9]+(?:-[A-Z0-9]+)*)\b', line, re.IGNORECASE)
+        if not code_match:
+            # Pattern 2: Simple numeric codes like S01, A150, F200
+            code_match = re.search(r'\b([SAFE])[-_]?(\d+)\b', line, re.IGNORECASE)
         if code_match:
             letter = code_match.group(1).upper()
-            number = code_match.group(2)
-            last_code = f"{letter}{number}"
+            suffix = code_match.group(2).upper()
+            last_code = f"{letter}-{suffix}" if '-' in code_match.group(0) else f"{letter}{suffix}"
 
         # Try to find result on same line after code, or on current line if we have a pending code
         # Pattern: look for result words, prioritizing YESp over YES
@@ -1620,6 +1628,7 @@ def parse_applicability_response(response, norms_by_code):
     Returns dict: {norm_id: is_applicable}
     Supports multiple formats:
     - Strict: "S01: OUI" or "F200: NON"
+    - Textual: "A-CC-001: OUI" or "S-AES-256: NON"
     - Verbose (Gemini): "**Norme F200**\nReponse : OUI"
     """
     applicability = {}
@@ -1631,11 +1640,15 @@ def parse_applicability_response(response, norms_by_code):
             continue
 
         # Try to find a norm code on this line
-        code_match = re.search(r'\b([SAFE])[-_]?(\d+)\b', line, re.IGNORECASE)
+        # Pattern 1: Textual codes like A-CC-001, A-OWASP-MASVS, S-AES-256
+        code_match = re.search(r'\b([SAFE])-([A-Z][A-Z0-9_]+-[A-Z0-9]+(?:-[A-Z0-9]+)*)\b', line, re.IGNORECASE)
+        if not code_match:
+            # Pattern 2: Simple numeric codes like S01, A150, F200
+            code_match = re.search(r'\b([SAFE])[-_]?(\d+)\b', line, re.IGNORECASE)
         if code_match:
             letter = code_match.group(1).upper()
-            number = code_match.group(2)
-            last_code = f"{letter}{number}"
+            suffix = code_match.group(2).upper()
+            last_code = f"{letter}-{suffix}" if '-' in code_match.group(0) else f"{letter}{suffix}"
 
         # Try to find OUI/NON/YES/NO on this line
         result_match = re.search(r'\b(OUI|NON|YES|NO)\b', line, re.IGNORECASE)

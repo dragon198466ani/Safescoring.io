@@ -45,6 +45,7 @@ class ScoreCalculator:
         self.norms = {}
         self.evaluations = []
         self.record_history = record_history
+        self.type_weights = {}  # type_id -> {S, A, F, E} pillar weights
 
         # Setup session with retry logic
         self.session = requests.Session()
@@ -67,25 +68,15 @@ class ScoreCalculator:
         """Load all necessary data from Supabase"""
         print("[LOAD] Loading data...")
 
-        # Load products
-        r = self.session.get(
-            f'{SUPABASE_URL}/rest/v1/products?select=id,name,slug,type_id',
-            headers=SUPABASE_HEADERS,
-            timeout=30
-        )
-        self.products = r.json()
+        # Load products (paginated - loads ALL products beyond 1000 limit)
+        self.products = fetch_all('products', select='id,name,slug,type_id', order='id', filters={'deleted_at': 'is.null'})
         print(f"   {len(self.products)} products")
 
         time.sleep(0.5)
 
-        # Load product type mapping (multi-type support info)
-        r = self.session.get(
-            f'{SUPABASE_URL}/rest/v1/product_type_mapping?select=product_id,type_id',
-            headers=SUPABASE_HEADERS,
-            timeout=30
-        )
-        if r.status_code == 200:
-            mappings = r.json()
+        # Load product type mapping (paginated)
+        mappings = fetch_all('product_type_mapping', select='product_id,type_id', order='product_id')
+        if mappings:
             multi_type_products = {}
             for m in mappings:
                 pid = m['product_id']
@@ -115,21 +106,25 @@ class ScoreCalculator:
 
         time.sleep(0.5)
 
-        # Load all evaluations (with pagination)
-        self.evaluations = []
-        offset = 0
-        while True:
-            r = self.session.get(
-                f'{SUPABASE_URL}/rest/v1/evaluations?select=product_id,norm_id,result&offset={offset}&limit=1000',
-                headers=SUPABASE_HEADERS,
-                timeout=30
-            )
-            data = r.json()
-            if not data:
-                break
-            self.evaluations.extend(data)
-            offset += 1000
-            time.sleep(0.3)
+        # Load product types with pillar weights
+        types_list = fetch_all('product_types', select='id,pillar_weights', order='id')
+        for t in types_list:
+            pw = t.get('pillar_weights')
+            if pw:
+                if isinstance(pw, str):
+                    try:
+                        pw = json.loads(pw)
+                    except (json.JSONDecodeError, TypeError):
+                        pw = None
+                if isinstance(pw, dict) and all(p in pw for p in ['S', 'A', 'F', 'E']):
+                    self.type_weights[t['id']] = pw
+        print(f"   {len(self.type_weights)} types with pillar weights")
+
+        time.sleep(0.5)
+
+        # Load all evaluations (with pagination via fetch_all)
+        print("   Loading evaluations (paginated)...")
+        self.evaluations = fetch_all('evaluations', select='product_id,norm_id,result', order='product_id')
         print(f"   {len(self.evaluations)} evaluations")
 
     def calculate_score(self, results):
@@ -222,28 +217,67 @@ class ScoreCalculator:
 
         return result_scores, stats
 
-    def save_product_scores(self, product_id, scores_data, stats):
+    def compute_weighted_safe(self, pillar_scores, weights):
+        """Compute weighted SAFE score from individual pillar scores and weights."""
+        s = pillar_scores.get('S')
+        a = pillar_scores.get('A')
+        f = pillar_scores.get('F')
+        e = pillar_scores.get('E')
+
+        # Need at least 2 pillar scores to compute a meaningful weighted average
+        available = [(v, weights.get(p, 25)) for p, v in [('S', s), ('A', a), ('F', f), ('E', e)] if v is not None]
+        if len(available) < 2:
+            return None
+
+        total_weight = sum(w for _, w in available)
+        if total_weight == 0:
+            return None
+
+        weighted_sum = sum(score * weight for score, weight in available)
+        return round(weighted_sum / total_weight, 1)
+
+    def compute_equal_safe(self, pillar_scores):
+        """Compute equal-weight SAFE score: simple average of available pillars."""
+        return self.compute_weighted_safe(pillar_scores, {'S': 25, 'A': 25, 'F': 25, 'E': 25})
+
+    def save_product_scores(self, product_id, scores_data, stats, type_id=None):
         """Save scores to safe_scoring_results table"""
+        # Compute dual SAFE scores for each tier
+        weights = self.type_weights.get(type_id, {'S': 25, 'A': 25, 'F': 25, 'E': 25})
+
+        full_pillars = {p: scores_data['full'].get(p) for p in ['S', 'A', 'F', 'E']}
+        consumer_pillars = {p: scores_data['consumer'].get(p) for p in ['S', 'A', 'F', 'E']}
+        essential_pillars = {p: scores_data['essential'].get(p) for p in ['S', 'A', 'F', 'E']}
+
         results_data = {
             'product_id': product_id,
-            # FULL scores
-            'note_finale': scores_data['full'].get('SAFE'),
-            'score_s': scores_data['full'].get('S'),
-            'score_a': scores_data['full'].get('A'),
-            'score_f': scores_data['full'].get('F'),
-            'score_e': scores_data['full'].get('E'),
-            # CONSUMER scores
-            'note_consumer': scores_data['consumer'].get('SAFE'),
-            's_consumer': scores_data['consumer'].get('S'),
-            'a_consumer': scores_data['consumer'].get('A'),
-            'f_consumer': scores_data['consumer'].get('F'),
-            'e_consumer': scores_data['consumer'].get('E'),
-            # ESSENTIAL scores
-            'note_essential': scores_data['essential'].get('SAFE'),
-            's_essential': scores_data['essential'].get('S'),
-            'a_essential': scores_data['essential'].get('A'),
-            'f_essential': scores_data['essential'].get('F'),
-            'e_essential': scores_data['essential'].get('E'),
+            # FULL pillar scores
+            'score_s': full_pillars['S'],
+            'score_a': full_pillars['A'],
+            'score_f': full_pillars['F'],
+            'score_e': full_pillars['E'],
+            # FULL SAFE scores (dual mode)
+            'note_finale': self.compute_equal_safe(full_pillars),
+            'note_weighted': self.compute_weighted_safe(full_pillars, weights),
+            'note_equal': self.compute_equal_safe(full_pillars),
+            # CONSUMER pillar scores
+            's_consumer': consumer_pillars['S'],
+            'a_consumer': consumer_pillars['A'],
+            'f_consumer': consumer_pillars['F'],
+            'e_consumer': consumer_pillars['E'],
+            # CONSUMER SAFE scores (dual mode)
+            'note_consumer': self.compute_equal_safe(consumer_pillars),
+            'note_consumer_weighted': self.compute_weighted_safe(consumer_pillars, weights),
+            'note_consumer_equal': self.compute_equal_safe(consumer_pillars),
+            # ESSENTIAL pillar scores
+            's_essential': essential_pillars['S'],
+            'a_essential': essential_pillars['A'],
+            'f_essential': essential_pillars['F'],
+            'e_essential': essential_pillars['E'],
+            # ESSENTIAL SAFE scores (dual mode)
+            'note_essential': self.compute_equal_safe(essential_pillars),
+            'note_essential_weighted': self.compute_weighted_safe(essential_pillars, weights),
+            'note_essential_equal': self.compute_equal_safe(essential_pillars),
             # Statistics
             'total_norms_evaluated': stats['total'],
             'total_yes': stats['yes'],
@@ -296,24 +330,28 @@ class ScoreCalculator:
 
             if not scores:
                 skip_count += 1
+                # Delete stale scores for products with no evaluations
+                self.session.delete(
+                    f'{SUPABASE_URL}/rest/v1/safe_scoring_results?product_id=eq.{product_id}',
+                    headers=SUPABASE_HEADERS,
+                    timeout=30
+                )
                 continue
 
-            if self.save_product_scores(product_id, scores, stats):
+            type_id = product.get('type_id')
+
+            if self.save_product_scores(product_id, scores, stats, type_id=type_id):
                 success_count += 1
 
-                full_safe = scores['full'].get('SAFE')
-                full_s = scores['full'].get('S')
-                full_a = scores['full'].get('A')
-                full_f = scores['full'].get('F')
-                full_e = scores['full'].get('E')
+                full_pillars = {p: scores['full'].get(p) for p in ['S', 'A', 'F', 'E']}
+                weights = self.type_weights.get(type_id, {'S': 25, 'A': 25, 'F': 25, 'E': 25})
+                w_safe = self.compute_weighted_safe(full_pillars, weights)
+                e_safe = self.compute_equal_safe(full_pillars)
 
-                safe_str = f"{full_safe:.1f}%" if full_safe is not None else "N/A"
-                s_str = f"{full_s:.1f}%" if full_s is not None else "N/A"
-                a_str = f"{full_a:.1f}%" if full_a is not None else "N/A"
-                f_str = f"{full_f:.1f}%" if full_f is not None else "N/A"
-                e_str = f"{full_e:.1f}%" if full_e is not None else "N/A"
+                w_str = f"{w_safe:.1f}%" if w_safe is not None else "N/A"
+                e_str = f"{e_safe:.1f}%" if e_safe is not None else "N/A"
 
-                print(f"[{i:3}/{len(self.products)}] {product_name[:30]:<30} | SAFE: {safe_str:>6} | S:{s_str:>6} A:{a_str:>6} F:{f_str:>6} E:{e_str:>6}")
+                print(f"[{i:3}/{len(self.products)}] {product_name[:30]:<30} | W:{w_str:>6} E:{e_str:>6} | S:{full_pillars['S'] or 0:.0f} A:{full_pillars['A'] or 0:.0f} F:{full_pillars['F'] or 0:.0f} E:{full_pillars['E'] or 0:.0f}")
             else:
                 print(f"[{i:3}/{len(self.products)}] {product_name[:30]:<30} | ERROR: Save failed")
 
@@ -346,67 +384,51 @@ class ScoreCalculator:
         print("SCORE SUMMARY")
         print("=" * 60)
 
-        r = self.session.get(
-            f'{SUPABASE_URL}/rest/v1/products?select=name,scores&order=name',
-            headers=SUPABASE_HEADERS,
-            timeout=30
+        # Read scores from safe_scoring_results joined with products (paginated)
+        scores_data = fetch_all(
+            'safe_scoring_results',
+            select='product_id,note_finale,note_weighted,note_equal',
+            order='note_finale'
         )
-        products = r.json()
+        products_data = fetch_all('products', select='id,name', order='name', filters={'deleted_at': 'is.null'})
+        product_names = {p['id']: p['name'] for p in products_data}
 
-        if not isinstance(products, list):
-            print("[WARNING] Error loading products")
-            return
-
-        full_scores = []
-        for p in products:
-            if not isinstance(p, dict):
+        weighted_scores = []
+        equal_scores = []
+        scored_products_w = []
+        scored_products_e = []
+        for s in scores_data:
+            if not isinstance(s, dict):
                 continue
-            scores = p.get('scores')
-            if isinstance(scores, str):
-                try:
-                    scores = json.loads(scores)
-                except (json.JSONDecodeError, Exception):
-                    continue
-            if scores and isinstance(scores, dict) and scores.get('full'):
-                safe = scores['full'].get('SAFE')
-                if safe is not None:
-                    full_scores.append(safe)
+            name = product_names.get(s['product_id'], f"ID:{s['product_id']}")
+            nw = s.get('note_weighted')
+            ne = s.get('note_equal')
+            if nw is not None:
+                weighted_scores.append(nw)
+                scored_products_w.append((name, nw))
+            if ne is not None:
+                equal_scores.append(ne)
+                scored_products_e.append((name, ne))
 
-        if full_scores:
-            avg = sum(full_scores) / len(full_scores)
-            min_score = min(full_scores)
-            max_score = max(full_scores)
-
-            print(f"\n[STATS] SAFE Score Statistics (Full):")
+        for label, scores_list, products_list in [
+            ('Weighted (type-specific)', weighted_scores, scored_products_w),
+            ('Equal (25/25/25/25)', equal_scores, scored_products_e),
+        ]:
+            if not scores_list:
+                continue
+            avg = sum(scores_list) / len(scores_list)
+            print(f"\n[STATS] SAFE Score — {label}:")
             print(f"   Average: {avg:.1f}%")
-            print(f"   Min: {min_score:.1f}%")
-            print(f"   Max: {max_score:.1f}%")
-            print(f"   Products with score: {len(full_scores)}")
+            print(f"   Min: {min(scores_list):.1f}%  Max: {max(scores_list):.1f}%")
+            print(f"   Products with score: {len(scores_list)}")
 
-        # Top 5 and Bottom 5
-        scored_products = []
-        for p in products:
-            if not isinstance(p, dict):
-                continue
-            scores = p.get('scores')
-            if isinstance(scores, str):
-                try:
-                    scores = json.loads(scores)
-                except (json.JSONDecodeError, Exception):
-                    continue
-            if scores and isinstance(scores, dict) and scores.get('full') and scores['full'].get('SAFE') is not None:
-                scored_products.append((p['name'], scores['full']['SAFE']))
-
-        if scored_products:
-            scored_products.sort(key=lambda x: x[1], reverse=True)
-
-            print(f"\n[TOP 5]")
-            for name, score in scored_products[:5]:
-                print(f"   {score:5.1f}% - {name}")
-
-            print(f"\n[BOTTOM 5]")
-            for name, score in scored_products[-5:]:
-                print(f"   {score:5.1f}% - {name}")
+            products_list.sort(key=lambda x: x[1], reverse=True)
+            print(f"   Top 5:")
+            for name, score in products_list[:5]:
+                print(f"      {score:5.1f}% - {name}")
+            print(f"   Bottom 5:")
+            for name, score in products_list[-5:]:
+                print(f"      {score:5.1f}% - {name}")
 
 
 if __name__ == '__main__':

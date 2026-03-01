@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Applicabilite des normes par type de produit
-Genere automatiquement avec logique corrigee
+Norm applicability by product type.
+Auto-generated with corrected logic.
 """
 
-# Types canoniques (sans redondance)
+# Canonical types (no redundancy)
 ALL_PRODUCT_TYPES = [
     'HW_WALLET',
     'SW_WALLET',
@@ -62,8 +62,8 @@ ALL_PRODUCT_TYPES = [
     'INFRASTRUCTURE',
 ]
 
-# Aliases pour compatibilite (types fusionnes)
-# Couvre tous les 93 types de la base de donnees
+# Aliases for compatibility (merged types)
+# Covers all database type codes
 TYPE_ALIASES = {
     # === HARDWARE WALLETS ===
     'HW COLD': 'HW_WALLET',
@@ -185,17 +185,163 @@ TYPE_ALIASES = {
 
     # === AI ===
     'AI AGENT': 'AI_AGENT',
+    'AI': 'AI_AGENT',
+    'AI_TRADING': 'AI_AGENT',
+    'AI TRADING': 'AI_AGENT',
 
     # === NFT ===
     'NFT MARKET': 'NFT_MARKET',
+    'NFT_MARKETPLACE': 'NFT_MARKET',
+    'NFT MARKETPLACE': 'NFT_MARKET',
+
+    # === ADDITIONAL COMMON ALIASES ===
+    # Exchanges
+    'EXCHANGE': 'CEX',
+    'CENTRALIZED_EXCHANGE': 'CEX',
+    'CENTRALIZED EXCHANGE': 'CEX',
+    'HYBRID_EXCHANGE': 'CEX',
+    'HYBRID EXCHANGE': 'CEX',
+    'DECENTRALIZED_EXCHANGE': 'DEX',
+    'DECENTRALIZED EXCHANGE': 'DEX',
+    'AGGREGATOR': 'DEX_AGG',
+    'DEX_AGGREGATOR': 'DEX_AGG',
+    'DEX AGGREGATOR': 'DEX_AGG',
+
+    # DeFi variations
+    'DEFI_PROTOCOL': 'DEFI',
+    'DEFI PROTOCOL': 'DEFI',
+    'YIELD_FARMING': 'YIELD',
+    'YIELD FARMING': 'YIELD',
+    'YIELD_AGG': 'YIELD',
+    'YIELD AGG': 'YIELD',
+    'YIELD_AGGREGATOR': 'YIELD',
+    'YIELD AGGREGATOR': 'YIELD',
+    'FARM': 'YIELD',
+    'FARMING': 'YIELD',
+    'STAKING_POOL': 'STAKING',
+    'STAKING POOL': 'STAKING',
+    'LIQUID STAKING': 'LIQUID_STAKING',
+    'LST': 'LIQUID_STAKING',
+    'LRT': 'LIQUID_STAKING',
+
+    # Wallets additional
+    'WALLET': 'SW_WALLET',
+    'HOT_WALLET': 'SW_WALLET',
+    'HOT WALLET': 'SW_WALLET',
+    'COLD_WALLET': 'HW_WALLET',
+    'COLD WALLET': 'HW_WALLET',
+    'HARDWARE_WALLET': 'HW_WALLET',
+    'HARDWARE WALLET': 'HW_WALLET',
+    'SOFTWARE_WALLET': 'SW_WALLET',
+    'SOFTWARE WALLET': 'SW_WALLET',
+    'WEB_WALLET': 'SW_WALLET',
+    'WEB WALLET': 'SW_WALLET',
+    'EXTENSION': 'SW_WALLET',
+    'BROWSER_EXTENSION': 'SW_WALLET',
+    'BROWSER EXTENSION': 'SW_WALLET',
+
+    # Infrastructure
+    'INFRA': 'INFRASTRUCTURE',
+    'NODE': 'INFRASTRUCTURE',
+    'RPC': 'INFRASTRUCTURE',
+    'INDEXER': 'ORACLE',
+    'DATA': 'ORACLE',
+    'ANALYTICS': 'ORACLE',
+
+    # Banking/Payments
+    'NEOBANKING': 'BANK',
+    'BANKING': 'BANK',
+    'CRYPTO_CARD': 'CARD',
+    'DEBIT_CARD': 'CARD',
+    'DEBIT CARD': 'CARD',
+    'PREPAID_CARD': 'CARD',
+    'PREPAID CARD': 'CARD',
+    'GATEWAY': 'PAYMENT',
+    'PAYMENT_GATEWAY': 'PAYMENT',
+    'PAYMENT GATEWAY': 'PAYMENT',
+    'PAY': 'PAYMENT',
+
+    # Governance
+    'GOVERNANCE': 'DAO',
+    'VOTING': 'DAO',
+
+    # Other
+    'MIXER': 'PRIVACY',
+    'PRIVACY_PROTOCOL': 'PRIVACY',
+    'PRIVACY PROTOCOL': 'PRIVACY',
+    'VPN': 'DVPN',
+    'DECENTRALIZED_VPN': 'DVPN',
+    'DID': 'IDENTITY',
+    'SSI': 'IDENTITY',
+    'KYC': 'IDENTITY',
+    'REAL_WORLD_ASSETS': 'RWA',
+    'REAL WORLD ASSETS': 'RWA',
+    'TOKENIZATION': 'RWA',
+    'STABLE': 'STABLECOIN',
+    'STABLECOINS': 'STABLECOIN',
+    'MARKET_PREDICTION': 'PREDICTION',
+    'PREDICTION_MARKET': 'PREDICTION',
+    'PREDICTION MARKET': 'PREDICTION',
+    'TOKEN_LAUNCH': 'LAUNCHPAD',
+    'TOKEN LAUNCH': 'LAUNCHPAD',
+    'IDO': 'LAUNCHPAD',
+    'IEO': 'LAUNCHPAD',
+    'ICO': 'LAUNCHPAD',
+    'SYNTH': 'SYNTHETICS',
+    'SYNTHETIC': 'SYNTHETICS',
+    'TOKEN_LOCKER': 'LOCKER',
+    'TOKEN LOCKER': 'LOCKER',
+    'LOCK': 'LOCKER',
+    'INDEX_FUND': 'INDEX',
+    'INDEX FUND': 'INDEX',
+    'PORTFOLIO': 'INDEX',
+    'BASKET': 'INDEX',
+    'INSURE': 'INSURANCE',
+    'COVERAGE': 'INSURANCE',
+    'QUEST_PLATFORM': 'QUEST',
+    'AIRDROP': 'QUEST',
+    'SOCIAL': 'SOCIALFI',
+    'SOCIAL_FI': 'SOCIALFI',
+    'SOCIAL FI': 'SOCIALFI',
+    'GAME': 'SOCIALFI',
+    'GAMING': 'SOCIALFI',
+    'P2P_EXCHANGE': 'P2P',
+    'P2P EXCHANGE': 'P2P',
+    'OTC_DESK': 'OTC',
+    'OTC DESK': 'OTC',
+    'CROSS_CHAIN': 'CROSS_AGG',
+    'CROSS CHAIN': 'CROSS_AGG',
+    'CROSSCHAIN': 'CROSS_AGG',
+    'LAYER_2': 'L2',
+    'LAYER 2': 'L2',
+    'LAYER2': 'L2',
+    'ROLLUP': 'L2',
+    'SIDECHAIN': 'L2',
+    'APPCHAIN': 'L2',
+    'MEV_PROTECTION': 'MEV',
+    'MEV PROTECTION': 'MEV',
+    'INTENT_PROTOCOL': 'INTENT',
+    'INTENT PROTOCOL': 'INTENT',
+    'STREAM': 'STREAMING',
+    'PAYMENT_STREAM': 'STREAMING',
+    'PAYMENT STREAM': 'STREAMING',
+    'INSTITUTIONAL': 'PRIME',
+    'PRIME_BROKERAGE': 'PRIME',
+    'PRIME BROKERAGE': 'PRIME',
+
+    # === COMPANION / BEARER ===
+    'COMPANION': 'SW_WALLET',       # Companion apps are wallet interfaces
+    'BEARER': 'BKP_PHYSICAL',       # Bearer tokens are physical funded coins
+    'BEARER_TOKEN': 'BKP_PHYSICAL',
+    'BEARER TOKEN': 'BKP_PHYSICAL',
 }
 
 def normalize_type(product_type: str) -> str:
-    """Normalise un type de produit vers le type canonique"""
+    """Normalize a product type to its canonical type."""
     t = product_type.upper()
     return TYPE_ALIASES.get(t, t)
 
-# Applicabilite par norme
+# Applicability by norm
 NORM_APPLICABILITY = {
     'A-AMD-SEV': ['BKP_DIGITAL', 'BKP_PHYSICAL', 'CEX', 'CUSTODY', 'DEX', 'DEX_AGG', 'HW_WALLET', 'INHERITANCE', 'INTENT', 'MEV', 'MULTISIG', 'OTC', 'P2P', 'PERP_DEX', 'PRIME', 'SEED_SPLITTER', 'SETTLEMENT', 'SWAP', 'SW_WALLET', 'TREASURY'],
     'A-APPLE-SE': ['BKP_PHYSICAL', 'HW_WALLET', 'SEED_SPLITTER'],

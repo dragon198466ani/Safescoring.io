@@ -214,8 +214,8 @@ class SmartEvaluator:
         """Loads data from Supabase (products, types, norms, applicability, type mapping)"""
         print("\n[LOAD] Loading Supabase data...")
 
-        # Products (paginated - no 1000 limit)
-        self.products = fetch_all('products', select='*', order='id')
+        # Products (paginated - no 1000 limit, exclude soft-deleted)
+        self.products = fetch_all('products', select='*', order='id', filters={'deleted_at': 'is.null'})
         print(f"   {len(self.products)} products")
 
         # Product types
@@ -355,30 +355,57 @@ class SmartEvaluator:
         """
         Returns type-specific context for evaluation prompts.
         Helps AI understand what kind of product it's evaluating.
+        Uses UPPERCASE type codes for reliable detection.
         """
-        type_code = product_info.get('type_code', '')
-        category = product_info.get('category', '')
+        type_code = product_info.get('type_code', '').upper()
+        category = product_info.get('category', '').upper()
 
-        # Detect product type characteristics
-        is_hardware = 'HW' in type_code or category == 'Hardware'
-        is_protocol = any(x in type_code for x in ['DEX', 'Lending', 'Bridges', 'Yield', 'Protocol'])
-        is_defi = 'DeFi' in category or is_protocol
-        is_wallet = 'Wallet' in type_code or 'SW' in type_code or 'HW' in type_code
+        # Detect product type characteristics using UPPERCASE canonical codes
+        HARDWARE_CODES = {'HW_WALLET', 'HW_COLD', 'HW_NFC_SIGNER', 'AIRGAP_SIGNER', 'BKP_PHYSICAL', 'SEED_SPLITTER'}
+        PROTOCOL_CODES = {'DEX', 'DEX_AGG', 'LENDING', 'BRIDGE', 'CROSS_AGG', 'YIELD', 'DEFI',
+                          'LIQUID_STAKING', 'STAKING', 'SYNTHETICS', 'LOCKER', 'VESTING', 'INDEX',
+                          'PERP_DEX', 'SWAP', 'L2', 'MEV', 'INTENT', 'PREDICTION'}
+        WALLET_CODES = {'SW_WALLET', 'SW_DESKTOP', 'SW_MOBILE', 'SW_BROWSER', 'MULTISIG',
+                        'MPC_WALLET', 'SMART_WALLET', 'AA'}
+        EXCHANGE_CODES = {'CEX', 'P2P', 'OTC', 'PRIME', 'SETTLEMENT'}
+        BANKING_CODES = {'BANK', 'CARD', 'PAYMENT', 'STREAMING'}
+        INFRA_CODES = {'ORACLE', 'INFRASTRUCTURE', 'MINING', 'DVPN', 'MESSAGING',
+                       'IDENTITY', 'ATTESTATION', 'PRIVACY', 'AI_AGENT'}
+
+        # Parse all type codes from multi-type products (e.g. "HW_WALLET + SW_WALLET")
+        codes_in_product = set(c.strip() for c in type_code.split('+'))
+
+        is_hardware = bool(codes_in_product & HARDWARE_CODES) or 'HW' in type_code
+        is_protocol = bool(codes_in_product & PROTOCOL_CODES)
+        is_wallet = bool(codes_in_product & WALLET_CODES) or ('SW' in type_code and not is_protocol)
+        is_exchange = bool(codes_in_product & EXCHANGE_CODES)
+        is_banking = bool(codes_in_product & BANKING_CODES)
+        is_infra = bool(codes_in_product & INFRA_CODES)
+        is_defi = is_protocol or 'DEFI' in category
 
         context_lines = ["PRODUCT TYPE CONTEXT:"]
 
-        if is_protocol:
-            context_lines.append("- This is a PROTOCOL (smart contracts on blockchain)")
+        if is_hardware:
+            context_lines.append("- This is a HARDWARE DEVICE (physical)")
+            context_lines.append("- Relevant: physical security, firmware, secure element, durability, tamper resistance")
+        elif is_protocol:
+            context_lines.append("- This is a PROTOCOL / DeFi (smart contracts on blockchain)")
             context_lines.append("- It has NO physical components, NO hardware, NO device")
             context_lines.append("- Norms about PIN, wipe, firmware, battery are TECHNICALLY IMPOSSIBLE")
-            context_lines.append("- Relevant: smart contract security, audits, gas optimization")
-        elif is_hardware:
-            context_lines.append("- This is a HARDWARE DEVICE (physical)")
-            context_lines.append("- Relevant: physical security, firmware, secure element, durability")
+            context_lines.append("- Relevant: smart contract security, audits, oracle reliability, liquidity risks")
         elif is_wallet:
             context_lines.append("- This is a SOFTWARE WALLET")
             context_lines.append("- No physical components - norms about hardware are irrelevant")
-            context_lines.append("- Relevant: key management, encryption, BIP standards")
+            context_lines.append("- Relevant: key management, encryption, BIP standards, backup/recovery")
+        elif is_exchange:
+            context_lines.append("- This is an EXCHANGE / TRADING PLATFORM")
+            context_lines.append("- Relevant: custody security, KYC/AML, order execution, fund segregation")
+        elif is_banking:
+            context_lines.append("- This is a BANKING / PAYMENT service")
+            context_lines.append("- Relevant: regulatory compliance, card security, transaction limits, fraud protection")
+        elif is_infra:
+            context_lines.append("- This is INFRASTRUCTURE / SERVICE")
+            context_lines.append("- Relevant: uptime, data integrity, API security, privacy guarantees")
         else:
             context_lines.append(f"- Product type: {type_code}")
 
@@ -918,12 +945,16 @@ Review:"""
                     products_to_eval.append(p)
         else:
             all_products = self.products[start_index:] if start_index > 0 else self.products
-            products_to_eval = all_products[:limit] if limit else all_products
+            products_to_eval = all_products
 
         if skip_evaluated and not product_ids:
             # Only skip already evaluated when NOT in orchestrator mode
             # (orchestrator already handles selection)
             products_to_eval = [p for p in products_to_eval if p['id'] not in evaluated_ids]
+
+        # Apply limit AFTER filtering (so --limit N gives N unevaluated products)
+        if limit and not product_ids:
+            products_to_eval = products_to_eval[:limit]
 
         print(f"\n{len(products_to_eval)} product(s) to evaluate")
 

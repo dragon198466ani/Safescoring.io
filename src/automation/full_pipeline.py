@@ -35,6 +35,7 @@ load_dotenv()
 from src.core.applicability_generator import ApplicabilityGenerator
 from src.core.smart_evaluator import SmartEvaluator
 from src.core.score_calculator import ScoreCalculator
+from src.core.supabase_pagination import fetch_all
 
 
 def print_banner(step: int, title: str):
@@ -257,12 +258,8 @@ class FullPipeline:
                 print(f"ERROR: Product '{product_slug}' not found!")
                 return
         else:
-            # Get all active products
-            r = requests.get(
-                f"{SUPABASE_URL}/rest/v1/products?select=*&order=name",
-                headers=headers
-            )
-            all_products = r.json() if r.status_code == 200 else []
+            # Get all active products (paginated - loads ALL beyond 1000 limit)
+            all_products = fetch_all('products', select='*', order='name', filters={'deleted_at': 'is.null'})
 
             if mode == 'test':
                 products = all_products[:1]

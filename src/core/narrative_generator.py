@@ -86,8 +86,8 @@ class NarrativeGenerator:
         """Load all necessary data from Supabase (evaluations loaded per-product for performance)."""
         print("[NARRATIVE] Loading data...")
 
-        # Load products
-        self.products = fetch_all('products', select='id,name,slug,type_id,url,safe_score,score_s,score_a,score_f,score_e', order='id')
+        # Load products (no stale score columns - use safe_scoring_results instead)
+        self.products = fetch_all('products', select='id,name,slug,type_id,url', order='id', filters={'deleted_at': 'is.null'})
         print(f"   {len(self.products)} products")
 
         # Load norms
@@ -169,7 +169,8 @@ class NarrativeGenerator:
 
         passed = [e for e in pillar_evals if e['result'] in ('YES', 'YESp')]
         failed = [e for e in pillar_evals if e['result'] in ('NO', 'N')]
-        uncertain = [e for e in pillar_evals if e['result'] in ('TBD', 'N/A')]
+        uncertain = [e for e in pillar_evals if e['result'] == 'TBD']
+        not_applicable = [e for e in pillar_evals if e['result'] in ('N/A', 'NA')]
 
         # Sort: essential norms first, then by code
         for lst in [passed, failed, uncertain]:
@@ -179,10 +180,12 @@ class NarrativeGenerator:
             'passed': passed,
             'failed': failed,
             'uncertain': uncertain,
-            'total': len(pillar_evals),
+            'not_applicable': not_applicable,
+            'total': len(passed) + len(failed) + len(uncertain),
             'pass_count': len(passed),
             'fail_count': len(failed),
             'tbd_count': len(uncertain),
+            'na_count': len(not_applicable),
         }
 
     def _build_pillar_prompt(self, product, pillar, data, scores):
@@ -409,14 +412,14 @@ IMPORTANT:
         product_id = product['id']
         product_name = product['name']
 
-        # Get scores (prefer safe_scoring_results over product fields)
+        # Get scores exclusively from safe_scoring_results (single source of truth)
         score_data = self.scores_by_product.get(product_id, {}) if hasattr(self, 'scores_by_product') else {}
         scores = {
-            'safe_score': score_data.get('note_finale') or product.get('safe_score', 0) or 0,
-            'score_s': score_data.get('score_s') or product.get('score_s', 0) or 0,
-            'score_a': score_data.get('score_a') or product.get('score_a', 0) or 0,
-            'score_f': score_data.get('score_f') or product.get('score_f', 0) or 0,
-            'score_e': score_data.get('score_e') or product.get('score_e', 0) or 0,
+            'safe_score': score_data.get('note_finale') or 0,
+            'score_s': score_data.get('score_s') or 0,
+            'score_a': score_data.get('score_a') or 0,
+            'score_f': score_data.get('score_f') or 0,
+            'score_e': score_data.get('score_e') or 0,
         }
 
         print(f"\n   [PRODUCT] {product_name} (SAFE: {scores['safe_score']}%)")

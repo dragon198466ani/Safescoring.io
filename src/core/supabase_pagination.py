@@ -239,11 +239,13 @@ class SupabaseClient:
         return fetch_unique(table, column, filters)
 
     def fetch_products(self) -> List[Dict[str, Any]]:
-        """Fetch ALL products with minimal columns to avoid timeout."""
+        """Fetch ALL active products with minimal columns to avoid timeout."""
         # Only select columns needed for evaluation to avoid timeout
         # Use smaller page size (500) for stability
+        # Exclude soft-deleted products (deleted_at IS NULL)
         select = 'id,name,slug,url,type_id'
-        return fetch_all('products', select=select, order='id', page_size=500, debug=self.debug)
+        return fetch_all('products', select=select, order='id', page_size=500,
+                         filters={'deleted_at': 'is.null'}, debug=self.debug)
 
     def fetch_norms(self, with_summaries: bool = True) -> List[Dict[str, Any]]:
         """

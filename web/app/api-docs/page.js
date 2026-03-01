@@ -10,8 +10,8 @@ export const metadata = {
 const endpoints = [
   {
     method: "GET",
-    path: "/api/products/{slug}/score",
-    description: "Get security score for a specific product",
+    path: "/api/products/{slug}",
+    description: "Get security score and details for a specific product",
     params: [
       { name: "slug", type: "string", required: true, description: "Product URL slug (e.g., 'ledger-nano-x')" }
     ],
@@ -23,14 +23,40 @@ const endpoints = [
   "score": 85,
   "scores": {
     "s": 90,  // Security
-    "a": 82,  // Audit
-    "f": 88,  // Functionality
-    "e": 80   // Experience
+    "a": 82,  // Adversity
+    "f": 88,  // Fidelity
+    "e": 80   // Efficiency
   },
   "lastUpdated": "2025-01-01T00:00:00Z",
   "detailsUrl": "https://safescoring.io/products/ledger-nano-x"
 }`,
-    rateLimit: "100 requests/hour",
+    rateLimit: "30 requests/minute",
+  },
+  {
+    method: "GET",
+    path: "/api/v1/products",
+    description: "List all scored products with pagination (API key required for Professional/Enterprise)",
+    params: [
+      { name: "type", type: "string", required: false, description: "Filter by product type slug" },
+      { name: "limit", type: "number", required: false, description: "Max results (default: 50, max: 100)" },
+      { name: "offset", type: "number", required: false, description: "Pagination offset" },
+      { name: "sort", type: "string", required: false, description: "'score', 'name', or 'updated'" },
+      { name: "min_score", type: "number", required: false, description: "Minimum score filter" },
+    ],
+    response: `{
+  "success": true,
+  "data": [
+    {
+      "slug": "ledger-nano-x",
+      "name": "Ledger Nano X",
+      "type": "Hardware Wallet",
+      "score": 85,
+      "scores": { "s": 90, "a": 82, "f": 88, "e": 80 }
+    }
+  ],
+  "pagination": { "total": 150, "limit": 50, "offset": 0, "hasMore": true }
+}`,
+    rateLimit: "Professional: 30 req/min, Enterprise: 100 req/min",
   },
   {
     method: "GET",
@@ -77,30 +103,13 @@ const endpoints = [
   ],
   "total": 1
 }`,
-    rateLimit: "50 requests/hour",
+    rateLimit: "60 requests/minute",
   },
-  {
-    method: "GET",
-    path: "/api/leaderboard",
-    description: "Get top-rated products by category",
-    params: [
-      { name: "category", type: "string", required: false, description: "Product category slug" },
-      { name: "limit", type: "number", required: false, description: "Number of results (default: 10)" }
-    ],
-    response: `{
-  "category": "hardware-wallets",
-  "products": [
-    { "rank": 1, "slug": "ledger-nano-x", "name": "Ledger Nano X", "score": 85 },
-    { "rank": 2, "slug": "trezor-model-t", "name": "Trezor Model T", "score": 82 }
-  ]
-}`,
-    rateLimit: "100 requests/hour",
-  }
 ];
 
 const codeExamples = {
   javascript: `// Fetch SafeScore for a product
-const response = await fetch('https://safescoring.io/api/products/ledger-nano-x/score');
+const response = await fetch('https://safescoring.io/api/products/ledger-nano-x');
 const data = await response.json();
 
 console.log(\`\${data.name}: \${data.score}/100\`);
@@ -109,14 +118,14 @@ console.log(\`\${data.name}: \${data.score}/100\`);
   python: `import requests
 
 # Fetch SafeScore for a product
-response = requests.get('https://safescoring.io/api/products/ledger-nano-x/score')
+response = requests.get('https://safescoring.io/api/products/ledger-nano-x')
 data = response.json()
 
 print(f"{data['name']}: {data['score']}/100")
 # Output: "Ledger Nano X: 85/100"`,
 
   curl: `# Get product score
-curl https://safescoring.io/api/products/ledger-nano-x/score
+curl https://safescoring.io/api/products/ledger-nano-x
 
 # Get SVG badge
 curl https://safescoring.io/api/badge/ledger-nano-x -o badge.svg
@@ -130,7 +139,7 @@ function SafeScoreBadge({ slug }) {
   const [score, setScore] = useState(null);
 
   useEffect(() => {
-    fetch(\`https://safescoring.io/api/products/\${slug}/score\`)
+    fetch(\`https://safescoring.io/api/products/\${slug}\`)
       .then(res => res.json())
       .then(data => setScore(data));
   }, [slug]);
@@ -183,7 +192,7 @@ export default function APIDocsPage() {
               No authentication required for basic endpoints. Just make a request:
             </p>
             <div className="mockup-code">
-              <pre data-prefix="$"><code>curl https://safescoring.io/api/products/ledger-nano-x/score</code></pre>
+              <pre data-prefix="$"><code>curl https://safescoring.io/api/products/ledger-nano-x</code></pre>
             </div>
           </div>
 
@@ -193,7 +202,7 @@ export default function APIDocsPage() {
                 <div className="text-3xl mb-2">🆓</div>
                 <h3 className="card-title text-lg">Free Tier</h3>
                 <p className="text-sm text-base-content/70">
-                  100 requests/hour for score API. No signup required.
+                  30 requests/minute for public API. No signup required.
                 </p>
               </div>
             </div>
@@ -384,7 +393,7 @@ export default function APIDocsPage() {
 
           <div className="grid md:grid-cols-3 gap-6">
             <div className="card bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20">
-              <div class="card-body">
+              <div className="card-body">
                 <h3 className="card-title text-green-400">Crypto Wallets</h3>
                 <p className="text-sm text-base-content/70">
                   Show security scores for DeFi protocols before users connect.

@@ -56,7 +56,7 @@ def generate_snapshot(pretty: bool = False) -> dict:
     print("  Fetching products...", end=' ', flush=True)
     products = fetch_all(
         'products',
-        select='id,name,slug,type_id,logo_url,description,category,url',
+        select='id,name,slug,type_id,logo_url,description,url',
         order='id',
     )
     print(f"{len(products)} products")
@@ -95,7 +95,6 @@ def generate_snapshot(pretty: bool = False) -> dict:
             'type_id': product.get('type_id'),
             'type_name': types_map.get(product.get('type_id'), {}).get('name'),
             'logo_url': product.get('logo_url'),
-            'category': product.get('category'),
             'url': product.get('url'),
         }
 

@@ -21,6 +21,7 @@ from urllib3.util.retry import Retry
 
 # Import from common module
 from .config import SUPABASE_URL, get_supabase_headers
+from .supabase_pagination import fetch_all
 
 HEADERS = get_supabase_headers('return=representation')
 
@@ -178,19 +179,13 @@ class MoatManager:
         print("RECORDING SCORE SNAPSHOTS FOR ALL PRODUCTS")
         print("=" * 60)
 
-        # Get all products with scores
-        r = self.session.get(
-            f'{SUPABASE_URL}/rest/v1/products?select=id,name&scores=not.is.null',
-            headers=HEADERS,
-            timeout=60
-        )
+        # Get all products that have scores in safe_scoring_results (paginated)
+        scored_results = fetch_all('safe_scoring_results', select='product_id', order='product_id')
+        scored_product_ids = set(s['product_id'] for s in scored_results)
 
-        if r.status_code != 200:
-            print(f"[ERROR] Failed to load products: {r.status_code}")
-            return {'success': 0, 'failed': 0}
-
-        products = r.json()
-        print(f"[INFO] Found {len(products)} products with scores")
+        all_products = fetch_all('products', select='id,name', order='id', filters={'deleted_at': 'is.null'})
+        products = [p for p in all_products if p['id'] in scored_product_ids]
+        print(f"[INFO] Found {len(products)} products with scores (of {len(all_products)} total)")
 
         success = 0
         failed = 0

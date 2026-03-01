@@ -24,6 +24,7 @@ on:
           - products
           - prices
           - evaluations
+          - audit
       limit:
         description: 'Limit number of items'
         required: false
@@ -167,4 +168,35 @@ jobs:
         if: always()
         run: |
           echo "Evaluations completed at $(date -u)"
+          echo "Status: ${{ job.status }}"
+
+  # Monthly evaluation drift audit (1st of each month)
+  monthly-audit:
+    needs: [determine-step]
+    if: needs.determine-step.outputs.step == 'norms' || github.event.inputs.step == 'audit'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run monthly evaluation audit
+        run: python -m src.automation.monthly_eval_audit
+
+      - name: Log audit result
+        if: always()
+        run: |
+          echo "Monthly audit completed at $(date -u)"
           echo "Status: ${{ job.status }}"
