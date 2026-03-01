@@ -92,7 +92,7 @@ function MetricCard({ label, value, unit = "", trend = null, sparkData = [], col
 
   return (
     <div className={`flex flex-col ${size === "sm" ? "gap-0.5" : "gap-1"}`}>
-      <div className="text-[10px] text-base-content/50 uppercase tracking-wider">{label}</div>
+      <div className="text-xs text-base-content/50 uppercase tracking-wider">{label}</div>
       <div className="flex items-end gap-2">
         <span className={`font-bold ${size === "sm" ? "text-lg" : "text-2xl"} ${color || getScoreColor(value)}`}>
           {typeof value === "number" ? value.toFixed(0) : value}
@@ -146,7 +146,7 @@ function RingProgress({ value, maxValue = 100, size = 48, strokeWidth = 4, color
           <span className={`text-xs font-bold ${getScoreColor(value)}`}>{Math.round(value)}</span>
         </div>
       </div>
-      {label && <span className="text-[10px] text-base-content/50">{label}</span>}
+      {label && <span className="text-xs text-base-content/50">{label}</span>}
     </div>
   );
 }
@@ -406,7 +406,7 @@ export function DashboardAnalytics({ setups = [], isConnected }) {
 
         {/* Score Range */}
         <div>
-          <div className="text-[10px] text-base-content/50 uppercase tracking-wider mb-1">Range</div>
+          <div className="text-xs text-base-content/50 uppercase tracking-wider mb-1">Range</div>
           <div className="flex items-center gap-1">
             <span className={`text-sm font-bold ${getScoreColor(portfolioMetrics.minScore)}`}>
               {portfolioMetrics.minScore}
@@ -421,7 +421,7 @@ export function DashboardAnalytics({ setups = [], isConnected }) {
         {/* Weakest Pillar */}
         {portfolioMetrics.weakestPillar && (
           <div>
-            <div className="text-[10px] text-base-content/50 uppercase tracking-wider mb-1">Focus</div>
+            <div className="text-xs text-base-content/50 uppercase tracking-wider mb-1">Focus</div>
             <div className="flex items-center gap-2">
               <span className="text-lg font-bold text-amber-400">
                 {portfolioMetrics.weakestPillar[0]}
@@ -470,7 +470,7 @@ export function DashboardAnalytics({ setups = [], isConnected }) {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
-              <span className="text-[10px] text-base-content/50">Live</span>
+              <span className="text-xs text-base-content/50">Live</span>
             </div>
           )}
         </div>
@@ -620,7 +620,7 @@ export function SetupAnalytics({ setupId, products = [], combinedScore, compatib
 
         {/* Product Range */}
         <div>
-          <div className="text-[10px] text-base-content/50 uppercase tracking-wider mb-1">Product Scores</div>
+          <div className="text-xs text-base-content/50 uppercase tracking-wider mb-1">Product Scores</div>
           <div className="flex items-center gap-1">
             <span className={`text-sm font-bold ${getScoreColor(metrics?.minProductScore || 0)}`}>
               {metrics?.minProductScore || 0}
@@ -676,7 +676,7 @@ export function SetupAnalytics({ setupId, products = [], combinedScore, compatib
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            <span className="text-[9px] text-base-content/50">Live</span>
+            <span className="text-xs text-base-content/50">Live</span>
           </div>
         )}
       </div>
@@ -729,8 +729,8 @@ export function SetupCompatibilityMatrix({ setups = [], isConnected }) {
             </div>
             {/* Score + badges */}
             <div className="flex items-center gap-2 justify-end">
-              {p.shared>0&&<span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 rounded text-[10px]">{p.shared}×</span>}
-              {p.syn&&<span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded text-[10px]">✓</span>}
+              {p.shared>0&&<span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 rounded text-xs">{p.shared}×</span>}
+              {p.syn&&<span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded text-xs">✓</span>}
               <span className={`text-sm sm:text-base font-bold ${color(p.score)}`}>{p.score}%</span>
             </div>
           </div>

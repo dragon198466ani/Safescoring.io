@@ -92,7 +92,7 @@ export function TierBadge({ tierId, size = "sm" }) {
   const tier = SCORE_TIERS[tierId];
   if (!tier || tierId === "full") return null; // Don't show badge for "full" (default)
 
-  const sizeClasses = size === "xs" ? "text-[9px] px-1.5 py-0.5" : "text-[10px] px-2 py-0.5";
+  const sizeClasses = size === "xs" ? "text-xs px-1.5 py-0.5" : "text-xs px-2 py-0.5";
 
   const colorClasses =
     tierId === "essential"

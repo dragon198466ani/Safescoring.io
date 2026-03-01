@@ -408,7 +408,7 @@ function QuizResults({ answers, onRestart }) {
                 "bg-amber-500/10 border-amber-500"
               }`}>
                 <p className="font-medium text-sm">{p.problem}</p>
-                <p className="text-[10px] opacity-50 mt-1">{p.answer}</p>
+                <p className="text-xs opacity-50 mt-1">{p.answer}</p>
               </div>
             ))}
           </div>

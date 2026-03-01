@@ -170,7 +170,7 @@ function SetupCard({ setup, onSelect, isActive, isDemoMode }) {
               >
                 {pillar.score > 0 ? pillar.score : "-"}
               </div>
-              <div className="text-[10px] text-base-content/50 font-medium">
+              <div className="text-xs text-base-content/50 font-medium">
                 {pillar.code}
               </div>
             </div>
@@ -348,14 +348,14 @@ export default function DashboardSAFEOverview({
                 <div className={`text-xl font-bold ${getScoreColor(stats?.avgScore)}`}>
                   {stats?.avgScore}
                 </div>
-                <div className="text-[10px] text-base-content/50">AVG SCORE</div>
+                <div className="text-xs text-base-content/50">Avg Score</div>
               </div>
               {stats?.lowScoreCount > 0 && (
                 <div className="text-center">
                   <div className="text-xl font-bold text-amber-400">
                     {stats?.lowScoreCount}
                   </div>
-                  <div className="text-[10px] text-base-content/50">NEED WORK</div>
+                  <div className="text-xs text-base-content/50">Need Work</div>
                 </div>
               )}
             </div>

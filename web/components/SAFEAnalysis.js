@@ -270,12 +270,12 @@ export default function SAFEAnalysis({
             >
               {/* Badge */}
               {isStrongest && (
-                <div className="absolute top-2 right-2 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
+                <div className="absolute top-2 right-2 text-xs font-semibold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
                   Best
                 </div>
               )}
               {isPriority && !isStrongest && (
-                <div className="absolute top-2 right-2 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400">
+                <div className="absolute top-2 right-2 text-xs font-semibold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400">
                   Focus
                 </div>
               )}
@@ -380,7 +380,7 @@ export default function SAFEAnalysis({
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <h4 className="font-medium">{strategy.strategy_title}</h4>
                       {strategy.risk_level && RISK_BADGES[strategy.risk_level] && (
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${RISK_BADGES[strategy.risk_level].class}`}>
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${RISK_BADGES[strategy.risk_level].class}`}>
                           {RISK_BADGES[strategy.risk_level].label}
                         </span>
                       )}

@@ -205,7 +205,7 @@ function CommunityStats({ productName, productSlug }) {
                           <span>⭐ {formatNumber(stats.github.stars)}</span>
                           <span>🔀 {formatNumber(stats.github.forks)}</span>
                         </div>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full ${
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${
                           stats.github.activityLevel === "very active" ? "bg-green-500/20 text-green-400" :
                           stats.github.activityLevel === "active" ? "bg-green-500/10 text-green-500" :
                           stats.github.activityLevel === "moderate" ? "bg-yellow-500/10 text-yellow-500" :
@@ -255,12 +255,12 @@ function CommunityStats({ productName, productSlug }) {
                     </div>
                     <div className="flex items-center gap-4">
                       <div>
-                        <div className="text-[10px] text-base-content/50">TVL</div>
+                        <div className="text-xs text-base-content/50">TVL</div>
                         <div className="text-lg font-bold text-primary">{stats.defillama.tvl}</div>
                       </div>
                       {stats.defillama.change7d && (
                         <div>
-                          <div className="text-[10px] text-base-content/50">7d</div>
+                          <div className="text-xs text-base-content/50">7d</div>
                           <div className={`text-lg font-bold ${getChangeColor(stats.defillama.change7d)}`}>
                             {parseFloat(stats.defillama.change7d) > 0 ? "+" : ""}{stats.defillama.change7d}%
                           </div>
@@ -269,7 +269,7 @@ function CommunityStats({ productName, productSlug }) {
                       {stats.defillama.chains?.length > 0 && (
                         <div className="flex flex-wrap gap-1 ml-auto">
                           {stats.defillama.chains.slice(0, 3).map((chain, i) => (
-                            <span key={i} className="px-2 py-0.5 text-[10px] bg-base-300 rounded-full">
+                            <span key={i} className="px-2 py-0.5 text-xs bg-base-300 rounded-full">
                               {chain}
                             </span>
                           ))}
@@ -315,7 +315,7 @@ function CommunityStats({ productName, productSlug }) {
           </div>
 
           {/* Attribution & Affiliate CTA */}
-          <div className="text-[10px] text-center pt-2 space-y-1">
+          <div className="text-xs text-center pt-2 space-y-1">
             <div className="text-base-content/40">
               Links to third-party sites • Not affiliated
             </div>

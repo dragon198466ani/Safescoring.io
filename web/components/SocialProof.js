@@ -29,7 +29,7 @@ export default function SocialProof({ variant = "default", className = "" }) {
       <div className="max-w-4xl mx-auto">
         {/* Featured products logos */}
         <div className="text-center">
-          <p className="text-[10px] sm:text-xs text-base-content/50 mb-3 sm:mb-4 uppercase tracking-wider">
+          <p className="text-xs sm:text-xs text-base-content/50 mb-3 sm:mb-4 uppercase tracking-wider">
             Featured Products We Score
           </p>
           <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 md:gap-8">

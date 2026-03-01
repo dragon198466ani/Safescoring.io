@@ -338,7 +338,7 @@ function SetupProductsList({
           </h3>
           <div className="flex items-center gap-2">
             {editable && (
-              <span className="text-[10px] text-base-content/30 hidden md:inline">
+              <span className="text-xs text-base-content/30 hidden md:inline">
                 Drag to reorder
               </span>
             )}

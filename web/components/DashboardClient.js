@@ -92,7 +92,7 @@ function DashboardNavItem({ href, icon, label }) {
       className="flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg text-base-content/60 hover:text-primary hover:bg-primary/5 transition-all touch-manipulation active:scale-95"
     >
       {icons[icon]}
-      <span className="text-[10px] font-medium">{label}</span>
+      <span className="text-xs font-medium">{label}</span>
     </a>
   );
 }

@@ -36,6 +36,19 @@
 html,
 body {
   scroll-behavior: smooth !important;
+  line-height: 1.6;
+}
+
+/* ── Accessibility: reduce motion for users who prefer it ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 progress::-webkit-progress-value {
@@ -252,4 +265,13 @@ body.is-dragging {
 
 .animate-fade-in {
   animation: fade-in-up 0.3s ease-out forwards;
+}
+
+@keyframes slide-in-right {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.25s ease-out forwards;
 }

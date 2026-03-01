@@ -708,19 +708,19 @@ export default async function ProductPage({ params }) {
                 <div className="grid grid-cols-4 gap-2 text-center">
                   <div>
                     <div className="text-lg font-bold text-base-content">{product.evaluationDetails.totalNorms}</div>
-                    <div className="text-[10px] text-base-content/50 uppercase">{t("productDetail.stats.norms")}</div>
+                    <div className="text-xs text-base-content/50 uppercase">{t("productDetail.stats.norms")}</div>
                   </div>
                   <div>
                     <div className="text-lg font-bold text-green-400">{product.evaluationDetails.yes}</div>
-                    <div className="text-[10px] text-base-content/50 uppercase">{t("productDetail.stats.yes")}</div>
+                    <div className="text-xs text-base-content/50 uppercase">{t("productDetail.stats.yes")}</div>
                   </div>
                   <div>
                     <div className="text-lg font-bold text-red-400">{product.evaluationDetails.no}</div>
-                    <div className="text-[10px] text-base-content/50 uppercase">{t("productDetail.stats.no")}</div>
+                    <div className="text-xs text-base-content/50 uppercase">{t("productDetail.stats.no")}</div>
                   </div>
                   <div>
                     <div className="text-lg font-bold text-base-content/50">{product.evaluationDetails.na}</div>
-                    <div className="text-[10px] text-base-content/50 uppercase">{t("productDetail.stats.na")}</div>
+                    <div className="text-xs text-base-content/50 uppercase">{t("productDetail.stats.na")}</div>
                   </div>
                 </div>
               </div>

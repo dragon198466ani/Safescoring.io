@@ -96,7 +96,7 @@ const NewFeatures = () => {
                       <div className={`text-lg sm:text-2xl font-bold bg-gradient-to-r ${feature.gradient} bg-clip-text text-transparent`}>
                         {stat.value}
                       </div>
-                      <div className="text-[10px] sm:text-xs text-base-content/60">
+                      <div className="text-xs sm:text-xs text-base-content/60">
                         {stat.label}
                       </div>
                     </div>
@@ -123,7 +123,7 @@ const NewFeatures = () => {
 
               {/* "New" badge */}
               <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
-                <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] sm:text-xs font-medium border border-green-500/20">
+                <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-green-500/10 text-green-500 text-xs sm:text-xs font-medium border border-green-500/20">
                   <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-green-500"></span>

@@ -91,7 +91,7 @@ export default function ProductScoreTierView({
             <button
               key={tierId}
               onClick={() => setActiveTier(tierId)}
-              className={`px-2.5 py-1 rounded-lg text-[10px] font-medium transition-all border ${
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all border ${
                 isActive
                   ? "bg-primary text-primary-content border-primary shadow-sm"
                   : "bg-base-200/70 text-base-content/50 hover:bg-base-300 border-transparent"
@@ -136,10 +136,10 @@ export default function ProductScoreTierView({
           </div>
         </div>
         <div className="mt-4 text-center">
-          <div className="text-sm font-medium text-base-content/60 uppercase tracking-wider">
+          <div className="text-sm font-medium text-base-content/60 tracking-wide">
             {translations.safeScore || "SAFE Score"}
             {activeTier !== "full" && (
-              <span className="ml-1 text-[10px] opacity-70">
+              <span className="ml-1 text-xs opacity-70">
                 ({tierConfig.label})
               </span>
             )}
@@ -148,10 +148,16 @@ export default function ProductScoreTierView({
             {scoreInfo.label}
           </div>
           {isCustom && activeSetup && (
-            <div className="text-[9px] text-primary/70 mt-1">
+            <div className="text-xs text-primary/70 mt-1">
               {activeSetup.name}
             </div>
           )}
+          {/* Score scale legend — helps beginners understand the scoring */}
+          <div className="flex items-center justify-center gap-3 mt-2 text-xs text-base-content/50">
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400" />80+ Excellent</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400" />60-79 Good</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400" />&lt;60 At Risk</span>
+          </div>
         </div>
         {lastUpdate && (
           <div className="mt-3 text-xs text-base-content/40">
@@ -170,6 +176,7 @@ export default function ProductScoreTierView({
               <div
                 key={pillar.code}
                 className="p-2.5 rounded-xl bg-base-200/50 border border-base-content/5"
+                title={pillar.shortDesc || pillar.description || ""}
               >
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-1.5">
@@ -179,7 +186,7 @@ export default function ProductScoreTierView({
                     >
                       {pillar.code}
                     </span>
-                    <span className="text-[10px] text-base-content/50">
+                    <span className="text-xs text-base-content/50">
                       {translations.pillarNames?.[pillar.code] || pillar.name || pillar.code}
                     </span>
                   </div>
@@ -207,7 +214,7 @@ export default function ProductScoreTierView({
 
       {/* Tier explanation */}
       <div className="mt-3 text-center">
-        <p className="text-[10px] text-base-content/40">
+        <p className="text-xs text-base-content/40">
           {tierConfig.description}
         </p>
       </div>

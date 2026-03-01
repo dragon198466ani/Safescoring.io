@@ -243,7 +243,7 @@ export default function SAFEBreakdown({
                 {/* Badge indicator */}
                 {isStrongest && (
                   <div
-                    className="absolute top-2 right-2 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400"
+                    className="absolute top-2 right-2 text-xs font-semibold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400"
                     role="status"
                     aria-label={`${pillar.name} is the strongest pillar`}
                   >
@@ -252,7 +252,7 @@ export default function SAFEBreakdown({
                 )}
                 {isWeakest && pillar.score < 80 && !isStrongest && (
                   <div
-                    className="absolute top-2 right-2 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400"
+                    className="absolute top-2 right-2 text-xs font-semibold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400"
                     role="status"
                     aria-label={`${pillar.name} needs attention`}
                   >

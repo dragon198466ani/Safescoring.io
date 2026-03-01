@@ -294,14 +294,14 @@ const MilestoneProgress = ({ currentAmount, supportersCount, milestones, isLoadi
                 key={i}
                 className="w-6 h-6 rounded-full bg-primary/20 border-2 border-base-100 flex items-center justify-center"
               >
-                <span className="text-[10px] text-primary font-bold">
+                <span className="text-xs text-primary font-bold">
                   {String.fromCharCode(65 + i)}
                 </span>
               </div>
             ))}
             {supportersCount > 3 && (
               <div className="w-6 h-6 rounded-full bg-base-300 border-2 border-base-100 flex items-center justify-center">
-                <span className="text-[10px] font-bold">+{supportersCount - 3}</span>
+                <span className="text-xs font-bold">+{supportersCount - 3}</span>
               </div>
             )}
           </div>
@@ -352,7 +352,7 @@ const MilestoneProgress = ({ currentAmount, supportersCount, milestones, isLoadi
               )}
               <div className="flex-1 min-w-0">
                 <div className="font-medium truncate">{milestone.label}</div>
-                <div className="text-[10px] opacity-70">${milestone.goal.toLocaleString()}</div>
+                <div className="text-xs opacity-70">${milestone.goal.toLocaleString()}</div>
               </div>
             </div>
           );

@@ -89,13 +89,13 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
                 productTypes.map((t, idx) => (
                   <span
                     key={t.code || idx}
-                    className="text-[9px] px-1.5 py-0.5 rounded bg-base-200 text-base-content/60 font-medium"
+                    className="text-xs px-1.5 py-0.5 rounded bg-base-200 text-base-content/60 font-medium"
                   >
                     {t.name}
                   </span>
                 ))
               ) : (
-                <span className="text-[9px] px-1.5 py-0.5 rounded bg-base-200 text-base-content/50">
+                <span className="text-xs px-1.5 py-0.5 rounded bg-base-200 text-base-content/50">
                   {product.type || "Product"}
                 </span>
               )}
@@ -124,8 +124,8 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
             const hasScore = scoreValue != null;
             const displayScore = hasScore ? Math.round(scoreValue) : 0;
             return (
-              <div key={pillar.code} className="flex items-center gap-2">
-                <span className="text-[10px] font-bold w-3" style={{ color: pillar.primary }}>
+              <div key={pillar.code} className="flex items-center gap-2" title={`${pillar.name}: ${pillar.shortDesc || pillar.description}`}>
+                <span className="text-xs font-bold w-3" style={{ color: pillar.primary }}>
                   {pillar.code}
                 </span>
                 <div className="flex-1 h-1.5 rounded-full bg-base-300 overflow-hidden">
@@ -137,7 +137,7 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
                     }}
                   />
                 </div>
-                <span className={`text-[10px] font-semibold tabular-nums w-5 text-right ${
+                <span className={`text-xs font-semibold tabular-nums w-5 text-right ${
                   hasScore ? "text-base-content/70" : "text-base-content/30"
                 }`}>
                   {hasScore ? displayScore : "-"}
@@ -149,17 +149,17 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t border-base-200">
-          <span className="text-[9px] text-base-content/40">{formatDate(product.lastUpdate)}</span>
+          <span className="text-xs text-base-content/50">{formatDate(product.lastUpdate)}</span>
           <div className="flex items-center gap-2">
             {product.priceEur ? (
-              <span className="text-[9px] text-base-content/50 font-medium">
+              <span className="text-xs text-base-content/50 font-medium">
                 {product.priceEur.toLocaleString("en-US", { maximumFractionDigits: 0 })} &euro;
               </span>
             ) : (
-              <span className="text-[9px] text-base-content/50 font-medium">Free</span>
+              <span className="text-xs text-base-content/50 font-medium">Free</span>
             )}
             {product.verified && (
-              <span className="inline-flex items-center gap-0.5 text-[9px] text-green-500">
+              <span className="inline-flex items-center gap-0.5 text-xs text-green-500">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                 </svg>

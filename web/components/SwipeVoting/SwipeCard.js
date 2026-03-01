@@ -203,7 +203,7 @@ export default function SwipeCard({
                 }`}
               />
             ))}
-            <span className="text-[10px] text-base-content/40 ml-1.5">
+            <span className="text-xs text-base-content/50 ml-1.5">
               {totalVotes}/{maxVotes}
             </span>
           </div>
@@ -217,7 +217,7 @@ export default function SwipeCard({
                 </svg>
                 <span className="text-xs font-semibold">NO</span>
               </div>
-              <span className="text-[10px] text-base-content/30 font-medium">SWIPE OR TAP</span>
+              <span className="text-xs text-base-content/50 font-medium">Swipe or tap</span>
               <div className="flex items-center gap-1.5 text-green-400/70">
                 <span className="text-xs font-semibold">YES</span>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
