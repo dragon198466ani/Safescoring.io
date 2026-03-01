@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
+import { useEvaluationVoteSubscription } from "@/hooks/useSupabaseSubscription";
 import SwipeCardStack from "./SwipeCardStack";
 import ProofModal from "./ProofModal";
 
@@ -77,6 +78,17 @@ export default function SwipeVoting({
       fetchEvaluations();
     }
   }, [status, fetchEvaluations]);
+
+  // INCEPTION: Subscribe to evaluation vote changes from other users
+  // When consensus is reached on an evaluation, refresh the queue
+  useEvaluationVoteSubscription({
+    onUpdate: useCallback(() => {
+      // Only refetch if we haven't completed the session yet
+      if (currentIndex < evaluations.length) return;
+      fetchEvaluations();
+    }, [currentIndex, evaluations.length, fetchEvaluations]),
+    enabled: status === "authenticated" && evaluations.length > 0,
+  });
 
   // Handle swipe — instant vote with reveal
   const handleSwipe = useCallback(
@@ -282,14 +294,14 @@ export default function SwipeVoting({
           <div className="flex items-center gap-3 bg-base-200 rounded-xl px-6 py-3">
             <div className="text-center">
               <div className="text-2xl font-black text-primary">+{sessionTokens}</div>
-              <div className="text-[10px] text-base-content/50 uppercase font-medium">$SAFE earned</div>
+              <div className="text-xs text-base-content/50 uppercase font-medium">$SAFE earned</div>
             </div>
             {userStats?.daily_streak > 1 && (
               <>
                 <div className="w-px h-8 bg-base-content/10"></div>
                 <div className="text-center">
                   <div className="text-2xl font-black text-amber-400">{userStats.daily_streak}</div>
-                  <div className="text-[10px] text-base-content/50 uppercase font-medium">Day streak</div>
+                  <div className="text-xs text-base-content/50 uppercase font-medium">Day streak</div>
                 </div>
               </>
             )}
@@ -354,7 +366,7 @@ export default function SwipeVoting({
 
       {/* ── Session progress bar ── */}
       <div className="w-full mb-4">
-        <div className="flex items-center justify-between text-[10px] text-base-content/40 mb-1 uppercase font-medium tracking-wide">
+        <div className="flex items-center justify-between text-xs text-base-content/50 mb-1 font-medium tracking-wide">
           <span>Progress</span>
           <span>{currentIndex + 1} of {evaluations.length}</span>
         </div>
@@ -470,7 +482,7 @@ export default function SwipeVoting({
                     ? "bg-green-500/10 border-green-500/20"
                     : "bg-red-500/10 border-red-500/20"
                 }`}>
-                  <p className="text-[10px] text-base-content/40 uppercase font-medium mb-1">You</p>
+                  <p className="text-xs text-base-content/50 font-medium mb-1">You</p>
                   <p className={`text-xl font-black ${revealData.userVote ? "text-green-400" : "text-red-400"}`}>
                     {revealData.userVote ? "YES" : "NO"}
                   </p>
@@ -489,7 +501,7 @@ export default function SwipeVoting({
                       ? "bg-red-500/10 border-red-500/20"
                       : "bg-amber-500/10 border-amber-500/20"
                 }`}>
-                  <p className="text-[10px] text-base-content/40 uppercase font-medium mb-1">AI</p>
+                  <p className="text-xs text-base-content/50 font-medium mb-1">AI</p>
                   <p className={`text-xl font-black ${
                     revealData.aiResult === "YES" ? "text-green-400" :
                     revealData.aiResult === "NO" ? "text-red-400" : "text-amber-400"
@@ -503,7 +515,7 @@ export default function SwipeVoting({
               {/* AI justification (collapsed) */}
               {revealData.aiJustification && (
                 <div className="bg-base-300/40 rounded-lg p-3 mb-4">
-                  <p className="text-[10px] text-base-content/40 uppercase font-medium mb-1">AI reasoning</p>
+                  <p className="text-xs text-base-content/50 font-medium mb-1">AI reasoning</p>
                   <p className="text-xs text-base-content/60 line-clamp-3 leading-relaxed">{revealData.aiJustification}</p>
                 </div>
               )}

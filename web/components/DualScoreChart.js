@@ -10,8 +10,9 @@
  * Allows visualization of convergence/divergence between AI and humans
  */
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useApi } from "@/hooks/useApi";
+import { useThreeTrackSubscription } from "@/hooks/useSupabaseSubscription";
 
 // Couleurs des courbes
 const COLORS = {
@@ -56,8 +57,16 @@ export default function DualScoreChart({
   }, [productId, productSlug, activeRange, pillar]);
 
   // Use useApi for chart data with 2-minute cache
-  const { data, isLoading: loading } = useApi(apiUrl, {
+  const { data, isLoading: loading, refetch } = useApi(apiUrl, {
     ttl: 2 * 60 * 1000,
+  });
+
+  // INCEPTION: Subscribe to evaluation/score changes → refetch chart data
+  const resolvedProductId = productSlug || productId;
+  useThreeTrackSubscription({
+    productId: resolvedProductId,
+    onUpdate: useCallback(() => { refetch(); }, [refetch]),
+    enabled: !!resolvedProductId,
   });
 
   // Process data for rendering

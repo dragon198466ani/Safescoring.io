@@ -270,4 +270,47 @@ export function useSetupHistorySubscription({ setupId, onUpdate, enabled = true 
   });
 }
 
+/**
+ * useEvaluationVoteSubscription - Subscribe to community evaluation vote changes
+ * Monitors new votes (INSERT on evaluation_votes) and consensus decisions
+ * (UPDATE on evaluations for community_status changes)
+ */
+export function useEvaluationVoteSubscription({ productId, onUpdate, enabled = true }) {
+  return useSupabaseSubscription({
+    channelName: productId ? `eval_votes_${productId}` : "eval_votes_global",
+    subscriptions: [
+      // New community votes submitted
+      { event: "INSERT", table: "evaluation_votes" },
+      // Consensus reached or community_status changed on evaluations
+      { event: "UPDATE", table: "evaluations" },
+      // Vote count denormalized updates
+      { event: "UPDATE", table: "evaluation_vote_counts" },
+    ],
+    onUpdate,
+    enabled,
+    debounceMs: 1000,
+  });
+}
+
+/**
+ * useThreeTrackSubscription - Subscribe to 3-track score changes (AI + Community + Hybrid)
+ * Monitors product_scores_3track updates and evaluation changes
+ */
+export function useThreeTrackSubscription({ productId, onUpdate, enabled = true }) {
+  return useSupabaseSubscription({
+    channelName: `three_track_${productId}`,
+    subscriptions: [
+      // 3-track scores recalculated
+      { event: "UPDATE", table: "product_scores_3track", filter: `product_id=eq.${productId}` },
+      // AI evaluation results changed
+      { event: "UPDATE", table: "safe_scoring_results", filter: `product_id=eq.${productId}` },
+      // Community consensus changed evaluation status
+      { event: "UPDATE", table: "evaluations" },
+    ],
+    onUpdate,
+    enabled: enabled && !!productId,
+    debounceMs: 1000,
+  });
+}
+
 export default useSupabaseSubscription;

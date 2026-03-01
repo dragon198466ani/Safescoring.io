@@ -7,6 +7,11 @@
  * When scores update in the database, this component fetches fresh data and
  * passes it to children via render props, overriding the ISR-cached scores.
  *
+ * Subscribes to:
+ * - safe_scoring_results UPDATE (AI score recalculations)
+ * - evaluations UPDATE (community consensus changes → score impact)
+ * - product_scores_3track UPDATE (hybrid score recalculations)
+ *
  * Usage (in SSR product page):
  *   <ProductRealtimeScores productId={product.id} initialScores={product.scores}>
  *     {(scores) => <ProductScoreTierView scores={scores} ... />}
@@ -51,14 +56,26 @@ export default function ProductRealtimeScores({
     }
   }, [productId]);
 
-  // Subscribe to this product's score changes in safe_scoring_results
+  // Subscribe to this product's score changes:
+  // - AI scores (safe_scoring_results)
+  // - Community consensus (evaluations status changes)
+  // - Hybrid 3-track scores (product_scores_3track)
   const { isConnected } = useSupabaseSubscription({
-    channelName: `product_score_${productId}`,
+    channelName: `product_realtime_${productId}`,
     subscriptions: [
       {
         event: "UPDATE",
         table: "safe_scoring_results",
         filter: `product_id=eq.${productId}`,
+      },
+      {
+        event: "UPDATE",
+        table: "product_scores_3track",
+        filter: `product_id=eq.${productId}`,
+      },
+      {
+        event: "UPDATE",
+        table: "evaluations",
       },
     ],
     onUpdate: handleScoreUpdate,

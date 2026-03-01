@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useApi } from "@/hooks/useApi";
+import { useThreeTrackSubscription } from "@/hooks/useSupabaseSubscription";
 
 /**
  * ThreeTrackScores - Display AI, Community, and Hybrid scores
@@ -54,7 +55,7 @@ function ScoreBar({ value, maxValue = 100, color, label, confidence }) {
         />
         {confidence !== undefined && confidence < 0.5 && (
           <div className="absolute inset-0 flex items-center justify-end pr-2">
-            <span className="text-[10px] text-base-content/40">Low data</span>
+            <span className="text-xs text-base-content/40">Low data</span>
           </div>
         )}
       </div>
@@ -203,25 +204,25 @@ function PillarCard({ pillar, data, isExpanded, onToggle }) {
               <div className="text-lg font-bold text-base-content/80">
                 {data.ai?.evaluated || 0}
               </div>
-              <div className="text-[10px] text-base-content/50">Evaluated</div>
+              <div className="text-xs text-base-content/50">Evaluated</div>
             </div>
             <div className="text-center p-2 bg-base-300/50 rounded-lg">
               <div className="text-lg font-bold text-green-400">
                 {data.community?.confirmed || 0}
               </div>
-              <div className="text-[10px] text-base-content/50">Confirmed</div>
+              <div className="text-xs text-base-content/50">Confirmed</div>
             </div>
             <div className="text-center p-2 bg-base-300/50 rounded-lg">
               <div className="text-lg font-bold text-red-400">
                 {data.community?.challenged || 0}
               </div>
-              <div className="text-[10px] text-base-content/50">Challenged</div>
+              <div className="text-xs text-base-content/50">Challenged</div>
             </div>
             <div className="text-center p-2 bg-base-300/50 rounded-lg">
               <div className="text-lg font-bold text-yellow-400">
                 {data.community?.pending || 0}
               </div>
-              <div className="text-[10px] text-base-content/50">Pending</div>
+              <div className="text-xs text-base-content/50">Pending</div>
             </div>
           </div>
 
@@ -260,8 +261,16 @@ export default function ThreeTrackScores({ productSlug, initialData = null }) {
   }, [productSlug, showTimeline, timeRange]);
 
   // Use useApi for 3-track scores with 2-minute cache
-  const { data: fetchedData, isLoading, error } = useApi(apiUrl, {
+  const { data: fetchedData, isLoading, error, refetch } = useApi(apiUrl, {
     ttl: 2 * 60 * 1000,
+  });
+
+  // INCEPTION: Subscribe to 3-track score changes (AI evals, community votes, hybrid recalc)
+  // When any evaluation or vote changes for this product, refetch the 3-track data
+  const { isConnected: threeTrackConnected } = useThreeTrackSubscription({
+    productId: productSlug,
+    onUpdate: useCallback(() => { refetch(); }, [refetch]),
+    enabled: !!productSlug,
   });
 
   // Use initialData if provided, otherwise use fetched data
@@ -336,7 +345,15 @@ export default function ThreeTrackScores({ productSlug, initialData = null }) {
               </svg>
             </div>
             <div>
-              <h2 className="text-lg font-semibold">3-Track Scoring</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-semibold">3-Track Scoring</h2>
+                {threeTrackConnected && (
+                  <span className="relative flex h-2 w-2" title="Real-time sync active">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                  </span>
+                )}
+              </div>
               <p className="text-sm text-base-content/60">AI + Community + Hybrid</p>
             </div>
           </div>
