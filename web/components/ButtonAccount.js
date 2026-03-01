@@ -7,11 +7,9 @@ import { useSession, signOut } from "next-auth/react";
 import apiClient from "@/libs/api";
 
 // A button to show user some account actions
-//  1. Billing: open a Stripe Customer Portal to manage their billing (cancel subscription, update payment method, etc.).
-//     You have to manually activate the Customer Portal in your Stripe Dashboard (https://dashboard.stripe.com/test/settings/billing/portal)
+//  1. Billing: open a LemonSqueezy Customer Portal to manage their billing (cancel subscription, update payment method, etc.).
 //     This is only available if the customer has a customerId (they made a purchase previously)
 //  2. Logout: sign out and go back to homepage
-// See more at https://shipfa.st/docs/components/buttonAccount
 const ButtonAccount = () => {
 	const { data: session, status } = useSession();
 	const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +21,7 @@ const ButtonAccount = () => {
 		setIsLoading(true);
 
 		try {
-			const { url } = await apiClient.post("/stripe/create-portal", {
+			const { url } = await apiClient.post("/lemonsqueezy/portal", {
 				returnUrl: window.location.href,
 			});
 

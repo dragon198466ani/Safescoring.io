@@ -59,7 +59,7 @@ const Stats = () => {
               className="card-metric group"
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-content transition-colors">
+                <div className="p-2 rounded-lg bg-base-content/10 text-base-content/50 group-hover:bg-base-content/20 group-hover:text-base-content/70 transition-colors">
                   {stat.icon}
                 </div>
                 <span className="text-sm font-medium text-base-content/60">

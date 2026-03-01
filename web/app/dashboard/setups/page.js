@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import ProductLogo from "@/components/ProductLogo";
 import SetupQuiz from "@/components/SetupQuiz";
 import SetupAssistant from "@/components/SetupAssistant";
+import { DragDropProvider, DraggableItem, DropZone, TrashZone } from "@/components/common/DragDrop";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 /**
  * Setups Dashboard - Split view with catalog + setup builder
@@ -160,6 +162,7 @@ function AnimatedPillarScore({ value, code, color, delta }) {
 
 // Product card in catalog
 function ProductCard({ product, onAdd, isAdded }) {
+  const score = product.scores?.total;
   return (
     <div
       className={`p-3 rounded-xl border transition-all cursor-pointer ${
@@ -170,15 +173,15 @@ function ProductCard({ product, onAdd, isAdded }) {
       onClick={() => !isAdded && onAdd(product)}
     >
       <div className="flex items-center gap-3">
-        <ProductLogo logoUrl={product.logo_url} name={product.name} size="sm" />
+        <ProductLogo logoUrl={product.logoUrl} name={product.name} size="sm" />
         <div className="flex-1 min-w-0">
           <p className="font-medium text-sm truncate">{product.name}</p>
-          <p className="text-xs text-base-content/50">{product.type_name}</p>
+          <p className="text-xs text-base-content/50">{product.type}</p>
         </div>
         <div className="flex items-center gap-2">
-          {product.score && (
-            <span className={`text-sm font-bold ${getScoreColor(product.score)}`}>
-              {product.score}
+          {score != null && (
+            <span className={`text-sm font-bold ${getScoreColor(score)}`}>
+              {Math.round(score)}
             </span>
           )}
           {isAdded ? (
@@ -199,10 +202,11 @@ function ProductCard({ product, onAdd, isAdded }) {
 // Setup product item
 function SetupProductItem({ product, role, onRemove, onRoleChange }) {
   const _roleInfo = ROLES.find(r => r.id === role) || ROLES[3];
+  const score = product.scores?.total;
 
   return (
     <div className="flex items-center gap-3 p-3 rounded-xl bg-base-300/50 border border-base-300">
-      <ProductLogo logoUrl={product.logo_url} name={product.name} size="sm" />
+      <ProductLogo logoUrl={product.logoUrl} name={product.name} size="sm" />
       <div className="flex-1 min-w-0">
         <p className="font-medium text-sm truncate">{product.name}</p>
         <select
@@ -215,9 +219,9 @@ function SetupProductItem({ product, role, onRemove, onRoleChange }) {
           ))}
         </select>
       </div>
-      {product.score && (
-        <span className={`text-sm font-bold ${getScoreColor(product.score)}`}>
-          {product.score}
+      {score != null && (
+        <span className={`text-sm font-bold ${getScoreColor(Math.round(score))}`}>
+          {Math.round(score)}
         </span>
       )}
       <button
@@ -233,6 +237,9 @@ function SetupProductItem({ product, role, onRemove, onRoleChange }) {
 }
 
 export default function SetupsPage() {
+  // Enable drag only on tablet+ (mobile keeps tap-to-add)
+  const isDragEnabled = useMediaQuery("(min-width: 768px)");
+
   // Catalog state
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
@@ -293,7 +300,8 @@ export default function SetupsPage() {
       const matchesSearch = !searchQuery ||
         product.name?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesType = selectedType === "all" ||
-        product.type_code === selectedType;
+        product.typeCode === selectedType ||
+        product.category === selectedType;
       return matchesSearch && matchesType;
     });
   }, [products, searchQuery, selectedType]);
@@ -304,9 +312,10 @@ export default function SetupsPage() {
 
     // Determine default role based on product type
     let defaultRole = "other";
-    if (product.type_code?.includes("wallet")) defaultRole = "wallet";
-    else if (product.type_code === "exchange") defaultRole = "exchange";
-    else if (product.type_code === "defi") defaultRole = "defi";
+    const tc = product.typeCode || product.category || "";
+    if (tc.includes("wallet")) defaultRole = "wallet";
+    else if (tc === "exchange") defaultRole = "exchange";
+    else if (tc === "defi") defaultRole = "defi";
 
     setSetupProducts([...setupProducts, { product, role: defaultRole }]);
   };
@@ -331,16 +340,16 @@ export default function SetupsPage() {
     let weightedSum = { S: 0, A: 0, F: 0, E: 0, total: 0 };
 
     setupProducts.forEach(({ product, role }) => {
-      if (!product.score) return;
+      const totalScore = product.scores?.total;
+      if (totalScore == null) return;
       const weight = role === "wallet" ? 2 : 1;
       totalWeight += weight;
 
-      // Use overall score for now (API should return pillar scores)
-      weightedSum.total += product.score * weight;
-      weightedSum.S += (product.score_s || product.score) * weight;
-      weightedSum.A += (product.score_a || product.score) * weight;
-      weightedSum.F += (product.score_f || product.score) * weight;
-      weightedSum.E += (product.score_e || product.score) * weight;
+      weightedSum.total += totalScore * weight;
+      weightedSum.S += (product.scores?.s ?? totalScore) * weight;
+      weightedSum.A += (product.scores?.a ?? totalScore) * weight;
+      weightedSum.F += (product.scores?.f ?? totalScore) * weight;
+      weightedSum.E += (product.scores?.e ?? totalScore) * weight;
     });
 
     if (totalWeight === 0) return null;
@@ -426,9 +435,21 @@ export default function SetupsPage() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 min-h-[calc(100vh-200px)]">
+    <DragDropProvider
+      onDrop={(item, zoneId) => {
+        if (zoneId === "setup-zone" && item.data?.product) {
+          handleAddProduct(item.data.product);
+        }
+      }}
+      onDelete={(item) => {
+        if (item.data?.productId) {
+          handleRemoveProduct(item.data.productId);
+        }
+      }}
+    >
+    <div className="flex flex-col md:flex-row gap-6 min-h-[calc(100vh-200px)]">
       {/* Left: Product Catalog */}
-      <div className="lg:w-3/5 space-y-4">
+      <div className="md:w-3/5 space-y-4">
         <div className="sticky top-24 space-y-4">
           {/* Header */}
           <div>
@@ -515,12 +536,18 @@ export default function SetupsPage() {
               </div>
             ) : (
               filteredProducts.map(product => (
-                <ProductCard
+                <DraggableItem
                   key={product.id}
-                  product={product}
-                  onAdd={handleAddProduct}
-                  isAdded={setupProducts.some(p => p.product.id === product.id)}
-                />
+                  id={`catalog-${product.id}`}
+                  data={{ type: "product", product }}
+                  disabled={!isDragEnabled || setupProducts.some(p => p.product.id === product.id)}
+                >
+                  <ProductCard
+                    product={product}
+                    onAdd={handleAddProduct}
+                    isAdded={setupProducts.some(p => p.product.id === product.id)}
+                  />
+                </DraggableItem>
               ))
             )}
           </div>
@@ -528,7 +555,7 @@ export default function SetupsPage() {
       </div>
 
       {/* Right: Setup Builder */}
-      <div className="lg:w-2/5">
+      <div className="md:w-2/5">
         <div className="sticky top-24 space-y-4">
           {/* Setup header */}
           <div className="bg-base-200 rounded-2xl border border-base-300 p-5">
@@ -605,8 +632,13 @@ export default function SetupsPage() {
             )}
           </div>
 
-          {/* Selected products */}
-          <div className="bg-base-200 rounded-2xl border border-base-300 p-5">
+          {/* Selected products — drop zone for catalog drag */}
+          <DropZone
+            id="setup-zone"
+            accepts={["product"]}
+            className="bg-base-200 rounded-2xl border border-base-300 p-5"
+            activeClassName="ring-2 ring-primary ring-offset-2 bg-primary/10"
+          >
             <h3 className="font-semibold mb-3">Products in Stack</h3>
 
             {setupProducts.length === 0 ? (
@@ -614,22 +646,35 @@ export default function SetupsPage() {
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 mx-auto mb-2 opacity-50">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
-                <p className="text-sm">Click products to add them</p>
+                <p className="text-sm">
+                  {isDragEnabled ? "Drag or click products to add them" : "Tap products to add them"}
+                </p>
               </div>
             ) : (
               <div className="space-y-2 max-h-[300px] overflow-y-auto">
                 {setupProducts.map(({ product, role }) => (
-                  <SetupProductItem
+                  <DraggableItem
                     key={product.id}
-                    product={product}
-                    role={role}
-                    onRemove={handleRemoveProduct}
-                    onRoleChange={handleRoleChange}
-                  />
+                    id={`setup-${product.id}`}
+                    data={{ type: "setup-product", productId: product.id }}
+                    disabled={!isDragEnabled}
+                  >
+                    <SetupProductItem
+                      product={product}
+                      role={role}
+                      onRemove={handleRemoveProduct}
+                      onRoleChange={handleRoleChange}
+                    />
+                  </DraggableItem>
                 ))}
               </div>
             )}
-          </div>
+
+            {/* Trash zone — appears only while dragging */}
+            <TrashZone show="dragging" className="w-full mt-3 py-3">
+              <span className="text-xs text-base-content/50">Drop to remove</span>
+            </TrashZone>
+          </DropZone>
 
           {/* Save button */}
           <button
@@ -673,5 +718,6 @@ export default function SetupsPage() {
         onToggle={() => setShowAssistant(!showAssistant)}
       />
     </div>
+    </DragDropProvider>
   );
 }

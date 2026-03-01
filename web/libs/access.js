@@ -1,6 +1,6 @@
 /**
  * Unified Access Control
- * Checks access from multiple sources: Supabase subscription, Stripe, LemonSqueezy, NFT
+ * Checks access from multiple sources: Supabase subscription, LemonSqueezy, NFT
  */
 
 import { createClient } from "@supabase/supabase-js";
@@ -26,7 +26,7 @@ const NFT_TIER_TO_PLAN = {
 
 /**
  * Check unified access for a user
- * Combines: Supabase subscription + Stripe + LemonSqueezy + NFT
+ * Combines: Supabase subscription + LemonSqueezy + NFT
  *
  * @param {Object} options
  * @param {string} options.userId - Supabase user ID
@@ -50,7 +50,7 @@ export async function checkUnifiedAccess({
 
   const requiredLevel = PLAN_HIERARCHY[requiredPlan] || 0;
 
-  // 1. Check Supabase/Stripe/LemonSqueezy subscription
+  // 1. Check Supabase/LemonSqueezy subscription
   if (userId && supabaseUrl && supabaseServiceKey) {
     try {
       const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -142,6 +142,7 @@ export function getPlanLimits(plan) {
       monthlyProductViews: 5,
       maxSetups: 1,
       maxProductsPerSetup: 3,
+      maxScoringSetups: 1,
       apiAccess: false,
       exportPDF: false,
       alerts: false,
@@ -150,6 +151,7 @@ export function getPlanLimits(plan) {
       monthlyProductViews: -1, // unlimited
       maxSetups: 5,
       maxProductsPerSetup: 5,
+      maxScoringSetups: 3,
       apiAccess: false,
       exportPDF: true,
       alerts: true,
@@ -158,6 +160,7 @@ export function getPlanLimits(plan) {
       monthlyProductViews: -1,
       maxSetups: 20,
       maxProductsPerSetup: 10,
+      maxScoringSetups: 3,
       apiAccess: true,
       exportPDF: true,
       alerts: true,
@@ -166,6 +169,7 @@ export function getPlanLimits(plan) {
       monthlyProductViews: -1,
       maxSetups: -1,
       maxProductsPerSetup: -1,
+      maxScoringSetups: -1,
       apiAccess: true,
       exportPDF: true,
       alerts: true,

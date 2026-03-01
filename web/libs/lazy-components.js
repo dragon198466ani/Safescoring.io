@@ -36,6 +36,22 @@ const LoadingGrid = () => (
 );
 
 // Below-the-fold homepage components (lazy loaded)
+export const LazyWhySafeScoring = dynamic(
+  () => import("@/components/WhySafeScoring"),
+  {
+    loading: () => <LoadingSkeleton height="500px" />,
+    ssr: true,
+  }
+);
+
+export const LazyForDevelopers = dynamic(
+  () => import("@/components/ForDevelopers"),
+  {
+    loading: () => <LoadingSkeleton height="500px" />,
+    ssr: true,
+  }
+);
+
 export const LazyFAQ = dynamic(() => import("@/components/FAQ"), {
   loading: () => <LoadingSkeleton height="400px" />,
   ssr: true,
@@ -317,6 +333,33 @@ export const LazySAFEStrategicAnalysis = dynamic(
 export const LazySAFEProtectionGuide = dynamic(
   () => import("@/components/SAFEProtectionGuide"),
   {
+    ssr: false,
+  }
+);
+
+// SwipeVoting - Tinder-style voting on AI evaluations (client-side only)
+export const LazySwipeVoting = dynamic(
+  () => import("@/components/SwipeVoting"),
+  {
+    loading: () => <LoadingSkeleton height="400px" />,
+    ssr: false,
+  }
+);
+
+// DualScoreChart - AI vs Community score evolution chart
+export const LazyDualScoreChart = dynamic(
+  () => import("@/components/DualScoreChart"),
+  {
+    loading: () => <LoadingSkeleton height="250px" />,
+    ssr: false,
+  }
+);
+
+// ThreeTrackScores - AI + Community + Hybrid score breakdown
+export const LazyThreeTrackScores = dynamic(
+  () => import("@/components/ThreeTrackScores"),
+  {
+    loading: () => <LoadingSkeleton height="300px" />,
     ssr: false,
   }
 );

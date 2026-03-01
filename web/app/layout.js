@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
 				<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 				{/* DNS prefetch for external services */}
 				<link rel="dns-prefetch" href="https://supabase.co" />
-				<link rel="dns-prefetch" href="https://api.stripe.com" />
+				<link rel="dns-prefetch" href="https://api.lemonsqueezy.com" />
 			</head>
 			<body>
 				{/* ClientLayout contains all the client wrappers (Crisp chat support, toast messages, tooltips, etc.) */}

@@ -81,8 +81,8 @@ export async function getStats() {
       normsByPillar: defaultStats.normsByPillar, // Can't get pillar breakdown from COUNT
     };
 
-    statsCache = stats;
-    statsCacheTime = Date.now();
+    globalThis.__statsCache.data = stats;
+    globalThis.__statsCache.time = Date.now();
     return stats;
   } catch (error) {
     console.error("Error fetching stats from Supabase:", error);

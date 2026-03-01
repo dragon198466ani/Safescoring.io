@@ -19,10 +19,10 @@ const useThrottle = (callback, delay) => {
 };
 
 const links = [
-  { href: "/dashboard/setups", label: "My Stack", highlight: true },
   { href: "/products", label: "Products" },
-  { href: "/transparency", label: "Scores" },
+  { href: "/community", label: "Community" },
   { href: "/methodology", label: "Methodology" },
+  { href: "/api-docs", label: "API" },
   { href: "/#pricing", label: "Pricing" },
 ];
 
@@ -48,7 +48,7 @@ const Header = () => {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-base-100/80 backdrop-blur-lg shadow-lg" : "bg-transparent"
+        scrolled ? "bg-base-100/95 backdrop-blur-lg shadow-lg" : "bg-transparent"
       }`}
     >
       <nav
@@ -62,16 +62,12 @@ const Header = () => {
             href="/"
             title={`${config.appName} homepage`}
           >
-            {/* SAFE Logo */}
-            <div className="relative w-10 h-10">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500 via-amber-500 to-purple-500 rounded-lg opacity-80 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute inset-0.5 bg-base-100 rounded-[6px] flex items-center justify-center">
-                <span className="text-lg font-black text-gradient-safe">S</span>
-              </div>
+            {/* SAFE Logo — minimal B&W */}
+            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+              <span className="text-lg font-black text-black">S</span>
             </div>
-            <span className="font-bold text-xl tracking-tight">
-              <span className="text-gradient">Safe</span>
-              <span className="text-base-content">Scoring</span>
+            <span className="font-bold text-xl tracking-tight text-white">
+              SafeScoring
             </span>
           </Link>
         </div>
@@ -109,7 +105,7 @@ const Header = () => {
               key={link.href}
               className={`text-sm font-medium transition-colors ${
                 link.highlight
-                  ? "text-primary hover:text-primary/80"
+                  ? "text-white hover:text-white/80"
                   : "text-base-content/70 hover:text-base-content"
               }`}
             >
@@ -140,11 +136,8 @@ const Header = () => {
               href="/"
               onClick={() => setIsOpen(false)}
             >
-              <div className="relative w-8 h-8">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500 via-amber-500 to-purple-500 rounded-lg opacity-80" />
-                <div className="absolute inset-0.5 bg-base-100 rounded-[5px] flex items-center justify-center">
-                  <span className="text-sm font-black text-gradient-safe">S</span>
-                </div>
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-sm font-black text-black">S</span>
               </div>
               <span className="font-bold text-lg">SafeScoring</span>
             </Link>
@@ -177,7 +170,7 @@ const Header = () => {
                 href={link.href}
                 key={link.href}
                 className={`text-lg font-medium py-2 transition-colors ${
-                  link.highlight ? "text-primary" : "hover:text-primary"
+                  link.highlight ? "text-white" : "hover:text-white"
                 }`}
                 onClick={() => setIsOpen(false)}
               >

@@ -5,8 +5,8 @@ import Link from "next/link";
 import config from "@/config";
 
 export default function UpgradeModal({ isOpen, onClose, remaining = 0, limit = 5 }) {
-  const proPlan = config.stripe.plans.find((p) => p.isFeatured);
-  const explorerPlan = config.stripe.plans.find((p) => p.name === "Explorer");
+  const proPlan = config.lemonsqueezy.plans.find((p) => p.isFeatured);
+  const explorerPlan = config.lemonsqueezy.plans.find((p) => p.name === "Explorer");
 
   useEffect(() => {
     const handleEsc = (e) => {

@@ -162,20 +162,23 @@ export async function GET(request, { params }) {
     }
 
     // Calculate statistics
+    // Filter to only records with valid scores for stats calculation
+    const validHistory = (history || []).filter((h) => h.safe_score !== null && h.safe_score !== undefined);
+
     const stats = {
       dataPoints: history?.length || 0,
       firstRecord: history?.[history.length - 1]?.recorded_at || null,
       lastRecord: history?.[0]?.recorded_at || null,
-      highestScore: history?.length
-        ? Math.max(...history.map((h) => h.safe_score || 0))
+      highestScore: validHistory.length
+        ? Math.max(...validHistory.map((h) => h.safe_score))
         : null,
-      lowestScore: history?.length
-        ? Math.min(...history.filter((h) => h.safe_score).map((h) => h.safe_score))
+      lowestScore: validHistory.length
+        ? Math.min(...validHistory.map((h) => h.safe_score))
         : null,
-      averageScore: history?.length
+      averageScore: validHistory.length
         ? (
-            history.reduce((sum, h) => sum + (h.safe_score || 0), 0) /
-            history.filter((h) => h.safe_score).length
+            validHistory.reduce((sum, h) => sum + h.safe_score, 0) /
+            validHistory.length
           ).toFixed(1)
         : null,
     };

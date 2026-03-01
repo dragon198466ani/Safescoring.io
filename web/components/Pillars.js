@@ -73,7 +73,7 @@ const Pillars = () => {
       <div className="max-w-6xl mx-auto">
         {/* Section header */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
+          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-base-content/10 text-base-content/70">
             Methodology
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
@@ -93,11 +93,7 @@ const Pillars = () => {
                 key={pillar.code}
                 className="relative group p-8 rounded-2xl bg-base-200/50 border border-base-300 hover:border-opacity-50 transition-all duration-300 overflow-hidden"
               >
-                {/* Glow effect */}
-                <div
-                  className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"
-                  style={{ backgroundColor: pillar.color }}
-                />
+                {/* Glow effect removed for monochrome design */}
 
                 {/* Illustration intégrée avec la lettre */}
                 <div className="relative flex justify-center mb-6">

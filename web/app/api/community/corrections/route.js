@@ -77,7 +77,7 @@ export async function POST(request) {
     const session = await auth();
     if (!session?.user?.email) {
       return NextResponse.json(
-        { error: "Connexion requise pour soumettre une correction" },
+        { error: "Sign in to submit a correction" },
         { status: 401 }
       );
     }
@@ -90,7 +90,7 @@ export async function POST(request) {
     if (!rateLimit.allowed) {
       return NextResponse.json(
         {
-          error: `Trop de soumissions. Réessayez dans ${rateLimit.resetIn} minutes.`,
+          error: `Too many submissions. Try again in ${rateLimit.resetIn} minutes.`,
           resetIn: rateLimit.resetIn
         },
         { status: 429 }
@@ -112,7 +112,7 @@ export async function POST(request) {
     // Validation
     if (!productId || !fieldType || !proposedValue) {
       return NextResponse.json(
-        { error: "Champs requis: productId, fieldType, proposedValue" },
+        { error: "Required fields: productId, fieldType, proposedValue" },
         { status: 400 }
       );
     }
@@ -126,7 +126,7 @@ export async function POST(request) {
 
     if (!product) {
       return NextResponse.json(
-        { error: "Produit non trouvé" },
+        { error: "Product not found" },
         { status: 404 }
       );
     }
@@ -165,7 +165,7 @@ export async function POST(request) {
     if (error) {
       console.error("Error creating correction:", error);
       return NextResponse.json(
-        { error: "Erreur lors de la création" },
+        { error: "Failed to create correction" },
         { status: 500 }
       );
     }
@@ -188,7 +188,7 @@ export async function POST(request) {
       correction: {
         id: data.id,
         status: data.status,
-        message: "Correction soumise ! Elle sera validée après 3 votes positifs."
+        message: "Correction submitted! It will be validated after 3 positive votes."
       }
     });
 

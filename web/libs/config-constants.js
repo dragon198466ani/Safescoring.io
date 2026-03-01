@@ -49,6 +49,7 @@ export const PLAN_LIMITS = {
     monthlyProductViews: -1, // unlimited
     maxSetups: 1,
     maxProductsPerSetup: 3,
+    maxScoringSetups: 1,
     apiAccess: false,
     exportPDF: false,
     alerts: false,
@@ -62,6 +63,7 @@ export const PLAN_LIMITS = {
     monthlyProductViews: -1,
     maxSetups: 5,
     maxProductsPerSetup: 5,
+    maxScoringSetups: 3,
     apiAccess: false, // No API access
     exportPDF: true,
     alerts: true,
@@ -75,6 +77,7 @@ export const PLAN_LIMITS = {
     monthlyProductViews: -1,
     maxSetups: 20,
     maxProductsPerSetup: 10,
+    maxScoringSetups: 3,
     apiAccess: true,
     exportPDF: true,
     alerts: true,
@@ -88,6 +91,7 @@ export const PLAN_LIMITS = {
     monthlyProductViews: -1,
     maxSetups: -1, // unlimited
     maxProductsPerSetup: -1, // unlimited
+    maxScoringSetups: -1, // unlimited
     apiAccess: true,
     exportPDF: true,
     alerts: true,

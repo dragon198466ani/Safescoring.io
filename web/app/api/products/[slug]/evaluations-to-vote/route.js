@@ -1,6 +1,20 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/libs/supabase/server';
 import { auth } from '@/libs/auth';
+import crypto from 'crypto';
+
+/**
+ * Generate anonymous voter hash from user ID
+ * MUST match the hash in evaluation-vote/route.js and community/votes/route.js
+ */
+function generateVoterHash(userId) {
+  const salt = process.env.VOTER_HASH_SALT || 'safescoring-voter-salt-2024';
+  return crypto
+    .createHash('sha256')
+    .update(`${userId}:${salt}`)
+    .digest('hex')
+    .slice(0, 32);
+}
 
 /**
  * GET /api/products/[slug]/evaluations-to-vote
@@ -56,8 +70,8 @@ export async function GET(req, { params }) {
 
     // Get user's votes if authenticated
     let userVotes = [];
-    if (session?.user?.email) {
-      const userHash = session.user.email; // In production, hash this
+    if (session?.user?.id) {
+      const userHash = generateVoterHash(session.user.id);
 
       const { data: votes } = await supabase
         .from('evaluation_votes')

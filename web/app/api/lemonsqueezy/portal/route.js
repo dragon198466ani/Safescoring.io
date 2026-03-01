@@ -18,18 +18,18 @@ export async function POST(req) {
     // Get user's Lemon Squeezy customer ID from database
     const { data: user, error } = await supabaseAdmin
       .from("users")
-      .select("lemonsqueezy_customer_id")
+      .select("lemon_squeezy_customer_id")
       .eq("id", session.user.id)
       .single();
 
-    if (error || !user?.lemonsqueezy_customer_id) {
+    if (error || !user?.lemon_squeezy_customer_id) {
       return NextResponse.json(
         { error: "No subscription found. Please subscribe first." },
         { status: 404 }
       );
     }
 
-    const portalUrl = await getCustomerPortalUrl(user.lemonsqueezy_customer_id);
+    const portalUrl = await getCustomerPortalUrl(user.lemon_squeezy_customer_id);
 
     return NextResponse.json({ url: portalUrl });
   } catch (error) {

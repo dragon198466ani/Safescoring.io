@@ -24,6 +24,9 @@ import {
   LazyProductHeroGallery,
   LazySAFEStrategicAnalysis,
   LazySAFEProtectionGuide,
+  LazyDualScoreChart,
+  LazyThreeTrackScores,
+  LazySwipeVoting,
 } from "@/libs/lazy-components";
 
 // Enable ISR caching for better SEO and Google crawl efficiency
@@ -784,6 +787,49 @@ export default async function ProductPage({ params }) {
 
           {/* Protection Guide - how to stay safe with this product */}
           <LazySAFEProtectionGuide productSlug={product.slug} />
+
+          {/* Score Evolution: EA Score vs User Score (dual chart) */}
+          <div className="mb-12">
+            <div className="rounded-xl bg-base-200 border border-base-300 p-6">
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <span className="text-xl">📊</span>
+                {t("productDetail.scoreEvolution") || "Score Evolution"}
+              </h2>
+              <LazyDualScoreChart
+                productSlug={product.slug}
+                height={220}
+                showLegend={true}
+                showTooltip={true}
+                timeRange="30d"
+              />
+            </div>
+          </div>
+
+          {/* 3-Track Scoring: AI + Community + Hybrid per pillar */}
+          <div className="mb-12">
+            <LazyThreeTrackScores productSlug={product.slug} />
+          </div>
+
+          {/* Community Voting - Vote on AI evaluations & earn $SAFE tokens */}
+          <div className="mb-12">
+            <div className="rounded-xl bg-gradient-to-br from-amber-500/5 to-base-200 border border-amber-500/20 p-6">
+              <div className="text-center mb-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-sm font-medium mb-2">
+                  🗳️ Vote & Earn $SAFE
+                </div>
+                <h2 className="text-lg font-semibold">
+                  {t("productDetail.communityVoting") || "Community Verification"}
+                </h2>
+                <p className="text-sm text-base-content/60 mt-1">
+                  {t("productDetail.communityVotingDesc") || "Vote on AI evaluations and earn $SAFE tokens"}
+                </p>
+              </div>
+              <LazySwipeVoting
+                productSlug={product.slug}
+                maxItems={5}
+              />
+            </div>
+          </div>
 
           {/* Score & Security + Security History - Side by side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">

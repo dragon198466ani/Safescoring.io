@@ -7,6 +7,7 @@ import { Tooltip } from "react-tooltip";
 import config from "@/config";
 import { StatsProvider } from "@/libs/StatsProvider";
 import { LanguageProvider } from "@/libs/i18n/LanguageProvider";
+import { ScoringSetupProvider } from "@/libs/ScoringSetupProvider";
 
 // All the client wrappers are here (they can't be in server components)
 // 1. SessionProvider: Allow the useSession from next-auth (find out if user is auth or not)
@@ -21,6 +22,7 @@ const ClientLayout = ({ children }) => {
       <SessionProvider>
         <LanguageProvider>
         <StatsProvider>
+        <ScoringSetupProvider>
         {/* Show a progress bar at the top when navigating between pages */}
         <NextTopLoader color={config.colors.main} showSpinner={false} />
 
@@ -39,6 +41,7 @@ const ClientLayout = ({ children }) => {
           id="tooltip"
           className="z-[60] !opacity-100 max-w-sm shadow-lg"
         />
+        </ScoringSetupProvider>
         </StatsProvider>
         </LanguageProvider>
       </SessionProvider>

@@ -74,7 +74,7 @@ const FAQ = () => {
       <div className="max-w-3xl mx-auto">
         {/* Section header */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
+          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-base-content/10 text-base-content/70">
             FAQ
           </span>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">

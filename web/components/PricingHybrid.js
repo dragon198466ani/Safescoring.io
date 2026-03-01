@@ -73,11 +73,11 @@ export default function PricingHybrid() {
         <div className="mt-4 text-sm">
           {paymentMethod === "card" && (
             <p className="text-base-content/70">
-              Pay with credit card via Stripe. Cancel anytime.
+              Pay with credit card via LemonSqueezy. Cancel anytime.
             </p>
           )}
           {paymentMethod === "crypto" && (
-            <p className="text-success">
+            <p className="text-base-content/70">
               Stream USDC per second via Superfluid. Pay only for time used, cancel anytime.
             </p>
           )}
@@ -94,12 +94,12 @@ export default function PricingHybrid() {
             <div
               key={plan.variantId}
               className={`card bg-base-100 shadow-xl ${
-                isPopular ? "border-2 border-primary" : ""
+                isPopular ? "border-2 border-white" : ""
               }`}
             >
               {isPopular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="badge badge-primary">Most Popular</span>
+                  <span className="badge bg-base-content/10 text-base-content/70 border-0">Most Popular</span>
                 </div>
               )}
 
@@ -130,7 +130,7 @@ export default function PricingHybrid() {
                             <span className="text-4xl font-bold">${plan.price}</span>
                             <span className="text-base-content/50">USDC/mo</span>
                           </div>
-                          <p className="text-sm text-success">
+                          <p className="text-sm text-base-content/50">
                             Streaming payment
                           </p>
                           <p className="text-xs text-base-content/50">
@@ -149,9 +149,7 @@ export default function PricingHybrid() {
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-2">
                       <svg
-                        className={`w-5 h-5 flex-shrink-0 ${
-                          feature.highlight ? "text-primary" : "text-success"
-                        }`}
+                        className="w-5 h-5 flex-shrink-0 text-base-content/50"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -213,8 +211,8 @@ export default function PricingHybrid() {
           </h3>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-base-content/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
@@ -224,8 +222,8 @@ export default function PricingHybrid() {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-base-content/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div>
@@ -235,8 +233,8 @@ export default function PricingHybrid() {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-base-content/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>

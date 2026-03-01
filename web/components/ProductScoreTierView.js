@@ -10,6 +10,7 @@
 
 import { useState, useMemo } from "react";
 import { SCORE_TIERS, SCORE_TIER_IDS } from "@/libs/config-constants";
+import { useScoringSetup } from "@/libs/ScoringSetupProvider";
 
 const getScoreColor = (score) => {
   if (score >= 80) return "text-green-400";
@@ -51,6 +52,7 @@ export default function ProductScoreTierView({
   translations = {},
 }) {
   const [activeTier, setActiveTier] = useState("full");
+  const { computeSAFE, isCustom, activeSetup } = useScoringSetup();
 
   const activeScores = useMemo(() => {
     switch (activeTier) {
@@ -63,14 +65,20 @@ export default function ProductScoreTierView({
     }
   }, [activeTier, scores, consumerScores, essentialScores]);
 
+  // Apply custom weights if active
+  const displayTotal = useMemo(() => {
+    if (!isCustom) return activeScores.total;
+    return computeSAFE(activeScores) ?? activeScores.total;
+  }, [isCustom, activeScores, computeSAFE]);
+
   const tierConfig = SCORE_TIERS[activeTier];
-  const scoreInfo = getScoreLabel(activeScores.total);
+  const scoreInfo = getScoreLabel(displayTotal);
   const size = 140;
   const strokeWidth = 10;
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
-  const offset = circumference - (activeScores.total / 100) * circumference;
-  const strokeColor = getScoreColorHex(activeScores.total);
+  const offset = circumference - (displayTotal / 100) * circumference;
+  const strokeColor = getScoreColorHex(displayTotal);
 
   return (
     <div>
@@ -121,9 +129,9 @@ export default function ProductScoreTierView({
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span
-              className={`text-4xl font-bold transition-colors ${getScoreColor(activeScores.total)}`}
+              className={`text-4xl font-bold transition-colors ${getScoreColor(displayTotal)}`}
             >
-              {activeScores.total}
+              {displayTotal}
             </span>
           </div>
         </div>
@@ -139,6 +147,11 @@ export default function ProductScoreTierView({
           <div className={`text-base font-semibold mt-1 transition-colors ${scoreInfo.color}`}>
             {scoreInfo.label}
           </div>
+          {isCustom && activeSetup && (
+            <div className="text-[9px] text-primary/70 mt-1">
+              {activeSetup.name}
+            </div>
+          )}
         </div>
         {lastUpdate && (
           <div className="mt-3 text-xs text-base-content/40">

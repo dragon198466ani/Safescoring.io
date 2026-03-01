@@ -112,10 +112,12 @@ async function fetchSafeScoreHistory(productId, days, pillar = null) {
     return [];
   }
 
-  return (data || []).map((d) => ({
-    value: pillar ? d[`score_${pillar.toLowerCase()}`] : d.safe_score,
-    recorded_at: d.recorded_at,
-  }));
+  return (data || [])
+    .map((d) => ({
+      value: pillar ? d[`score_${pillar.toLowerCase()}`] : d.safe_score,
+      recorded_at: d.recorded_at,
+    }))
+    .filter((d) => d.value !== null && d.value !== undefined);
 }
 
 /**
@@ -168,43 +170,76 @@ async function fetchDualScoreHistory(productId, days, pillar = null) {
     productVotes = productVotes.filter((v) => pillarNormIds.has(v.norm_id));
   }
 
-  // Group votes by date
-  const votesByDate = {};
+  // Sort votes chronologically for cumulative calculation
+  productVotes.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+  // Build cumulative vote counts by date (rolling total up to each date)
+  const cumulativeByDate = {};
+  let runningAgree = 0;
+  let runningDisagree = 0;
+
   productVotes.forEach((v) => {
     const date = new Date(v.created_at).toISOString().split("T")[0];
-    if (!votesByDate[date]) {
-      votesByDate[date] = { true: 0, false: 0 };
+    if (v.vote_agrees) {
+      runningAgree++;
+    } else {
+      runningDisagree++;
     }
-    votesByDate[date][v.vote_agrees ? "true" : "false"]++;
+    cumulativeByDate[date] = {
+      agree: runningAgree,
+      disagree: runningDisagree,
+      total: runningAgree + runningDisagree,
+    };
   });
+
+  // Get sorted list of vote dates for interpolation
+  const voteDates = Object.keys(cumulativeByDate).sort();
+
+  // Helper: get cumulative vote state at a given date (latest data on or before that date)
+  function getCumulativeVotesAt(targetDate) {
+    let result = null;
+    for (const d of voteDates) {
+      if (d <= targetDate) {
+        result = cumulativeByDate[d];
+      } else {
+        break;
+      }
+    }
+    return result;
+  }
 
   // Build combined history with both AI and community scores
   const history = (scoreHistory || []).map((h) => {
     const date = new Date(h.recorded_at).toISOString().split("T")[0];
-    const dateVotes = votesByDate[date];
-
     const aiScore = pillar ? h[`score_${pillar.toLowerCase()}`] : h.safe_score;
 
-    // Calculate community score based on vote ratio
+    // Get cumulative votes up to this date (progressive variation)
+    const cumulVotes = getCumulativeVotesAt(date);
+
     let communityScore = null;
     let votesCount = 0;
 
-    if (dateVotes) {
-      const totalVotes = dateVotes.true + dateVotes.false;
-      votesCount = totalVotes;
+    if (cumulVotes && cumulVotes.total >= 3) {
+      votesCount = cumulVotes.total;
+      const agreeRatio = cumulVotes.agree / cumulVotes.total;
 
-      if (totalVotes >= 3) {
-        const trueRatio = dateVotes.true / totalVotes;
-        // Community score adjusts AI score based on consensus
-        if (trueRatio > 0.7) {
-          communityScore = aiScore; // Confirmed
-        } else if (trueRatio < 0.3) {
-          communityScore = Math.max(0, aiScore - 15); // Strongly challenged
-        } else {
-          // Partial adjustment based on vote ratio
-          communityScore = aiScore - (10 * (1 - trueRatio));
-        }
+      // Community score = AI score adjusted by community consensus
+      // Fully confirmed (>70% agree) → matches AI score
+      // Fully challenged (<30% agree) → AI score - 15
+      // Mixed → progressive adjustment based on agree ratio
+      if (agreeRatio > 0.7) {
+        communityScore = aiScore; // Confirmed
+      } else if (agreeRatio < 0.3) {
+        communityScore = Math.max(0, aiScore - 15); // Strongly challenged
+      } else {
+        // Progressive: interpolate between confirmed and challenged
+        // agreeRatio 0.3→0.7 maps to adjustment 0→-10
+        const adjustmentFactor = (0.7 - agreeRatio) / 0.4; // 0 at 0.7, 1 at 0.3
+        communityScore = Math.max(0, aiScore - (10 * adjustmentFactor));
       }
+
+      // Round for clean display
+      communityScore = Math.round(communityScore * 10) / 10;
     }
 
     return {

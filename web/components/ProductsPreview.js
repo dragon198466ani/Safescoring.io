@@ -124,7 +124,7 @@ const ProductsPreview = () => {
         {/* Section header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
           <div>
-            <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
+            <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-base-content/10 text-base-content/70">
               Latest Evaluations
             </span>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
@@ -169,17 +169,17 @@ const ProductsPreview = () => {
             <Link
               key={product.id}
               href={`/products/${product.slug}`}
-              className="product-card group block p-6 rounded-xl bg-base-200 border border-base-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
+              className="product-card group block p-6 rounded-xl bg-base-200 border border-base-300 hover:border-base-content/20 hover:shadow-lg"
             >
               {/* Header */}
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   {/* Placeholder logo */}
-                  <div className="w-12 h-12 rounded-xl bg-base-300 flex items-center justify-center text-xl font-bold text-primary">
+                  <div className="w-12 h-12 rounded-xl bg-base-300 flex items-center justify-center text-xl font-bold text-base-content/70">
                     {product.name.charAt(0)}
                   </div>
                   <div>
-                    <h3 className="font-semibold group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold group-hover:text-white transition-colors">
                       {product.name}
                     </h3>
                     <div className="flex flex-wrap gap-1 mt-0.5">
@@ -188,7 +188,7 @@ const ProductsPreview = () => {
                           key={t.code || idx}
                           className={`text-xs px-1.5 py-0.5 rounded ${
                             t.isPrimary || idx === 0
-                              ? 'bg-primary/20 text-primary'
+                              ? 'bg-base-content/10 text-base-content/70'
                               : 'bg-base-300 text-base-content/60'
                           }`}
                         >
@@ -236,7 +236,7 @@ const ProductsPreview = () => {
               {/* Footer */}
               <div className="mt-4 pt-4 border-t border-base-300 flex items-center justify-between text-xs text-base-content/50">
                 <span>Updated {formatDate(product.lastUpdate)}</span>
-                <span className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="flex items-center gap-1 text-base-content/70 opacity-0 group-hover:opacity-100 transition-opacity">
                   View details
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />

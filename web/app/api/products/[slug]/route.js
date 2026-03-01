@@ -97,6 +97,7 @@ export async function GET(request, { params }) {
         )
       `)
       .eq("slug", slug)
+      .is("deleted_at", null)
       .single();
 
     if (productError || !product) {
@@ -177,26 +178,26 @@ export async function GET(request, { params }) {
       specs: specs,
       socialLinks: socialLinks,
       scores: {
-        total: safeScoring?.note_finale || 0,
-        s: safeScoring?.score_s || 0,
-        a: safeScoring?.score_a || 0,
-        f: safeScoring?.score_f || 0,
-        e: safeScoring?.score_e || 0,
+        total: safeScoring?.note_finale ?? null,
+        s: safeScoring?.score_s ?? null,
+        a: safeScoring?.score_a ?? null,
+        f: safeScoring?.score_f ?? null,
+        e: safeScoring?.score_e ?? null,
         // Consumer scores
         consumer: {
-          total: safeScoring?.note_consumer || 0,
-          s: safeScoring?.s_consumer || 0,
-          a: safeScoring?.a_consumer || 0,
-          f: safeScoring?.f_consumer || 0,
-          e: safeScoring?.e_consumer || 0,
+          total: safeScoring?.note_consumer ?? null,
+          s: safeScoring?.s_consumer ?? null,
+          a: safeScoring?.a_consumer ?? null,
+          f: safeScoring?.f_consumer ?? null,
+          e: safeScoring?.e_consumer ?? null,
         },
         // Essential scores
         essential: {
-          total: safeScoring?.note_essential || 0,
-          s: safeScoring?.s_essential || 0,
-          a: safeScoring?.a_essential || 0,
-          f: safeScoring?.f_essential || 0,
-          e: safeScoring?.e_essential || 0,
+          total: safeScoring?.note_essential ?? null,
+          s: safeScoring?.s_essential ?? null,
+          a: safeScoring?.a_essential ?? null,
+          f: safeScoring?.f_essential ?? null,
+          e: safeScoring?.e_essential ?? null,
         },
       },
       evaluationDetails: evaluationStats,

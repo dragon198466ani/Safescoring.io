@@ -36,6 +36,7 @@ const config = {
         features: [
           { name: "Browse all product scores" },
           { name: "1 custom setup analysis", highlight: true },
+          { name: "1 custom scoring weight profile" },
           { name: "See your stack's weak points" },
           { name: "Updated monthly with new products" },
         ],
@@ -43,6 +44,7 @@ const config = {
           monthlyProductViews: 5,
           maxSetups: 1,
           maxProductsPerSetup: 3,
+          maxScoringSetups: 1,
         },
       },
       {
@@ -55,6 +57,7 @@ const config = {
         features: [
           { name: "Unlimited product comparisons" },
           { name: "5 setup analyses (5 products each)", highlight: true },
+          { name: "3 custom scoring weight profiles" },
           { name: "Identify your weakest security pillar" },
           { name: "Side-by-side product comparison" },
           { name: "Email support" },
@@ -63,6 +66,7 @@ const config = {
           monthlyProductViews: -1, // unlimited
           maxSetups: 5,
           maxProductsPerSetup: 5,
+          maxScoringSetups: 3,
         },
       },
       {
@@ -85,6 +89,7 @@ const config = {
           monthlyProductViews: -1,
           maxSetups: 20,
           maxProductsPerSetup: 10,
+          maxScoringSetups: 3,
         },
       },
       {
@@ -97,22 +102,21 @@ const config = {
           { name: "Everything in Professional" },
           { name: "Unlimited setups & products", highlight: true },
           { name: "Share analyses across your team" },
-          { name: "Custom scoring for your risk model" },
-          { name: "White-label reports for clients" },
+          { name: "Unlimited custom scoring weight profiles" },
+          { name: "Export PDF reports for clients" },
           { name: "Dedicated account manager" },
         ],
         limits: {
           monthlyProductViews: -1,
           maxSetups: -1, // unlimited
           maxProductsPerSetup: -1, // unlimited
+          maxScoringSetups: -1, // unlimited
         },
       },
     ],
   },
-  // Legacy Stripe config (kept for reference, can be removed)
-  stripe: {
-    plans: [],
-  },
+  // Stripe removed — LemonSqueezy is the primary fiat payment provider
+  stripe: { plans: [] },
   aws: {
     // If you use AWS S3/Cloudfront, put values in here
     bucket: "bucket-name",
@@ -132,7 +136,7 @@ const config = {
     theme: "dark",
     // REQUIRED — This color will be reflected on the whole app outside of the document (loading bar, Chrome tabs, etc..). By default it takes the primary color from your DaisyUI theme (make sure to update your the theme name after "data-theme=")
     // OR you can just do this to use a custom color: main: "#f37055". HEX only.
-    main: "#6366f1", // Indigo primary color
+    main: "#d1d5db", // Neutral gray — minimal B&W theme
   },
   auth: {
     // REQUIRED — the path to log in users. It's use to protect private routes (like /dashboard). It's used in apiClient (/libs/api.js) upon 401 errors from our API

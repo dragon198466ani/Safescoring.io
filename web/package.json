@@ -45,7 +45,6 @@
     "react-leaflet": "^5.0.0",
     "react-tooltip": "^5.28.0",
     "resend": "^4.0.1",
-    "stripe": "^17.5.0",
     "viem": "2.43.4",
     "wagmi": "2.19.5",
     "zod": "^4.3.6"
