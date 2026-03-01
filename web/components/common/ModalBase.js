@@ -54,23 +54,24 @@ export default function ModalBase({
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
         </Transition.Child>
 
-        {/* Modal Container */}
+        {/* Modal Container — bottom-sheet on mobile, centered on desktop */}
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
+          <div className="flex min-h-full items-end sm:items-center justify-center p-0 sm:p-4">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
+              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              enterTo="opacity-100 translate-y-0 sm:scale-100"
               leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
+              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel
                 className={`
                   w-full ${maxWidthClass} transform overflow-hidden
-                  rounded-2xl bg-base-100 border border-base-300
+                  rounded-t-2xl sm:rounded-2xl bg-base-100 border border-base-300
                   p-6 text-left align-middle shadow-xl transition-all
+                  max-h-[90vh] overflow-y-auto
                   ${className}
                 `}
               >

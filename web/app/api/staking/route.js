@@ -13,7 +13,18 @@
 import { supabase } from "@/libs/supabase";
 import { auth } from "@/libs/auth";
 import { NextResponse } from "next/server";
-import { getStakingBenefits, getProgressToNextTier, calculateWeeklyReward } from "@/libs/staking-benefits";
+import { getStakingBenefits, getProgressToNextTier, getStakingTier } from "@/libs/staking-benefits";
+
+// Calculate weekly reward based on staked amount and tier APY
+function calculateWeeklyReward(totalStaked) {
+  if (!totalStaked || totalStaked < 100) return { amount: 0, apy: 0 };
+  const tier = getStakingTier(totalStaked);
+  if (!tier) return { amount: 0, apy: 0 };
+  const apyMap = { bronze: 0.5, silver: 0.75, gold: 1, platinum: 1.25, diamond: 2 };
+  const apy = apyMap[tier.key] || 0;
+  const weeklyAmount = (totalStaked * (apy / 100)) / 52;
+  return { amount: Math.round(weeklyAmount * 100) / 100, apy };
+}
 
 export const dynamic = "force-dynamic";
 

@@ -7,15 +7,15 @@ import config from "@/config";
  * Default stats (fallback values)
  */
 const DEFAULT_STATS = {
-  totalNorms: config.safe?.stats?.totalNorms || 2354,
+  totalNorms: config.safe?.stats?.totalNorms || 2376,
   totalProducts: config.safe?.stats?.totalProducts || 1535,
   totalProductTypes: config.safe?.stats?.totalProductTypes || 78,
   totalEvaluations: config.safe?.stats?.totalEvaluations || 3314065,
   normsByPillar: {
     S: 872,
-    A: 530,
-    F: 339,
-    E: 613,
+    A: 540,
+    F: 346,
+    E: 618,
   },
   productsEvaluated: 1535,
   productsPending: 0,
@@ -121,7 +121,7 @@ export function formatWithStats(text, stats) {
   const s = stats || DEFAULT_STATS;
   
   return text
-    .replace(/\{totalNorms\}/g, s.totalNorms?.toLocaleString() || "2354")
+    .replace(/\{totalNorms\}/g, s.totalNorms?.toLocaleString() || "2376")
     .replace(/\{totalProducts\}/g, s.totalProducts?.toLocaleString() || "1535")
     .replace(/\{totalProductTypes\}/g, s.totalProductTypes?.toLocaleString() || "78")
     .replace(/\{normsS\}/g, s.normsByPillar?.S?.toLocaleString() || "872")

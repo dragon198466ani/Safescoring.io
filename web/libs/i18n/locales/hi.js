@@ -118,7 +118,7 @@ export default {
       },
       rigor: {
         title: "कठोरता",
-        desc: "4 स्तंभों में 916 मानक। कोई शॉर्टकट नहीं, कोई व्यक्तिपरक राय नहीं।",
+        desc: "4 स्तंभों में {totalNorms} मानक। कोई शॉर्टकट नहीं, कोई व्यक्तिपरक राय नहीं।",
       },
       accessibility: {
         title: "सुगम्यता",
@@ -516,7 +516,7 @@ export default {
       },
       norms: {
         title: "Global standards, not opinions",
-        body: "916 norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
+        body: "{totalNorms} norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
       },
       trust: {
         title: "Trust you can prove",
@@ -592,7 +592,7 @@ export default {
         },
         evaluate: {
           title: "Evaluate",
-          desc: "We score your product against 916 security norms.",
+          desc: "We score your product against {totalNorms} security norms.",
         },
         review: {
           title: "Review",
@@ -622,6 +622,39 @@ export default {
       body: "Join teams worldwide using SAFE Certification to prove security with data.",
       primary: "Apply Now",
       secondary: "Talk to Sales",
+    },
+  },
+  // KYC Security
+  kyc: {
+    card: {
+      title: "KYC ekspojar",
+      noKyc: "Is setup mein kisi platform ko identity verification ki zarurat nahi hai.",
+      requireKyc: "identity verification ki zarurat hai",
+      incidentProvider: "ek provider ka upyog karte hain jiska data incident hua hai",
+      hide: "Chhupayein",
+      view: "Dekhein",
+      details: "vivaran",
+      via: "dwara",
+      incidentReported: "Incident report kiya gaya",
+      noIncidents: "Koi incident nahi",
+      dataTypesAffected: "Sambhavit prabhavit data prakar:",
+      upgradeCta: "Vistar se provider jankari dekhne ke liye upgrade karein.",
+    },
+    dataTypes: {
+      passport: "Passport / ID",
+      selfie: "Selfie / Photo",
+      address: "Pata",
+      phone: "Phone number",
+      bankAccount: "Bank account",
+      ssn: "Tax ID",
+      email: "Email",
+    },
+    risk: {
+      critical: "Gambhir",
+      high: "Uchch",
+      moderate: "Madhyam",
+      low: "Kam",
+      none: "KYC nahi",
     },
   },
 };

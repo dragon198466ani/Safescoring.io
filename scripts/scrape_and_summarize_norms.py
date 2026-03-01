@@ -9,6 +9,7 @@ Script pour scraper les sources officielles des normes et générer des résumé
 
 import sys
 import os
+import io
 import time
 import json
 import random
@@ -16,6 +17,7 @@ import re
 from datetime import datetime
 from urllib.parse import urlparse, quote_plus
 
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import requests

@@ -3,9 +3,8 @@
  * Soumettre une vérification de norme
  */
 
-import { createClient } from "@/libs/supabase";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/libs/auth";
+import { supabase } from "@/libs/supabase";
+import { auth } from "@/libs/auth";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +12,7 @@ export const dynamic = "force-dynamic";
 // POST: Soumettre une vérification
 export async function POST(request) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
@@ -25,7 +24,6 @@ export async function POST(request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const supabase = createClient();
     const userId = session.user.id;
 
     // Appeler la fonction SQL
@@ -60,8 +58,6 @@ export async function GET(request) {
     if (!productId) {
       return NextResponse.json({ error: "Missing productId" }, { status: 400 });
     }
-
-    const supabase = createClient();
 
     // Stats du produit
     const { data: stats } = await supabase

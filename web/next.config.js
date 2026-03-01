@@ -40,12 +40,12 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       // unsafe-inline requis pour Next.js, unsafe-eval RETIRÉ (risque XSS)
-      "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://js.stripe.com https://www.googletagmanager.com",
+      "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' data: https: blob:",
       "font-src 'self' https://fonts.gstatic.com data:",
-      "connect-src 'self' https://*.supabase.co https://api.stripe.com https://api.microlink.io wss://*.supabase.co https://www.google-analytics.com https://*.ingest.sentry.io",
-      "frame-src 'self' https://challenges.cloudflare.com https://js.stripe.com",
+      "connect-src 'self' https://*.supabase.co https://api.microlink.io wss://*.supabase.co https://www.google-analytics.com https://*.ingest.sentry.io",
+      "frame-src 'self' https://challenges.cloudflare.com",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
@@ -57,7 +57,8 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
+  // Note: Do NOT set output: 'standalone' for Vercel deployments.
+  // 'standalone' is for Docker/self-hosted. Vercel handles output automatically.
 
   // Enable gzip/brotli compression
   compress: true,
@@ -154,9 +155,18 @@ const nextConfig = {
         protocol: "https",
         hostname: "www.google.com",
       },
+      // Crypto product logos
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "*.coinmarketcap.com",
+      },
+      {
+        protocol: "https",
+        hostname: "assets.coingecko.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cryptologos.cc",
       },
     ],
   },

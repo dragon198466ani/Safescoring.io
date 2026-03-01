@@ -19,7 +19,8 @@ export {
 export { default as useRealtimeProducts } from "./useRealtimeProducts";
 export { default as useRealtimeMap } from "./useRealtimeMap";
 export { default as useRealtimePresence } from "./useRealtimePresence";
-export { default as useStats, formatWithStats } from "./useStats";
+// REMOVED in Phase 2.6 — useStats is deprecated.
+// Use { useGlobalStats, formatWithStats } from "@/libs/StatsProvider" instead.
 
 // Setup Real-time
 export {

@@ -4,7 +4,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import config from "@/config";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import ProductLogo from "@/components/ProductLogo";
+import { getStats } from "@/libs/stats";
+import ComparisonTierView from "@/components/ComparisonTierView";
 
 // SEO: Revalidate every hour for fresh data
 export const revalidate = 3600;
@@ -36,8 +37,9 @@ export async function generateMetadata({ params }) {
   const productA = products.find(p => p.slug === slugA);
   const productB = products.find(p => p.slug === slugB);
 
+  const platformStats = await getStats();
   const title = `${productA.name} vs ${productB.name} - Security Comparison | SafeScoring`;
-  const description = `Compare ${productA.name} and ${productB.name} security scores. See which is safer based on 916 security criteria across Security, Adversity, Fidelity & Efficiency.`;
+  const description = `Compare ${productA.name} and ${productB.name} security scores. See which is safer based on ${platformStats.totalNorms} security criteria across Security, Adversity, Fidelity & Efficiency.`;
 
   return {
     title,
@@ -106,10 +108,14 @@ async function getProduct(slug) {
     if (typeData) typeName = typeData.name;
   }
 
-  // Get scores
+  // Get scores (including consumer and essential tiers)
   const { data: scoreData } = await supabase
     .from("safe_scoring_results")
-    .select("note_finale, score_s, score_a, score_f, score_e")
+    .select(`
+      note_finale, score_s, score_a, score_f, score_e,
+      note_consumer, s_consumer, a_consumer, f_consumer, e_consumer,
+      note_essential, s_essential, a_essential, f_essential, e_essential
+    `)
     .eq("product_id", product.id)
     .order("calculated_at", { ascending: false })
     .limit(1);
@@ -126,31 +132,26 @@ async function getProduct(slug) {
       a: Math.round(scores.score_a || 0),
       f: Math.round(scores.score_f || 0),
       e: Math.round(scores.score_e || 0),
-    }
+    },
+    consumerScores: {
+      total: Math.round(scores.note_consumer || 0),
+      s: Math.round(scores.s_consumer || 0),
+      a: Math.round(scores.a_consumer || 0),
+      f: Math.round(scores.f_consumer || 0),
+      e: Math.round(scores.e_consumer || 0),
+    },
+    essentialScores: {
+      total: Math.round(scores.note_essential || 0),
+      s: Math.round(scores.s_essential || 0),
+      a: Math.round(scores.a_essential || 0),
+      f: Math.round(scores.f_essential || 0),
+      e: Math.round(scores.e_essential || 0),
+    },
   };
 }
 
-// Score color helper
-const getScoreColor = (score) => {
-  if (score >= 80) return "text-green-400";
-  if (score >= 60) return "text-amber-400";
-  return "text-red-400";
-};
-
-const getScoreBg = (score) => {
-  if (score >= 80) return "bg-green-500/20 border-green-500/30";
-  if (score >= 60) return "bg-amber-500/20 border-amber-500/30";
-  return "bg-red-500/20 border-red-500/30";
-};
-
-// Winner badge
-const WinnerBadge = () => (
-  <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
-    WINNER
-  </span>
-);
-
 export default async function ComparePage({ params }) {
+  const platformStats = await getStats();
   const { slugs } = await params;
 
   if (!slugs || slugs.length < 2) {
@@ -167,21 +168,9 @@ export default async function ComparePage({ params }) {
     notFound();
   }
 
-  // Determine winners for each category
-  const winners = {
-    total: productA.scores.total > productB.scores.total ? 'A' : productA.scores.total < productB.scores.total ? 'B' : 'tie',
-    s: productA.scores.s > productB.scores.s ? 'A' : productA.scores.s < productB.scores.s ? 'B' : 'tie',
-    a: productA.scores.a > productB.scores.a ? 'A' : productA.scores.a < productB.scores.a ? 'B' : 'tie',
-    f: productA.scores.f > productB.scores.f ? 'A' : productA.scores.f < productB.scores.f ? 'B' : 'tie',
-    e: productA.scores.e > productB.scores.e ? 'A' : productA.scores.e < productB.scores.e ? 'B' : 'tie',
-  };
-
-  // Count wins
-  const pillarWins = { A: 0, B: 0 };
-  ['s', 'a', 'f', 'e'].forEach(p => {
-    if (winners[p] === 'A') pillarWins.A++;
-    if (winners[p] === 'B') pillarWins.B++;
-  });
+  // Compute "full" tier winner for SEO FAQ section (server-rendered)
+  const fullWinner = productA.scores.total > productB.scores.total ? "A"
+    : productA.scores.total < productB.scores.total ? "B" : "tie";
 
   return (
     <>
@@ -203,152 +192,17 @@ export default async function ComparePage({ params }) {
               {productA.name} vs {productB.name}
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              Security comparison based on 916 criteria across Security, Adversity, Fidelity & Efficiency pillars.
+              Security comparison based on {platformStats.totalNorms} criteria across Security, Adversity, Fidelity & Efficiency pillars.
             </p>
           </div>
 
-          {/* Main comparison grid */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            {/* Product A */}
-            <div className={`rounded-xl border p-6 relative ${getScoreBg(productA.scores.total)}`}>
-              {winners.total === 'A' && <WinnerBadge />}
-              <div className="flex items-center gap-3 mb-4">
-                <ProductLogo logoUrl={productA.logoUrl} name={productA.name} size="md" />
-                <div>
-                  <h2 className="font-bold text-lg">{productA.name}</h2>
-                  <p className="text-sm text-base-content/60">{productA.type}</p>
-                </div>
-              </div>
-              <div className={`text-5xl font-bold text-center mb-2 ${getScoreColor(productA.scores.total)}`}>
-                {productA.scores.total}
-              </div>
-              <div className="text-center text-sm text-base-content/60 mb-4">SAFE Score</div>
-              <Link href={`/products/${productA.slug}`} className="btn btn-sm btn-outline w-full">
-                View Details
-              </Link>
-            </div>
-
-            {/* VS */}
-            <div className="flex items-center justify-center">
-              <div className="text-4xl font-black text-base-content/20">VS</div>
-            </div>
-
-            {/* Product B */}
-            <div className={`rounded-xl border p-6 relative ${getScoreBg(productB.scores.total)}`}>
-              {winners.total === 'B' && <WinnerBadge />}
-              <div className="flex items-center gap-3 mb-4">
-                <ProductLogo logoUrl={productB.logoUrl} name={productB.name} size="md" />
-                <div>
-                  <h2 className="font-bold text-lg">{productB.name}</h2>
-                  <p className="text-sm text-base-content/60">{productB.type}</p>
-                </div>
-              </div>
-              <div className={`text-5xl font-bold text-center mb-2 ${getScoreColor(productB.scores.total)}`}>
-                {productB.scores.total}
-              </div>
-              <div className="text-center text-sm text-base-content/60 mb-4">SAFE Score</div>
-              <Link href={`/products/${productB.slug}`} className="btn btn-sm btn-outline w-full">
-                View Details
-              </Link>
-            </div>
-          </div>
-
-          {/* Pillar breakdown */}
-          <div className="rounded-xl bg-base-200 border border-base-300 p-6 mb-12">
-            <h2 className="text-xl font-bold mb-6 text-center">Pillar-by-Pillar Comparison</h2>
-
-            <div className="space-y-4">
-              {config.safe.pillars.map((pillar) => {
-                const codeKey = pillar.code.toLowerCase();
-                const scoreA = productA.scores[codeKey];
-                const scoreB = productB.scores[codeKey];
-                const winner = winners[codeKey];
-
-                return (
-                  <div key={pillar.code} className="grid grid-cols-7 gap-4 items-center p-4 rounded-lg bg-base-300/50">
-                    {/* Product A score */}
-                    <div className={`col-span-2 text-right ${winner === 'A' ? 'font-bold' : ''}`}>
-                      <span className={`text-2xl ${getScoreColor(scoreA)}`}>{scoreA}</span>
-                      {winner === 'A' && <span className="ml-2 text-green-400">✓</span>}
-                    </div>
-
-                    {/* Progress bar A */}
-                    <div className="col-span-1">
-                      <div className="w-full h-2 bg-base-300 rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full"
-                          style={{
-                            width: `${scoreA}%`,
-                            backgroundColor: pillar.color,
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Pillar name */}
-                    <div className="col-span-1 text-center">
-                      <div className="text-2xl font-black" style={{ color: pillar.color }}>
-                        {pillar.code}
-                      </div>
-                      <div className="text-xs text-base-content/60">{pillar.name}</div>
-                    </div>
-
-                    {/* Progress bar B */}
-                    <div className="col-span-1">
-                      <div className="w-full h-2 bg-base-300 rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full"
-                          style={{
-                            width: `${scoreB}%`,
-                            backgroundColor: pillar.color,
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Product B score */}
-                    <div className={`col-span-2 text-left ${winner === 'B' ? 'font-bold' : ''}`}>
-                      {winner === 'B' && <span className="mr-2 text-green-400">✓</span>}
-                      <span className={`text-2xl ${getScoreColor(scoreB)}`}>{scoreB}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Summary */}
-            <div className="mt-6 p-4 rounded-lg bg-base-300 text-center">
-              <p className="text-base-content/80">
-                <strong>{productA.name}</strong> wins in <strong className="text-green-400">{pillarWins.A}</strong> pillars
-                {' '}&bull;{' '}
-                <strong>{productB.name}</strong> wins in <strong className="text-green-400">{pillarWins.B}</strong> pillars
-              </p>
-            </div>
-          </div>
-
-          {/* Verdict */}
-          <div className="rounded-xl bg-gradient-to-br from-primary/20 to-base-200 border border-base-300 p-8 text-center mb-12">
-            <h2 className="text-2xl font-bold mb-4">Verdict</h2>
-            {winners.total === 'tie' ? (
-              <p className="text-lg text-base-content/80">
-                Both products have the same overall SAFE Score. Check individual pillar scores to see which best fits your needs.
-              </p>
-            ) : (
-              <p className="text-lg text-base-content/80">
-                <strong className="text-primary">
-                  {winners.total === 'A' ? productA.name : productB.name}
-                </strong>
-                {' '}has a higher overall security score with{' '}
-                <strong className={getScoreColor(winners.total === 'A' ? productA.scores.total : productB.scores.total)}>
-                  {winners.total === 'A' ? productA.scores.total : productB.scores.total}/100
-                </strong>
-                {' '}compared to{' '}
-                <strong className={getScoreColor(winners.total === 'A' ? productB.scores.total : productA.scores.total)}>
-                  {winners.total === 'A' ? productB.scores.total : productA.scores.total}/100
-                </strong>.
-              </p>
-            )}
-          </div>
+          {/* Interactive tier-switching comparison */}
+          <ComparisonTierView
+            productA={productA}
+            productB={productB}
+            pillars={config.safe.pillars}
+            totalNorms={platformStats.totalNorms}
+          />
 
           {/* Compare other products CTA */}
           <div className="text-center">
@@ -365,13 +219,13 @@ export default async function ComparePage({ params }) {
               <div>
                 <h3 className="font-semibold mb-2">Which is safer: {productA.name} or {productB.name}?</h3>
                 <p className="text-base-content/70">
-                  Based on our 916-criteria security evaluation, {winners.total === 'tie' ? 'both products have similar security levels' : `${winners.total === 'A' ? productA.name : productB.name} has a higher security score (${winners.total === 'A' ? productA.scores.total : productB.scores.total}/100)`}.
+                  Based on our {platformStats.totalNorms}-criteria security evaluation, {fullWinner === 'tie' ? 'both products have similar security levels' : `${fullWinner === 'A' ? productA.name : productB.name} has a higher security score (${fullWinner === 'A' ? productA.scores.total : productB.scores.total}/100)`}.
                 </p>
               </div>
               <div>
                 <h3 className="font-semibold mb-2">What is the SAFE Score?</h3>
                 <p className="text-base-content/70">
-                  The SAFE Score evaluates crypto products across 4 pillars: Security, Adversity, Fidelity, and Efficiency. It&apos;s based on 916 security norms evaluated by AI and human experts.
+                  The SAFE Score evaluates crypto products across 4 pillars: Security, Adversity, Fidelity, and Efficiency. It&apos;s based on {platformStats.totalNorms} security norms evaluated by AI and human experts.
                 </p>
               </div>
               <div>

@@ -3,10 +3,17 @@
   "env": {
     "browser": true,
     "node": true,
-    "es6": true
+    "es6": true,
+    "es2020": true
+  },
+  "globals": {
+    "BigInt": "readonly"
   },
   "rules": {
-    // Your specific rules.
-    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_", "destructuredArrayIgnorePattern": "^_" }]
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_", "destructuredArrayIgnorePattern": "^_" }],
+    "react/no-unescaped-entities": "off",
+    "no-undef": "warn",
+    "no-empty": "warn",
+    "@next/next/no-html-link-for-pages": "warn"
   }
 }

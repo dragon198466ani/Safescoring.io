@@ -1,12 +1,17 @@
+"use client";
+
 import config from "@/config";
+import { useGlobalStats } from "@/libs/StatsProvider";
 
 const WhyNotAudits = () => {
+  const { stats } = useGlobalStats();
+
   return (
     <section className="py-24 px-6 bg-base-200/30" id="why-audits">
       <div className="max-w-6xl mx-auto">
         {/* Section header */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-amber-500/10 text-amber-500">
+          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-base-content/10 text-base-content/70">
             {config.safe.taglineAlt}
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
@@ -29,7 +34,7 @@ const WhyNotAudits = () => {
                 <th className="text-center py-4 px-4 font-semibold text-base-content/60">
                   Traditional Audits
                 </th>
-                <th className="text-center py-4 px-4 font-semibold text-primary">
+                <th className="text-center py-4 px-4 font-semibold text-white font-bold">
                   SafeScoring
                 </th>
               </tr>
@@ -51,7 +56,7 @@ const WhyNotAudits = () => {
                 {
                   criteria: "Methodology",
                   audit: "Varies by auditor",
-                  safe: "916 standardized norms",
+                  safe: `${stats.totalNorms} standardized norms`,
                   safeWins: true,
                 },
                 {
@@ -75,7 +80,7 @@ const WhyNotAudits = () => {
                 {
                   criteria: "Cost",
                   audit: "$50K - $500K+ (manual audit)",
-                  safe: "From $29/month (automated monitoring)*",
+                  safe: "From $19/month (automated monitoring)*",
                   safeWins: true,
                 },
                 {
@@ -97,7 +102,7 @@ const WhyNotAudits = () => {
                     </div>
                   </td>
                   <td className="py-4 px-4 text-center">
-                    <div className="flex items-center justify-center gap-2 text-green-500 font-medium">
+                    <div className="flex items-center justify-center gap-2 text-base-content/50 font-medium">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"
@@ -121,20 +126,20 @@ const WhyNotAudits = () => {
 
         {/* Bottom stats */}
         <div className="mt-16 grid md:grid-cols-3 gap-8 text-center">
-          <div className="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/20">
-            <div className="text-4xl font-bold text-amber-400 mb-2">~50%</div>
+          <div className="p-6 rounded-2xl bg-base-200 border border-base-300">
+            <div className="text-4xl font-bold text-white mb-2">~50%</div>
             <div className="text-sm text-base-content/60">
               of exploited DeFi projects had audits — showing audits alone aren&apos;t enough
             </div>
           </div>
-          <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20">
-            <div className="text-4xl font-bold text-primary mb-2">916</div>
+          <div className="p-6 rounded-2xl bg-base-200 border border-base-300">
+            <div className="text-4xl font-bold text-white mb-2">{stats.totalNorms}</div>
             <div className="text-sm text-base-content/60">
               standardized norms across security, resilience, trust & usability
             </div>
           </div>
-          <div className="p-6 rounded-2xl bg-green-500/10 border border-green-500/20">
-            <div className="text-4xl font-bold text-green-400 mb-2">Monthly</div>
+          <div className="p-6 rounded-2xl bg-base-200 border border-base-300">
+            <div className="text-4xl font-bold text-white mb-2">Monthly</div>
             <div className="text-sm text-base-content/60">
               continuous monitoring to catch changes between audits
             </div>

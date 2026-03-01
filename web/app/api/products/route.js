@@ -152,6 +152,9 @@ export async function GET(request) {
         )
       `, { count: "exact" });
 
+    // Exclure les produits soft-deleted
+    query = query.is("deleted_at", null);
+
     // Filtrage côté serveur (plus efficace)
     if (search) {
       query = query.ilike("name", `%${search}%`);

@@ -52,7 +52,7 @@ export default {
 
   // Hero
   hero: {
-    tagline: "1110 norms. 0 opinion. 1 score.",
+    tagline: "{totalNorms} norms. 0 opinion. 1 score.",
     taglineAlt: "Beyond the audit.",
     title: "The first unified",
     titleHighlight: "crypto security rating",
@@ -703,5 +703,81 @@ export default {
     errorMessage: "Sorry, I encountered an error. Please try again in a moment.",
     connectionError: "Connection error",
     connectionErrorMessage: "Sorry, I'm having trouble connecting. Please check your connection and try again.",
+  },
+
+  // KYC Security
+  kyc: {
+    card: {
+      title: "KYC Exposure",
+      noKyc: "No platforms in this setup require identity verification.",
+      requireKyc: "require identity verification",
+      incidentProvider: "use a provider with a known data incident",
+      hide: "Hide",
+      view: "View",
+      details: "details",
+      via: "via",
+      incidentReported: "Incident reported",
+      noIncidents: "No incidents",
+      dataTypesAffected: "Data types potentially affected:",
+      upgradeCta: "Upgrade to see detailed provider information and recommendations.",
+    },
+    dataTypes: {
+      passport: "Passport / ID",
+      selfie: "Selfie / Photo",
+      address: "Address",
+      phone: "Phone number",
+      bankAccount: "Bank account",
+      ssn: "SSN / Tax ID",
+      email: "Email",
+    },
+    risk: {
+      critical: "Critical",
+      high: "High",
+      moderate: "Moderate",
+      low: "Low",
+      none: "No KYC",
+    },
+    page: {
+      title: "KYC Security: Protect Your Identity",
+      subtitle: "Understand how crypto platforms handle your personal data",
+      heroDesc: "Over 1 billion identity records have been exposed through KYC provider incidents. SafeScoring evaluates {totalNorms} security norms to help you choose safer platforms.",
+      stats: {
+        norms: "KYC security norms",
+        providers: "providers evaluated",
+        dataTypes: "data types tracked",
+      },
+      sections: {
+        riskTitle: "Understanding KYC Risk",
+        riskDesc: "When you use a crypto platform that requires identity verification (KYC), your personal data is shared with third-party providers. If those providers experience a data incident, your information may be exposed.",
+        methodTitle: "How SafeScoring Evaluates KYC Security",
+        methodDesc: "Our methodology includes 22 dedicated norms across 3 categories specifically designed to evaluate how platforms protect your identity data.",
+        kycprot: "KYC Data Protection",
+        kycprotDesc: "10 norms evaluating how platforms store, encrypt, and manage your identity documents.",
+        breach: "Incident Response",
+        breachDesc: "7 norms measuring how quickly and transparently platforms respond to data incidents.",
+        idprot: "Identity Protection UX",
+        idprotDesc: "5 norms assessing user-facing features that help protect your identity.",
+        providersTitle: "KYC Providers Evaluated",
+        providersDesc: "We track major KYC verification providers used across the crypto industry.",
+        protectTitle: "Protect Yourself",
+        protectDesc: "Take control of your identity security with these practical steps.",
+        tip1: "Check which platforms require KYC in your portfolio",
+        tip2: "Monitor provider incident history",
+        tip3: "Use platforms with strong data protection scores",
+        tip4: "Minimize unnecessary identity sharing",
+        ctaDashboard: "Analyze your setup",
+        ctaSignup: "Get started free",
+      },
+    },
+  },
+
+  // Setup archetypes (AnonymousCatalog)
+  archetypes: {
+    hardwareMaximalist: "Heavy focus on hardware security",
+    defiNative: "DeFi protocols & smart contracts",
+    balanced: "Mix of hardware & software",
+    privacyFirst: "Privacy-focused selections",
+    beginner: "Simple, entry-level setup",
+    advanced: "Complex multi-layer security",
   },
 };

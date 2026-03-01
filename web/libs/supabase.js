@@ -19,4 +19,18 @@ export const isSupabaseConfigured = () => {
   return !!(supabaseUrl && supabaseAnonKey);
 };
 
+// Lazy getter functions (safe in serverless — returns null if not configured)
+export function getSupabase() {
+  return supabase;
+}
+
+export function getSupabaseAdmin() {
+  return supabaseAdmin;
+}
+
+// Alias for server-side usage (same as admin client)
+export function getSupabaseServer() {
+  return supabaseAdmin;
+}
+
 export default supabase;

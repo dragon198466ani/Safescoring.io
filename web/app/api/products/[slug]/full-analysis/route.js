@@ -68,7 +68,7 @@ export async function GET(request, { params }) {
     const normIds = [...new Set(evaluations.map(e => e.norm_id))];
     const { data: norms } = await supabase
       .from("norms")
-      .select("id, code, title, pillar, is_essential, description")
+      .select("id, code, title, pillar, is_essential, description, official_link, official_doc_summary")
       .in("id", normIds);
 
     const normMap = {};
@@ -94,14 +94,19 @@ export async function GET(request, { params }) {
         title: norm.title,
         description: norm.description,
         is_essential: norm.is_essential || false,
+        official_link: norm.official_link || null,
+        official_doc_summary: norm.official_doc_summary || null,
         reason: ev.why_this_result || null
       };
 
       const result = (ev.result || "").toUpperCase();
-      if (result === "YES") {
+      if (result === "YES" || result === "YESP") {
         pillarData[norm.pillar].yes.push(entry);
-      } else if (result === "NO") {
+      } else if (result === "NO" || result === "N") {
         pillarData[norm.pillar].no.push(entry);
+      } else if (result === "N/A" || result === "NA") {
+        // N/A = not applicable — excluded from score calculation
+        continue;
       } else {
         pillarData[norm.pillar].tbd.push(entry);
       }
@@ -131,8 +136,8 @@ export async function GET(request, { params }) {
         user_question: "Suis-je vraiment propriétaire de mes cryptos ?"
       },
       E: {
-        name: "Ecosystem",
-        full_name: "Écosystème",
+        name: "Efficiency",
+        full_name: "Efficacité",
         icon: "🌐",
         context: "Compatibilité et facilité d'utilisation",
         user_question: "Est-ce facile à utiliser au quotidien ?"
@@ -155,7 +160,9 @@ export async function GET(request, { params }) {
 
       if (total === 0) continue;
 
-      const score = (yesCount / total) * 100;
+      // Score = YES / (YES + NO) — TBD excluded (matches backend formula)
+      const scoreBase = yesCount + noCount;
+      const score = scoreBase > 0 ? (yesCount / scoreBase) * 100 : 0;
 
       // Risk assessment
       let riskLevel, riskLabel, riskColor;
@@ -216,7 +223,9 @@ export async function GET(request, { params }) {
           title: p.title,
           code: p.code,
           is_essential: p.is_essential,
-          description: p.description
+          description: p.description,
+          official_link: p.official_link,
+          official_doc_summary: p.official_doc_summary
         })),
         // Points faibles (top 10)
         weaknesses: results.no.sort(sortByEssential).slice(0, 10).map(p => ({
@@ -224,6 +233,8 @@ export async function GET(request, { params }) {
           code: p.code,
           is_essential: p.is_essential,
           description: p.description,
+          official_link: p.official_link,
+          official_doc_summary: p.official_doc_summary,
           reason: p.reason
         })),
         // En attente de vérification
@@ -238,7 +249,9 @@ export async function GET(request, { params }) {
 
     // 7. Calculate overall metrics
     const totalChecks = totalYes + totalNo + totalTbd;
-    const overallScore = totalChecks > 0 ? (totalYes / totalChecks) * 100 : 0;
+    // Overall score = YES / (YES + NO) — TBD excluded (matches backend formula)
+    const overallScoreBase = totalYes + totalNo;
+    const overallScore = overallScoreBase > 0 ? (totalYes / overallScoreBase) * 100 : 0;
 
     // Overall grade
     let overallGrade;

@@ -49,6 +49,7 @@ export const PLAN_LIMITS = {
     monthlyProductViews: -1, // unlimited
     maxSetups: 1,
     maxProductsPerSetup: 3,
+    maxScoringSetups: 1,
     apiAccess: false,
     exportPDF: false,
     alerts: false,
@@ -62,6 +63,7 @@ export const PLAN_LIMITS = {
     monthlyProductViews: -1,
     maxSetups: 5,
     maxProductsPerSetup: 5,
+    maxScoringSetups: 3,
     apiAccess: false, // No API access
     exportPDF: true,
     alerts: true,
@@ -75,6 +77,7 @@ export const PLAN_LIMITS = {
     monthlyProductViews: -1,
     maxSetups: 20,
     maxProductsPerSetup: 10,
+    maxScoringSetups: 3,
     apiAccess: true,
     exportPDF: true,
     alerts: true,
@@ -88,6 +91,7 @@ export const PLAN_LIMITS = {
     monthlyProductViews: -1,
     maxSetups: -1, // unlimited
     maxProductsPerSetup: -1, // unlimited
+    maxScoringSetups: -1, // unlimited
     apiAccess: true,
     exportPDF: true,
     alerts: true,
@@ -236,6 +240,77 @@ export const PAGINATION = {
 };
 
 // =============================================================================
+// SCORE TIER CONFIGURATION (Full / Consumer / Essential)
+// =============================================================================
+
+export const SCORE_TIERS = {
+  full: {
+    id: "full",
+    label: "Full",
+    labelKey: "productsPage.scoreTypes.full",
+    descKey: "productsPage.scoreTypes.fullDesc",
+    explanationKey: "productsPage.scoreTypeExplanations.full",
+    normPercentage: 100,
+    description: "Complete evaluation with all norms",
+    /** Map from tier field names to DB column names in safe_scoring_results */
+    dbFields: {
+      total: "note_finale",
+      s: "score_s",
+      a: "score_a",
+      f: "score_f",
+      e: "score_e",
+    },
+    /** Keys used in API response objects */
+    apiScoreKey: "scores",
+  },
+  consumer: {
+    id: "consumer",
+    label: "Consumer",
+    labelKey: "productsPage.scoreTypes.consumer",
+    descKey: "productsPage.scoreTypes.consumerDesc",
+    explanationKey: "productsPage.scoreTypeExplanations.consumer",
+    normPercentage: 38,
+    description: "Important norms for general public users",
+    dbFields: {
+      total: "note_consumer",
+      s: "s_consumer",
+      a: "a_consumer",
+      f: "f_consumer",
+      e: "e_consumer",
+    },
+    apiScoreKey: "consumerScores",
+  },
+  essential: {
+    id: "essential",
+    label: "Essential",
+    labelKey: "productsPage.scoreTypes.essential",
+    descKey: "productsPage.scoreTypes.essentialDesc",
+    explanationKey: "productsPage.scoreTypeExplanations.essential",
+    normPercentage: 17,
+    description: "Critical norms for basic security",
+    dbFields: {
+      total: "note_essential",
+      s: "s_essential",
+      a: "a_essential",
+      f: "f_essential",
+      e: "e_essential",
+    },
+    apiScoreKey: "essentialScores",
+  },
+};
+
+export const SCORE_TIER_IDS = ["full", "consumer", "essential"];
+
+/**
+ * Get score tier config by ID
+ * @param {string} tierId - "full", "consumer", or "essential"
+ * @returns {Object} Tier config object
+ */
+export function getScoreTier(tierId) {
+  return SCORE_TIERS[tierId?.toLowerCase()] || SCORE_TIERS.full;
+}
+
+// =============================================================================
 // SAFE PILLARS CONFIGURATION
 // =============================================================================
 
@@ -354,6 +429,71 @@ export function getScoreCategory(score) {
   return "critical";
 }
 
+// =============================================================================
+// SAFEGUARD AGENT BUNDLES (Subscription Boxes)
+// =============================================================================
+
+export const SAFEGUARD_BUNDLES = {
+  sentinel: {
+    name: "SafeGuard Sentinel",
+    description: "Real-time monitoring for your portfolio",
+    price: 29,
+    interval: "month",
+    agents: ["ray_donovan"],
+    features: [
+      "Score change alerts (email + telegram)",
+      "Incident monitoring for 10 products",
+      "Weekly security digest",
+      "5 instant audits/month",
+    ],
+    queryLimit: 500,
+    monitoringSlots: 10,
+  },
+  guardian: {
+    name: "SafeGuard Guardian",
+    description: "Pre-transaction security gatekeeper",
+    price: 49,
+    interval: "month",
+    agents: ["ray_donovan", "donna"],
+    features: [
+      "Everything in Sentinel",
+      "Pre-transaction checks (Agent Donna)",
+      "Risk assessment before swaps/deposits",
+      "25 products monitored",
+      "20 instant audits/month",
+      "Webhook integrations",
+    ],
+    queryLimit: 2000,
+    monitoringSlots: 25,
+  },
+  advisor: {
+    name: "SafeGuard Advisor",
+    description: "Full security advisory suite",
+    price: 99,
+    interval: "month",
+    agents: ["ray_donovan", "donna", "courtier"],
+    features: [
+      "Everything in Guardian",
+      "Fee optimization (Agent Courtier)",
+      "Portfolio risk analysis",
+      "Unlimited products monitored",
+      "Unlimited audits",
+      "Priority API access",
+      "Custom alert rules",
+      "PDF reports",
+    ],
+    queryLimit: -1, // unlimited
+    monitoringSlots: -1, // unlimited
+  },
+};
+
+/**
+ * Get SafeGuard bundle by key
+ */
+export function getSafeGuardBundle(key) {
+  return SAFEGUARD_BUNDLES[key?.toLowerCase()] || null;
+}
+
 export default {
   DOMAIN,
   BASE_URL,
@@ -367,14 +507,19 @@ export default {
   CACHE_TTL,
   PAGINATION,
   PILLARS,
+  SCORE_TIERS,
+  SCORE_TIER_IDS,
   SCORE_THRESHOLDS,
   EXTERNAL_APIS,
   CONTRACT_ADDRESSES,
+  SAFEGUARD_BUNDLES,
   getPlanLimits,
   getPlanLevel,
   isPlanHigher,
   getRateLimitConfig,
   getApiTierConfig,
+  getScoreTier,
   getPillar,
   getScoreCategory,
+  getSafeGuardBundle,
 };

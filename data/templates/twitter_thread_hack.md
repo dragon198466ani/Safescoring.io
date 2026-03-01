@@ -50,7 +50,7 @@ Red flags we identified BEFORE this hack:
 - [Red flag 2]
 - [Red flag 3]
 
-These are evaluated in our 1110 security norms.
+These are evaluated in our 2376 security norms.
 ```
 
 ### Tweet 5 (Lessons)

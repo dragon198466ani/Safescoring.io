@@ -266,8 +266,8 @@ def validate_config(require_ai=False):
 CLAUDE_CODE_ONLY = CONFIG.get('CLAUDE_CODE_ONLY', 'true').lower() == 'true'
 
 # Claude Code CLI model selection
-CLAUDE_CODE_MODEL = CONFIG.get('CLAUDE_CODE_MODEL', 'sonnet')            # Default model (sonnet/opus/haiku)
-CLAUDE_CODE_MODEL_EXPERT = CONFIG.get('CLAUDE_CODE_MODEL_EXPERT', 'sonnet')  # Expert review model
+CLAUDE_CODE_MODEL = CONFIG.get('CLAUDE_CODE_MODEL', 'sonnet')            # Default model for standard evaluations
+CLAUDE_CODE_MODEL_EXPERT = CONFIG.get('CLAUDE_CODE_MODEL_EXPERT', 'opus')  # Expert review model (Pass 2, critical norms)
 CLAUDE_CODE_TIMEOUT = int(CONFIG.get('CLAUDE_CODE_TIMEOUT', '300'))      # CLI timeout in seconds
 CLAUDE_CODE_RPM = int(CONFIG.get('CLAUDE_CODE_RPM', '20'))              # Max requests per minute
 

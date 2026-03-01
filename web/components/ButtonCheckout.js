@@ -3,18 +3,17 @@
 import { useState } from "react";
 import apiClient from "@/libs/api";
 
-// This component is used to create Stripe Checkout Sessions
-// It calls the /api/stripe/create-checkout route with the priceId, successUrl and cancelUrl
-const ButtonCheckout = ({ priceId, mode = "subscription", className = "" }) => {
+// This component is used to create LemonSqueezy Checkout Sessions
+// It calls the /api/lemonsqueezy/create-checkout route with the variantId
+const ButtonCheckout = ({ priceId, variantId, mode = "subscription", className = "" }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handlePayment = async () => {
     setIsLoading(true);
 
     try {
-      const res = await apiClient.post("/stripe/create-checkout", {
-        priceId,
-        mode,
+      const res = await apiClient.post("/lemonsqueezy/create-checkout", {
+        variantId: variantId || priceId,
         successUrl: `${window.location.origin}/dashboard`,
         cancelUrl: window.location.href,
       });

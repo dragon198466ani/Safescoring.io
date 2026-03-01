@@ -161,4 +161,4 @@ If you're looking for alternatives with better security scores:
 
 *Last updated: [DATE]*
 
-*SafeScoring evaluates [NUMBER]+ crypto products on 1110 security criteria. [Learn about our methodology](https://safescoring.io/methodology).*
+*SafeScoring evaluates [NUMBER]+ crypto products on 2376 security criteria. [Learn about our methodology](https://safescoring.io/methodology).*

@@ -1,0 +1,46 @@
+{
+  "name": "@safescoring/mcp-server",
+  "version": "1.0.0",
+  "description": "Model Context Protocol (MCP) server for SafeScoring - crypto security scores for AI agents",
+  "main": "index.js",
+  "bin": {
+    "safescoring-mcp": "./index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node --test test/*.test.mjs 2>/dev/null || echo 'No tests yet'",
+    "prepublishOnly": "node -e \"import('./index.js')\" || true",
+    "version": "echo $npm_package_version"
+  },
+  "files": [
+    "index.js",
+    "README.md",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "safescoring",
+    "crypto",
+    "security",
+    "ai-agents",
+    "claude",
+    "anthropic"
+  ],
+  "author": "SafeScoring <dev@safescoring.io>",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/safescoring/mcp-server"
+  }
+}

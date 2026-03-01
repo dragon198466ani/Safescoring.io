@@ -1,5 +1,9 @@
 "use client";
 
+// Re-export score utilities for backward compatibility
+export { getScoreColor, getScoreColorHex, getScoreBgClass as getScoreBg } from "@/libs/score-utils";
+export { PILLARS as SAFEPillars } from "@/libs/design-tokens";
+
 export const MiniScoreCircle = ({ score, size = 72, strokeWidth = 6 }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;

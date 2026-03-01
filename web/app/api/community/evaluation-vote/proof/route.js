@@ -34,7 +34,7 @@ export async function POST(req) {
 
     if (!session?.user?.id) {
       return NextResponse.json(
-        { error: "Connectez-vous pour ajouter une source" },
+        { error: "Sign in to add evidence" },
         { status: 401 }
       );
     }
@@ -45,7 +45,7 @@ export async function POST(req) {
     // Validation
     if (!evaluationId || !evidenceUrl) {
       return NextResponse.json(
-        { error: "evaluationId et evidenceUrl requis" },
+        { error: "evaluationId and evidenceUrl required" },
         { status: 400 }
       );
     }
@@ -55,7 +55,7 @@ export async function POST(req) {
       new URL(evidenceUrl);
     } catch {
       return NextResponse.json(
-        { error: "URL invalide" },
+        { error: "Invalid URL" },
         { status: 400 }
       );
     }
@@ -74,7 +74,7 @@ export async function POST(req) {
 
     if (voteError || !existingVote) {
       return NextResponse.json(
-        { error: "Vous devez d'abord voter sur cette évaluation" },
+        { error: "You must vote on this evaluation first" },
         { status: 404 }
       );
     }
@@ -82,7 +82,7 @@ export async function POST(req) {
     // Vérifier si une source a déjà été ajoutée
     if (existingVote.evidence_url) {
       return NextResponse.json(
-        { error: "Une source a déjà été ajoutée pour ce vote" },
+        { error: "Evidence has already been added for this vote" },
         { status: 409 }
       );
     }
@@ -100,7 +100,7 @@ export async function POST(req) {
     if (updateError) {
       console.error("[POST proof] Update error:", updateError);
       return NextResponse.json(
-        { error: "Erreur lors de l'ajout de la source" },
+        { error: "Failed to add evidence" },
         { status: 500 }
       );
     }
@@ -118,6 +118,8 @@ export async function POST(req) {
       .upsert({
         user_hash: voterHash,
         total_earned: (userRewards?.total_earned || 0) + TOKENS_SOURCE_BONUS,
+      }, {
+        onConflict: "user_hash",
       });
 
     // Enregistrer la transaction

@@ -114,8 +114,9 @@ export default function ScoreEvolution({ slug, showChart = true }) {
     }
   };
 
-  // Simple bar chart renderer
-  const _maxScore = Math.max(...chartData.map((d) => d.safe_score || 0), 100);
+  // Filter out records with null scores for chart rendering
+  const validChartData = chartData.filter((d) => d.safe_score !== null && d.safe_score !== undefined);
+  const _maxScore = Math.max(...validChartData.map((d) => d.safe_score), 100);
 
   return (
     <div className="bg-base-200 rounded-lg p-6">
@@ -159,19 +160,19 @@ export default function ScoreEvolution({ slug, showChart = true }) {
 
                 {/* Area fill */}
                 <path
-                  d={`M 0 ${100 - (chartData[0]?.safe_score || 0)} ${chartData.map((record, index) => {
-                    const x = chartData.length === 1 ? 50 : (index / (chartData.length - 1)) * 100;
-                    const y = 100 - (record.safe_score || 0);
+                  d={`M 0 ${100 - (validChartData[0]?.safe_score ?? 0)} ${validChartData.map((record, index) => {
+                    const x = validChartData.length === 1 ? 50 : (index / (validChartData.length - 1)) * 100;
+                    const y = 100 - (record.safe_score ?? 0);
                     return `L ${x} ${y}`;
-                  }).join(' ')} L ${chartData.length === 1 ? 50 : 100} 100 L 0 100 Z`}
+                  }).join(' ')} L ${validChartData.length === 1 ? 50 : 100} 100 L 0 100 Z`}
                   fill="url(#scoreGradient)"
                 />
 
                 {/* Line */}
                 <path
-                  d={`M ${chartData.length === 1 ? 50 : 0} ${100 - (chartData[0]?.safe_score || 0)} ${chartData.map((record, index) => {
-                    const x = chartData.length === 1 ? 50 : (index / (chartData.length - 1)) * 100;
-                    const y = 100 - (record.safe_score || 0);
+                  d={`M ${validChartData.length === 1 ? 50 : 0} ${100 - (validChartData[0]?.safe_score ?? 0)} ${validChartData.map((record, index) => {
+                    const x = validChartData.length === 1 ? 50 : (index / (validChartData.length - 1)) * 100;
+                    const y = 100 - (record.safe_score ?? 0);
                     return `L ${x} ${y}`;
                   }).join(' ')}`}
                   fill="none"
@@ -183,9 +184,9 @@ export default function ScoreEvolution({ slug, showChart = true }) {
 
               {/* Data points with tooltips */}
               <div className="absolute inset-0 flex justify-between items-start">
-                {chartData.map((record, index) => {
-                  const top = 100 - (record.safe_score || 0);
-                  const left = chartData.length === 1 ? 50 : (index / (chartData.length - 1)) * 100;
+                {validChartData.map((record, index) => {
+                  const top = 100 - (record.safe_score ?? 0);
+                  const left = validChartData.length === 1 ? 50 : (index / (validChartData.length - 1)) * 100;
 
                   return (
                     <div
@@ -207,7 +208,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
                             {record.safe_score?.toFixed(1)}%
                           </div>
                           <div className="text-base-content/60">
-                            {new Date(record.recorded_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                            {new Date(record.recorded_at).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}
                           </div>
                           {record.score_change && (
                             <div
@@ -235,7 +236,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
             <span>
               {chartData[0]?.recorded_at
                 ? new Date(chartData[0].recorded_at).toLocaleDateString(
-                    "fr-FR",
+                    "en-US",
                     { day: "numeric", month: "short" }
                   )
                 : ""}
@@ -244,7 +245,7 @@ export default function ScoreEvolution({ slug, showChart = true }) {
               {chartData[chartData.length - 1]?.recorded_at
                 ? new Date(
                     chartData[chartData.length - 1].recorded_at
-                  ).toLocaleDateString("fr-FR", {
+                  ).toLocaleDateString("en-US", {
                     day: "numeric",
                     month: "short",
                   })

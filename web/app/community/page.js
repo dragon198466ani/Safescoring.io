@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
 import {
-  LazyEvaluationVoting,
+  LazySwipeVoting,
   LazyCommunityLeaderboard,
   LazyRewardsDashboard,
 } from "@/libs/lazy-components";
@@ -129,7 +129,7 @@ export default function CommunityPage() {
                     ))}
                   </div>
                 }>
-                  <LazyEvaluationVoting maxItems={5} />
+                  <LazySwipeVoting maxItems={10} />
                 </Suspense>
               </div>
 
@@ -233,8 +233,8 @@ export default function CommunityPage() {
             </div>
 
             <div className="text-center mt-6">
-              <a href="/challenge" className="btn btn-primary">
-                Take the Challenge
+              <a href="/dashboard/setups" className="btn btn-primary">
+                Build Your Setup
               </a>
             </div>
           </div>
@@ -353,10 +353,10 @@ export default function CommunityPage() {
                 Analyze My Stack
               </a>
               <a
-                href="/challenge"
+                href="/community"
                 className="btn btn-outline btn-lg"
               >
-                Take a Challenge
+                Explore Community
               </a>
             </div>
           </div>

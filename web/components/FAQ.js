@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import config from "@/config";
+import { useGlobalStats } from "@/libs/StatsProvider";
 
 const { hackLosses2024Short, accessControlLossPct, auditedHackedApprox } = config.safe.stats;
 
-const faqs = [
+const getFaqs = (totalNorms) => [
   {
     question: "What is SAFE Scoring?",
     answer:
-      "SAFE Scoring is the first unified security rating for all crypto products. We evaluate hardware wallets, software wallets, and DeFi protocols with the same rigorous methodology: 916 security norms across 4 pillars - Security (cryptographic standards), Adversity (threat resistance), Fidelity (reliability & trust), and Efficiency (usability).",
+      `SAFE Scoring is the first unified security rating for all crypto products. We evaluate hardware wallets, software wallets, and DeFi protocols with the same rigorous methodology: ${totalNorms} security norms across 4 pillars - Security (cryptographic standards), Adversity (threat resistance), Fidelity (reliability & trust), and Efficiency (usability).`,
   },
   {
     question: "How is SafeScoring different from CertiK or other auditors?",
@@ -19,7 +20,7 @@ const faqs = [
   {
     question: "How are products evaluated?",
     answer:
-      "Our AI-powered system evaluates products against 916 norms using official documentation, security audits, technical specifications, and on-chain data. Each norm is marked YES (compliant), NO (non-compliant), or N/A (not applicable). The process is automated and reproducible - no subjective opinions.",
+      `Our AI-powered system evaluates products against ${totalNorms} norms using official documentation, security audits, technical specifications, and on-chain data. Each norm is marked YES (compliant), NO (non-compliant), or N/A (not applicable). The process is automated and reproducible - no subjective opinions.`,
   },
   {
     question: "How often are scores updated?",
@@ -29,7 +30,7 @@ const faqs = [
   {
     question: "Is SafeScoring truly independent?",
     answer:
-      "100%. While we may earn affiliate commissions from product links, this never influences our scores. Scores are calculated purely from our 916-norm methodology - no exceptions. We've rated products poorly even when affiliates offered to pay for better scores. Independence is non-negotiable.",
+      `100%. While we may earn affiliate commissions from product links, this never influences our scores. Scores are calculated purely from our ${totalNorms}-norm methodology - no exceptions. We've rated products poorly even when affiliates offered to pay for better scores. Independence is non-negotiable.`,
   },
   {
     question: "What are the 4 SAFE pillars?",
@@ -65,13 +66,15 @@ const faqs = [
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
+  const { stats } = useGlobalStats();
+  const faqs = getFaqs(stats.totalNorms);
 
   return (
     <section className="py-24 px-6 bg-base-200/30" id="faq">
       <div className="max-w-3xl mx-auto">
         {/* Section header */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
+          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-base-content/10 text-base-content/70">
             FAQ
           </span>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">

@@ -6,20 +6,10 @@
 @theme {
   --font-display: "Inter", "sans-serif";
 
-  --animate-shimmer: shimmer 3s ease-out infinite alternate;
   --animate-opacity: opacity 0.25s ease-in-out;
   --animate-appearFromRight: appearFromRight 300ms ease-in-out;
-  --animate-wiggle: wiggle 1.5s ease-in-out infinite;
   --animate-popup: popup 0.25s ease-in-out;
-  --animate-pulse-slow: pulse-slow 3s ease-in-out infinite;
-  --animate-float: float 6s ease-in-out infinite;
   --animate-score-fill: score-fill 1.5s ease-out forwards;
-
-  @keyframes shimmer {
-    0% { background-position: 0 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
 
   @keyframes opacity {
     0% { opacity: 0; }
@@ -31,28 +21,10 @@
     100% { opacity: 1; transform: translate(0); }
   }
 
-  @keyframes wiggle {
-    0%, 20%, 80%, 100% { transform: rotate(0deg); }
-    30%, 60% { transform: rotate(-2deg); }
-    40%, 70% { transform: rotate(2deg); }
-    45% { transform: rotate(-4deg); }
-    55% { transform: rotate(4deg); }
-  }
-
   @keyframes popup {
     0% { transform: scale(0.8); opacity: 0.8; }
     50% { transform: scale(1.1); opacity: 1; }
     100% { transform: scale(1); opacity: 1; }
-  }
-
-  @keyframes pulse-slow {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
   }
 
   @keyframes score-fill {
@@ -81,12 +53,12 @@ progress::-webkit-progress-value {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.5);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.7);
+  background: rgba(255, 255, 255, 0.35);
 }
 
 /* Skeleton shimmer animation for loading states */
@@ -112,38 +84,22 @@ progress::-webkit-progress-value {
   display: none;
 }
 
-/* Gradient button */
+/* Keep btn-gradient as an alias for btn-primary for backwards compat */
 .btn-gradient {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7) !important;
-  background-size: 200% 200% !important;
-  animation: var(--animate-shimmer) !important;
-  border: 0 !important;
-  border-color: transparent !important;
-  color: white !important;
-  box-shadow: 0 4px 15px -3px rgba(99, 102, 241, 0.5) !important;
-}
-
-.btn-gradient:hover {
-  filter: brightness(1.1) !important;
-  box-shadow: 0 6px 20px -3px rgba(99, 102, 241, 0.6) !important;
-}
-
-.btn-gradient:disabled {
-  background: rgb(107 114 128 / 0.3) !important;
-  color: rgb(156 163 175) !important;
+  @apply btn btn-primary;
 }
 
 .btn {
   text-transform: capitalize !important;
 }
 
-/* Card styles inspired by TrustMRR */
+/* Card styles — minimal B&W */
 .card-metric {
   @apply bg-base-200 rounded-xl border border-base-300 p-6 transition-all duration-300;
 }
 
 .card-metric:hover {
-  @apply border-primary/50 shadow-lg shadow-primary/10;
+  @apply border-base-content/20 shadow-lg shadow-white/5;
 }
 
 /* Score circle */
@@ -165,44 +121,24 @@ progress::-webkit-progress-value {
   animation: var(--animate-score-fill);
 }
 
-/* Pillar colors */
+/* Pillar colors — functional, keep as-is */
 .pillar-s { --pillar-color: #22c55e; }
 .pillar-a { --pillar-color: #f59e0b; }
 .pillar-f { --pillar-color: #3b82f6; }
 .pillar-e { --pillar-color: #8b5cf6; }
 
-/* Glow effects */
-.glow-green { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
-.glow-amber { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
-.glow-blue { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
-.glow-purple { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
-
-/* Text gradients */
+/* Text gradient — now plain white (kept as class for backwards compat) */
 .text-gradient {
-  background: linear-gradient(135deg, #6366f1, #a855f7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: white;
+  font-weight: 700;
 }
 
+/* SAFE gradient — keep pillar colors, this is brand identity */
 .text-gradient-safe {
   background: linear-gradient(90deg, #22c55e, #f59e0b, #3b82f6, #8b5cf6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-/* Hero background */
-.hero-bg {
-  background: radial-gradient(ellipse at top, rgba(99, 102, 241, 0.15), transparent 50%),
-              radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.1), transparent 50%);
-}
-
-/* Glass effect */
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Badge styles */
@@ -241,12 +177,79 @@ progress::-webkit-progress-value {
   @apply bg-base-300/30;
 }
 
-/* Hide scrollbar but keep scroll functionality */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* ── Drag-and-Drop scroll lock ── */
+body.is-dragging {
+  overflow: hidden;
+  touch-action: none;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+/* ── Touch-friendly targets on coarse pointers (phones/tablets) ── */
+@media (pointer: coarse) {
+  button,
+  [role="button"],
+  select {
+    min-height: 44px;
+  }
+
+  input[type="range"] {
+    min-height: 44px;
+  }
+}
+
+/* ── SwipeVoting animations ── */
+@keyframes swipe-right {
+  0% { transform: translateX(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateX(150%) rotate(20deg); opacity: 0; }
+}
+
+@keyframes swipe-left {
+  0% { transform: translateX(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateX(-150%) rotate(-20deg); opacity: 0; }
+}
+
+@keyframes stamp {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes token-float {
+  0% { transform: translateY(0) scale(0.8); opacity: 0; }
+  20% { transform: translateY(-10px) scale(1); opacity: 1; }
+  80% { transform: translateY(-40px) scale(1); opacity: 1; }
+  100% { transform: translateY(-60px) scale(0.9); opacity: 0; }
+}
+
+@keyframes scale-in {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-swipe-right {
+  animation: swipe-right 0.3s ease-out forwards;
+}
+
+.animate-swipe-left {
+  animation: swipe-left 0.3s ease-out forwards;
+}
+
+.animate-stamp {
+  animation: stamp 0.2s ease-out forwards;
+}
+
+.animate-token-float {
+  animation: token-float 1.5s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.25s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in-up 0.3s ease-out forwards;
 }

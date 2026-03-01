@@ -50,6 +50,7 @@ export function DragDropProvider({
     setIsDragging(true);
     document.body.style.userSelect = "none";
     document.body.style.touchAction = "none";
+    document.body.classList.add("is-dragging");
   }, []);
 
   const updateDrag = useCallback((pos) => {
@@ -69,6 +70,7 @@ export function DragDropProvider({
     setActiveDropZone(null);
     document.body.style.userSelect = "";
     document.body.style.touchAction = "";
+    document.body.classList.remove("is-dragging");
   }, [draggedItem, onDrop, onDelete]);
 
   const cancelDrag = useCallback(() => {
@@ -77,6 +79,7 @@ export function DragDropProvider({
     setActiveDropZone(null);
     document.body.style.userSelect = "";
     document.body.style.touchAction = "";
+    document.body.classList.remove("is-dragging");
   }, []);
 
   return (
@@ -470,12 +473,13 @@ function SortableItem({
 
   const handleTouchMove = (e) => {
     if (!touchStart) return;
-    
+
     const deltaX = Math.abs(e.touches[0].clientX - touchStart.x);
     const deltaY = Math.abs(e.touches[0].clientY - touchStart.y);
-    
-    // Start drag after 10px movement
+
+    // Start drag after 10px movement — prevent scroll while reordering
     if (deltaX > 10 || deltaY > 10) {
+      e.preventDefault();
       onDragStart();
     }
   };

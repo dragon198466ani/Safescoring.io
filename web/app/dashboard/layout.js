@@ -39,16 +39,22 @@ export default async function LayoutPrivate({ children }) {
                 Setups
               </Link>
               <Link
+                href="/dashboard/scoring-setups"
+                className="text-sm font-medium text-base-content/70 hover:text-base-content transition-colors"
+              >
+                Scoring
+              </Link>
+              <Link
                 href="/products"
                 className="text-sm font-medium text-base-content/70 hover:text-base-content transition-colors"
               >
                 Products
               </Link>
               <Link
-                href="/dashboard/favorites"
+                href="/dashboard/watchlist"
                 className="text-sm font-medium text-base-content/70 hover:text-base-content transition-colors"
               >
-                Favorites
+                Watchlist
               </Link>
             </nav>
           </div>

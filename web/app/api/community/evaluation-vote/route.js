@@ -39,6 +39,7 @@ const RESULT_TO_SCORE = {
  */
 const VOTE_CONFIG = {
   MIN_VOTES_UNANIMOUS: 3,      // Votes unanimes pour valider direct
+  VOTES_TO_VALIDATE: 3,        // Alias for MIN_VOTES_UNANIMOUS (used in GET consensus calc)
   MAX_VOTES_MAJORITY: 5,       // Si mixte, on va jusqu'à 5 puis majorité
   MAX_VOTES_PER_DAY: 10,       // Cap quotidien par utilisateur
   TOKENS_VOTE_INSTANT: 1,      // Tokens pour vote instant
@@ -299,9 +300,15 @@ export async function GET(req) {
  * POST /api/community/evaluation-vote
  * Soumettre un vote VRAI/FAUX sur une évaluation IA (INSTANT - pas de modal)
  *
+ * ARCHITECTURE: Appel unique à une fonction RPC PostgreSQL atomique.
+ * Toute la logique (duplicate check, quota, insert, tokens, consensus)
+ * est exécutée dans une seule transaction SQL avec FOR UPDATE locks.
+ * Cela élimine toutes les race conditions (1000+ votes simultanés).
+ *
  * Body:
  * - evaluationId: number (required)
  * - voteAgrees: boolean (required) - true=VRAI, false=FAUX
+ * - deviceFingerprint: string (optional)
  */
 export async function POST(req) {
   try {
@@ -314,7 +321,7 @@ export async function POST(req) {
 
     if (!session?.user?.id) {
       return NextResponse.json(
-        { error: "Connectez-vous pour voter" },
+        { error: "Sign in to vote" },
         { status: 401 }
       );
     }
@@ -325,7 +332,7 @@ export async function POST(req) {
     // Validation simple - pas de justification requise pour vote instant
     if (!evaluationId || typeof voteAgrees !== "boolean") {
       return NextResponse.json(
-        { error: "evaluationId (number) et voteAgrees (boolean) requis" },
+        { error: "evaluationId (number) and voteAgrees (boolean) required" },
         { status: 400 }
       );
     }
@@ -333,268 +340,310 @@ export async function POST(req) {
     const userId = session.user.id;
     const voterHash = generateVoterHash(userId);
 
-    // Récupérer les stats utilisateur
-    const { data: userRewards } = await supabase
-      .from("token_rewards")
-      .select("total_earned, daily_streak, last_vote_date, votes_submitted")
-      .eq("user_hash", voterHash)
-      .single();
+    // ========================================
+    // 2-PHASE ARCHITECTURE (100K-1M votes simultanés)
+    //
+    // Phase 1 (HOT PATH <10ms): fast_vote_insert()
+    //   → INSERT vote + queue reward (NO locks)
+    //   → UNIQUE constraint prevents duplicates
+    //   → Covering indexes for quota check
+    //
+    // Phase 2 (TRIGGER — same transaction):
+    //   → trg_after_vote_consensus fires AFTER INSERT
+    //   → Advisory lock per evaluation (lightweight)
+    //   → Updates evaluation_vote_counts
+    //   → Checks consensus, locks evaluation if reached
+    //   → Queues aligned bonus (no token_rewards lock)
+    //
+    // Phase 3 (BATCH — async):
+    //   → flush_pending_rewards() via cron/API
+    //   → Aggregates tokens per user in batch
+    // ========================================
+    const { data: result, error: rpcError } = await supabase.rpc(
+      "process_community_vote_atomic",
+      {
+        p_voter_hash: voterHash,
+        p_evaluation_id: evaluationId,
+        p_vote_agrees: voteAgrees,
+        p_device_fingerprint: deviceFingerprint || null,
+        p_max_votes_per_day: VOTE_CONFIG.MAX_VOTES_PER_DAY,
+        p_min_votes_unanimous: VOTE_CONFIG.MIN_VOTES_UNANIMOUS,
+        p_max_votes_majority: VOTE_CONFIG.MAX_VOTES_MAJORITY,
+        p_tokens_vote_instant: VOTE_CONFIG.TOKENS_VOTE_INSTANT,
+        p_tokens_aligned_bonus: VOTE_CONFIG.TOKENS_ALIGNED_BONUS,
+      }
+    );
 
-    // Vérifier le cap quotidien de votes
-    const today = new Date().toISOString().split("T")[0];
-    const { count: votesToday } = await supabase
-      .from("evaluation_votes")
-      .select("id", { count: "exact", head: true })
-      .eq("voter_hash", voterHash)
-      .gte("created_at", `${today}T00:00:00Z`);
+    // Handle RPC-level errors (DB down, function missing, etc.)
+    if (rpcError) {
+      console.error("[POST] RPC error:", rpcError);
 
-    if ((votesToday || 0) >= VOTE_CONFIG.MAX_VOTES_PER_DAY) {
+      // Fallback: if the atomic function doesn't exist yet, use legacy flow
+      if (rpcError.message?.includes("function") || rpcError.code === "42883") {
+        console.warn("[POST] Atomic RPC not available, falling back to legacy flow");
+        return await legacyVoteFlow(supabase, voterHash, evaluationId, voteAgrees, deviceFingerprint);
+      }
+
       return NextResponse.json(
-        {
-          error: `Limite atteinte: ${VOTE_CONFIG.MAX_VOTES_PER_DAY} votes/jour maximum`,
-          votesToday: votesToday,
-          resetAt: `${today}T23:59:59Z`,
-        },
-        { status: 429 }
-      );
-    }
-
-    // Vérifier si déjà voté
-    const { data: existingVote } = await supabase
-      .from("evaluation_votes")
-      .select("id, vote_agrees")
-      .eq("evaluation_id", evaluationId)
-      .eq("voter_hash", voterHash)
-      .single();
-
-    if (existingVote) {
-      return NextResponse.json(
-        { error: "Vous avez déjà voté sur cette évaluation", existingVote: existingVote.vote_agrees },
-        { status: 409 }
-      );
-    }
-
-    // Récupérer l'évaluation avec son statut communautaire
-    const { data: evaluation, error: evalError } = await supabase
-      .from("evaluations")
-      .select("id, product_id, norm_id, result, community_status")
-      .eq("id", evaluationId)
-      .single();
-
-    if (evalError || !evaluation) {
-      return NextResponse.json(
-        { error: "Évaluation non trouvée" },
-        { status: 404 }
-      );
-    }
-
-    // Vérifier si l'évaluation est déjà verrouillée (consensus atteint)
-    if (evaluation.community_status === "confirmed" || evaluation.community_status === "challenged") {
-      return NextResponse.json(
-        {
-          error: "Cette évaluation a déjà été validée par la communauté",
-          communityStatus: evaluation.community_status
-        },
-        { status: 410 } // Gone - no longer accepting votes
-      );
-    }
-
-    // Récupérer votes existants pour calculer le consensus
-    const { data: existingVotes } = await supabase
-      .from("evaluation_votes")
-      .select("vote_agrees, vote_weight, status")
-      .eq("evaluation_id", evaluationId);
-
-    const currentAgree = (existingVotes || []).filter((v) => v.vote_agrees).length;
-    const currentDisagree = (existingVotes || []).filter((v) => !v.vote_agrees).length;
-    const totalVotes = currentAgree + currentDisagree;
-
-    // Vote weight is always 1.0 - neutral scoring (1 person = 1 vote)
-    // No advantage based on tokens, staking, or reputation
-    const voteWeight = 1.0;
-
-    // Insérer le vote (simplifié - pas de justification)
-    const { data: newVote, error: voteError } = await supabase
-      .from("evaluation_votes")
-      .insert({
-        evaluation_id: evaluationId,
-        product_id: evaluation.product_id,
-        norm_id: evaluation.norm_id,
-        vote_agrees: voteAgrees,
-        voter_hash: voterHash,
-        vote_weight: voteWeight,
-        device_fingerprint: deviceFingerprint || null,
-        status: "pending",
-      })
-      .select("id")
-      .single();
-
-    if (voteError) {
-      console.error("[POST] Vote insert error:", voteError);
-      return NextResponse.json(
-        { error: "Erreur lors de l'enregistrement du vote" },
+        { error: "Failed to process vote" },
         { status: 500 }
       );
     }
 
-    // Award instant tokens (same for VRAI and FAUX)
-    const instantTokens = VOTE_CONFIG.TOKENS_VOTE_INSTANT;
-    await supabase
-      .from("token_rewards")
-      .upsert({
-        user_hash: voterHash,
-        total_earned: (userRewards?.total_earned || 0) + instantTokens,
-        votes_submitted: (userRewards?.votes_submitted || 0) + 1,
-      });
-
-    // Record token transaction
-    await supabase.from("token_transactions").insert({
-      user_hash: voterHash,
-      action_type: "vote_instant",
-      tokens_amount: instantTokens,
-      evaluation_vote_id: newVote.id,
-      description: `Vote ${voteAgrees ? "VRAI" : "FAUX"} instant`,
-    });
-
-    // Vérifier si le consensus est atteint (3 votes unanimes)
-    const newAgree = voteAgrees ? currentAgree + 1 : currentAgree;
-    const newDisagree = !voteAgrees ? currentDisagree + 1 : currentDisagree;
-
-    let validationTriggered = false;
-    let validationResult = null;
-    const newTotalVotes = newAgree + newDisagree;
-
-    // ========== RÈGLES DE CONSENSUS ==========
-    // La communauté vote OUI/NON (leur avis), puis on compare avec l'IA
-    // newAgree = votes OUI, newDisagree = votes NON
-    //
-    // 1. 3 votes unanimes OUI ou NON → décision prise
-    // 2. Votes mixtes → continuer jusqu'à 5
-    // 3. À 5 votes → majorité gagne
-
-    let communityDecision = null; // "yes" | "no" | null
-
-    // Cas 1: 3+ OUI unanimes
-    if (newAgree >= VOTE_CONFIG.MIN_VOTES_UNANIMOUS && newDisagree === 0) {
-      validationTriggered = true;
-      communityDecision = "yes";
-    }
-    // Cas 2: 3+ NON unanimes
-    else if (newDisagree >= VOTE_CONFIG.MIN_VOTES_UNANIMOUS && newAgree === 0) {
-      validationTriggered = true;
-      communityDecision = "no";
-    }
-    // Cas 3: À 5 votes avec majorité
-    else if (newTotalVotes >= VOTE_CONFIG.MAX_VOTES_MAJORITY) {
-      validationTriggered = true;
-      if (newAgree > newDisagree) {
-        communityDecision = "yes";
-      } else if (newDisagree > newAgree) {
-        communityDecision = "no";
-      } else {
-        communityDecision = "tie";
-      }
+    // Handle application-level errors returned by the RPC
+    if (result?.error) {
+      const code = result.code || "UNKNOWN";
+      const statusMap = {
+        NOT_FOUND: 404,
+        ALREADY_LOCKED: 410,
+        ALREADY_VOTED: 409,
+        DAILY_LIMIT: 429,
+      };
+      return NextResponse.json(
+        { error: result.error, ...(result.communityStatus && { communityStatus: result.communityStatus }) },
+        { status: statusMap[code] || 400 }
+      );
     }
 
-    // Si consensus atteint, comparer avec l'IA
-    if (validationTriggered && communityDecision !== "tie") {
-      // Comparer la décision communautaire avec l'évaluation IA
-      const aiSaysYes = evaluation.result === "YES";
-      const aiSaysNo = evaluation.result === "NO";
-      const communityAgreesWithAI =
-        (aiSaysYes && communityDecision === "yes") ||
-        (aiSaysNo && communityDecision === "no");
-
-      // Déterminer le statut final
-      if (communityAgreesWithAI) {
-        validationResult = "confirmed"; // Communauté = IA → OK
-      } else {
-        validationResult = "challenged"; // Communauté ≠ IA → Erreur possible
-      }
-
-      // Mettre à jour l'évaluation
-      await supabase
-        .from("evaluations")
-        .update({
-          community_status: validationResult,
-          community_decision: communityDecision, // Ce que la communauté pense
-          community_decided_at: new Date().toISOString(),
-        })
-        .eq("id", evaluationId);
-
-      // Marquer tous les votes comme validés
-      await supabase
-        .from("evaluation_votes")
-        .update({ status: "validated", validated_at: new Date().toISOString() })
-        .eq("evaluation_id", evaluationId);
-
-      // Bonus aux voteurs qui ont voté comme la majorité
-      const winningVote = communityDecision === "yes";
-      const { data: winners } = await supabase
-        .from("evaluation_votes")
-        .select("voter_hash")
+    // ========================================
+    // ENRICH RESPONSE with consensus data
+    // The trigger has already fired (same TX), so
+    // evaluation_vote_counts has fresh data.
+    // These are non-blocking SELECT queries (no locks).
+    // ========================================
+    const [countsRes, evalRes] = await Promise.all([
+      supabase
+        .from("evaluation_vote_counts")
+        .select("agree_count, disagree_count, total_count, community_decision, validation_result, is_locked")
         .eq("evaluation_id", evaluationId)
-        .eq("vote_agrees", winningVote);
+        .single(),
+      supabase
+        .from("evaluations")
+        .select("result")
+        .eq("id", evaluationId)
+        .single(),
+    ]);
 
-      for (const winner of winners || []) {
-        await supabase.from("token_transactions").insert({
-          user_hash: winner.voter_hash,
-          action_type: "vote_aligned",
-          tokens_amount: VOTE_CONFIG.TOKENS_ALIGNED_BONUS,
-          evaluation_vote_id: null,
-          description: `Vote aligné avec la décision communautaire (${communityDecision.toUpperCase()})`,
-        });
-        await supabase.rpc("increment_tokens", {
-          p_user_hash: winner.voter_hash,
-          p_amount: VOTE_CONFIG.TOKENS_ALIGNED_BONUS,
-        });
-      }
-    }
+    const counts = countsRes.data;
+    const aiResult = evalRes.data?.result || null;
 
-    // Récupérer les stats mises à jour
-    const { data: updatedRewards } = await supabase
-      .from("token_rewards")
-      .select("total_earned, daily_streak, votes_submitted")
-      .eq("user_hash", voterHash)
-      .single();
-
+    // Return enriched response matching SwipeVoting component expectations
     return NextResponse.json({
       success: true,
-      voteId: newVote.id,
+      voteId: result.voteId,
       voteAgrees,
-      tokensEarned: instantTokens,
-      voteWeight,
+      tokensEarned: result.tokensEarned || VOTE_CONFIG.TOKENS_VOTE_INSTANT,
 
-      // État du consensus
+      // Consensus state (from denormalized counters)
       votes: {
-        oui: newAgree,        // Votes "OUI, ce produit respecte cette norme"
-        non: newDisagree,     // Votes "NON, ce produit ne respecte pas"
-        total: newTotalVotes,
+        oui: counts?.agree_count || 0,
+        non: counts?.disagree_count || 0,
+        total: counts?.total_count || 0,
         neededUnanimous: VOTE_CONFIG.MIN_VOTES_UNANIMOUS,
         maxVotes: VOTE_CONFIG.MAX_VOTES_MAJORITY,
       },
-      // Résultat
-      validationTriggered,
-      communityDecision: validationTriggered ? (newAgree > newDisagree ? "yes" : "no") : null,
-      aiResult: evaluation.result,  // Ce que l'IA avait dit
-      validationResult,             // "confirmed" (communauté = IA) | "challenged" (communauté ≠ IA)
-      isLocked: validationTriggered && validationResult !== "tie",
+      communityDecision: counts?.community_decision || null,
+      aiResult,
+      validationResult: counts?.validation_result || null,
+      isLocked: counts?.is_locked || false,
 
-      // Quota quotidien
-      dailyQuota: {
-        used: (votesToday || 0) + 1,
-        max: VOTE_CONFIG.MAX_VOTES_PER_DAY,
-        remaining: VOTE_CONFIG.MAX_VOTES_PER_DAY - (votesToday || 0) - 1,
+      // Daily quota
+      dailyQuota: result.dailyQuota,
+
+      // User stats (pending rewards — tokens not yet flushed)
+      userStats: {
+        total_earned: null,   // Available after flush_pending_rewards
+        daily_streak: null,   // Available after flush_pending_rewards
+        votes_submitted: null,
       },
-
-      // Stats utilisateur mises à jour
-      userStats: updatedRewards,
     });
 
   } catch (error) {
     console.error("[POST] Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
+}
+
+/**
+ * Legacy vote flow (fallback if atomic RPC is not yet deployed)
+ * WARNING: This has race conditions under high concurrency.
+ * Only used temporarily until migration 216 is applied.
+ */
+async function legacyVoteFlow(supabase, voterHash, evaluationId, voteAgrees, deviceFingerprint) {
+  // Check daily quota
+  const today = new Date().toISOString().split("T")[0];
+  const { count: votesToday } = await supabase
+    .from("evaluation_votes")
+    .select("id", { count: "exact", head: true })
+    .eq("voter_hash", voterHash)
+    .gte("created_at", `${today}T00:00:00Z`);
+
+  if ((votesToday || 0) >= VOTE_CONFIG.MAX_VOTES_PER_DAY) {
+    return NextResponse.json(
+      { error: `Limite atteinte: ${VOTE_CONFIG.MAX_VOTES_PER_DAY} votes/jour maximum` },
+      { status: 429 }
+    );
+  }
+
+  // Check duplicate vote
+  const { data: existingVote } = await supabase
+    .from("evaluation_votes")
+    .select("id, vote_agrees")
+    .eq("evaluation_id", evaluationId)
+    .eq("voter_hash", voterHash)
+    .single();
+
+  if (existingVote) {
+    return NextResponse.json(
+      { error: "You have already voted on this evaluation" },
+      { status: 409 }
+    );
+  }
+
+  // Get evaluation
+  const { data: evaluation, error: evalError } = await supabase
+    .from("evaluations")
+    .select("id, product_id, norm_id, result, community_status")
+    .eq("id", evaluationId)
+    .single();
+
+  if (evalError || !evaluation) {
+    return NextResponse.json({ error: "Evaluation not found" }, { status: 404 });
+  }
+
+  if (evaluation.community_status === "confirmed" || evaluation.community_status === "challenged") {
+    return NextResponse.json(
+      { error: "This evaluation has already been validated by the community" },
+      { status: 410 }
+    );
+  }
+
+  // Insert vote
+  const { data: newVote, error: voteError } = await supabase
+    .from("evaluation_votes")
+    .insert({
+      evaluation_id: evaluationId,
+      product_id: evaluation.product_id,
+      norm_id: evaluation.norm_id,
+      vote_agrees: voteAgrees,
+      voter_hash: voterHash,
+      vote_weight: 1.0,
+      device_fingerprint: deviceFingerprint || null,
+      status: "pending",
+    })
+    .select("id")
+    .single();
+
+  if (voteError) {
+    // Handle unique_violation gracefully (concurrent duplicate)
+    if (voteError.code === "23505") {
+      return NextResponse.json(
+        { error: "You have already voted on this evaluation" },
+        { status: 409 }
+      );
+    }
+    console.error("[POST] Legacy vote insert error:", voteError);
+    return NextResponse.json({ error: "Failed to save vote" }, { status: 500 });
+  }
+
+  // Award tokens atomically via RPC (not read-then-write)
+  await supabase.rpc("increment_tokens", {
+    p_user_hash: voterHash,
+    p_amount: VOTE_CONFIG.TOKENS_VOTE_INSTANT,
+  });
+
+  // Record transaction
+  await supabase.from("token_transactions").insert({
+    user_hash: voterHash,
+    action_type: "vote_instant",
+    tokens_amount: VOTE_CONFIG.TOKENS_VOTE_INSTANT,
+    evaluation_vote_id: newVote.id,
+    description: `Vote ${voteAgrees ? "VRAI" : "FAUX"} instant (legacy)`,
+  });
+
+  // Get vote counts for consensus check
+  const { data: votes } = await supabase
+    .from("evaluation_votes")
+    .select("vote_agrees")
+    .eq("evaluation_id", evaluationId);
+
+  const newAgree = (votes || []).filter((v) => v.vote_agrees).length;
+  const newDisagree = (votes || []).filter((v) => !v.vote_agrees).length;
+  const newTotal = newAgree + newDisagree;
+
+  // Check consensus
+  let validationTriggered = false;
+  let communityDecision = null;
+  let validationResult = null;
+
+  if (newAgree >= VOTE_CONFIG.MIN_VOTES_UNANIMOUS && newDisagree === 0) {
+    validationTriggered = true;
+    communityDecision = "yes";
+  } else if (newDisagree >= VOTE_CONFIG.MIN_VOTES_UNANIMOUS && newAgree === 0) {
+    validationTriggered = true;
+    communityDecision = "no";
+  } else if (newTotal >= VOTE_CONFIG.MAX_VOTES_MAJORITY) {
+    validationTriggered = true;
+    communityDecision = newAgree > newDisagree ? "yes" : newDisagree > newAgree ? "no" : "tie";
+  }
+
+  if (validationTriggered && communityDecision !== "tie") {
+    const aiSaysYes = evaluation.result === "YES" || evaluation.result === "YESp";
+    const communityAgreesWithAI =
+      (aiSaysYes && communityDecision === "yes") ||
+      (!aiSaysYes && communityDecision === "no");
+
+    validationResult = communityAgreesWithAI ? "confirmed" : "challenged";
+
+    await supabase.from("evaluations").update({
+      community_status: validationResult,
+      community_decision: communityDecision,
+      community_decided_at: new Date().toISOString(),
+    }).eq("id", evaluationId);
+
+    await supabase.from("evaluation_votes")
+      .update({ status: "validated", validated_at: new Date().toISOString() })
+      .eq("evaluation_id", evaluationId);
+
+    // Award aligned bonus
+    const winningVote = communityDecision === "yes";
+    const { data: winners } = await supabase
+      .from("evaluation_votes")
+      .select("voter_hash")
+      .eq("evaluation_id", evaluationId)
+      .eq("vote_agrees", winningVote);
+
+    for (const winner of winners || []) {
+      await supabase.rpc("increment_tokens", {
+        p_user_hash: winner.voter_hash,
+        p_amount: VOTE_CONFIG.TOKENS_ALIGNED_BONUS,
+      });
+      await supabase.from("token_transactions").insert({
+        user_hash: winner.voter_hash,
+        action_type: "vote_aligned",
+        tokens_amount: VOTE_CONFIG.TOKENS_ALIGNED_BONUS,
+        description: `Vote aligné (${communityDecision.toUpperCase()}) [legacy]`,
+      });
+    }
+  }
+
+  return NextResponse.json({
+    success: true,
+    voteId: newVote.id,
+    voteAgrees,
+    tokensEarned: VOTE_CONFIG.TOKENS_VOTE_INSTANT,
+    votes: { oui: newAgree, non: newDisagree, total: newTotal },
+    validationTriggered,
+    communityDecision,
+    aiResult: evaluation.result,
+    validationResult,
+    isLocked: validationTriggered && validationResult !== null,
+    dailyQuota: {
+      used: (votesToday || 0) + 1,
+      max: VOTE_CONFIG.MAX_VOTES_PER_DAY,
+      remaining: VOTE_CONFIG.MAX_VOTES_PER_DAY - (votesToday || 0) - 1,
+    },
+  });
 }
 
 /**

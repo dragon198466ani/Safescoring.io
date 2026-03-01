@@ -10,11 +10,10 @@
 
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/libs/auth";
+import { auth } from "@/libs/auth";
 
-// Cache for 10 minutes (analysis doesn't change often)
-export const revalidate = 600;
+// Cache for 24 hours (analysis changes at most once per day during batch evaluation)
+export const revalidate = 86400;
 
 export async function GET(request, { params }) {
   const { slug } = await params;
@@ -62,7 +61,7 @@ export async function GET(request, { params }) {
       .single();
 
     // Check if user is authenticated (for detailed justifications)
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     let evaluationDetails = null;
 
     if (session?.user) {
@@ -73,17 +72,16 @@ export async function GET(request, { params }) {
           id,
           result,
           why_this_result,
-          detailed_justification,
-          evidence_sources,
-          risk_impact,
-          evaluated_at,
+          evaluation_date,
           norms (
             id,
             code,
             title,
             pillar,
             description,
-            is_essential
+            is_essential,
+            official_link,
+            official_doc_summary
           )
         `)
         .eq("product_id", product.id)
@@ -164,7 +162,7 @@ export async function GET(request, { params }) {
 
     return NextResponse.json(response, {
       headers: {
-        "Cache-Control": "public, max-age=600, s-maxage=600, stale-while-revalidate=1200",
+        "Cache-Control": "public, max-age=86400, s-maxage=86400, stale-while-revalidate=172800",
       },
     });
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { useGlobalStats } from "@/libs/StatsProvider";
 
 /**
  * SafeTokenShop - Premium content marketplace
@@ -10,6 +11,7 @@ import toast from "react-hot-toast";
  */
 export default function SafeTokenShop({ productSlug = null, setupId = null }) {
   const { data: session } = useSession();
+  const { stats } = useGlobalStats();
   const [balance, setBalance] = useState(null);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState(null);
@@ -21,7 +23,7 @@ export default function SafeTokenShop({ productSlug = null, setupId = null }) {
     {
       type: "deep_analysis",
       name: "Analyse Complète",
-      description: "Analyse détaillée des 916 normes avec justifications IA",
+      description: `Analyse détaillée des ${stats.totalNorms} normes avec justifications IA`,
       price: 20,
       icon: "🔬",
       requiresProduct: true,

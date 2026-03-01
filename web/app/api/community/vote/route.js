@@ -1,12 +1,25 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/libs/supabase/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/libs/auth';
+import { auth } from '@/libs/auth';
+import crypto from 'crypto';
+
+/**
+ * Generate anonymous voter hash from user ID
+ * MUST match the hash in evaluation-vote/route.js and community/votes/route.js
+ */
+function generateVoterHash(userId) {
+  const salt = process.env.VOTER_HASH_SALT || 'safescoring-voter-salt-2024';
+  return crypto
+    .createHash('sha256')
+    .update(`${userId}:${salt}`)
+    .digest('hex')
+    .slice(0, 32);
+}
 
 export async function POST(req) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    const session = await auth();
+    if (!session?.user?.id) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
@@ -27,7 +40,7 @@ export async function POST(req) {
     const supabase = createClient();
     const { data: result, error } = await supabase.rpc('process_evaluation_vote', {
       p_evaluation_id: evaluation_id,
-      p_voter_hash: session.user.email,
+      p_voter_hash: generateVoterHash(session.user.id),
       p_vote_agrees: vote_agrees,
       p_justification: justification || null,
       p_evidence_url: evidence_url || null

@@ -216,9 +216,9 @@ class AIProvider:
         - Adversity (A) pillar evaluations
         - TBD result reviews
         """
-        # CLAUDE_CODE_ONLY mode: use expert model
+        # CLAUDE_CODE_ONLY mode: use sonnet for expert review (opus too slow/timeout-prone)
         if CLAUDE_CODE_ONLY:
-            return self._call_claude_code(prompt, max_tokens, temperature, model=CLAUDE_CODE_MODEL_EXPERT)
+            return self._call_claude_code(prompt, max_tokens, temperature, model=CLAUDE_CODE_MODEL)
 
         # Try Gemini Pro first
         result = self._call_gemini_pro_direct(prompt, max_tokens, temperature)
@@ -257,20 +257,16 @@ class AIProvider:
                       temperature: float = None, pass2_override: bool = False) -> str:
         """
         Call AI with strategic model selection based on norm complexity.
-        QUALITY FIRST: Tokens and temperature auto-adjusted by complexity.
+        Tokens and temperature auto-adjusted by complexity.
 
-        Uses NORM_MODEL_STRATEGY to select optimal model for each norm:
-        - CRITICAL norms (S01-S40, A01-A30): 3500 tokens, temp 0.1, Gemini Pro + review
-        - COMPLEX norms: 2500 tokens, temp 0.15, Gemini Flash/DeepSeek
-        - MODERATE norms: 2000 tokens, temp 0.2, Gemini Flash
-        - SIMPLE/TRIVIAL norms: 1500 tokens, temp 0.3, Groq (FREE)
+        In CLAUDE_CODE_ONLY mode: direct call, no intermediate validation.
 
         Args:
             norm_code: Norm code like 'S01', 'A150', 'F200'
             prompt: The evaluation prompt
             max_tokens: Override auto-calculated tokens (optional)
             temperature: Override auto-calculated temperature (optional)
-            pass2_override: Force second pass review (for TBD results)
+            pass2_override: Force expert model (for Pass 2 review)
 
         Returns:
             AI response text or None if all APIs fail
@@ -279,53 +275,27 @@ class AIProvider:
         model = strategy['model']
         complexity = strategy['complexity']
 
-        # QUALITY FIRST: Auto-adjust tokens and temperature by complexity (from config)
+        # Auto-adjust tokens and temperature by complexity
         if max_tokens is None:
-            if complexity == TaskComplexity.CRITICAL:
-                max_tokens = TOKENS_CRITICAL
-            elif complexity == TaskComplexity.COMPLEX:
-                max_tokens = TOKENS_COMPLEX
-            elif complexity == TaskComplexity.MODERATE:
-                max_tokens = TOKENS_MODERATE
-            else:  # SIMPLE, TRIVIAL
-                max_tokens = TOKENS_SIMPLE
+            max_tokens = {
+                TaskComplexity.CRITICAL: TOKENS_CRITICAL,
+                TaskComplexity.COMPLEX: TOKENS_COMPLEX,
+                TaskComplexity.MODERATE: TOKENS_MODERATE,
+            }.get(complexity, TOKENS_SIMPLE)
 
         if temperature is None:
-            if complexity == TaskComplexity.CRITICAL:
-                temperature = TEMP_CRITICAL
-            elif complexity == TaskComplexity.COMPLEX:
-                temperature = TEMP_COMPLEX
-            elif complexity == TaskComplexity.MODERATE:
-                temperature = TEMP_MODERATE
-            else:
-                temperature = TEMP_SIMPLE
+            temperature = {
+                TaskComplexity.CRITICAL: TEMP_CRITICAL,
+                TaskComplexity.COMPLEX: TEMP_COMPLEX,
+                TaskComplexity.MODERATE: TEMP_MODERATE,
+            }.get(complexity, TEMP_SIMPLE)
 
-        # Select API based on model type
+        # Direct call — no intermediate validation step
         result = self._call_by_model(model, prompt, max_tokens, temperature)
 
         # If failed, try fallback
         if not result and 'fallback' in strategy:
-            fallback_model = strategy['fallback']
-            result = self._call_by_model(fallback_model, prompt, max_tokens, temperature)
-
-        # Second pass review for CRITICAL norms or TBD override
-        if result and (strategy.get('pass2_review') or pass2_override):
-            if complexity == TaskComplexity.CRITICAL or pass2_override:
-                # Quick validation with different model
-                validation_prompt = f"""Verify this evaluation is correct:
-
-NORM: {norm_code}
-EVALUATION: {result[:500]}
-
-If the evaluation looks correct, respond with: CONFIRMED
-If there's an issue, respond with: REVIEW NEEDED - [reason]
-"""
-                validation_model = AIModel.CLAUDE_CODE if CLAUDE_CODE_ONLY else AIModel.GROQ_LLAMA
-                validation = self._call_by_model(validation_model, validation_prompt, EVAL_VALIDATION_TOKENS, TEMP_CRITICAL)
-                if validation and 'REVIEW NEEDED' in validation:
-                    # Re-evaluate with expert model
-                    review_model = AIModel.CLAUDE_CODE if CLAUDE_CODE_ONLY else AIModel.GEMINI_PRO
-                    result = self._call_by_model(review_model, prompt, max_tokens, 0.2)
+            result = self._call_by_model(strategy['fallback'], prompt, max_tokens, temperature)
 
         return result
 
@@ -1172,29 +1142,51 @@ If there's an issue, respond with: REVIEW NEEDED - [reason]
             if not use_stdin:
                 cmd.append(prompt)
 
-            result = subprocess.run(
+            # Use longer timeout for opus (expert) model — it's slower
+            effective_timeout = CLAUDE_CODE_TIMEOUT
+            if model in ('opus', 'claude-3-opus', 'claude-3-5-opus'):
+                effective_timeout = max(CLAUDE_CODE_TIMEOUT, 600)  # 10 min minimum for opus
+
+            # Use Popen for proper cleanup on timeout (subprocess.run doesn't kill children on Windows)
+            proc = subprocess.Popen(
                 cmd,
-                input=prompt if use_stdin else None,
-                capture_output=True,
+                stdin=subprocess.PIPE if use_stdin else None,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 text=True,
-                timeout=CLAUDE_CODE_TIMEOUT,
                 encoding='utf-8'
             )
 
-            if result.returncode == 0 and result.stdout.strip():
-                response = result.stdout.strip()
+            try:
+                stdout, stderr = proc.communicate(
+                    input=prompt if use_stdin else None,
+                    timeout=effective_timeout
+                )
+            except subprocess.TimeoutExpired:
+                # Kill the process tree properly
+                proc.kill()
+                try:
+                    proc.communicate(timeout=10)  # Reap the process
+                except:
+                    pass
+                timeout_min = effective_timeout // 60
+                print(f"      [CLAUDE_CODE] Timeout ({timeout_min}min) - process killed")
+                return None
+
+            if proc.returncode == 0 and stdout.strip():
+                response = stdout.strip()
                 print(f"      [CLAUDE_CODE] {model} OK ({len(response)} chars)")
                 return response
             else:
-                stderr = result.stderr[:200] if result.stderr else 'no output'
-                print(f"      [CLAUDE_CODE] Exit {result.returncode}: {stderr}")
+                stderr_msg = stderr[:200] if stderr else 'no output'
+                print(f"      [CLAUDE_CODE] Exit {proc.returncode}: {stderr_msg}")
                 # Check for auth errors
-                if result.stderr and any(kw in result.stderr.lower() for kw in ['auth', 'login', 'subscription', 'expired']):
+                if stderr and any(kw in stderr.lower() for kw in ['auth', 'login', 'subscription', 'expired']):
                     print("      [CLAUDE_CODE] Auth error - DISABLED")
                     self.disabled_apis.add('ClaudeCode')
 
         except subprocess.TimeoutExpired:
-            print("      [CLAUDE_CODE] Timeout (5min)")
+            print("      [CLAUDE_CODE] Timeout")
         except FileNotFoundError:
             print("      [CLAUDE_CODE] CLI not found - install: npm install -g @anthropic-ai/claude-code")
             self.disabled_apis.add('ClaudeCode')
@@ -1567,6 +1559,10 @@ def parse_evaluation_response(response):
     Parse AI evaluation response.
     Returns dict: {norm_code: (result, reason)}
     Handles multiple formats including multi-line responses.
+
+    Supports BOTH code formats:
+    - Numeric: S01, A150, F200, E50
+    - Textual: A-CC-001, A-OWASP-MASVS, S-AES-256, F-AUDIT-001
     """
     evaluations = {}
     lines = response.split('\n')
@@ -1578,11 +1574,15 @@ def parse_evaluation_response(response):
             continue
 
         # Try to find a norm code on this line
-        code_match = re.search(r'\b([SAFE])[-_]?(\d+)\b', line, re.IGNORECASE)
+        # Pattern 1: Textual codes like A-CC-001, A-OWASP-MASVS, S-AES-256, F-AUDIT-001
+        code_match = re.search(r'\b([SAFE])-([A-Z][A-Z0-9_]+-[A-Z0-9]+(?:-[A-Z0-9]+)*)\b', line, re.IGNORECASE)
+        if not code_match:
+            # Pattern 2: Simple numeric codes like S01, A150, F200
+            code_match = re.search(r'\b([SAFE])[-_]?(\d+)\b', line, re.IGNORECASE)
         if code_match:
             letter = code_match.group(1).upper()
-            number = code_match.group(2)
-            last_code = f"{letter}{number}"
+            suffix = code_match.group(2).upper()
+            last_code = f"{letter}-{suffix}" if '-' in code_match.group(0) else f"{letter}{suffix}"
 
         # Try to find result on same line after code, or on current line if we have a pending code
         # Pattern: look for result words, prioritizing YESp over YES
@@ -1606,7 +1606,7 @@ def parse_evaluation_response(response):
             elif value == 'TBD':
                 result = 'TBD'
             elif value in ['NA', 'N/A']:
-                result = 'TBD'  # Convert N/A to TBD for applicable norms
+                result = 'N/A'  # Keep N/A as-is (norm may genuinely not apply despite pre-filtering)
             elif value in ['NO', 'NON']:
                 result = 'NO'
             else:
@@ -1628,6 +1628,7 @@ def parse_applicability_response(response, norms_by_code):
     Returns dict: {norm_id: is_applicable}
     Supports multiple formats:
     - Strict: "S01: OUI" or "F200: NON"
+    - Textual: "A-CC-001: OUI" or "S-AES-256: NON"
     - Verbose (Gemini): "**Norme F200**\nReponse : OUI"
     """
     applicability = {}
@@ -1639,11 +1640,15 @@ def parse_applicability_response(response, norms_by_code):
             continue
 
         # Try to find a norm code on this line
-        code_match = re.search(r'\b([SAFE])[-_]?(\d+)\b', line, re.IGNORECASE)
+        # Pattern 1: Textual codes like A-CC-001, A-OWASP-MASVS, S-AES-256
+        code_match = re.search(r'\b([SAFE])-([A-Z][A-Z0-9_]+-[A-Z0-9]+(?:-[A-Z0-9]+)*)\b', line, re.IGNORECASE)
+        if not code_match:
+            # Pattern 2: Simple numeric codes like S01, A150, F200
+            code_match = re.search(r'\b([SAFE])[-_]?(\d+)\b', line, re.IGNORECASE)
         if code_match:
             letter = code_match.group(1).upper()
-            number = code_match.group(2)
-            last_code = f"{letter}{number}"
+            suffix = code_match.group(2).upper()
+            last_code = f"{letter}-{suffix}" if '-' in code_match.group(0) else f"{letter}{suffix}"
 
         # Try to find OUI/NON/YES/NO on this line
         result_match = re.search(r'\b(OUI|NON|YES|NO)\b', line, re.IGNORECASE)

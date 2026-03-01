@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-01-XX
 
 ### Added
-- **SAFE Methodology**: Complete framework with 916 norms across 4 pillars
+- **SAFE Methodology**: Complete framework with 2376 norms across 4 pillars
   - Security (S): Cryptographic standards, key management, authentication
   - Adversity (A): Incident response, vulnerability handling, resilience
   - Fidelity (F): Transparency, governance, compliance
@@ -85,7 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### v0.7.0 - SAFE Methodology v7
 - Final methodology refinements
-- 916 norms finalized
+- 2376 norms finalized
 - Excel export (SAFE_SCORING_V7_FINAL.xlsx)
 
 #### v0.6.0 - Smart Evaluator

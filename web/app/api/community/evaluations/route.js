@@ -4,11 +4,16 @@ import { supabaseAdmin, isSupabaseConfigured } from "@/libs/supabase";
 import crypto from "crypto";
 
 /**
- * Generate anonymous voter hash from user ID or email
+ * Generate anonymous voter hash from user ID
+ * MUST match the hash in evaluation-vote/route.js and community/votes/route.js
  */
-function generateVoterHash(userId, email) {
-  const input = userId || email || `anon_${Date.now()}`;
-  return crypto.createHash("sha256").update(input).digest("hex").slice(0, 32);
+function generateVoterHash(userId) {
+  const salt = process.env.VOTER_HASH_SALT || "safescoring-voter-salt-2024";
+  return crypto
+    .createHash("sha256")
+    .update(`${userId}:${salt}`)
+    .digest("hex")
+    .slice(0, 32);
 }
 
 /**
@@ -47,7 +52,7 @@ export async function GET(request) {
     let voterHash = null;
     const session = await auth();
     if (session?.user?.id) {
-      voterHash = generateVoterHash(session.user.id, session.user.email);
+      voterHash = generateVoterHash(session.user.id);
     }
 
     // Validate pillar if provided

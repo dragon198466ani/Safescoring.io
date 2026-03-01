@@ -4,15 +4,15 @@ import config from "@/config";
 const footerLinks = {
   product: [
     { label: "Products", href: "/products" },
-    { label: "Score Transparency", href: "/transparency" },
+    { label: "Community", href: "/community" },
     { label: "Methodology", href: "/methodology" },
+    { label: "KYC Security", href: "/kyc-security" },
     { label: "API", href: "/api-docs" },
   ],
   company: [
     { label: "About", href: "/about" },
     { label: "Blog", href: "/blog" },
-    { label: "Press Kit", href: "/press" },
-    { label: "Partners", href: "/partners" },
+    { label: "My Stack", href: "/dashboard/setups" },
   ],
   legal: [
     { label: "Legal Notice", href: "/legal" },
@@ -30,11 +30,8 @@ const Footer = () => {
           {/* Brand column */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-3 mb-6">
-              <div className="relative w-10 h-10">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500 via-amber-500 to-purple-500 rounded-lg opacity-80" />
-                <div className="absolute inset-0.5 bg-base-200 rounded-[6px] flex items-center justify-center">
-                  <span className="text-lg font-black text-gradient-safe">S</span>
-                </div>
+              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                <span className="text-lg font-black text-black">S</span>
               </div>
               <span className="font-bold text-xl">SafeScoring</span>
             </Link>

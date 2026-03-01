@@ -5,24 +5,19 @@ const CTA = () => {
     <section className="py-24 px-6">
       <div className="max-w-4xl mx-auto">
         <div className="relative rounded-3xl p-12 md:p-16 overflow-hidden">
-          {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/10 to-transparent" />
-          <div className="absolute inset-0 bg-base-200/80" />
-
-          {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl" />
+          {/* Clean background */}
+          <div className="absolute inset-0 bg-base-200 border border-base-300 rounded-3xl" />
 
           <div className="relative text-center">
             {/* Icon */}
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/20 mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-base-content/10 mb-8">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-8 h-8 text-primary"
+                className="w-8 h-8 text-base-content/50"
               >
                 <path
                   strokeLinecap="round"
@@ -73,7 +68,7 @@ const CTA = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="w-4 h-4 text-green-500"
+                  className="w-4 h-4 text-base-content/50"
                 >
                   <path
                     fillRule="evenodd"
@@ -88,7 +83,7 @@ const CTA = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="w-4 h-4 text-green-500"
+                  className="w-4 h-4 text-base-content/50"
                 >
                   <path
                     fillRule="evenodd"
@@ -103,7 +98,7 @@ const CTA = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="w-4 h-4 text-green-500"
+                  className="w-4 h-4 text-base-content/50"
                 >
                   <path
                     fillRule="evenodd"

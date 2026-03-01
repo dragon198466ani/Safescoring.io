@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useStats } from "@/hooks/useStats";
+import { useGlobalStats } from "@/libs/StatsProvider";
 
 /**
  * Changelog Page
@@ -41,7 +41,7 @@ const CHANGELOG = [
     changes: [
       { type: "added", text: "Public launch of SafeScoring" },
       { type: "added", text: "SAFE methodology (Security, Adversity, Fidelity, Efficiency)" },
-      { type: "added", text: "2354 security norms" },
+      { type: "added", text: "2376 security norms" },
       { type: "added", text: "1535+ product evaluations" },
       { type: "added", text: "Free tier with unlimited product scores" },
       { type: "added", text: "Subscription plans (Explorer, Pro, Enterprise)" },
@@ -97,7 +97,7 @@ function ChangeItem({ type, text }) {
 }
 
 export default function ChangelogPage() {
-  const { stats, loading } = useStats();
+  const { stats, loading } = useGlobalStats();
 
   return (
     <>

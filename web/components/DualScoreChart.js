@@ -1,13 +1,13 @@
 "use client";
 
 /**
- * DualScoreChart - Graphique double courbe IA vs Communauté
+ * DualScoreChart - Dual curve chart: AI vs Community
  *
- * Affiche deux courbes distinctes dans le même graphique:
- * - Courbe bleue: Scores IA (évaluations automatiques)
- * - Courbe verte: Scores Communauté (validés par votes)
+ * Displays two distinct curves in the same chart:
+ * - Blue curve: AI Scores (automated evaluations)
+ * - Green curve: Community Scores (validated by votes)
  *
- * Permet de visualiser la convergence/divergence entre IA et humains
+ * Allows visualization of convergence/divergence between AI and humans
  */
 
 import { useState, useMemo } from "react";
@@ -61,10 +61,11 @@ export default function DualScoreChart({
   });
 
   // Process data for rendering
+  const isDemo = !data?.history || data.history.length === 0;
+
   const chartData = useMemo(() => {
-    if (!data?.history || data.history.length === 0) {
-      // Generate demo data if no real data
-      return generateDemoData(activeRange);
+    if (isDemo) {
+      return [];
     }
 
     return data.history.map((point) => ({
@@ -74,7 +75,7 @@ export default function DualScoreChart({
       communityScore: point.community_score ?? null,
       votesCount: point.votes_count ?? 0,
     }));
-  }, [data, activeRange]);
+  }, [data, isDemo]);
 
   // Calculate chart dimensions
   const padding = { top: 20, right: 20, bottom: 30, left: 40 };
@@ -135,15 +136,35 @@ export default function DualScoreChart({
     );
   }
 
+  if (chartData.length === 0) {
+    return (
+      <div className="relative">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-medium">Score evolution</span>
+        </div>
+        <div
+          className="flex flex-col items-center justify-center text-base-content/40 text-sm gap-2 rounded-lg bg-base-200 border border-base-300"
+          style={{ height }}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 opacity-50">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+          </svg>
+          <span>No score history yet</span>
+          <span className="text-xs text-base-content/30">Data will appear after score updates</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
       {/* Time range selector */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Évolution des scores</span>
+          <span className="text-sm font-medium">Score evolution</span>
           {pillar && (
             <span className={`text-xs px-2 py-0.5 rounded bg-base-300`}>
-              Pilier {pillar}
+              Pillar {pillar}
             </span>
           )}
         </div>
@@ -159,7 +180,7 @@ export default function DualScoreChart({
                   : "bg-base-300 text-base-content/60 hover:text-base-content"
               }`}
             >
-              {range === "all" ? "Tout" : range}
+              {range === "all" ? "All" : range}
             </button>
           ))}
         </div>
@@ -173,14 +194,14 @@ export default function DualScoreChart({
               className="w-3 h-0.5 rounded"
               style={{ backgroundColor: COLORS.ai.line }}
             />
-            <span className="text-base-content/70">Score IA</span>
+            <span className="text-base-content/70">AI Score</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span
               className="w-3 h-0.5 rounded"
               style={{ backgroundColor: COLORS.community.line }}
             />
-            <span className="text-base-content/70">Score Communauté</span>
+            <span className="text-base-content/70">Community Score</span>
           </div>
         </div>
       )}
@@ -325,14 +346,14 @@ export default function DualScoreChart({
                 className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: COLORS.ai.line }}
               />
-              <span>IA: {hoveredPoint.aiScore ?? "—"}</span>
+              <span>AI: {hoveredPoint.aiScore ?? "—"}</span>
             </div>
             <div className="flex items-center gap-2">
               <span
                 className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: COLORS.community.line }}
               />
-              <span>Communauté: {hoveredPoint.communityScore ?? "—"}</span>
+              <span>Community: {hoveredPoint.communityScore ?? "—"}</span>
             </div>
             {hoveredPoint.votesCount > 0 && (
               <div className="text-base-content/50 mt-1">
@@ -385,10 +406,10 @@ function DivergenceIndicator({ data }) {
         {divergence.direction === "up" ? "📈" : "📉"}
       </span>
       <span>
-        Divergence de {divergence.diff.toFixed(0)} points:{" "}
+        {divergence.diff.toFixed(0)}-point divergence:{" "}
         {divergence.direction === "up"
-          ? "La communauté note plus haut que l'IA"
-          : "La communauté note plus bas que l'IA"}
+          ? "Community rates higher than AI"
+          : "Community rates lower than AI"}
       </span>
     </div>
   );
@@ -398,7 +419,7 @@ function DivergenceIndicator({ data }) {
 function formatDate(dateStr) {
   const date = new Date(dateStr);
   const day = date.getDate();
-  const month = date.toLocaleDateString("fr-FR", { month: "short" });
+  const month = date.toLocaleDateString("en-US", { month: "short" });
   return `${day} ${month}`;
 }
 

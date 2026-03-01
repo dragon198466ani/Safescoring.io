@@ -1,6 +1,18 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/libs/supabase";
-import { quickProtect, sleep, calculatePublicDelay } from "@/libs/api-protection";
+import { quickProtect } from "@/libs/api-protection";
+
+// Simple delay helper for rate-limiting public access
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Calculate artificial delay for public (unauthenticated) access to discourage scraping
+function calculatePublicDelay(clientId, isAuthenticated) {
+  if (isAuthenticated) return 0;
+  // Base delay of 200ms for public access
+  return 200;
+}
 
 // Helper function to calculate combined SAFE score
 function calculateCombinedScore(productDetails) {

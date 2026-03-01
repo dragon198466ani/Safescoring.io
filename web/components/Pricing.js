@@ -3,15 +3,15 @@ import config from "@/config";
 import ButtonCheckout from "./ButtonCheckout";
 
 const Pricing = () => {
-  // Use lemonsqueezy plans (stripe.plans is deprecated/empty)
-  const allPlans = config?.lemonsqueezy?.plans || config?.stripe?.plans || [];
+  // Use lemonsqueezy plans
+  const allPlans = config?.lemonsqueezy?.plans || [];
 
   return (
     <section className="py-24 px-6" id="pricing">
       <div className="max-w-7xl mx-auto">
         {/* Section header */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary">
+          <span className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-base-content/10 text-base-content/70">
             Pricing
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
@@ -36,8 +36,8 @@ const Pricing = () => {
         {/* All plans in unified grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {allPlans.map((plan) => {
-            // Support both priceId (stripe) and variantId (lemonsqueezy)
-            const planId = plan.priceId || plan.variantId;
+            // Support variantId (lemonsqueezy)
+            const planId = plan.variantId || plan.priceId;
             const isFreemium = planId === "free";
             const isFeatured = plan.isFeatured;
 
@@ -46,23 +46,23 @@ const Pricing = () => {
                 key={planId}
                 className={`relative rounded-2xl p-6 flex flex-col ${
                   isFeatured
-                    ? "bg-gradient-to-b from-primary/20 to-base-200 border-2 border-primary"
+                    ? "bg-base-200 border-2 border-white"
                     : isFreemium
-                    ? "bg-base-200 border-2 border-success/50"
+                    ? "bg-base-200 border-2 border-base-content/30"
                     : "bg-base-200 border border-base-300"
                 }`}
               >
                 {/* Badges */}
                 {isFeatured && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="px-3 py-1 text-xs font-semibold bg-primary text-primary-content rounded-full whitespace-nowrap">
+                    <span className="px-3 py-1 text-xs font-semibold bg-base-content/10 text-base-content/70 rounded-full whitespace-nowrap">
                       Most Popular
                     </span>
                   </div>
                 )}
                 {isFreemium && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="px-3 py-1 text-xs font-semibold bg-success text-success-content rounded-full whitespace-nowrap">
+                    <span className="px-3 py-1 text-xs font-semibold bg-base-content/10 text-base-content/70 rounded-full whitespace-nowrap">
                       Freemium
                     </span>
                   </div>
@@ -87,20 +87,20 @@ const Pricing = () => {
                   </div>
                   {plan.trialDays && (
                     <div className="flex items-center gap-2 mt-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-primary">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-white">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span className="text-xs text-primary font-medium">
+                      <span className="text-xs text-white font-medium">
                         {plan.trialDays}-day free trial
                       </span>
                     </div>
                   )}
                   {isFreemium && (
                     <div className="flex items-center gap-2 mt-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-success">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-base-content/50">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span className="text-xs text-success font-medium">
+                      <span className="text-xs text-base-content/50 font-medium">
                         No card required
                       </span>
                     </div>
@@ -115,15 +115,7 @@ const Pricing = () => {
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"
                         fill="currentColor"
-                        className={`w-4 h-4 flex-shrink-0 mt-0.5 ${
-                          feature.highlight
-                            ? "text-amber-400"
-                            : isFeatured
-                            ? "text-primary"
-                            : isFreemium
-                            ? "text-success"
-                            : "text-green-500"
-                        }`}
+                        className={`w-4 h-4 flex-shrink-0 mt-0.5 text-base-content/50`}
                       >
                         <path
                           fillRule="evenodd"
@@ -131,7 +123,7 @@ const Pricing = () => {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className={`text-sm ${feature.highlight ? "text-amber-400 font-medium" : "text-base-content/80"}`}>
+                      <span className={`text-sm ${feature.highlight ? "text-base-content/80 font-medium" : "text-base-content/80"}`}>
                         {feature.name}
                       </span>
                     </li>
@@ -142,7 +134,7 @@ const Pricing = () => {
                 {isFreemium ? (
                   <Link
                     href="/api/auth/signin?callbackUrl=/onboarding"
-                    className="btn btn-success btn-outline w-full mt-auto"
+                    className="btn btn-primary w-full mt-auto"
                   >
                     Get Started Free
                   </Link>
@@ -170,7 +162,7 @@ const Pricing = () => {
           </div>
           <p className="text-base-content/50 text-sm">
             Need a custom solution?{" "}
-            <a href="mailto:enterprise@safescoring.io" className="text-primary hover:underline">
+            <a href="mailto:enterprise@safescoring.io" className="text-white hover:underline">
               Contact us
             </a>
           </p>

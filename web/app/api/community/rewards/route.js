@@ -5,11 +5,16 @@ import { validateRequestOrigin } from "@/libs/security";
 import crypto from "crypto";
 
 /**
- * Generate anonymous voter hash from user ID or email
+ * Generate anonymous voter hash from user ID
+ * MUST match the hash in evaluation-vote/route.js and community/votes/route.js
  */
-function generateVoterHash(userId, email) {
-  const input = userId || email || `anon_${Date.now()}`;
-  return crypto.createHash("sha256").update(input).digest("hex").slice(0, 32);
+function generateVoterHash(userId) {
+  const salt = process.env.VOTER_HASH_SALT || "safescoring-voter-salt-2024";
+  return crypto
+    .createHash("sha256")
+    .update(`${userId}:${salt}`)
+    .digest("hex")
+    .slice(0, 32);
 }
 
 /**
@@ -37,7 +42,7 @@ export async function GET(request) {
       );
     }
 
-    const voterHash = generateVoterHash(session.user.id, session.user.email);
+    const voterHash = generateVoterHash(session.user.id);
 
     // Get user's rewards
     const { data: rewards, error: rewardsError } = await supabaseAdmin
@@ -157,7 +162,7 @@ export async function POST(request) {
       );
     }
 
-    const voterHash = generateVoterHash(session.user.id, session.user.email);
+    const voterHash = generateVoterHash(session.user.id);
 
     // Check if wallet is already linked to another user
     const { data: existing } = await supabaseAdmin

@@ -1,5 +1,17 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "public": true
+  "public": true,
+  "crons": [
+    { "path": "/api/cron/alert-checker", "schedule": "0 0 * * *" },
+    { "path": "/api/cron/watchlist-alerts", "schedule": "0 1 * * *" },
+    { "path": "/api/cron/check-incidents", "schedule": "0 2 * * *" },
+    { "path": "/api/cron/security-cleanup", "schedule": "0 3 * * *" },
+    { "path": "/api/cron/recalculate-scores", "schedule": "0 5 * * *" },
+    { "path": "/api/cron/retention", "schedule": "0 7 * * *" },
+    { "path": "/api/cron/reengagement", "schedule": "0 9 * * *" },
+    { "path": "/api/cron/compat-refresh", "schedule": "0 3 * * 0" },
+    { "path": "/api/cron/rgpd-cleanup", "schedule": "0 2 1 * *" },
+    { "path": "/api/cron/flush-rewards", "schedule": "0 */6 * * *" }
+  ]
 }

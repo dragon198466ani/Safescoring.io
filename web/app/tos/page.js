@@ -42,7 +42,7 @@ These Terms of Service ("Terms") govern your use of the SafeScoring website at h
 
 1. Description of SafeScoring
 
-SafeScoring is a platform providing unified security ratings for cryptocurrency products including hardware wallets, software wallets, exchanges, and DeFi protocols. We evaluate products using 916 security norms across four pillars: Security, Adversity, Fidelity, and Efficiency (SAFE).
+SafeScoring is a platform providing unified security ratings for cryptocurrency products including hardware wallets, software wallets, exchanges, and DeFi protocols. We evaluate products using 2376 security norms across four pillars: Security, Adversity, Fidelity, and Efficiency (SAFE).
 
 2. Service Tiers
 

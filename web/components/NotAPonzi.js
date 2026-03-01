@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useGlobalStats } from "@/libs/StatsProvider";
 
 /**
  * NotAPonzi Component
@@ -35,7 +36,7 @@ const PONZI_COMPARISON = [
   {
     redFlag: "Secret methodology",
     ponziExample: '"Our algorithm is proprietary"',
-    safeScoring: "2354 norms published",
+    safeScoring: "NORMS_PUBLISHED_PLACEHOLDER",
     proof: "Full methodology at /methodology",
   },
   {
@@ -47,8 +48,10 @@ const PONZI_COMPARISON = [
 ];
 
 export default function NotAPonzi({ compact = false }) {
+  const { stats } = useGlobalStats();
+
   if (compact) {
-    return <CompactVersion />;
+    return <CompactVersion totalNorms={stats.totalNorms} />;
   }
 
   return (
@@ -87,7 +90,7 @@ export default function NotAPonzi({ compact = false }) {
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-green-500">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-green-400">{row.safeScoring}</span>
+                    <span className="text-green-400">{row.safeScoring === "NORMS_PUBLISHED_PLACEHOLDER" ? `${stats.totalNorms} norms published` : row.safeScoring}</span>
                   </div>
                 </td>
                 <td className="text-sm text-base-content/60">{row.proof}</td>
@@ -110,7 +113,7 @@ export default function NotAPonzi({ compact = false }) {
   );
 }
 
-function CompactVersion() {
+function CompactVersion({ totalNorms }) {
   return (
     <div className="p-6 rounded-2xl bg-gradient-to-br from-red-500/5 to-green-500/5 border border-base-300">
       <h3 className="font-bold mb-4 flex items-center gap-2">
@@ -124,7 +127,7 @@ function CompactVersion() {
           { bad: "Guaranteed returns", good: "SaaS subscriptions" },
           { bad: "Token/ICO", good: "No crypto sales" },
           { bad: "Anonymous team", good: "Registered LLC" },
-          { bad: "Secret scoring", good: "2354 public norms" },
+          { bad: "Secret scoring", good: `${totalNorms} public norms` },
         ].map((item, i) => (
           <div key={i} className="flex items-center justify-between text-sm">
             <span className="flex items-center gap-2 text-red-400/80">

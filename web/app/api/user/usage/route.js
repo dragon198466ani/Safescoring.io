@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { supabaseAdmin } from "@/libs/supabase";
 import config from "@/config";
+import { getPlanLimits } from "@/libs/config-constants";
 
 // GET - Get user's current usage stats
 export async function GET() {
@@ -28,16 +29,20 @@ export async function GET() {
       return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
     }
 
-    // If user has paid access, return unlimited
+    // If user has paid access, return plan-specific limits
     if (user?.has_access && user?.price_id !== "free") {
-      const plan = config.stripe.plans.find(p => p.priceId === user.price_id);
+      const plan = config.lemonsqueezy.plans.find(p => p.variantId === user.price_id);
+      const planCode = plan?.name?.toLowerCase() || "explorer";
+      const planLimits = plan?.limits || getPlanLimits(planCode);
       return NextResponse.json({
+        plan: planCode,
         planType: plan?.name || "Paid",
         isPaid: true,
         hasAccess: true,
         used: 0,
-        limit: -1, // unlimited
+        limit: -1, // unlimited views
         remaining: -1,
+        limits: planLimits,
         trialEndsAt: user.trial_ends_at,
         isTrialing: user.trial_ends_at && new Date(user.trial_ends_at) > new Date(),
       });
@@ -60,13 +65,16 @@ export async function GET() {
 
     const used = count || 0;
 
+    const freeLimits = getPlanLimits("free");
     return NextResponse.json({
+      plan: "free",
       planType: "Free",
       isPaid: false,
       hasAccess: true,
       used,
       limit,
       remaining: Math.max(0, limit - used),
+      limits: freeLimits,
       resetDate: getNextMonthStart(),
     });
   } catch (error) {

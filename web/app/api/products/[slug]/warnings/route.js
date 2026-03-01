@@ -54,7 +54,7 @@ export async function GET(request, { params }) {
     const normIds = [...new Set(evaluations.map(e => e.norm_id))];
     const { data: norms, error: normError } = await supabase
       .from("norms")
-      .select("id, code, title, pillar, is_essential")
+      .select("id, code, title, pillar, is_essential, official_link, official_doc_summary")
       .in("id", normIds);
 
     if (normError) {
@@ -87,13 +87,17 @@ export async function GET(request, { params }) {
         norm_code: norm.code,
         title: norm.title,
         is_essential: norm.is_essential,
+        official_link: norm.official_link || null,
         reason: ev.why_this_result?.substring(0, 200) || null
       };
 
-      if (result === "YES") {
+      if (result === "YES" || result === "YESP") {
         pillarResults[norm.pillar].yes.push(entry);
-      } else if (result === "NO") {
+      } else if (result === "NO" || result === "N") {
         pillarResults[norm.pillar].no.push(entry);
+      } else if (result === "N/A" || result === "NA") {
+        // N/A = not applicable — excluded from score calculation
+        continue;
       } else {
         pillarResults[norm.pillar].tbd.push(entry);
       }
@@ -104,7 +108,7 @@ export async function GET(request, { params }) {
       S: { name: "Security", context: "En cas de piratage ou d'attaque" },
       A: { name: "Adversity", context: "Si le service fait faillite ou est compromis" },
       F: { name: "Fidelity", context: "Pour garder le controle total de vos fonds" },
-      E: { name: "Ecosystem", context: "Pour l'utilisation quotidienne" }
+      E: { name: "Efficiency", context: "Pour l'utilisation quotidienne" }
     };
 
     const pillars = {};
@@ -122,7 +126,9 @@ export async function GET(request, { params }) {
       totalNo += noCount;
       totalTbd += tbdCount;
 
-      const score = total > 0 ? (yesCount / total) * 100 : 0;
+      // Score = YES / (YES + NO) — TBD excluded (matches backend formula)
+      const scoreBase = yesCount + noCount;
+      const score = scoreBase > 0 ? (yesCount / scoreBase) * 100 : 0;
       let riskLevel, riskLabel;
 
       if (score >= 90) {
@@ -174,7 +180,9 @@ export async function GET(request, { params }) {
 
     // Calculate overall score and risk
     const totalChecks = totalYes + totalNo + totalTbd;
-    const overallScore = totalChecks > 0 ? (totalYes / totalChecks) * 100 : 0;
+    // Overall score = YES / (YES + NO) — TBD excluded (matches backend formula)
+    const overallScoreBase = totalYes + totalNo;
+    const overallScore = overallScoreBase > 0 ? (totalYes / overallScoreBase) * 100 : 0;
 
     let overallRiskLevel, overallRiskLabel;
     if (overallScore >= 90) {

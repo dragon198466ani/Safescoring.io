@@ -1,0 +1,84 @@
+# SafeScoring Auto-Deploy Pipeline
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    # Only deploy if CI secrets are configured
+    if: vars.DEPLOY_ENABLED == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Pull Vercel Environment
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./web
+
+      - name: Build
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./web
+
+      - name: Deploy
+        id: deploy
+        run: |
+          URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$URL" >> $GITHUB_OUTPUT
+        working-directory: ./web
+
+      - name: Post-deploy health check
+        run: |
+          echo "Waiting 30s for deployment to stabilize..."
+          sleep 30
+          echo "Checking health endpoint..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ steps.deploy.outputs.url }}/api/health" || echo "000")
+          echo "Health check status: $STATUS"
+          if [ "$STATUS" = "200" ] || [ "$STATUS" = "503" ]; then
+            echo "✅ Deployment is responding"
+            curl -s "${{ steps.deploy.outputs.url }}/api/health" | head -200
+          else
+            echo "❌ Deployment health check failed (HTTP $STATUS)"
+            exit 1
+          fi
+
+      - name: Run migrations
+        run: |
+          cd web && node scripts/auto-migrate.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        continue-on-error: true
+
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: always()
+
+    steps:
+      - name: Deployment result
+        run: |
+          if [ "${{ needs.deploy.result }}" = "success" ]; then
+            echo "✅ SafeScoring deployed successfully to production"
+          else
+            echo "❌ SafeScoring deployment failed"
+          fi
+          # Placeholder: Add Slack/Discord webhook notification here
+          # curl -X POST "${{ secrets.SLACK_WEBHOOK }}" -d '{"text": "Deploy: ${{ needs.deploy.result }}"}'

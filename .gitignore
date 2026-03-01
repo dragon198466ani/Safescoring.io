@@ -217,3 +217,84 @@ paywall_norm_ids.json
 supabase/.branches
 supabase/.temp
 nul
+
+# -----------------------------------------------------------------------------
+# SafeScoring — Temp & Generated Files
+# -----------------------------------------------------------------------------
+
+# Temp files from evaluation/scraping sessions
+temp_*
+.~lock.*
+
+# Excel data files at repo root (data sources — too large for git)
+*.xlsx
+*.xls
+
+# Worker logs and data from parallel evaluation
+worker_*.log
+worker_*.json
+
+# Build/test output files (CI debugging artifacts)
+web/build_*.txt
+web/test_*.txt
+web/ci_*.txt
+web/npm_*.txt
+web/C*UsersalexaDesktop*
+test-output.txt
+ci_logs*
+
+# Claude project context (auto-generated)
+CLAUDE_PROJECT_CONTEXT.md
+.claude/
+
+# One-off scripts (local use only)
+_*.py
+!__init__.py
+_*.js
+_*.py.template
+
+# Unicode-mangled temp files (Claude Code path artifacts)
+C*tempnodes_test.json
+
+# Data exports and batch files (too large / ephemeral)
+data/*.json
+data/*.sql
+data/*.txt
+data/*.md
+data/eval_*
+data/sql_batches/
+!data/README.md
+
+# Generated reports and PDFs
+reports/
+audit_reports/
+comparatif_*.pdf
+
+# Archived/fallback scripts
+_archive/
+
+# Norm documentation downloads
+norm_docs/
+norm_pdfs/
+norm_full_dump.json
+
+# Misc evaluation scripts at root
+eval_*.py
+fix_*.py
+run_*.py
+!run_parallel.py
+select_*.py
+set_*.py
+apply_*.py
+launch_workers.bat
+products_to_evaluate.json
+applicability_*.txt
+claude_applicability_output.txt
+
+# Script output/report files (debug artifacts, not source)
+scripts/*_output.txt
+scripts/*_report.txt
+scripts/audit_*.txt
+scripts/scope_report.txt
+scripts/enrich_type_output.txt
+scripts/verify_types_output.txt

@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { getStats } from "@/libs/stats";
 
 /**
  * Dynamic OG Image Generator
@@ -32,6 +33,7 @@ const COLORS = {
 export async function GET(request, { params }) {
   const slugParts = params.slug || [];
   const type = slugParts[0]; // 'products', 'compare', 'leaderboard', etc.
+  const platformStats = await getStats();
 
   try {
     if (type === 'products' && slugParts[1]) {
@@ -354,7 +356,7 @@ function generateDefaultOG() {
           Crypto Security Ratings You Can Trust
         </div>
         <div style={{ fontSize: 24, color: COLORS.text, marginTop: 24 }}>
-          916 norms • 500+ products • Objective scores
+          {platformStats.totalNorms} norms • 500+ products • Objective scores
         </div>
       </div>
     ),

@@ -19,6 +19,7 @@ import SetupRecommendations from "@/components/SetupRecommendations";
 import SetupScoreEvolution from "@/components/SetupScoreEvolution";
 import NotificationSettings from "@/components/NotificationSettings";
 import SetupSAFEAnalysis from "@/components/SetupSAFEAnalysis";
+import KycExposureCard from "@/components/KycExposureCard";
 import { getScoreColor } from "@/components/ScoreCircle";
 
 // Hooks
@@ -145,7 +146,9 @@ export default function SetupDetailPage() {
         if (accessRes.ok) {
           const accessData = await accessRes.json();
           const isPaid = accessData.plan !== "free" && accessData.plan !== "anonymous";
-          const productLimit = isPaid ? 50 : 3;
+          // Use plan-specific limits from usage API, fallback to config-constants defaults
+          const productLimit = accessData.limits?.maxProductsPerSetup
+            || (isPaid ? 10 : 3);
           setUserAccess({ isPaid, productLimit, plan: accessData.plan });
         }
 
@@ -213,6 +216,16 @@ export default function SetupDetailPage() {
     await updateSetup({ products: newProducts });
   };
 
+  // Reorder products in setup (drag-and-drop)
+  const handleReorder = async (newOrder) => {
+    if (!setup) return;
+    const newProducts = newOrder.map((item) => ({
+      product_id: (item.product || item).id,
+      role: item.role || "other",
+    }));
+    await updateSetup({ products: newProducts });
+  };
+
   // Update setup
   const updateSetup = async (updates) => {
     setSaving(true);
@@ -220,7 +233,7 @@ export default function SetupDetailPage() {
       const res = await fetch(`/api/setups/${setupId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates),
+        body: JSON.stringify({ name: setup?.name, ...updates }),
       });
 
       if (res.ok) {
@@ -497,9 +510,9 @@ export default function SetupDetailPage() {
       {activeTab === 'overview' && (
         <>
           {/* Main content - Split view */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             {/* Left column - 40% */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="md:col-span-2 space-y-4">
               {/* Products list */}
               <SetupProductsList
                 products={productDetails.map((p, idx) => ({
@@ -508,6 +521,7 @@ export default function SetupDetailPage() {
                 }))}
                 onRemove={handleRemoveProduct}
                 onRoleChange={handleRoleChange}
+                onReorder={handleReorder}
                 editable={true}
               />
 
@@ -526,10 +540,16 @@ export default function SetupDetailPage() {
                 isPaid={userAccess.isPaid}
                 onUpgradeClick={handleLimitReached}
               />
+
+              {/* KYC Exposure Risk */}
+              <KycExposureCard
+                products={productDetails}
+                userAccess={userAccess}
+              />
             </div>
 
             {/* Right column - 60% */}
-            <div className="lg:col-span-3 space-y-4">
+            <div className="md:col-span-3 space-y-4">
               {/* Unified SAFE Analysis (coordinated with product page design) */}
               <SetupSAFEAnalysis
                 setupId={setupId}

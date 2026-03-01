@@ -21,6 +21,7 @@ export default async function sitemap() {
     { url: `${baseUrl}/api-docs`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/partners`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: `${baseUrl}/press`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/kyc-security`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
   ];
 
   // Dynamic product pages

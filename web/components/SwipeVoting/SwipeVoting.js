@@ -6,18 +6,9 @@ import SwipeCardStack from "./SwipeCardStack";
 import ProofModal from "./ProofModal";
 
 /**
- * SwipeVoting - Interface Tinder ULTRA-SIMPLE pour voter sur les évaluations IA
- *
- * MODE AVEUGLE (Fouloscopie):
- * - L'utilisateur vote SANS voir l'évaluation IA
- * - Évite le biais d'ancrage (suivre aveuglément l'IA)
- * - Révèle le résultat IA après le vote
- *
- * @param {string} productSlug - Filtrer par produit (optionnel)
- * @param {string} pillar - Filtrer par pilier S/A/F/E (optionnel)
- * @param {number} maxItems - Nombre max d'évaluations à charger (défaut: 10)
- * @param {function} onComplete - Callback quand toutes les cartes sont votées
- * @param {function} onVoteSubmitted - Callback après chaque vote
+ * SwipeVoting - Tinder-style voting to earn $SAFE tokens
+ * Vote YES/NO on AI evaluations. Earn tokens for every vote.
+ * Bonus tokens when your vote matches the community consensus.
  */
 export default function SwipeVoting({
   productSlug = null,
@@ -29,30 +20,23 @@ export default function SwipeVoting({
   const { data: session, status } = useSession();
   const stackRef = useRef(null);
 
-  // State
   const [evaluations, setEvaluations] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Instant vote - no modal needed
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Mode aveugle (Fouloscopie) - cacher l'IA avant le vote
-  const [blindMode, setBlindMode] = useState(true);
+  // Always blind mode — avoids anchoring bias
+  const blindMode = true;
 
-  // Révélation après vote
   const [showReveal, setShowReveal] = useState(false);
-  const [revealData, setRevealData] = useState(null); // { evaluation, userVote, aiResult, match }
+  const [revealData, setRevealData] = useState(null);
 
-  // Optional proof modal (after vote)
   const [showProofModal, setShowProofModal] = useState(false);
   const [lastVotedEvaluation, setLastVotedEvaluation] = useState(null);
 
-  // Reward animation
   const [tokenReward, setTokenReward] = useState(null);
-
-  // User stats
+  const [sessionTokens, setSessionTokens] = useState(0);
   const [userStats, setUserStats] = useState(null);
   const [dailyQuota, setDailyQuota] = useState(null);
 
@@ -74,7 +58,7 @@ export default function SwipeVoting({
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Erreur lors du chargement");
+        throw new Error(data.error || "Failed to load evaluations");
       }
 
       setEvaluations(data.evaluations || []);
@@ -94,13 +78,13 @@ export default function SwipeVoting({
     }
   }, [status, fetchEvaluations]);
 
-  // Handle swipe - INSTANT vote, avec révélation en mode aveugle
+  // Handle swipe — instant vote with reveal
   const handleSwipe = useCallback(
     async (direction) => {
       const evaluation = evaluations[currentIndex];
       if (!evaluation || isSubmitting) return;
 
-      const isAgree = direction === "right"; // OUI = right, NON = left
+      const isAgree = direction === "right";
 
       setIsSubmitting(true);
       try {
@@ -116,47 +100,37 @@ export default function SwipeVoting({
         const result = await res.json();
 
         if (!res.ok) {
-          throw new Error(result.error || "Erreur lors du vote");
+          throw new Error(result.error || "Vote failed");
         }
 
-        // Show token reward
-        showTokenReward(result.tokensEarned || 1);
-
+        const earned = result.tokensEarned || 1;
+        showTokenRewardAnim(earned);
+        setSessionTokens((prev) => prev + earned);
         setUserStats(result.userStats);
         setDailyQuota(result.dailyQuota);
 
-        // Store for optional proof
         setLastVotedEvaluation({ ...evaluation, voteAgrees: isAgree });
 
-        // En mode aveugle: montrer la révélation avant de passer à la carte suivante
-        if (blindMode) {
-          const userVotedYes = isAgree;
-          const aiSaidYes = evaluation.ai_result === "YES";
-          const match = (userVotedYes && aiSaidYes) || (!userVotedYes && !aiSaidYes);
+        // Reveal: compare user vs AI
+        const userVotedYes = isAgree;
+        const aiSaidYes = evaluation.ai_result === "YES";
+        const match = (userVotedYes && aiSaidYes) || (!userVotedYes && !aiSaidYes);
 
-          setRevealData({
-            evaluation,
-            userVote: isAgree ? "OUI" : "NON",
-            aiResult: evaluation.ai_result,
-            aiJustification: evaluation.ai_justification,
-            match,
-            communityDecision: result.communityDecision,
-            validationResult: result.validationResult,
-          });
-          setShowReveal(true);
-
-          // La carte avancera quand l'utilisateur ferme le reveal
-        } else {
-          // Mode normal: avancer directement
-          setTimeout(() => {
-            setCurrentIndex((prev) => prev + 1);
-          }, 300);
-        }
+        setRevealData({
+          evaluation,
+          userVote: isAgree,
+          aiResult: evaluation.ai_result,
+          aiJustification: evaluation.ai_justification,
+          match,
+          communityDecision: result.communityDecision,
+          validationResult: result.validationResult,
+        });
+        setShowReveal(true);
 
         onVoteSubmitted?.({
           evaluationId: evaluation.id,
           voteAgrees: isAgree,
-          tokensEarned: result.tokensEarned,
+          tokensEarned: earned,
         });
       } catch (err) {
         console.error("[SwipeVoting] Vote error:", err);
@@ -165,17 +139,15 @@ export default function SwipeVoting({
         setIsSubmitting(false);
       }
     },
-    [evaluations, currentIndex, isSubmitting, onVoteSubmitted, blindMode]
+    [evaluations, currentIndex, isSubmitting, onVoteSubmitted]
   );
 
-  // Fermer le reveal et passer à la carte suivante
   const closeReveal = useCallback(() => {
     setShowReveal(false);
     setRevealData(null);
     setCurrentIndex((prev) => prev + 1);
   }, []);
 
-  // Submit optional proof for bonus tokens
   const submitProof = async ({ evidenceUrl, evidenceType }) => {
     if (!lastVotedEvaluation) return;
 
@@ -193,10 +165,11 @@ export default function SwipeVoting({
       const result = await res.json();
 
       if (!res.ok) {
-        throw new Error(result.error || "Erreur");
+        throw new Error(result.error || "Error");
       }
 
-      showTokenReward(result.bonusTokens || 2);
+      showTokenRewardAnim(result.bonusTokens || 2);
+      setSessionTokens((prev) => prev + (result.bonusTokens || 2));
       setUserStats(result.userStats);
       setShowProofModal(false);
       setLastVotedEvaluation(null);
@@ -205,170 +178,195 @@ export default function SwipeVoting({
     }
   };
 
-  // Token reward animation
-  const showTokenReward = (amount) => {
+  const showTokenRewardAnim = (amount) => {
     setTokenReward(amount);
-    setTimeout(() => setTokenReward(null), 1200);
+    setTimeout(() => setTokenReward(null), 1500);
   };
 
-  // Quick action buttons
-  const handleQuickVrai = () => {
-    if (!isSubmitting && currentIndex < evaluations.length) {
-      handleSwipe("right");
-    }
+  const handleQuickYes = () => {
+    if (!isSubmitting && currentIndex < evaluations.length) handleSwipe("right");
   };
 
-  const handleQuickFaux = () => {
-    if (!isSubmitting && currentIndex < evaluations.length) {
-      handleSwipe("left");
-    }
+  const handleQuickNo = () => {
+    if (!isSubmitting && currentIndex < evaluations.length) handleSwipe("left");
   };
 
-  // Check if complete
+  // Completion callback
   useEffect(() => {
     if (currentIndex >= evaluations.length && evaluations.length > 0 && !loading) {
       onComplete?.();
     }
   }, [currentIndex, evaluations.length, loading, onComplete]);
 
-  // Not authenticated
+  // ── Not authenticated ──
   if (status === "unauthenticated") {
     return (
-      <div className="text-center py-12">
-        <div className="text-6xl mb-4">🔐</div>
-        <h3 className="text-xl font-semibold mb-2">Connexion requise</h3>
-        <p className="text-base-content/60 mb-4">Connectez-vous pour voter sur les évaluations IA</p>
-        <a href="/signin" className="btn btn-primary">
-          Se connecter
-        </a>
+      <div className="text-center py-16 px-4">
+        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+          <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-bold mb-2">Sign in to Vote</h3>
+        <p className="text-base-content/60 mb-6 max-w-xs mx-auto">
+          Earn <span className="font-bold text-primary">$SAFE tokens</span> by verifying AI evaluations
+        </p>
+        <a href="/api/auth/signin?callbackUrl=/community" className="btn btn-primary">Sign In</a>
       </div>
     );
   }
 
-  // Loading
+  // ── Loading ──
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-12">
+      <div className="flex flex-col items-center justify-center py-16">
         <div className="loading loading-spinner loading-lg text-primary mb-4"></div>
-        <p className="text-base-content/60">Chargement des évaluations...</p>
+        <p className="text-sm text-base-content/50">Loading evaluations...</p>
       </div>
     );
   }
 
-  // Error
+  // ── Error ──
   if (error) {
     return (
-      <div className="text-center py-12">
-        <div className="text-6xl mb-4">😕</div>
-        <h3 className="text-xl font-semibold mb-2">Oops!</h3>
-        <p className="text-base-content/60 mb-4">{error}</p>
-        <button onClick={fetchEvaluations} className="btn btn-primary">
-          Réessayer
-        </button>
+      <div className="text-center py-16 px-4">
+        <div className="w-14 h-14 rounded-2xl bg-error/10 flex items-center justify-center mx-auto mb-4">
+          <svg className="w-7 h-7 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-bold mb-1">Something went wrong</h3>
+        <p className="text-sm text-base-content/60 mb-4">{error}</p>
+        <button onClick={fetchEvaluations} className="btn btn-primary btn-sm">Retry</button>
       </div>
     );
   }
 
-  // No evaluations or quota exceeded
+  // ── No evaluations available ──
   if (evaluations.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="text-6xl mb-4">🎉</div>
-        <h3 className="text-xl font-semibold mb-2">Tout est voté !</h3>
-        <p className="text-base-content/60 mb-4">
-          Revenez plus tard pour de nouvelles évaluations à voter.
+      <div className="text-center py-16 px-4">
+        <div className="w-16 h-16 rounded-2xl bg-green-500/10 flex items-center justify-center mx-auto mb-4">
+          <svg className="w-8 h-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-bold mb-2">All caught up!</h3>
+        <p className="text-sm text-base-content/60 mb-6 max-w-xs mx-auto">
+          No evaluations left to vote on. Come back later for new ones.
         </p>
         {userStats && (
-          <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2">
-            <span className="text-primary font-bold">{userStats.total_earned || 0} $SAFE</span>
-            <span className="text-base-content/60">gagnés</span>
+          <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-5 py-2.5">
+            <span className="text-primary font-bold text-lg">{userStats.total_earned || 0}</span>
+            <span className="text-sm text-base-content/60">$SAFE earned</span>
           </div>
         )}
       </div>
     );
   }
 
-  // All cards voted
+  // ── Session complete ──
   if (currentIndex >= evaluations.length) {
     return (
-      <div className="text-center py-12">
-        <div className="text-6xl mb-4">🏆</div>
-        <h3 className="text-xl font-semibold mb-2">Session terminée !</h3>
-        <p className="text-base-content/60 mb-4">
-          Vous avez voté sur {evaluations.length} évaluation{evaluations.length > 1 ? "s" : ""}
+      <div className="text-center py-16 px-4">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-amber-400/20 flex items-center justify-center mx-auto mb-5">
+          <span className="text-4xl">&#127942;</span>
+        </div>
+        <h3 className="text-2xl font-bold mb-2">Session Complete!</h3>
+        <p className="text-sm text-base-content/60 mb-6">
+          You voted on {evaluations.length} evaluation{evaluations.length > 1 ? "s" : ""}
         </p>
-        {userStats && (
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2">
-              <span className="text-primary font-bold">{userStats.total_earned || 0} $SAFE</span>
-              <span className="text-base-content/60">total gagnés</span>
+
+        {/* Session summary */}
+        <div className="inline-flex flex-col gap-3 items-center mb-6">
+          <div className="flex items-center gap-3 bg-base-200 rounded-xl px-6 py-3">
+            <div className="text-center">
+              <div className="text-2xl font-black text-primary">+{sessionTokens}</div>
+              <div className="text-[10px] text-base-content/50 uppercase font-medium">$SAFE earned</div>
             </div>
-            {userStats.daily_streak > 1 && (
-              <div className="flex items-center justify-center gap-1 text-amber-400">
-                <span>🔥</span>
-                <span className="font-medium">{userStats.daily_streak} jours de suite</span>
-              </div>
+            {userStats?.daily_streak > 1 && (
+              <>
+                <div className="w-px h-8 bg-base-content/10"></div>
+                <div className="text-center">
+                  <div className="text-2xl font-black text-amber-400">{userStats.daily_streak}</div>
+                  <div className="text-[10px] text-base-content/50 uppercase font-medium">Day streak</div>
+                </div>
+              </>
             )}
           </div>
-        )}
-        <button onClick={fetchEvaluations} className="btn btn-primary mt-6">
-          Continuer à voter
+        </div>
+
+        <button onClick={fetchEvaluations} className="btn btn-primary">
+          Vote More
         </button>
       </div>
     );
   }
+
+  // ── MAIN VOTING UI ──
+  const quotaUsed = dailyQuota?.used || 0;
+  const quotaMax = dailyQuota?.max || 10;
+  const quotaPct = Math.min(100, (quotaUsed / quotaMax) * 100);
 
   return (
     <div className="flex flex-col items-center w-full max-w-lg mx-auto px-4">
-      {/* Header with stats */}
-      <div className="w-full flex items-center justify-between mb-4">
+
+      {/* ── TOP BAR: tokens + progress + quota ── */}
+      <div className="w-full flex items-center justify-between mb-3">
+        {/* Tokens earned this session */}
         <div className="flex items-center gap-2">
-          {userStats && (
-            <span className="text-sm font-medium text-primary">{userStats.total_earned || 0} $SAFE</span>
-          )}
+          <div className="flex items-center gap-1 bg-primary/10 rounded-full px-3 py-1">
+            <span className="text-sm font-bold text-primary">{sessionTokens}</span>
+            <span className="text-xs text-primary/70">$SAFE</span>
+          </div>
           {userStats?.daily_streak > 1 && (
-            <span className="text-amber-400 text-sm">🔥 {userStats.daily_streak}j</span>
+            <span className="text-sm text-amber-400 font-medium">&#128293; {userStats.daily_streak}d</span>
           )}
         </div>
-        <div className="flex items-center gap-3">
-          {/* Blind mode toggle */}
-          <button
-            onClick={() => setBlindMode(!blindMode)}
-            className={`flex items-center gap-1 text-xs px-2 py-1 rounded-full transition-colors ${
-              blindMode
-                ? "bg-primary/20 text-primary"
-                : "bg-base-300 text-base-content/60"
-            }`}
-            title={blindMode ? "Mode aveugle actif" : "Mode visible"}
-          >
-            {blindMode ? "🙈" : "👁️"}
-            <span className="hidden sm:inline">{blindMode ? "Aveugle" : "Visible"}</span>
-          </button>
-          {dailyQuota && (
-            <span className="text-xs text-base-content/50">
-              {dailyQuota.remaining}/{dailyQuota.max}
-            </span>
-          )}
+
+        {/* Daily quota */}
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-base-content/40">
+            {quotaUsed}/{quotaMax} today
+          </span>
+          <div className="w-8 h-8 relative">
+            <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
+              <path
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="currentColor"
+                className="text-base-content/10"
+                strokeWidth="3"
+              />
+              <path
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="currentColor"
+                className={quotaPct >= 90 ? "text-red-400" : "text-primary"}
+                strokeWidth="3"
+                strokeDasharray={`${quotaPct}, 100`}
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
         </div>
       </div>
 
-      {/* Progress indicator */}
+      {/* ── Session progress bar ── */}
       <div className="w-full mb-4">
-        <div className="flex items-center justify-between text-xs text-base-content/60 mb-1">
-          <span>Progression</span>
-          <span>
-            {currentIndex + 1}/{evaluations.length}
-          </span>
+        <div className="flex items-center justify-between text-[10px] text-base-content/40 mb-1 uppercase font-medium tracking-wide">
+          <span>Progress</span>
+          <span>{currentIndex + 1} of {evaluations.length}</span>
         </div>
-        <div className="w-full h-1.5 bg-base-300 rounded-full overflow-hidden">
+        <div className="w-full h-1 bg-base-content/10 rounded-full overflow-hidden">
           <div
-            className="h-full bg-primary rounded-full transition-all duration-300"
-            style={{ width: `${((currentIndex + 1) / evaluations.length) * 100}%` }}
+            className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
+            style={{ width: `${((currentIndex) / evaluations.length) * 100}%` }}
           />
         </div>
       </div>
 
-      {/* Card stack */}
+      {/* ── Card stack ── */}
       <SwipeCardStack
         ref={stackRef}
         evaluations={evaluations}
@@ -378,50 +376,47 @@ export default function SwipeVoting({
         blindMode={blindMode}
       />
 
-      {/* Quick action buttons */}
-      <div className="flex items-center justify-center gap-8 py-6">
-        {/* NON button */}
+      {/* ── Action buttons ── */}
+      <div className="flex items-center justify-center gap-6 py-5">
+        {/* NO button */}
         <button
-          onClick={handleQuickFaux}
+          onClick={handleQuickNo}
           disabled={isSubmitting}
-          className="w-16 h-16 rounded-full border-2 border-red-500 text-red-500
-                     flex items-center justify-center
-                     hover:bg-red-500/10 active:scale-95
-                     transition-all duration-150
-                     disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Vote NON"
-          title="Non, ce produit ne respecte pas cette norme"
+          className="group flex flex-col items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+          aria-label="Vote NO"
         >
-          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <div className="w-16 h-16 rounded-full border-2 border-red-500/80 text-red-500
+                          flex items-center justify-center
+                          group-hover:bg-red-500/10 group-active:scale-90
+                          transition-all duration-150">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+          <span className="text-[10px] font-bold text-red-400/70 uppercase">No</span>
         </button>
 
-        {/* OUI button */}
+        {/* YES button */}
         <button
-          onClick={handleQuickVrai}
+          onClick={handleQuickYes}
           disabled={isSubmitting}
-          className="w-16 h-16 rounded-full border-2 border-green-500 text-green-500
-                     flex items-center justify-center
-                     hover:bg-green-500/10 active:scale-95
-                     transition-all duration-150
-                     disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Vote OUI"
-          title="Oui, ce produit respecte cette norme"
+          className="group flex flex-col items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+          aria-label="Vote YES"
         >
-          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
+          <div className="w-16 h-16 rounded-full border-2 border-green-500/80 text-green-500
+                          flex items-center justify-center
+                          group-hover:bg-green-500/10 group-active:scale-90
+                          transition-all duration-150">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <span className="text-[10px] font-bold text-green-400/70 uppercase">Yes</span>
         </button>
       </div>
 
-      {/* Instructions */}
-      <p className="text-xs text-base-content/40 text-center">
-        Donnez votre avis: ce produit respecte-t-il cette norme?
-      </p>
-
-      {/* Optional proof button (after vote) */}
-      {lastVotedEvaluation && !showProofModal && (
+      {/* ── Optional proof button ── */}
+      {lastVotedEvaluation && !showProofModal && !showReveal && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 animate-fade-in">
           <button
             onClick={() => setShowProofModal(true)}
@@ -430,12 +425,12 @@ export default function SwipeVoting({
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
             </svg>
-            Ajouter une source (+2 $SAFE)
+            Add source (+2 $SAFE)
           </button>
         </div>
       )}
 
-      {/* Proof modal */}
+      {/* ── Proof modal ── */}
       <ProofModal
         isOpen={showProofModal}
         onClose={() => {
@@ -446,101 +441,102 @@ export default function SwipeVoting({
         evaluation={lastVotedEvaluation}
       />
 
-      {/* Reveal modal (blind mode) - shows AI result after vote */}
+      {/* ── Reveal modal — shows AI result after vote ── */}
       {showReveal && revealData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-          <div className="bg-base-200 rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-scale-in">
-            {/* Header with match indicator */}
-            <div className="text-center mb-6">
-              {revealData.match ? (
-                <>
-                  <div className="text-5xl mb-3">🎯</div>
-                  <h3 className="text-xl font-bold text-green-400">Vous êtes aligné avec l'IA !</h3>
-                  <p className="text-sm text-base-content/60 mt-1">Votre intuition est bonne</p>
-                </>
-              ) : (
-                <>
-                  <div className="text-5xl mb-3">🤔</div>
-                  <h3 className="text-xl font-bold text-amber-400">Avis divergent</h3>
-                  <p className="text-sm text-base-content/60 mt-1">Votre vote contribue au consensus</p>
-                </>
-              )}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4" onClick={closeReveal}>
+          <div className="bg-base-200 rounded-2xl max-w-sm w-full shadow-2xl animate-scale-in overflow-hidden" onClick={(e) => e.stopPropagation()}>
+
+            {/* Match header — full-width colored bar */}
+            <div className={`py-5 text-center ${
+              revealData.match
+                ? "bg-gradient-to-r from-green-500/20 to-emerald-500/20"
+                : "bg-gradient-to-r from-amber-500/20 to-orange-500/20"
+            }`}>
+              <div className="text-4xl mb-2">{revealData.match ? "&#127919;" : "&#129300;"}</div>
+              <h3 className={`text-lg font-bold ${revealData.match ? "text-green-400" : "text-amber-400"}`}>
+                {revealData.match ? "You matched the AI!" : "Different opinion"}
+              </h3>
+              <p className="text-xs text-base-content/50 mt-0.5">
+                {revealData.match ? "Great intuition — bonus pending" : "Your vote counts toward consensus"}
+              </p>
             </div>
 
-            {/* Comparison */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              {/* User vote */}
-              <div className={`p-4 rounded-xl text-center ${
-                revealData.userVote === "OUI"
-                  ? "bg-green-500/20 border border-green-500/30"
-                  : "bg-red-500/20 border border-red-500/30"
-              }`}>
-                <p className="text-xs text-base-content/50 uppercase mb-1">Votre vote</p>
-                <p className={`text-2xl font-bold ${
-                  revealData.userVote === "OUI" ? "text-green-400" : "text-red-400"
+            {/* Comparison row */}
+            <div className="px-5 py-4">
+              <div className="flex items-stretch gap-3 mb-4">
+                {/* Your vote */}
+                <div className={`flex-1 p-3 rounded-xl text-center border ${
+                  revealData.userVote
+                    ? "bg-green-500/10 border-green-500/20"
+                    : "bg-red-500/10 border-red-500/20"
                 }`}>
-                  {revealData.userVote}
-                </p>
-              </div>
+                  <p className="text-[10px] text-base-content/40 uppercase font-medium mb-1">You</p>
+                  <p className={`text-xl font-black ${revealData.userVote ? "text-green-400" : "text-red-400"}`}>
+                    {revealData.userVote ? "YES" : "NO"}
+                  </p>
+                </div>
 
-              {/* AI result */}
-              <div className={`p-4 rounded-xl text-center ${
-                revealData.aiResult === "YES"
-                  ? "bg-green-500/20 border border-green-500/30"
-                  : revealData.aiResult === "NO"
-                    ? "bg-red-500/20 border border-red-500/30"
-                    : "bg-amber-500/20 border border-amber-500/30"
-              }`}>
-                <p className="text-xs text-base-content/50 uppercase mb-1">L'IA dit</p>
-                <p className={`text-2xl font-bold ${
+                {/* VS */}
+                <div className="flex items-center">
+                  <span className="text-xs font-bold text-base-content/20">VS</span>
+                </div>
+
+                {/* AI verdict */}
+                <div className={`flex-1 p-3 rounded-xl text-center border ${
                   revealData.aiResult === "YES"
-                    ? "text-green-400"
+                    ? "bg-green-500/10 border-green-500/20"
                     : revealData.aiResult === "NO"
-                      ? "text-red-400"
-                      : "text-amber-400"
+                      ? "bg-red-500/10 border-red-500/20"
+                      : "bg-amber-500/10 border-amber-500/20"
                 }`}>
-                  {revealData.aiResult === "YES" ? "OUI" : revealData.aiResult === "NO" ? "NON" : "PARTIEL"}
-                </p>
+                  <p className="text-[10px] text-base-content/40 uppercase font-medium mb-1">AI</p>
+                  <p className={`text-xl font-black ${
+                    revealData.aiResult === "YES" ? "text-green-400" :
+                    revealData.aiResult === "NO" ? "text-red-400" : "text-amber-400"
+                  }`}>
+                    {revealData.aiResult === "YES" ? "YES" :
+                     revealData.aiResult === "NO" ? "NO" : "PARTIAL"}
+                  </p>
+                </div>
               </div>
+
+              {/* AI justification (collapsed) */}
+              {revealData.aiJustification && (
+                <div className="bg-base-300/40 rounded-lg p-3 mb-4">
+                  <p className="text-[10px] text-base-content/40 uppercase font-medium mb-1">AI reasoning</p>
+                  <p className="text-xs text-base-content/60 line-clamp-3 leading-relaxed">{revealData.aiJustification}</p>
+                </div>
+              )}
+
+              {/* Community consensus badge */}
+              {revealData.communityDecision && (
+                <div className="text-center mb-4">
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
+                    revealData.validationResult === "confirmed"
+                      ? "bg-green-500/15 text-green-400"
+                      : "bg-amber-500/15 text-amber-400"
+                  }`}>
+                    {revealData.validationResult === "confirmed" ? "&#10003; AI Confirmed" : "&#9888; AI Challenged"}
+                  </span>
+                </div>
+              )}
+
+              {/* Continue button */}
+              <button onClick={closeReveal} className="w-full btn btn-primary btn-sm">
+                Next
+              </button>
             </div>
-
-            {/* AI justification preview */}
-            {revealData.aiJustification && (
-              <div className="bg-base-300/50 rounded-lg p-3 mb-6">
-                <p className="text-xs text-base-content/50 uppercase mb-1">Justification IA</p>
-                <p className="text-sm text-base-content/70 line-clamp-3">{revealData.aiJustification}</p>
-              </div>
-            )}
-
-            {/* Community status if decided */}
-            {revealData.communityDecision && (
-              <div className="text-center mb-4">
-                <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm ${
-                  revealData.validationResult === "confirmed"
-                    ? "bg-green-500/20 text-green-400"
-                    : "bg-amber-500/20 text-amber-400"
-                }`}>
-                  {revealData.validationResult === "confirmed" ? "✓ IA confirmée" : "⚠ IA contestée"}
-                </span>
-              </div>
-            )}
-
-            {/* Continue button */}
-            <button
-              onClick={closeReveal}
-              className="w-full btn btn-primary"
-            >
-              Continuer
-            </button>
           </div>
         </div>
       )}
 
-      {/* Token reward animation */}
+      {/* ── Token reward float animation ── */}
       {tokenReward !== null && (
-        <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center">
-          <div className="animate-token-float text-3xl font-bold text-primary drop-shadow-lg">
-            +{tokenReward} $SAFE
+        <div className="fixed inset-0 pointer-events-none z-[60] flex items-center justify-center">
+          <div className="animate-token-float">
+            <div className="bg-primary/90 text-primary-content px-5 py-2 rounded-full text-lg font-bold shadow-xl shadow-primary/25">
+              +{tokenReward} $SAFE
+            </div>
           </div>
         </div>
       )}

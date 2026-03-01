@@ -15,6 +15,7 @@ import time
 from .config import SUPABASE_URL, get_supabase_headers
 from .api_provider import AIProvider, parse_applicability_response
 from .ai_strategy import get_applicability_strategy, AIModel
+from .supabase_pagination import fetch_all
 
 
 # Import applicability rules
@@ -22,9 +23,16 @@ from .applicability_rules import (
     HARDWARE_ONLY_CATEGORIES,
     DEFI_ONLY_CATEGORIES,
     WALLET_ONLY_CATEGORIES,
+    HARDWARE_NORM_CODES,
+    SOFTWARE_NORM_CODES,
+    WALLET_NORM_CODES,
+    HARDWARE_NORM_PREFIXES,
+    DEFI_NORM_PREFIXES,
+    WALLET_NORM_PREFIXES,
 )
 
-# Mapping des catégories de normes (basé sur l'Excel SAFE_SCORING_V7_FINAL.xlsx)
+# Norm category mapping (based on SAFE_SCORING_V7_FINAL.xlsx)
+# Maps individual norm codes to their category for rule-based pre-filtering
 NORM_CATEGORIES = {
     # S - Security
     'S01': 'Crypto', 'S02': 'Crypto', 'S03': 'Crypto', 'S04': 'Crypto', 'S05': 'Crypto',
@@ -34,24 +42,32 @@ NORM_CATEGORIES = {
     'S80': 'Auth', 'S81': 'Auth', 'S82': 'Auth', 'S83': 'Auth', 'S84': 'Auth', 'S85': 'Auth',
     'S116': 'TEE', 'S117': 'TEE', 'S118': 'TEE', 'S119': 'TEE', 'S120': 'TEE',
     'S161': 'SC Audit', 'S162': 'SC Audit', 'S163': 'SC Audit', 'S164': 'SC Audit', 'S165': 'SC Audit',
-    'S176': 'Biométrie', 'S177': 'Biométrie', 'S178': 'Biométrie', 'S179': 'Biométrie',
+    'S176': 'Biometrics', 'S177': 'Biometrics', 'S178': 'Biometrics', 'S179': 'Biometrics',
     'S191': 'Boot', 'S192': 'Boot', 'S193': 'Boot',
     'S194': 'Anti-Tamper', 'S195': 'Anti-Tamper', 'S196': 'Anti-Tamper', 'S197': 'Anti-Tamper',
     'S220': 'Blockchain', 'S221': 'Blockchain', 'S222': 'Blockchain', 'S223': 'Blockchain', 'S224': 'Blockchain',
+    # Secure Element certs: S262-S272
+    **{f'S{i}': 'Secure Element' for i in range(262, 273)},
+    # Firmware extended: S70-S72
+    'S70': 'Firmware', 'S71': 'Firmware', 'S72': 'Firmware',
     # F - Fidelity
-    'F01': 'Environ', 'F02': 'Environ', 'F03': 'Environ', 'F04': 'Environ', 'F05': 'Environ',
-    'F16': 'Méca', 'F17': 'Méca', 'F18': 'Méca', 'F19': 'Méca', 'F20': 'Méca',
-    'F28': 'Feu', 'F29': 'Feu', 'F30': 'Feu', 'F31': 'Feu', 'F32': 'Feu',
-    'F36': 'Chimique', 'F37': 'Chimique', 'F38': 'Chimique', 'F39': 'Chimique', 'F40': 'Chimique',
-    'F42': 'EM', 'F43': 'EM', 'F44': 'EM', 'F45': 'EM', 'F46': 'EM',
-    'F57': 'Matériaux', 'F58': 'Matériaux', 'F59': 'Matériaux', 'F60': 'Matériaux', 'F61': 'Matériaux',
+    **{f'F{i:02d}': 'Environmental' for i in range(1, 16)},    # F01-F15: Environmental resistance
+    **{f'F{i}': 'Mechanical' for i in range(16, 21)},           # F16-F20: Mechanical durability
+    **{f'F{i}': 'Fire' for i in range(28, 33)},                 # F28-F32: Fire resistance
+    **{f'F{i}': 'Chemical' for i in range(36, 41)},             # F36-F40: Chemical resistance
+    **{f'F{i}': 'EM' for i in range(42, 47)},                   # F42-F46: Electromagnetic
+    **{f'F{i}': 'Materials' for i in range(57, 62)},            # F57-F61: Material quality
+    **{f'F{i}': 'Transport' for i in range(97, 102)},           # F97-F101: Transport durability
+    **{f'F{i}': 'MIL' for i in range(112, 116)},                # F112-F115: Military standards
+    **{f'F{i}': 'Space' for i in range(116, 119)},              # F116-F118: Space-grade
+    'F126': 'Materials',                                          # Inconel/alloy
     # E - Efficiency
-    'E43': 'Ergo', 'E44': 'Ergo', 'E45': 'Ergo', 'E46': 'Ergo', 'E47': 'Ergo',
-    'E54': 'Batterie', 'E55': 'Batterie', 'E56': 'Batterie', 'E57': 'Batterie', 'E58': 'Batterie',
-    'E100': 'DeFi', 'E101': 'DeFi', 'E102': 'DeFi', 'E103': 'DeFi', 'E104': 'DeFi',
-    'E131': 'L2', 'E132': 'L2', 'E133': 'L2', 'E134': 'L2', 'E135': 'L2',
-    'E142': 'Cross-chain', 'E143': 'Cross-chain', 'E144': 'Cross-chain', 'E145': 'Cross-chain', 'E146': 'Cross-chain',
-    'E172': 'Gas', 'E173': 'Gas', 'E174': 'Gas', 'E175': 'Gas', 'E176': 'Gas',
+    **{f'E{i}': 'Ergonomics' for i in range(43, 48)},           # E43-E47: Physical ergonomics
+    **{f'E{i}': 'Battery' for i in range(54, 59)},              # E54-E58: Battery life
+    **{f'E{i}': 'DeFi' for i in range(100, 105)},               # E100-E104: DeFi features
+    **{f'E{i}': 'L2' for i in range(131, 136)},                 # E131-E135: Layer 2
+    **{f'E{i}': 'Cross-chain' for i in range(142, 147)},        # E142-E146: Cross-chain
+    **{f'E{i}': 'Gas' for i in range(172, 177)},                # E172-E176: Gas optimization
 }
 
 APPLICABILITY_PROMPT = """You are a crypto security and blockchain expert.
@@ -126,12 +142,8 @@ class ApplicabilityGenerator:
         self.product_types = {t['id']: t for t in types_list}
         print(f"   {len(self.product_types)} product types", flush=True)
 
-        # Load norms
-        r = requests.get(
-            f'{SUPABASE_URL}/rest/v1/norms?select=id,code,title,pillar,description',
-            headers=self.headers
-        )
-        self.norms = r.json() if r.status_code == 200 else []
+        # Load norms (paginated - loads ALL 2159+ norms beyond 1000 limit)
+        self.norms = fetch_all('norms', select='id,code,title,pillar,description', order='id')
         self.norms_by_code = {n['code']: n for n in self.norms}
         print(f"   {len(self.norms)} norms", flush=True)
 
@@ -201,25 +213,61 @@ class ApplicabilityGenerator:
         model_name = strategy['model'].value
 
         # PRE-FILTER: Apply business rules to skip obvious non-applicable norms
+        # Three layers: 1) exact code sets, 2) category mapping, 3) prefix matching
         pre_filtered_results = {}
         norms_to_evaluate = []
 
         for norm in norms_batch:
             norm_code = norm['code']
-            norm_category = NORM_CATEGORIES.get(norm_code, 'Unknown')
+            filtered = False
 
-            # Check if we can determine applicability from rules
-            if norm_category in HARDWARE_ONLY_CATEGORIES and not ctx['is_hardware']:
-                # Hardware norm on non-hardware product = NOT APPLICABLE
+            # Layer 1: Exact code set matching (fastest, most reliable)
+            if norm_code in HARDWARE_NORM_CODES and not ctx['is_hardware']:
                 pre_filtered_results[norm['id']] = False
-            elif norm_category in DEFI_ONLY_CATEGORIES and not ctx['is_defi']:
-                # DeFi norm on non-DeFi product = NOT APPLICABLE
+                filtered = True
+            elif norm_code in SOFTWARE_NORM_CODES and not ctx['is_defi'] and not ctx['is_protocol']:
                 pre_filtered_results[norm['id']] = False
-            elif norm_category in WALLET_ONLY_CATEGORIES and not ctx['is_wallet']:
-                # Wallet norm on non-wallet product = NOT APPLICABLE
+                filtered = True
+            elif norm_code in WALLET_NORM_CODES and not ctx['is_wallet']:
                 pre_filtered_results[norm['id']] = False
-            else:
-                # Need AI evaluation
+                filtered = True
+
+            # Layer 2: Category mapping (NORM_CATEGORIES dict)
+            if not filtered:
+                norm_category = NORM_CATEGORIES.get(norm_code)
+                if norm_category:
+                    if norm_category in HARDWARE_ONLY_CATEGORIES and not ctx['is_hardware']:
+                        pre_filtered_results[norm['id']] = False
+                        filtered = True
+                    elif norm_category in DEFI_ONLY_CATEGORIES and not ctx['is_defi']:
+                        pre_filtered_results[norm['id']] = False
+                        filtered = True
+                    elif norm_category in WALLET_ONLY_CATEGORIES and not ctx['is_wallet']:
+                        pre_filtered_results[norm['id']] = False
+                        filtered = True
+
+            # Layer 3: Prefix-based matching (norm code families)
+            if not filtered:
+                code_upper = norm_code.upper()
+                for prefix in HARDWARE_NORM_PREFIXES:
+                    if code_upper.startswith(prefix) and not ctx['is_hardware']:
+                        pre_filtered_results[norm['id']] = False
+                        filtered = True
+                        break
+                if not filtered:
+                    for prefix in DEFI_NORM_PREFIXES:
+                        if code_upper.startswith(prefix) and not ctx['is_defi'] and not ctx['is_protocol']:
+                            pre_filtered_results[norm['id']] = False
+                            filtered = True
+                            break
+                if not filtered:
+                    for prefix in WALLET_NORM_PREFIXES:
+                        if code_upper.startswith(prefix) and not ctx['is_wallet']:
+                            pre_filtered_results[norm['id']] = False
+                            filtered = True
+                            break
+
+            if not filtered:
                 norms_to_evaluate.append(norm)
 
         if pre_filtered_results:

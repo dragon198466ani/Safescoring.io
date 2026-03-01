@@ -16,6 +16,7 @@ import ScoreSecurityPanel from "@/components/ScoreSecurityPanel";
 import CommunityStats from "@/components/CommunityStats";
 import ProductLogo from "@/components/ProductLogo";
 import PricingDisplay from "@/components/PricingDisplay";
+import ProductScoreTierView from "@/components/ProductScoreTierView";
 // Heavy components - lazy loaded
 import {
   LazySecurityIncidents,
@@ -23,11 +24,15 @@ import {
   LazyProductHeroGallery,
   LazySAFEStrategicAnalysis,
   LazySAFEProtectionGuide,
+  LazyDualScoreChart,
+  LazyThreeTrackScores,
+  LazySwipeVoting,
 } from "@/libs/lazy-components";
 
 // Enable ISR caching for better SEO and Google crawl efficiency
-// Product scores don't change frequently, so 1 hour cache is reasonable
-export const revalidate = 3600; // 1 hour
+// Product scores change at most once per day during batch evaluation runs
+// 24h cache reduces Supabase API calls by ~97% (stays within free tier)
+export const revalidate = 86400; // 24 hours
 
 const getLangFromHeaders = () => {
   const acceptLanguage = headers().get("accept-language") || "";
@@ -353,6 +358,20 @@ async function getProduct(slug, t) {
       f: Math.round(safeScoring?.score_f || 0),
       e: Math.round(safeScoring?.score_e || 0),
     },
+    consumerScores: {
+      total: Math.round(safeScoring?.note_consumer || 0),
+      s: Math.round(safeScoring?.s_consumer || 0),
+      a: Math.round(safeScoring?.a_consumer || 0),
+      f: Math.round(safeScoring?.f_consumer || 0),
+      e: Math.round(safeScoring?.e_consumer || 0),
+    },
+    essentialScores: {
+      total: Math.round(safeScoring?.note_essential || 0),
+      s: Math.round(safeScoring?.s_essential || 0),
+      a: Math.round(safeScoring?.a_essential || 0),
+      f: Math.round(safeScoring?.f_essential || 0),
+      e: Math.round(safeScoring?.e_essential || 0),
+    },
     verified: safeScoring?.note_finale != null,
     // DATES CLAIRES - Chaque produit a des dates uniques et spécifiques
     dates: {
@@ -589,13 +608,26 @@ export default async function ProductPage({ params }) {
               </div>
             </div>
 
-            {/* Right: SAFE Score Circle only */}
-            <div className="shrink-0">
-              <ScoreCircle
-                score={product.scores.total}
+            {/* Right: SAFE Score with Tier Selector (Full/Consumer/Essential) */}
+            <div className="shrink-0 w-[240px]">
+              <ProductScoreTierView
+                scores={product.scores}
+                consumerScores={product.consumerScores}
+                essentialScores={product.essentialScores}
                 lastUpdate={product.lastUpdate}
-                t={t}
                 locale={lang}
+                pillars={config.safe.pillars}
+                pillarKeyMap={PILLAR_KEY_MAP}
+                translations={{
+                  safeScore: t("product.safeScore"),
+                  updatedPrefix: t("product.updatedPrefix") || "Updated",
+                  pillarNames: {
+                    S: t("pillars.security"),
+                    A: t("pillars.adversity"),
+                    F: t("pillars.fidelity"),
+                    E: t("pillars.efficiency"),
+                  },
+                }}
               />
             </div>
           </div>
@@ -755,6 +787,49 @@ export default async function ProductPage({ params }) {
 
           {/* Protection Guide - how to stay safe with this product */}
           <LazySAFEProtectionGuide productSlug={product.slug} />
+
+          {/* Score Evolution: EA Score vs User Score (dual chart) */}
+          <div className="mb-12">
+            <div className="rounded-xl bg-base-200 border border-base-300 p-6">
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <span className="text-xl">📊</span>
+                {t("productDetail.scoreEvolution") || "Score Evolution"}
+              </h2>
+              <LazyDualScoreChart
+                productSlug={product.slug}
+                height={220}
+                showLegend={true}
+                showTooltip={true}
+                timeRange="30d"
+              />
+            </div>
+          </div>
+
+          {/* 3-Track Scoring: AI + Community + Hybrid per pillar */}
+          <div className="mb-12">
+            <LazyThreeTrackScores productSlug={product.slug} />
+          </div>
+
+          {/* Community Voting - Vote on AI evaluations & earn $SAFE tokens */}
+          <div className="mb-12">
+            <div className="rounded-xl bg-gradient-to-br from-amber-500/5 to-base-200 border border-amber-500/20 p-6">
+              <div className="text-center mb-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-sm font-medium mb-2">
+                  🗳️ Vote & Earn $SAFE
+                </div>
+                <h2 className="text-lg font-semibold">
+                  {t("productDetail.communityVoting") || "Community Verification"}
+                </h2>
+                <p className="text-sm text-base-content/60 mt-1">
+                  {t("productDetail.communityVotingDesc") || "Vote on AI evaluations and earn $SAFE tokens"}
+                </p>
+              </div>
+              <LazySwipeVoting
+                productSlug={product.slug}
+                maxItems={5}
+              />
+            </div>
+          </div>
 
           {/* Score & Security + Security History - Side by side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">

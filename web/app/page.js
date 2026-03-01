@@ -8,6 +8,8 @@ import Pillars from "@/components/Pillars";
 // Below the fold - lazy loaded for faster initial paint
 import {
   LazyProductsPreview,
+  LazyWhySafeScoring,
+  LazyForDevelopers,
   LazyPricing,
   LazyFAQ,
   LazyCTA,
@@ -25,6 +27,8 @@ export default function Page() {
         <Pillars />
         {/* Below the fold - lazy loaded */}
         <LazyProductsPreview />
+        <LazyWhySafeScoring />
+        <LazyForDevelopers />
         <LazyPricing />
         <LazyFAQ />
         <LazyCTA />

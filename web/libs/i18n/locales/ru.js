@@ -117,7 +117,7 @@ export default {
       },
       rigor: {
         title: "Строгость",
-        desc: "916 норм по 4 столпам. Никаких сокращений и субъективных мнений.",
+        desc: "{totalNorms} норм по 4 столпам. Никаких сокращений и субъективных мнений.",
       },
       accessibility: {
         title: "Доступность",
@@ -515,7 +515,7 @@ export default {
       },
       norms: {
         title: "Global standards, not opinions",
-        body: "916 norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
+        body: "{totalNorms} norms across Security, Adversity, Fidelity, and Efficiency. Transparent and reproducible.",
       },
       trust: {
         title: "Trust you can prove",
@@ -591,7 +591,7 @@ export default {
         },
         evaluate: {
           title: "Evaluate",
-          desc: "We score your product against 916 security norms.",
+          desc: "We score your product against {totalNorms} security norms.",
         },
         review: {
           title: "Review",
@@ -621,6 +621,39 @@ export default {
       body: "Join teams worldwide using SAFE Certification to prove security with data.",
       primary: "Apply Now",
       secondary: "Talk to Sales",
+    },
+  },
+  // KYC Security
+  kyc: {
+    card: {
+      title: "KYC-riski",
+      noKyc: "Platformy v etoi konfiguratsii ne trebuyut podtverzhdeniya lichnosti.",
+      requireKyc: "trebuyut podtverzhdeniya lichnosti",
+      incidentProvider: "ispolzuyut postavshchika s izvestnym intsidentom",
+      hide: "Skryt",
+      view: "Pokazat",
+      details: "podrobnosti",
+      via: "cherez",
+      incidentReported: "Intsident zafiksirovan",
+      noIncidents: "Net intsidentov",
+      dataTypesAffected: "Potentsialno zatronutye tipy dannykh:",
+      upgradeCta: "Obnovite dlya polucheniya podrobnoi informatsii o postavshchikakh.",
+    },
+    dataTypes: {
+      passport: "Pasport / Udostoverenie",
+      selfie: "Selfi / Foto",
+      address: "Adres",
+      phone: "Nomer telefona",
+      bankAccount: "Bankovskii schet",
+      ssn: "INN",
+      email: "Email",
+    },
+    risk: {
+      critical: "Kriticheskii",
+      high: "Vysokii",
+      moderate: "Srednii",
+      low: "Nizkii",
+      none: "Bez KYC",
     },
   },
 };

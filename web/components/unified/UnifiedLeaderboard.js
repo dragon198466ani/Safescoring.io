@@ -24,7 +24,7 @@ import { useSession } from 'next-auth/react';
  * @example Compact sidebar variant
  * <UnifiedLeaderboard type="community" variant="compact" limit={5} showTitle={false} />
  */
-export default function UnifiedLeaderboard({
+function UnifiedLeaderboard({
   type = 'products',        // 'products' | 'community'
   variant = 'full',         // 'full' | 'compact'
   timeframe = 'all',        // 'all' | 'month' | 'week'

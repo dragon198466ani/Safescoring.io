@@ -121,15 +121,15 @@ function getSeverityLabel(severity) {
 
 // Result color class
 function getResultClass(result) {
-  if (result === "YES" || result === "OUI") return "result-yes";
-  if (result === "NO" || result === "NON") return "result-no";
+  if (result === "YES" || result === "YESp" || result === "OUI") return "result-yes";
+  if (result === "NO" || result === "N" || result === "NON") return "result-no";
   return "result-na";
 }
 
 // Result label in French
 function getResultLabel(result) {
-  if (result === "YES") return "OUI";
-  if (result === "NO") return "NON";
+  if (result === "YES" || result === "YESp") return "OUI";
+  if (result === "NO" || result === "N") return "NON";
   if (result === "N/A" || result === "TBD") return "N/A";
   return result || "N/A";
 }
@@ -177,8 +177,8 @@ function generateProductReportHTML(product, scores, evaluations, incidents, hist
 
   // Calculate evaluation stats
   const totalEvaluations = evaluations?.length || 0;
-  const yesCount = evaluations?.filter((e) => e.result === "YES").length || 0;
-  const noCount = evaluations?.filter((e) => e.result === "NO").length || 0;
+  const yesCount = evaluations?.filter((e) => e.result === "YES" || e.result === "YESp").length || 0;
+  const noCount = evaluations?.filter((e) => e.result === "NO" || e.result === "N").length || 0;
   const naCount = evaluations?.filter((e) => e.result === "N/A" || e.result === "TBD").length || 0;
 
   return `

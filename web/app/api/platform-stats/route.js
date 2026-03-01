@@ -16,15 +16,15 @@ export const revalidate = 300;
 // Default fallback values (used if Supabase is not configured or fails)
 // These should match config.js fallback values
 const DEFAULT_STATS = {
-  totalNorms: 2354,
+  totalNorms: 2376,
   totalProducts: 1535,
   totalProductTypes: 78,
   totalEvaluations: 3314065, // 1535 products × 2159 evals per product
   normsByPillar: {
     S: 872,
-    A: 530,
-    F: 339,
-    E: 613,
+    A: 540,
+    F: 346,
+    E: 618,
   },
   productsEvaluated: 1535,
   productsPending: 0,

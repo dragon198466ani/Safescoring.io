@@ -11,6 +11,7 @@ Key principles:
 
 import os
 import sys
+import io
 import json
 import hashlib
 import time
@@ -172,11 +173,13 @@ class SafeSummaryGenerator:
             'ccss.info', 'www.ccss.info', 'cryptoconsortium.org'
         ]
 
-    def get_norms_to_process(self, pillar=None, limit=None):
+    def get_norms_to_process(self, pillar=None, limit=None, status_filter=None):
         """Get norms that need summary regeneration with pagination."""
         filters = {}
         if pillar:
             filters['pillar'] = pillar
+        if status_filter:
+            filters['summary_status'] = status_filter
 
         all_norms = []
         offset = 0
@@ -185,7 +188,7 @@ class SafeSummaryGenerator:
         while True:
             result = db.select(
                 table='norms',
-                columns='id,code,title,pillar,official_link,official_doc_summary',
+                columns='id,code,title,pillar,official_link,official_doc_summary,reference_content',
                 filters=filters if filters else None,
                 order='code',
                 order_desc=False,
@@ -420,10 +423,20 @@ class SafeSummaryGenerator:
 
         print(f"\nProcessing {code}: {title[:50]}...")
 
-        # Get scraped document
-        doc_content, doc_type = self.get_scraped_document(code)
+        # 1. Try database reference_content first (from scraper)
+        doc_content = None
+        doc_type = None
+        ref_content = norm.get('reference_content')
+        if ref_content and len(str(ref_content).strip()) > 500:
+            doc_content = str(ref_content)
+            doc_type = 'database'
+            print(f"  Using reference_content from database ({len(doc_content)} chars)")
 
-        # If no local document, try fetching from official link
+        # 2. Try local scraped document
+        if not doc_content:
+            doc_content, doc_type = self.get_scraped_document(code)
+
+        # 3. If no local document, try fetching from official link
         if not doc_content:
             print(f"  No local document, trying web fetch...")
             doc_content, doc_type = self.fetch_from_official_link(norm)
@@ -544,17 +557,18 @@ class SafeSummaryGenerator:
 
         return metadata
 
-    def run(self, pillar=None, limit=None):
+    def run(self, pillar=None, limit=None, status_filter=None):
         """Run the safe summary regeneration."""
         print("=" * 60)
         print("SAFE SUMMARY REGENERATION")
         print("=" * 60)
         print(f"Mode: {'DRY RUN' if self.dry_run else 'LIVE'}")
         print(f"Pillar filter: {pillar or 'ALL'}")
+        print(f"Status filter: {status_filter or 'ALL'}")
         print(f"Limit: {limit or 'NONE'}")
         print()
 
-        norms = self.get_norms_to_process(pillar, limit)
+        norms = self.get_norms_to_process(pillar, limit, status_filter)
         print(f"Found {len(norms)} norms to process")
 
         for norm in norms:
@@ -586,11 +600,12 @@ def main():
     parser.add_argument('--pillar', choices=['S', 'A', 'F', 'E'], help='Process only this pillar')
     parser.add_argument('--limit', type=int, help='Limit number of norms to process')
     parser.add_argument('--dry-run', action='store_true', help='Preview changes without updating DB')
+    parser.add_argument('--status', choices=['needs_rescrape', 'needs_regeneration'], help='Filter by summary_status')
 
     args = parser.parse_args()
 
     generator = SafeSummaryGenerator(dry_run=args.dry_run)
-    generator.run(pillar=args.pillar, limit=args.limit)
+    generator.run(pillar=args.pillar, limit=args.limit, status_filter=args.status)
 
 
 if __name__ == '__main__':

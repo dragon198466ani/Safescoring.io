@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { getSupabaseServer } from "@/libs/supabase";
 
 /**
  * Product Score API
@@ -20,17 +20,12 @@ export async function GET(request, { params }) {
   const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET",
-    "Cache-Control": "public, max-age=3600, s-maxage=3600",
+    "Cache-Control": "public, max-age=86400, s-maxage=86400, stale-while-revalidate=172800",
   };
 
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json(
-      { error: "Database not configured" },
-      { status: 500, headers }
-    );
-  }
-
   try {
+    const supabase = getSupabaseServer();
+
     // Fetch product
     const { data: product, error: productError } = await supabase
       .from("products")
