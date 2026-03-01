@@ -15,7 +15,7 @@ const config = {
   appName: "SafeScoring",
   // REQUIRED: a short description of your app for SEO tags (can be overwritten)
   appDescription:
-    "The first unified security rating for all crypto products. {totalNorms} norms. 0 opinion. 1 score. Hardware wallets, software wallets, and DeFi protocols - all evaluated with the same rigorous SAFE methodology.",
+    "Independent security opinions for crypto products. {totalNorms} criteria. 1 methodology. Hardware wallets, software wallets, and DeFi protocols — all evaluated with the same published SAFE methodology. Scores represent editorial opinions, not guarantees.",
   // REQUIRED (no https://, not trialing slash at the end, just the naked domain)
   domainName: "safescoring.io",
   crisp: {
@@ -154,22 +154,22 @@ const config = {
   // SafeScoring specific config
   safe: {
     // Strategic tagline
-    tagline: "{totalNorms} norms. 0 opinion. 1 score.",
-    taglineAlt: "Beyond the audit.",
+    tagline: "{totalNorms} criteria. 1 methodology. Independent scores.",
+    taglineAlt: "A comprehensive security framework.",
 
     pillars: [
       {
         code: "S",
         name: "Security",
-        description: "Would your wallet survive a state-level attack? We verify encryption, key management, and cryptographic standards — because a single weak algorithm means everything you own is one exploit away from zero.",
-        shortDesc: "Cryptographic armor",
+        description: "Our methodology evaluates encryption, key management, and cryptographic standards — assessing how a product's technical foundations hold up against known attack vectors.",
+        shortDesc: "Cryptographic foundations",
         color: "#22c55e", // green
         normCount: 872,
       },
       {
         code: "A",
         name: "Adversity",
-        description: "What happens when someone holds a gun to your head? We assess duress protection, anti-coercion mechanisms, time-locks, and physical security — because the real threat to crypto holders is no longer just hackers.",
+        description: "Our methodology assesses duress protection, anti-coercion mechanisms, time-locks, and physical security features — evaluating how products address threats beyond the digital realm.",
         shortDesc: "Physical threat & coercion resistance",
         color: "#f59e0b", // amber
         normCount: 540,
@@ -177,16 +177,16 @@ const config = {
       {
         code: "F",
         name: "Fidelity",
-        description: `${STATS.auditedHackedApprox} of hacked projects in ${STATS.auditedHackedYear} had been audited. An audit is a snapshot — we measure what happens after. Update frequency, incident response, team track record, and whether they actually fix what breaks.`,
-        shortDesc: "Proven reliability over time",
+        description: `According to industry reports (source: Hacken Q2 ${STATS.auditedHackedYear}), ${STATS.auditedHackedApprox} of hacked projects had been audited. Our methodology evaluates what happens after audits: update frequency, incident response, team track record, and remediation practices.`,
+        shortDesc: "Reliability track record",
         color: "#3b82f6", // blue
         normCount: 346,
       },
       {
         code: "E",
         name: "Efficiency",
-        description: "The most secure wallet is worthless if you send funds to the wrong address because the UI was confusing. We measure whether security actually works in your hands — UX, clarity, multi-chain support, and error prevention.",
-        shortDesc: "Security you can actually use",
+        description: "Our methodology evaluates whether security features are usable in practice — UX clarity, multi-chain support, error prevention, and accessibility.",
+        shortDesc: "Usability of security features",
         color: "#8b5cf6", // purple
         normCount: 618,
       },
@@ -203,36 +203,36 @@ const config = {
     differentiators: [
       {
         title: "Unified Framework",
-        description: "The only rating covering hardware, software, AND DeFi with the same methodology",
+        description: "A single methodology covering hardware wallets, software wallets, and DeFi protocols",
         icon: "unified",
       },
       {
-        title: "Beyond Audits",
-        description: `${STATS.auditedHackedApprox} of hacked projects in ${STATS.auditedHackedYear} had been audited. We measure real security.`,
+        title: "Comprehensive Scope",
+        description: `Our methodology goes beyond code audits to evaluate ongoing security practices, incident response, and operational resilience.`,
         icon: "beyond",
       },
       {
-        title: "Zero Bias",
-        description: "Affiliates never influence scores. Methodology is the only factor. 100% independent.",
+        title: "Editorial Independence",
+        description: "Affiliate relationships are disclosed and never influence scores. Methodology determines all ratings.",
         icon: "unbiased",
       },
       {
-        title: "AI-Powered",
-        description: "Automated, reproducible evaluations updated monthly. Not opinions.",
+        title: "AI-Assisted Evaluation",
+        description: "Automated, reproducible evaluations updated monthly based on our published methodology.",
         icon: "ai",
       },
       {
-        title: "Physical Threat Defense",
-        description: "The only rating that evaluates anti-coercion features: time-locks, duress PINs, hidden wallets. Because kidnappings targeting crypto holders are real.",
+        title: "Physical Threat Assessment",
+        description: "Our methodology includes evaluation of anti-coercion features: time-locks, duress PINs, and hidden wallets.",
         icon: "physical",
       },
     ],
-    // Competitor comparison data
+    // Other approaches in the industry (factual, non-disparaging)
     competitors: [
-      { name: "CertiK", covers: "Smart contracts only", limitation: "7+ audited projects got hacked" },
-      { name: "DeFiSafety", covers: "DeFi protocols only", limitation: "No hardware or software wallets" },
-      { name: "CER.live", covers: "Exchanges only", limitation: "No products or protocols" },
-      { name: "Reviews", covers: "Subjective opinions", limitation: "Sponsored, not reproducible" },
+      { name: "Smart Contract Auditors", covers: "Smart contracts", limitation: "Scope limited to code review" },
+      { name: "DeFi Evaluators", covers: "DeFi protocols", limitation: "Typically do not cover hardware/software wallets" },
+      { name: "Exchange Raters", covers: "Exchanges", limitation: "Typically do not cover protocols or wallets" },
+      { name: "User Reviews", covers: "General opinions", limitation: "Methodology varies" },
     ],
   },
   // Freemium configuration
