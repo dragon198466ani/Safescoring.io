@@ -19,23 +19,23 @@ const CRYPTO_PLAN_KEYS = {
   Enterprise: "enterprise",
 };
 
-// Simple BTC/ETH checkout button via NOWPayments
-function ButtonCryptoCheckout({ plan, className = "", children }) {
+// Reusable crypto checkout button (calls an API, redirects to hosted page)
+function CryptoRedirectButton({ apiUrl, bodyPayload, className = "", children, label = "Pay" }) {
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/crypto/checkout", {
+      const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, billingPeriod: "monthly" }),
+        body: JSON.stringify(bodyPayload),
       });
       const data = await res.json();
-      if (data.invoiceUrl) {
-        window.location.href = data.invoiceUrl;
+      const redirectUrl = data.invoiceUrl || data.url;
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
       } else {
-        // Not logged in or error — redirect to sign in
         window.location.href = "/api/auth/signin?callbackUrl=/pricing";
       }
     } catch {
@@ -47,13 +47,13 @@ function ButtonCryptoCheckout({ plan, className = "", children }) {
 
   return (
     <button onClick={handleClick} disabled={loading} className={`btn ${className}`}>
-      {loading ? <span className="loading loading-spinner loading-sm" /> : children || "Pay with Crypto"}
+      {loading ? <span className="loading loading-spinner loading-sm" /> : children || label}
     </button>
   );
 }
 
 const Pricing = () => {
-  const [method, setMethod] = useState("card"); // card | crypto | btc
+  const [method, setMethod] = useState("card"); // card | crypto | btc | moonpay
   const allPlans = config?.lemonsqueezy?.plans || [];
 
   return (
@@ -104,13 +104,25 @@ const Pricing = () => {
             >
               BTC / ETH
             </button>
+            <button
+              onClick={() => setMethod("moonpay")}
+              className={`px-5 py-2 rounded-md text-sm font-medium transition-all ${
+                method === "moonpay"
+                  ? "bg-white text-black shadow-sm"
+                  : "text-base-content/60 hover:text-base-content"
+              }`}
+            >
+              MoonPay
+            </button>
           </div>
           <p className="text-xs text-base-content/40 mt-2">
             {method === "card"
               ? "Credit card via LemonSqueezy. Cancel anytime."
               : method === "crypto"
               ? "Stream USDC per second via Superfluid on Polygon. Cancel anytime."
-              : "Pay with BTC, ETH, or 100+ cryptocurrencies via NOWPayments."}
+              : method === "btc"
+              ? "Pay with BTC, ETH, or 100+ cryptocurrencies via NOWPayments."
+              : "Buy crypto with your card via MoonPay. KYC required."}
           </p>
         </div>
 
@@ -174,7 +186,7 @@ const Pricing = () => {
                     <span className="text-base-content/60 text-sm">
                       {method === "crypto" && plan.price > 0
                         ? "USDC/mo"
-                        : method === "btc" && plan.price > 0
+                        : (method === "btc" || method === "moonpay") && plan.price > 0
                         ? "USD/mo"
                         : "/month"}
                     </span>
@@ -246,13 +258,20 @@ const Pricing = () => {
                     className={`w-full mt-auto ${isFeatured ? "btn-primary" : "btn-outline"}`}
                   />
                 ) : method === "btc" && cryptoKey ? (
-                  <ButtonCryptoCheckout
-                    plan={cryptoKey}
+                  <CryptoRedirectButton
+                    apiUrl="/api/crypto/checkout"
+                    bodyPayload={{ plan: cryptoKey, billingPeriod: "monthly" }}
                     className={`w-full mt-auto ${isFeatured ? "btn-primary" : "btn-outline"}`}
-                  >
-                    Pay with Crypto
-                  </ButtonCryptoCheckout>
-                ) : cryptoKey ? (
+                    label="Pay with Crypto"
+                  />
+                ) : method === "moonpay" && cryptoKey ? (
+                  <CryptoRedirectButton
+                    apiUrl="/api/moonpay/create-transaction"
+                    bodyPayload={{ plan: cryptoKey, billingPeriod: "monthly" }}
+                    className={`w-full mt-auto ${isFeatured ? "btn-primary" : "btn-outline"}`}
+                    label="Pay via MoonPay"
+                  />
+                ) : method === "crypto" && cryptoKey ? (
                   <ButtonSubscribeCrypto
                     plan={cryptoKey}
                     className={`w-full mt-auto ${isFeatured ? "" : ""}`}
@@ -280,7 +299,9 @@ const Pricing = () => {
               ? "14-day trial with card required (EU compliant)"
               : method === "crypto"
               ? "USDC on Polygon via Superfluid. No middleman."
-              : "BTC, ETH, USDT & 100+ cryptos. Hosted by NOWPayments."}
+              : method === "btc"
+              ? "BTC, ETH, USDT & 100+ cryptos. Hosted by NOWPayments."
+              : "Fiat to crypto via MoonPay. Card → USDC. KYC verified."}
           </div>
           <p className="text-base-content/50 text-sm">
             Need a custom solution?{" "}
