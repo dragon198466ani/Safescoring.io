@@ -3,7 +3,7 @@ import config from "@/config";
 
 const HeroSafe = () => {
   return (
-    <section className="relative pt-32 pb-20 px-6 overflow-hidden">
+    <section className="relative pt-24 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6 overflow-hidden">
       <div className="relative max-w-5xl mx-auto text-center">
         {/* Strategic tagline badge */}
         <div className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-base-200 border border-base-300">
@@ -16,7 +16,7 @@ const HeroSafe = () => {
         </div>
 
         {/* Main heading */}
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 text-white">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 text-white">
           The first unified{" "}
           <span className="text-gradient-safe">crypto security rating</span>
         </h1>
@@ -61,14 +61,14 @@ const HeroSafe = () => {
         </p>
 
         {/* SAFE pillars preview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto">
           {config.safe.pillars.map((pillar) => (
             <div
               key={pillar.code}
               className="p-4 rounded-xl bg-base-200 border border-base-300 hover:border-base-content/20 transition-all duration-300"
             >
               <div
-                className="text-3xl font-black mb-1"
+                className="text-2xl sm:text-3xl font-black mb-1"
                 style={{ color: pillar.color }}
               >
                 {pillar.code}

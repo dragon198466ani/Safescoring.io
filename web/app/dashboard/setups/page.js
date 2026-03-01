@@ -447,9 +447,9 @@ export default function SetupsPage() {
         }
       }}
     >
-    <div className="flex flex-col md:flex-row gap-6 min-h-[calc(100vh-200px)]">
+    <div className="flex flex-col lg:flex-row gap-6 min-h-[calc(100vh-200px)]">
       {/* Left: Product Catalog */}
-      <div className="md:w-3/5 space-y-4">
+      <div className="lg:w-3/5 space-y-4">
         <div className="sticky top-24 space-y-4">
           {/* Header */}
           <div>
@@ -555,7 +555,7 @@ export default function SetupsPage() {
       </div>
 
       {/* Right: Setup Builder */}
-      <div className="md:w-2/5">
+      <div className="lg:w-2/5">
         <div className="sticky top-24 space-y-4">
           {/* Setup header */}
           <div className="bg-base-200 rounded-2xl border border-base-300 p-5">

@@ -91,16 +91,16 @@ const Pillars = () => {
             return (
               <div
                 key={pillar.code}
-                className="relative group p-8 rounded-2xl bg-base-200/50 border border-base-300 hover:border-opacity-50 transition-all duration-300 overflow-hidden"
+                className="relative group p-5 sm:p-8 rounded-2xl bg-base-200/50 border border-base-300 hover:border-opacity-50 transition-all duration-300 overflow-hidden"
               >
                 {/* Glow effect removed for monochrome design */}
 
                 {/* Illustration intégrée avec la lettre */}
-                <div className="relative flex justify-center mb-6">
+                <div className="relative flex justify-center mb-4 sm:mb-6">
                   {(() => {
                     const IllustrationComponent = PillarIllustrations[pillar.code];
                     return IllustrationComponent ? (
-                      <IllustrationComponent size={120} color={pillar.color} />
+                      <IllustrationComponent size={90} color={pillar.color} />
                     ) : null;
                   })()}
                 </div>

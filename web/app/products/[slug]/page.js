@@ -609,7 +609,7 @@ export default async function ProductPage({ params }) {
             </div>
 
             {/* Right: SAFE Score with Tier Selector (Full/Consumer/Essential) */}
-            <div className="shrink-0 w-[240px]">
+            <div className="shrink-0 w-full md:w-[240px]">
               <ProductScoreTierView
                 scores={product.scores}
                 consumerScores={product.consumerScores}

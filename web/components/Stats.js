@@ -66,7 +66,7 @@ const Stats = () => {
                   {stat.label}
                 </span>
               </div>
-              <div className="text-3xl font-bold text-base-content mb-1 stat-value">
+              <div className="text-2xl sm:text-3xl font-bold text-base-content mb-1 stat-value">
                 {stat.value}
               </div>
               <p className="text-sm text-base-content/50">

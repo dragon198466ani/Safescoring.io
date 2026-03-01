@@ -33,7 +33,7 @@ export default function UpgradeModal({ isOpen, onClose, remaining = 0, limit = 5
       />
 
       {/* Modal */}
-      <div className="relative bg-base-100 rounded-2xl max-w-lg w-full p-6 shadow-2xl">
+      <div className="relative bg-base-100 rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl">
         {/* Close button */}
         <button
           onClick={onClose}
@@ -64,7 +64,7 @@ export default function UpgradeModal({ isOpen, onClose, remaining = 0, limit = 5
         </div>
 
         {/* Plans comparison */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           {/* Explorer */}
           <div className="rounded-xl border border-base-300 p-4">
             <div className="font-semibold mb-1">{explorerPlan?.name}</div>

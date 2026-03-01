@@ -393,7 +393,7 @@ export default function SwipeVoting({
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </div>
-          <span className="text-[10px] font-bold text-red-400/70 uppercase">No</span>
+          <span className="text-xs font-bold text-red-400/70 uppercase">No</span>
         </button>
 
         {/* YES button */}
@@ -411,7 +411,7 @@ export default function SwipeVoting({
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <span className="text-[10px] font-bold text-green-400/70 uppercase">Yes</span>
+          <span className="text-xs font-bold text-green-400/70 uppercase">Yes</span>
         </button>
       </div>
 

@@ -60,16 +60,16 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
     >
       <Link
         href={`/products/${product.slug || product.id}`}
-        className={`block rounded-xl bg-base-100 border p-4 transition-all duration-200 ${
+        className={`block rounded-xl bg-base-100 border p-3 sm:p-4 transition-all duration-200 ${
           isInStack
             ? "border-white/30 bg-white/5"
             : "border-base-300 hover:border-base-content/20 hover:shadow-lg"
         }`}
       >
         {/* Header: Logo + Name + Types */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
           <div className="flex-shrink-0">
-            <div className="w-10 h-10 rounded-lg overflow-hidden border border-base-200 bg-white">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden border border-base-200 bg-white">
               <ProductLogo
                 logoUrl={product.logoUrl}
                 fallbackUrl={product.fallbackUrl}
@@ -102,8 +102,8 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
         </div>
 
         {/* Score circle — centered */}
-        <div className="flex items-center justify-center mb-4 relative">
-          <ScoreCircle score={totalScore} size={80} strokeWidth={6} />
+        <div className="flex items-center justify-center mb-3 sm:mb-4 relative">
+          <ScoreCircle score={totalScore} size={72} strokeWidth={6} />
           {scoreType !== "full" && (
             <span className={`absolute -top-1 right-1/4 text-[8px] font-bold px-1.5 py-0.5 rounded border ${
               scoreType === "essential"

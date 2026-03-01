@@ -70,7 +70,7 @@ export default function ModalBase({
                 className={`
                   w-full ${maxWidthClass} transform overflow-hidden
                   rounded-t-2xl sm:rounded-2xl bg-base-100 border border-base-300
-                  p-6 text-left align-middle shadow-xl transition-all
+                  p-4 sm:p-6 text-left align-middle shadow-xl transition-all
                   max-h-[90vh] overflow-y-auto
                   ${className}
                 `}

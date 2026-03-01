@@ -113,7 +113,7 @@ export default function SwipeCard({
         <div className={`h-1.5 w-full ${pillarStyle.accent}`} />
 
         {/* ── Header: product + pillar + token hint ── */}
-        <div className="flex items-center gap-3 px-5 pt-4 pb-2">
+        <div className="flex items-center gap-2.5 sm:gap-3 px-4 sm:px-5 pt-3 sm:pt-4 pb-2">
           {/* Pillar icon */}
           <div className={`w-9 h-9 rounded-lg ${pillarStyle.bg} flex items-center justify-center shrink-0`}>
             <span className={`text-sm font-black ${pillarStyle.text}`}>{pillarStyle.icon}</span>
@@ -150,7 +150,7 @@ export default function SwipeCard({
               <p className="text-base-content/50 text-sm mb-3 font-medium uppercase tracking-wide">
                 Your opinion
               </p>
-              <p className="text-xl sm:text-2xl font-bold leading-tight text-base-content max-w-[280px]">
+              <p className="text-lg sm:text-xl md:text-2xl font-bold leading-tight text-base-content max-w-[280px]">
                 Does <span className={pillarStyle.text}>{evaluation?.product_name}</span> meet this standard?
               </p>
               <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 bg-base-300/60 rounded-full">
