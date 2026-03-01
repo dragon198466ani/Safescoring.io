@@ -2,17 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import config from "@/config";
 import ButtonCheckout from "./ButtonCheckout";
 
-// Lazy-load crypto button (wagmi/rainbowkit are heavy)
-const ButtonSubscribeCrypto = dynamic(
-  () => import("./ButtonSubscribeCrypto"),
-  { ssr: false, loading: () => <button className="btn btn-outline w-full" disabled>Loading wallet...</button> }
-);
-
-// Plan name → Superfluid key
+// Plan name → crypto checkout key
 const CRYPTO_PLAN_KEYS = {
   Explorer: "explorer",
   Professional: "professional",
@@ -53,7 +46,7 @@ function CryptoRedirectButton({ apiUrl, bodyPayload, className = "", children, l
 }
 
 const Pricing = () => {
-  const [method, setMethod] = useState("card"); // card | crypto | btc | moonpay
+  const [method, setMethod] = useState("card"); // card | btc | moonpay
   const allPlans = config?.lemonsqueezy?.plans || [];
 
   return (
@@ -85,16 +78,6 @@ const Pricing = () => {
               Card
             </button>
             <button
-              onClick={() => setMethod("crypto")}
-              className={`px-5 py-2 rounded-md text-sm font-medium transition-all ${
-                method === "crypto"
-                  ? "bg-white text-black shadow-sm"
-                  : "text-base-content/60 hover:text-base-content"
-              }`}
-            >
-              USDC
-            </button>
-            <button
               onClick={() => setMethod("btc")}
               className={`px-5 py-2 rounded-md text-sm font-medium transition-all ${
                 method === "btc"
@@ -118,10 +101,8 @@ const Pricing = () => {
           <p className="text-xs text-base-content/40 mt-2">
             {method === "card"
               ? "Credit card via LemonSqueezy. Cancel anytime."
-              : method === "crypto"
-              ? "Stream USDC per second via Superfluid on Polygon. Cancel anytime."
               : method === "btc"
-              ? "Pay with BTC, ETH, or 100+ cryptocurrencies via NOWPayments."
+              ? "BTC, ETH, USDT, USDC & 100+ cryptos via NOWPayments."
               : "Buy crypto with your card via MoonPay. KYC required."}
           </p>
         </div>
@@ -184,9 +165,7 @@ const Pricing = () => {
                     )}
                     <span className="text-4xl font-bold">${plan.price}</span>
                     <span className="text-base-content/60 text-sm">
-                      {method === "crypto" && plan.price > 0
-                        ? "USDC/mo"
-                        : (method === "btc" || method === "moonpay") && plan.price > 0
+                      {(method === "btc" || method === "moonpay") && plan.price > 0
                         ? "USD/mo"
                         : "/month"}
                     </span>
@@ -201,12 +180,6 @@ const Pricing = () => {
                         {plan.trialDays}-day free trial
                       </span>
                     </div>
-                  )}
-                  {/* Crypto: streaming info */}
-                  {method === "crypto" && plan.price > 0 && (
-                    <p className="text-xs text-base-content/40 mt-2">
-                      ~${(plan.price / 30).toFixed(2)}/day &middot; streaming
-                    </p>
                   )}
                   {isFreemium && (
                     <div className="flex items-center gap-2 mt-2">
@@ -271,12 +244,6 @@ const Pricing = () => {
                     className={`w-full mt-auto ${isFeatured ? "btn-primary" : "btn-outline"}`}
                     label="Pay via MoonPay"
                   />
-                ) : method === "crypto" && cryptoKey ? (
-                  <ButtonSubscribeCrypto
-                    plan={cryptoKey}
-                    className={`w-full mt-auto ${isFeatured ? "" : ""}`}
-                    onSuccess={() => window.location.reload()}
-                  />
                 ) : (
                   <ButtonCheckout
                     priceId={planId}
@@ -297,8 +264,6 @@ const Pricing = () => {
             </svg>
             {method === "card"
               ? "14-day trial with card required (EU compliant)"
-              : method === "crypto"
-              ? "USDC on Polygon via Superfluid. No middleman."
               : method === "btc"
               ? "BTC, ETH, USDT & 100+ cryptos. Hosted by NOWPayments."
               : "Fiat to crypto via MoonPay. Card → USDC. KYC verified."}
