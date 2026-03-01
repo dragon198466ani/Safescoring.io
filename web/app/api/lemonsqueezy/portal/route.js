@@ -24,8 +24,8 @@ export async function POST(req) {
 
     if (error || !user?.lemon_squeezy_customer_id) {
       return NextResponse.json(
-        { error: "No subscription found. Please subscribe first." },
-        { status: 404 }
+        { error: "No subscription found. Please subscribe first.", action: "subscribe", redirectUrl: "/#pricing" },
+        { status: 402 }
       );
     }
 

@@ -653,7 +653,7 @@ export default async function ProductPage({ params }) {
             {/* Right: Pillar Scores S,A,F,E + Stats (1/3 on desktop) */}
             <div className="lg:col-span-1 flex flex-col gap-3">
               {/* Pillar scores */}
-              <div className="grid grid-cols-2 lg:grid-cols-1 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
                 {config.safe.pillars.map((pillar) => {
                   const score = product.scores[pillar.code.toLowerCase()];
                   const pillarKey = PILLAR_KEY_MAP[pillar.code] || pillar.code.toLowerCase();

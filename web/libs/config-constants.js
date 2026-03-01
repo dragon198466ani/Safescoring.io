@@ -46,7 +46,7 @@ export const PLAN_HIERARCHY = {
 
 export const PLAN_LIMITS = {
   [PLAN_CODES.FREE]: {
-    monthlyProductViews: -1, // unlimited
+    monthlyProductViews: 5, // limited to drive upgrades
     maxSetups: 1,
     maxProductsPerSetup: 3,
     maxScoringSetups: 1,

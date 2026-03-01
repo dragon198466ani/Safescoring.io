@@ -172,7 +172,7 @@ const ProductCard = memo(({ product, scoreType = "full", onAddToStack, isInStack
       {onAddToStack && !isInStack && (
         <button
           onClick={handleQuickAdd}
-          className="absolute top-3 right-3 z-10 p-1.5 rounded-lg bg-white text-black opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-200 shadow-lg"
+          className="absolute top-3 right-3 z-10 p-1.5 rounded-lg bg-white text-black opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:scale-110 transition-all duration-200 shadow-lg"
           title="Add to my stack"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">

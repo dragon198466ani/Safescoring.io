@@ -42,17 +42,17 @@ export default function CommunityPage() {
             </p>
 
             {/* Stats */}
-            <div className="flex flex-wrap justify-center gap-8 mb-8">
+            <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mb-8">
               <div className="text-center">
-                <div className="text-3xl font-black text-primary">1,247</div>
+                <div className="text-2xl sm:text-3xl font-black text-primary">1,247</div>
                 <div className="text-sm text-base-content/60">Anonymous Setups</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-black text-secondary">82</div>
+                <div className="text-2xl sm:text-3xl font-black text-secondary">82</div>
                 <div className="text-sm text-base-content/60">Avg Score</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-black text-accent">4.2</div>
+                <div className="text-2xl sm:text-3xl font-black text-accent">4.2</div>
                 <div className="text-sm text-base-content/60">Avg Products</div>
               </div>
             </div>
@@ -307,7 +307,7 @@ export default function CommunityPage() {
               Community Archetypes
             </h2>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               <div className="p-4 bg-base-100 rounded-xl text-center">
                 <div className="text-3xl mb-2">🔒</div>
                 <div className="font-bold">Hardware First</div>

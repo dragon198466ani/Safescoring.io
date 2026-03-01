@@ -56,17 +56,17 @@ export default function UpgradeModal({ isOpen, onClose, remaining = 0, limit = 5
               ? "You've reached your monthly limit"
               : `Only ${remaining} product${remaining > 1 ? "s" : ""} left this month`}
           </h3>
-          <p className="text-base-content/60">
+          <p className="text-base-content/60 text-sm sm:text-base">
             {remaining === 0
-              ? `You've viewed ${limit} products this month. Upgrade for unlimited access.`
-              : "Upgrade now to get unlimited access to all product evaluations."}
+              ? `Free plan: ${limit} products/month. Upgrade for unlimited access to all evaluations, setups, and PDF exports.`
+              : "Upgrade now for unlimited products, more setups, and PDF exports."}
           </p>
         </div>
 
         {/* Plans comparison */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           {/* Explorer */}
-          <div className="rounded-xl border border-base-300 p-4">
+          <div className="rounded-xl border border-base-300 p-3 sm:p-4">
             <div className="font-semibold mb-1">{explorerPlan?.name}</div>
             <div className="flex items-baseline gap-1 mb-3">
               <span className="text-2xl font-bold">${explorerPlan?.price}</span>
@@ -92,7 +92,7 @@ export default function UpgradeModal({ isOpen, onClose, remaining = 0, limit = 5
           </div>
 
           {/* Professional */}
-          <div className="rounded-xl border-2 border-primary bg-primary/10 p-4">
+          <div className="rounded-xl border-2 border-primary bg-primary/10 p-3 sm:p-4">
             <div className="flex items-center gap-2 mb-1">
               <span className="font-semibold">{proPlan?.name}</span>
               <span className="badge badge-primary badge-xs">Popular</span>
