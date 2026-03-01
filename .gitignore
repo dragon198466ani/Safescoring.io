@@ -290,3 +290,11 @@ launch_workers.bat
 products_to_evaluate.json
 applicability_*.txt
 claude_applicability_output.txt
+
+# Script output/report files (debug artifacts, not source)
+scripts/*_output.txt
+scripts/*_report.txt
+scripts/audit_*.txt
+scripts/scope_report.txt
+scripts/enrich_type_output.txt
+scripts/verify_types_output.txt

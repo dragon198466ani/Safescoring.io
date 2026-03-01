@@ -1,2 +1,0 @@
-Status: 200
-Response: [{"id":7735,"code":"INF07","title":"Redstone Oracles","pillar":"E","description":"Oracle modulaire","official_doc_summary":"# Comprehensive Analysis: INF07 - Redstone Oracles\n\nGenerated: 2026-01-20T23:09:15.747236\nDocumentation Source: https://docs.redstone.finance/\n\n---\n\n# **Comprehensive Analysis of INF07: Redstone Oracles**\n## **PART 1: Executive Summary**\n\n### **1. Introduction to Redstone Oracles (INF07)**\nRedstone Oracles (INF07) is a decentralized oracle solution designed to pr
