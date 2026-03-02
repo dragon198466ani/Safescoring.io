@@ -10,17 +10,17 @@ const getFaqs = (totalNorms) => [
   {
     question: "What is SAFE Scoring?",
     answer:
-      `SAFE Scoring is the first unified security rating for all crypto products. We evaluate hardware wallets, software wallets, and DeFi protocols with the same rigorous methodology: ${totalNorms} security norms across 4 pillars - Security (cryptographic standards), Adversity (threat resistance), Fidelity (reliability & trust), and Efficiency (usability).`,
+      `SAFE Scoring provides independent security opinions for crypto products. We evaluate hardware wallets, software wallets, and DeFi protocols with the same published methodology: ${totalNorms} criteria across 4 pillars - Security (cryptographic standards), Adversity (threat resistance), Fidelity (reliability track record), and Efficiency (usability). All scores are editorial assessments, not guarantees of security.`,
   },
   {
     question: "How is SafeScoring different from CertiK or other auditors?",
     answer:
-      `Audits verify code at a single point in time. SafeScoring measures real-world security continuously. Key differences: (1) We cover ALL products - hardware, software, AND DeFi - with one methodology. CertiK only audits smart contracts. (2) We update monthly, not once. (3) ${auditedHackedApprox} of hacked projects in 2024 had been audited. We go beyond code to evaluate operational security, track record, and resilience.`,
+      `Audits typically verify code at a single point in time. SafeScoring's methodology assesses security posture on an ongoing basis. Key differences: (1) Our methodology covers hardware wallets, software wallets, and DeFi protocols with one framework. Smart contract auditors like CertiK specialize in code review. (2) We re-evaluate monthly. (3) According to industry reports, ${auditedHackedApprox} of hacked projects in 2024 had been audited. Our methodology evaluates operational security, track record, and resilience beyond code.`,
   },
   {
     question: "How are products evaluated?",
     answer:
-      `Our AI-powered system evaluates products against ${totalNorms} norms using official documentation, security audits, technical specifications, and on-chain data. Each norm is marked YES (compliant), NO (non-compliant), or N/A (not applicable). The process is automated and reproducible - no subjective opinions.`,
+      `Our AI-assisted system evaluates products against ${totalNorms} criteria using official documentation, security audits, technical specifications, and on-chain data. Each criterion is marked YES (met), NO (not met), or N/A (not applicable). The process is automated and reproducible, based on our published methodology.`,
   },
   {
     question: "How often are scores updated?",
@@ -30,17 +30,17 @@ const getFaqs = (totalNorms) => [
   {
     question: "Is SafeScoring truly independent?",
     answer:
-      `100%. While we may earn affiliate commissions from product links, this never influences our scores. Scores are calculated purely from our ${totalNorms}-norm methodology - no exceptions. We've rated products poorly even when affiliates offered to pay for better scores. Independence is non-negotiable.`,
+      `Affiliate relationships are disclosed and do not influence scores. Scores are calculated from our published ${totalNorms}-criteria methodology. The scoring process and commercial relationships are completely separated. Rated entities may dispute factual errors via disputes@safescoring.io.`,
   },
   {
     question: "What are the 4 SAFE pillars?",
     answer:
-      `S (Security, 25%): Your cryptographic armor — we verify encryption, key management, and whether the algorithms protecting your funds would survive a real-world attack. ${hackLosses2024Short} was stolen in crypto hacks in 2024, over ${accessControlLossPct} via compromised keys. A (Adversity, 25%): Physical threat resistance — duress PINs, time-locks, multi-signature, hidden wallets. This pillar directly addresses the growing wave of crypto-related kidnappings by evaluating whether a product makes forced transfers impossible. F (Fidelity, 25%): Proven track record, not promises — ${auditedHackedApprox} of hacked projects had been audited. We measure patch speed, incident response, and whether the team actually fixes what breaks. E (Efficiency, 25%): Security you can actually use — because user errors (wrong address, lost seed phrase, blind signing) cause billions in irreversible losses every year. We evaluate UX, error prevention, and blind-signing risks. Each pillar contributes equally to the final score.`,
+      `S (Security, 25%): Cryptographic foundations — our methodology evaluates encryption, key management, and cryptographic standards. According to industry reports, ${hackLosses2024Short} was stolen in crypto hacks in 2024, over ${accessControlLossPct} via compromised keys. A (Adversity, 25%): Physical threat resistance — our methodology evaluates duress PINs, time-locks, multi-signature, and hidden wallets, assessing how products address coercion and physical threats. F (Fidelity, 25%): Reliability track record — according to industry reports, ${auditedHackedApprox} of hacked projects had been audited. Our methodology evaluates patch speed, incident response, and remediation practices. E (Efficiency, 25%): Usability of security features — our methodology evaluates UX, error prevention, and blind-signing risks. Each pillar contributes equally to the final score.`,
   },
   {
     question: "Can SafeScoring help protect against physical attacks and kidnappings?",
     answer:
-      "Yes — indirectly but powerfully. The Adversity pillar (25% of every score) specifically evaluates anti-coercion features: time-locked transfers, multi-signature requirements, duress PINs, and hidden wallets. These features make it technically impossible to move funds under threat, which breaks the criminal business model. If a kidnapper cannot get instant payment, the attack becomes pointless. By choosing products with high Adversity scores, users make themselves harder targets and contribute to making the entire ecosystem safer.",
+      "The Adversity pillar (25% of every score) evaluates anti-coercion features: time-locked transfers, multi-signature requirements, duress PINs, and hidden wallets. Products with these features may make forced transfers more difficult. A high Adversity score indicates, according to our methodology, that a product includes more of these protective mechanisms. This is our editorial assessment and not a guarantee of physical safety.",
   },
   {
     question: "Can I request a product evaluation?",

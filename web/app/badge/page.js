@@ -37,7 +37,7 @@ export default function BadgePage() {
               SafeScore Badge
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              Display your product&apos;s security score on your website. Build trust with your users by showing independent security verification.
+              Display your product&apos;s SafeScoring evaluation results on your website.
             </p>
           </div>
 
@@ -136,20 +136,20 @@ export default function BadgePage() {
 
           {/* Benefits */}
           <div className="rounded-xl bg-gradient-to-br from-primary/20 to-base-200 border border-base-300 p-8 mb-8">
-            <h2 className="text-xl font-bold mb-6">Why Add the SafeScore Badge?</h2>
+            <h2 className="text-xl font-bold mb-6">Why Display Your SafeScore?</h2>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="flex gap-4">
                 <div className="text-2xl">🛡️</div>
                 <div>
-                  <h3 className="font-semibold">Build Trust</h3>
-                  <p className="text-sm text-base-content/70">Show users your product has been independently evaluated for security.</p>
+                  <h3 className="font-semibold">Show Your Assessment</h3>
+                  <p className="text-sm text-base-content/70">Display SafeScoring&apos;s independent editorial evaluation of your product.</p>
                 </div>
               </div>
               <div className="flex gap-4">
                 <div className="text-2xl">📈</div>
                 <div>
                   <h3 className="font-semibold">Increase Conversions</h3>
-                  <p className="text-sm text-base-content/70">Security-conscious users are more likely to trust verified products.</p>
+                  <p className="text-sm text-base-content/70">Show your SafeScoring evaluation to your users.</p>
                 </div>
               </div>
               <div className="flex gap-4">

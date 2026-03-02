@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { API_DISCLAIMER } from "@/libs/api-disclaimer";
 
 /**
  * Score Oracle API — Verifiable on-chain score data
@@ -94,6 +95,7 @@ export async function GET(request) {
       .join("");
 
     return NextResponse.json({
+      _legal: API_DISCLAIMER,
       oracle: {
         version: "1.0.0",
         chain: "polygon",

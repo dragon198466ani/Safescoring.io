@@ -17,20 +17,20 @@ const HeroSafe = () => {
 
         {/* Main heading */}
         <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 text-white">
-          The first unified{" "}
-          <span className="text-gradient-safe">crypto security rating</span>
+          Independent{" "}
+          <span className="text-gradient-safe">crypto security opinions</span>
         </h1>
 
         {/* Subheading */}
         <p className="text-lg md:text-xl text-base-content/70 max-w-2xl mx-auto mb-4">
           Hardware wallets. Software wallets. DeFi protocols.{" "}
-          <span className="font-semibold text-base-content">All evaluated with the same rigorous methodology.</span>
+          <span className="font-semibold text-base-content">All evaluated with the same published methodology.</span>
         </p>
 
-        {/* Anti-audit message */}
+        {/* Context message */}
         <p className="text-base text-base-content/50 max-w-xl mx-auto mb-10">
-          Nearly half of hacked projects in 2024 had been audited.{" "}
-          <span className="text-white font-medium">We measure real security.</span>
+          According to industry reports, many hacked projects had been audited.{" "}
+          <span className="text-white font-medium">Our methodology goes beyond code review.</span>
         </p>
 
         {/* CTA buttons */}
@@ -86,7 +86,7 @@ const HeroSafe = () => {
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
-            <span className="text-sm">100% independent scores</span>
+            <span className="text-sm">Editorially independent</span>
           </div>
           <div className="flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">

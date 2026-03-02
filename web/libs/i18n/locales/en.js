@@ -52,14 +52,14 @@ export default {
 
   // Hero
   hero: {
-    tagline: "{totalNorms} norms. 0 opinion. 1 score.",
-    taglineAlt: "Beyond the audit.",
-    title: "The first unified",
-    titleHighlight: "crypto security rating",
+    tagline: "{totalNorms} criteria. 1 methodology. Independent scores.",
+    taglineAlt: "A comprehensive security framework.",
+    title: "Independent",
+    titleHighlight: "crypto security opinions",
     subtitle: "Hardware wallets. Software wallets. DeFi protocols.",
-    subtitleStrong: "All evaluated with the same rigorous methodology.",
-    antiAudit: "Nearly half of hacked projects in 2024 had been audited.",
-    antiAuditHighlight: "We measure real security.",
+    subtitleStrong: "All evaluated with the same published methodology.",
+    antiAudit: "According to industry reports, many hacked projects had been audited.",
+    antiAuditHighlight: "Our methodology goes beyond code review.",
     ctaPrimary: "Analyze Your Stack",
     ctaCompare: "Compare Products",
     ctaSecondary: "Explore Products",
@@ -67,10 +67,10 @@ export default {
     freeBadge: "Free",
     noCreditCard: "No credit card required",
     trustIndicators: {
-      independent: "100% independent scores",
+      independent: "Editorially independent",
       productTypes: "product types",
-      aiPowered: "AI-powered, reproducible",
-      openMethodology: "Open methodology",
+      aiPowered: "AI-assisted, reproducible",
+      openMethodology: "Published methodology",
     },
   },
 
@@ -78,16 +78,16 @@ export default {
   pillars: {
     security: "Security",
     securityDesc: "Cryptographic foundations",
-    securityLong: "Is your crypto actually protected? We verify cryptographic standards, key management, and encryption.",
+    securityLong: "Our methodology evaluates cryptographic standards, key management, and encryption.",
     adversity: "Adversity",
     adversityDesc: "Threat resistance",
-    adversityLong: "What happens under threat? We assess duress protection, anti-coercion features, and physical security.",
+    adversityLong: "Our methodology assesses duress protection, anti-coercion features, and physical security.",
     fidelity: "Fidelity",
     fidelityDesc: "Reliability & trust",
-    fidelityLong: "Can you trust it long-term? We check audits, uptime, update frequency, and track record.",
+    fidelityLong: "Our methodology checks audits, uptime, update frequency, and track record.",
     efficiency: "Efficiency",
     efficiencyDesc: "Usability & performance",
-    efficiencyLong: "Is it usable AND secure? We evaluate UX, multi-chain support, and accessibility.",
+    efficiencyLong: "Our methodology evaluates UX, multi-chain support, and accessibility.",
     strongest: "Strongest",
     needsWork: "Needs work",
     methodology: "Methodology",
@@ -234,7 +234,7 @@ export default {
     securityComparison: "Security comparison based on {count} criteria across Security, Adversity, Fidelity & Efficiency pillars.",
     winsIn: "{name} wins in {count} pillars",
     verdict: "Verdict",
-    verdictTie: "Both products have the same overall SAFE Score. Check individual pillar scores to see which best fits your needs.",
+    verdictTie: "Both products have the same overall SAFE Score. Check individual pillar scores for a detailed comparison.",
     verdictWinner: "{winner} has a higher overall security score with {winnerScore}/100 compared to {loserScore}/100.",
     wantCompareOther: "Want to compare other products?",
     browseAll: "Browse All Products",
@@ -270,7 +270,7 @@ export default {
     comparisonShareText: "{productA} vs {productB} - Who wins on security? See the comparison on SafeScoring",
     setupShareText: "My crypto stack security score: {score}/100 - Analyzed by SafeScoring",
     // Viral prompts
-    sharePrompt: "Share to help others make safer choices",
+    sharePrompt: "Share to help others compare products",
     shareReward: "Share and unlock detailed insights",
   },
 
@@ -350,7 +350,7 @@ export default {
     productsScored: "Products Scored",
     productsScoredDesc: "Wallets, DEXs, exchanges, bridges & more",
     paidRankings: "Paid Rankings",
-    paidRankingsDesc: "Affiliates never influence scores",
+    paidRankingsDesc: "Affiliate relationships are disclosed and do not influence scores",
   },
 
   // FAQ
@@ -375,15 +375,15 @@ export default {
       },
       whatIsSafeScoring: {
         q: "What is SAFE Scoring?",
-        a: "SAFE Scoring is the first unified security rating for all crypto products. We evaluate hardware wallets, software wallets, and DeFi protocols with the same rigorous methodology: {count} security norms across 4 pillars - Security (cryptographic standards), Adversity (threat resistance), Fidelity (reliability & trust), and Efficiency (usability).",
+        a: "SAFE Scoring provides independent security opinions for crypto products. We evaluate hardware wallets, software wallets, and DeFi protocols with the same published methodology: {count} criteria across 4 pillars - Security (cryptographic standards), Adversity (threat resistance), Fidelity (reliability track record), and Efficiency (usability). All scores are editorial assessments, not guarantees of security.",
       },
       vsCertik: {
         q: "How is SafeScoring different from CertiK or other auditors?",
-        a: "Audits verify code at a single point in time. SafeScoring measures real-world security continuously. Key differences: (1) We cover ALL products - hardware, software, AND DeFi - with one methodology. CertiK only audits smart contracts. (2) We update monthly, not once. (3) Nearly half of hacked projects in 2024 had been audited. We go beyond code to evaluate operational security, track record, and resilience.",
+        a: "Audits typically verify code at a single point in time. SafeScoring's methodology assesses security posture on an ongoing basis. Key differences: (1) Our methodology covers hardware wallets, software wallets, and DeFi protocols with one framework. Smart contract auditors like CertiK specialize in code review. (2) We re-evaluate monthly. (3) According to industry reports, many hacked projects had been audited. Our methodology evaluates operational security, track record, and resilience beyond code.",
       },
       howEvaluated: {
         q: "How are products evaluated?",
-        a: "Our AI-powered system evaluates products against {count} security norms using official documentation, security audits, technical specifications, and on-chain data. Each norm is marked YES (compliant), NO (non-compliant), or N/A (not applicable). The process is automated and reproducible - no subjective opinions.",
+        a: "Our AI-assisted system evaluates products against {count} criteria using official documentation, security audits, technical specifications, and on-chain data. Each criterion is marked YES (met), NO (not met), or N/A (not applicable). The process is automated and reproducible, based on our published methodology.",
       },
       updateFrequency: {
         q: "How often are scores updated?",
@@ -391,7 +391,7 @@ export default {
       },
       independence: {
         q: "Is SafeScoring truly independent?",
-        a: "100%. While we may earn affiliate commissions from product links, this never influences our scores. Scores are calculated purely from our {count}-norm methodology - no exceptions. We've rated products poorly even when affiliates offered to pay for better scores. Independence is non-negotiable.",
+        a: "Affiliate relationships are disclosed and do not influence scores. Scores are calculated from our published {count}-criteria methodology. The scoring process and commercial relationships are completely separated. Rated entities may dispute factual errors via disputes@safescoring.io.",
       },
       fourPillars: {
         q: "What are the 4 SAFE pillars?",
@@ -574,7 +574,7 @@ export default {
     allRightsReserved: "All rights reserved",
     madeWith: "Made with",
     forCryptoSecurity: "for crypto security",
-    description: "The transparent database of verified crypto product security scores. Independent, unbiased, and updated monthly.",
+    description: "Independent security opinions for crypto products, based on our published SAFE methodology. All scores are editorial assessments. Updated monthly.",
     // Product links
     products: "Products",
     scoreTransparency: "Score Transparency",

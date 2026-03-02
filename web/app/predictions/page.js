@@ -7,14 +7,14 @@ import { getStats } from "@/libs/stats";
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Verified Predictions | SafeScoring",
+  title: "Methodology Predictions | SafeScoring",
   description:
-    "Cryptographically verified security predictions. Every prediction is committed to blockchain BEFORE events happen, proving SafeScoring methodology accuracy.",
+    "Security risk assessments committed to blockchain before events occur. Track the historical performance of SafeScoring's methodology-based predictions. Past performance does not guarantee future accuracy.",
   keywords: [
     "crypto predictions",
     "security predictions",
-    "blockchain verified",
-    "proof of accuracy",
+    "blockchain committed",
+    "methodology track record",
     "defi risk assessment",
   ],
 };
@@ -145,18 +145,18 @@ export default async function PredictionsPage() {
           {/* Hero */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-black mb-4">
-              Verified <span className="text-primary">Predictions</span>
+              Methodology <span className="text-primary">Predictions</span>
             </h1>
             <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-8">
-              Every prediction is cryptographically committed to blockchain BEFORE events happen.
-              This is immutable proof of SafeScoring methodology accuracy.
+              Risk assessments committed to blockchain before events occur.
+              Track the historical performance of our methodology-based predictions.
             </p>
 
             {/* Accuracy Hero Stat */}
             <div className="inline-flex items-center gap-6 bg-base-200 rounded-2xl p-6 border border-base-300">
               <div>
                 <div className="text-5xl font-black text-success">{accuracy.toFixed(1)}%</div>
-                <div className="text-sm text-base-content/60">Overall Accuracy</div>
+                <div className="text-sm text-base-content/60">Historical Accuracy*</div>
               </div>
               <div className="h-16 w-px bg-base-300" />
               <div className="text-left">
@@ -330,12 +330,19 @@ export default async function PredictionsPage() {
             })}
           </div>
 
+          {/* Disclaimer */}
+          <div className="mt-8 p-4 bg-base-200/50 rounded-lg border border-base-300">
+            <p className="text-xs text-base-content/50 text-center">
+              *Past prediction accuracy does not guarantee future results. Predictions represent SafeScoring&apos;s editorial risk assessments based on our published methodology. They are not statements of fact, investment advice, or guarantees of security. Always do your own research (DYOR).
+            </p>
+          </div>
+
           {/* CTA */}
-          <div className="mt-12 rounded-xl bg-gradient-to-br from-primary/20 to-base-200 border border-base-300 p-8 text-center">
-            <h2 className="text-2xl font-bold mb-3">AI Can&apos;t Fake History</h2>
+          <div className="mt-8 rounded-xl bg-gradient-to-br from-primary/20 to-base-200 border border-base-300 p-8 text-center">
+            <h2 className="text-2xl font-bold mb-3">Blockchain-Committed Track Record</h2>
             <p className="text-base-content/70 mb-6 max-w-lg mx-auto">
-              These predictions were committed to blockchain months or years before outcomes.
-              This is proof that SafeScoring methodology works - not just marketing claims.
+              These risk assessments were committed to blockchain before outcomes were known.
+              Review our historical prediction track record and methodology.
             </p>
             <Link href="/methodology" className="btn btn-primary">
               Learn Our Methodology

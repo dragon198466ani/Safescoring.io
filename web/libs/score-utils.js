@@ -269,31 +269,31 @@ export function getScoreVerdict(score) {
 
   if (s >= SCORE_THRESHOLDS.EXCELLENT) {
     return {
-      text: "Excellent",
-      short: "SAFE",
+      text: "High Score",
+      short: "HIGH",
       level: "excellent",
       color: "green",
     };
   }
   if (s >= SCORE_THRESHOLDS.GOOD) {
     return {
-      text: "Good",
-      short: "OK",
+      text: "Moderate Score",
+      short: "MOD",
       level: "good",
       color: "amber",
     };
   }
   if (s >= SCORE_THRESHOLDS.AVERAGE) {
     return {
-      text: "Fair",
-      short: "FAIR",
+      text: "Below Average",
+      short: "LOW",
       level: "average",
       color: "orange",
     };
   }
   return {
     text: "Needs Improvement",
-    short: "RISKY",
+    short: "REVIEW",
     level: "poor",
     color: "red",
   };
@@ -303,7 +303,7 @@ export function getScoreVerdict(score) {
  * Get simple verdict label for score.
  *
  * @param {number|null} score - Score value
- * @returns {string} "SAFE", "OK", "FAIR", or "RISKY"
+ * @returns {string} "HIGH", "MOD", "LOW", or "REVIEW"
  */
 export function getScoreLabel(score) {
   return getScoreVerdict(score).short;

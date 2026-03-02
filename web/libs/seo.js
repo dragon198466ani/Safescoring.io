@@ -12,13 +12,14 @@ const defaultKeywords = [
   "hardware wallet security",
   "software wallet rating",
   "crypto wallet comparison",
-  "blockchain security audit",
+  "blockchain security assessment",
   "defi protocol rating",
   "crypto security framework",
   "SAFE methodology",
   "SafeScoring",
   "crypto security evaluation",
   "wallet security score",
+  "editorial security opinion",
 ];
 
 export const getSEOTags = ({
@@ -31,7 +32,7 @@ export const getSEOTags = ({
 } = {}) => {
   return {
     // up to 50 characters (what does your app do for the user?) > your main should be here
-    title: title || `${config.appName} - Crypto Security Ratings`,
+    title: title || `${config.appName} - Crypto Security Opinions`,
     // up to 160 characters (how does your app help the user?)
     description: description || config.appDescription,
     // some keywords separated by commas. by default it will be your app name
@@ -62,7 +63,7 @@ export const getSEOTags = ({
     },
 
     twitter: {
-      title: openGraph?.title || `${config.appName} - Crypto Security Ratings`,
+      title: openGraph?.title || `${config.appName} - Crypto Security Opinions`,
       description: openGraph?.description || config.appDescription,
       // If you add an twitter-image.(jpg|jpeg|png|gif) image to the /app folder, you don't need the code below
       // images: [openGraph?.image || defaults.og.image],
@@ -96,7 +97,7 @@ export const renderSchemaTags = () => {
           "@context": "http://schema.org",
           "@type": "SoftwareApplication",
           name: config.appName,
-          description: config.appDescription,
+          description: `${config.appDescription} SafeScoring provides editorial opinions on crypto security based on our published methodology. Scores represent opinions, not certifications or guarantees.`,
           image: `https://${config.domainName}/icon.png`,
           url: `https://${config.domainName}/`,
           author: {

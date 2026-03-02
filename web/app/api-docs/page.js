@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata = {
   title: "API Documentation | SafeScoring",
-  description: "Integrate SafeScoring security ratings into your crypto application. Free API access for developers.",
+  description: "Integrate SafeScoring security evaluation opinions into your crypto application. Free API access for developers.",
   keywords: "crypto security API, SafeScore API, blockchain security integration, crypto rating API",
 };
 
@@ -61,7 +61,7 @@ const endpoints = [
   {
     method: "GET",
     path: "/api/badge/{slug}",
-    description: "Get an SVG badge showing the product's SafeScore",
+    description: "Get an SVG badge displaying the product's SafeScore evaluation",
     params: [
       { name: "slug", type: "string", required: true, description: "Product URL slug" },
       { name: "style", type: "string", required: false, description: "'flat' or 'gradient' (default: gradient)" }
@@ -168,8 +168,8 @@ export default function APIDocsPage() {
               SafeScoring API
             </h1>
             <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-8">
-              Integrate crypto security ratings into your application.
-              Free access for developers building safer crypto experiences.
+              Integrate SafeScoring&apos;s editorial security evaluations into your application.
+              Free access for developers. Scores represent opinions, not certifications.
             </p>
             <div className="flex gap-4 justify-center">
               <a href="#endpoints" className="btn btn-primary">
@@ -343,9 +343,9 @@ export default function APIDocsPage() {
             {/* Badge */}
             <div className="card bg-base-100">
               <div className="card-body">
-                <h3 className="card-title">SVG Badge</h3>
+                <h3 className="card-title">SVG Score Indicator</h3>
                 <p className="text-sm text-base-content/70 mb-4">
-                  Perfect for README files, documentation, or anywhere you need a simple score indicator.
+                  Display SafeScoring&apos;s editorial evaluation in README files, documentation, or anywhere you want to show the assessed score.
                 </p>
                 <div className="mockup-code text-sm">
                   <pre><code>{`![SafeScore](https://safescoring.io/api/badge/your-product)`}</code></pre>
@@ -365,7 +365,7 @@ export default function APIDocsPage() {
               <div className="card-body">
                 <h3 className="card-title">HTML Widget</h3>
                 <p className="text-sm text-base-content/70 mb-4">
-                  Full-featured widget with score breakdown. Embed via iframe.
+                  Full-featured widget displaying SafeScoring&apos;s evaluation opinion with score breakdown. Embed via iframe.
                 </p>
                 <div className="mockup-code text-sm overflow-x-auto">
                   <pre><code>{`<iframe
@@ -396,8 +396,8 @@ export default function APIDocsPage() {
               <div className="card-body">
                 <h3 className="card-title text-green-400">Crypto Wallets</h3>
                 <p className="text-sm text-base-content/70">
-                  Show security scores for DeFi protocols before users connect.
-                  Help users make informed decisions.
+                  Display SafeScoring evaluation opinions for DeFi protocols before users connect.
+                  Help users consider security assessments in their decisions.
                 </p>
               </div>
             </div>
@@ -405,8 +405,8 @@ export default function APIDocsPage() {
               <div className="card-body">
                 <h3 className="card-title text-blue-400">Portfolio Trackers</h3>
                 <p className="text-sm text-base-content/70">
-                  Display security ratings alongside holdings.
-                  Alert users to low-score protocols in their portfolio.
+                  Display SafeScoring evaluation opinions alongside holdings.
+                  Highlight protocols with low assessed scores in a portfolio.
                 </p>
               </div>
             </div>
@@ -414,8 +414,8 @@ export default function APIDocsPage() {
               <div className="card-body">
                 <h3 className="card-title text-purple-400">News & Media</h3>
                 <p className="text-sm text-base-content/70">
-                  Embed SafeScore badges in articles about crypto products.
-                  Add credibility to your reviews.
+                  Embed SafeScore evaluation indicators in articles about crypto products.
+                  Reference SafeScoring&apos;s editorial opinions in your coverage.
                 </p>
               </div>
             </div>

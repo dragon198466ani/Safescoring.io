@@ -25,7 +25,7 @@ const WhySafeScoring = () => {
         </svg>
       ),
       title: `${stats.totalProducts}+ products evaluated`,
-      description: "Every product scored against the same rigorous methodology. Not opinions — reproducible, AI-powered evaluations updated monthly.",
+      description: "Every product scored against the same published methodology. Editorial opinions based on reproducible, AI-assisted evaluations updated monthly.",
       color: "text-base-content/70",
       bgColor: "bg-base-200",
       borderColor: "border-base-300",
@@ -37,7 +37,7 @@ const WhySafeScoring = () => {
         </svg>
       ),
       title: "Patented SAFE methodology",
-      description: "Security, Adversity, Fidelity, Efficiency — 4 pillars covering what audits miss: physical threats, track record, and real-world usability.",
+      description: "Security, Adversity, Fidelity, Efficiency — 4 pillars complementing code audits with physical threats, track record, and usability criteria.",
       color: "text-base-content/70",
       bgColor: "bg-base-200",
       borderColor: "border-base-300",
@@ -48,8 +48,8 @@ const WhySafeScoring = () => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
         </svg>
       ),
-      title: "Community-verified",
-      description: "Thousands of community votes validate AI evaluations. Crowd wisdom + AI rigor = scores you can trust.",
+      title: "Community-reviewed",
+      description: "Thousands of community votes complement AI evaluations. Crowd input + AI-assisted analysis = scores informed by collective insight.",
       color: "text-base-content/70",
       bgColor: "bg-base-200",
       borderColor: "border-base-300",
@@ -107,13 +107,13 @@ const WhySafeScoring = () => {
                 Not another bloated SaaS
               </h3>
               <p className="text-base-content/60 mb-6 leading-relaxed">
-                We do <span className="text-white font-bold">one thing</span> and we do it better than anyone:
-                rate the real-world security of every crypto product with a single, comparable score.
+                We do <span className="text-white font-bold">one thing</span> and we focus on doing it well:
+                provide independent security opinions for every crypto product, based on a single, published methodology.
               </p>
               <p className="text-base-content/60 leading-relaxed">
                 No unnecessary AI features. No template gallery. No email builder.
                 Just <span className="text-white font-bold">the data you need</span> to
-                protect your crypto — available via web, API, SDK, and embeddable widgets.
+                inform your crypto decisions — available via web, API, SDK, and embeddable widgets.
               </p>
             </div>
             <div className="space-y-4">

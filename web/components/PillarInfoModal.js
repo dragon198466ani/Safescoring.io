@@ -80,9 +80,9 @@ const pillarEducationalContent = {
   },
   F: {
     title: "Fidelity",
-    subtitle: "Proven Track Record, Not Promises",
+    subtitle: "Reliability & Track Record",
     introduction:
-      `${auditedHackedApprox} of hacked projects in ${auditedHackedYear} had passed at least one security audit. An audit is a snapshot in time — it tells you nothing about what happened after. This pillar measures what actually matters: does the team fix vulnerabilities fast? Do they maintain transparency when things go wrong? Is the project still actively defended?`,
+      `According to industry reports, ${auditedHackedApprox} of hacked projects in ${auditedHackedYear} had passed at least one security audit. Audits represent a point-in-time assessment. This pillar evaluates ongoing factors: does the team fix vulnerabilities fast? Do they maintain transparency when things go wrong? Is the project still actively defended?`,
     whyItMatters:
       "Crypto security is a moving target. New exploits emerge weekly. A product that was secure in January can be compromised by March if the team stopped patching. Fidelity measures the ongoing commitment to security — because the projects that survive hacks aren't the ones with the best audits, they're the ones with the best response teams.",
     essentialStandards: [
@@ -116,7 +116,7 @@ const pillarEducationalContent = {
     title: "Efficiency",
     subtitle: "Security You Can Actually Use",
     introduction:
-      "The most secure wallet in the world is worthless if it lets you send $50,000 to the wrong address because the confirmation screen was confusing. This pillar measures whether a product's security actually works in the hands of real users — not just in a lab. Clear transaction displays, address verification, error prevention, and accessible recovery are what separate usable security from theoretical security.",
+      "Even a highly-rated wallet can lead to losses if it lets you send $50,000 to the wrong address because the confirmation screen was confusing. This pillar evaluates whether a product's security features work well in the hands of real users — not just in a lab. Clear transaction displays, address verification, error prevention, and accessible recovery are what separate usable security from theoretical security.",
     whyItMatters:
       "User errors — wrong chain, wrong address, misunderstood gas fees, lost seed phrases — cause billions in irreversible crypto losses every year. These aren't security failures, they're UX failures. A product that forces users to blind-sign transactions or offers no recovery path is insecure by design, no matter how strong its cryptography.",
     essentialStandards: [

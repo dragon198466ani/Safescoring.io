@@ -61,7 +61,7 @@ export default {
     title: "당신의 암호화폐 스택에는",
     titleHighlight: "보안 사각지대가 있습니다",
     subtitle: "하드웨어 지갑. 소프트웨어 지갑. DeFi 프로토콜.",
-    subtitleStrong: "모두 동일한 엄격한 방법론으로 평가됩니다.",
+    subtitleStrong: "모두 동일한 공개된 방법론으로 평가됩니다.",
     ctaPrimary: "스택 분석하기",
     ctaSecondary: "제품 탐색하기",
     trustIndicator: "무료 · 2분 · 가입 불필요",
@@ -110,7 +110,7 @@ export default {
       subtitle: "모든 점수를 이끄는 원칙",
       independence: {
         title: "독립성",
-        desc: "제휴는 점수에 영향을 주지 않습니다. 오직 방법론만 반영됩니다.",
+        desc: "제휴 관계는 공개되며 점수에 영향을 주지 않습니다.",
       },
       transparency: {
         title: "투명성",
@@ -118,7 +118,7 @@ export default {
       },
       rigor: {
         title: "엄격함",
-        desc: "4개 기둥, {totalNorms}개 규범. 지름길도, 주관도 없습니다.",
+        desc: "4개 기둥, {totalNorms}개 규범. 공개된 방법론에 기반합니다.",
       },
       accessibility: {
         title: "접근성",

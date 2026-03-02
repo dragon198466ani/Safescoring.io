@@ -24,7 +24,7 @@ const getScoreBg = (score) => {
 
 const WinnerBadge = () => (
   <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
-    WINNER
+    HIGHER SCORE
   </span>
 );
 

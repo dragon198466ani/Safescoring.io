@@ -6,6 +6,7 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import { validatePartnerKey, trackUsage } from "@/libs/partner-auth";
+import { API_DISCLAIMER } from "@/libs/api-disclaimer";
 
 export async function GET(request) {
   const startTime = Date.now();
@@ -51,6 +52,7 @@ export async function GET(request) {
       await trackUsage(auth.partnerId, auth.keyId, "/v1/partner/scores", 200, Date.now() - startTime, slug);
 
       const response = {
+        _legal: API_DISCLAIMER,
         product: { name: product.name, slug: product.slug, type: product.product_type },
         score: score ? {
           overall: Math.round(score.note_finale),
@@ -115,7 +117,8 @@ export async function GET(request) {
 
       await trackUsage(auth.partnerId, auth.keyId, "/v1/partner/scores/bulk", 200, Date.now() - startTime);
 
-      return NextResponse.json({ 
+      return NextResponse.json({
+        _legal: API_DISCLAIMER,
         results,
         count: results.length,
         ...(!auth.whiteLabel && { _source: "SafeScoring" })

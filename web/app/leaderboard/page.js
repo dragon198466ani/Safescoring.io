@@ -10,7 +10,7 @@ export async function generateMetadata() {
   const stats = await getStats();
   return {
     title: "Security Leaderboard - Top Rated Crypto Products | SafeScoring",
-    description: `See the most secure crypto wallets, exchanges, and DeFi protocols ranked by SafeScore. Updated monthly based on ${stats.totalNorms} security criteria.`,
+    description: `Crypto products ranked by SafeScore according to our published methodology. Scores are editorial opinions. Updated monthly based on ${stats.totalNorms} criteria.`,
   };
 }
 
@@ -94,15 +94,15 @@ export default async function LeaderboardPage() {
               Security Leaderboard
             </h1>
             <p className="text-base-content/60 max-w-2xl mx-auto">
-              The most secure crypto products ranked by SafeScore.
-              Updated monthly based on {platformStats.totalNorms} security criteria.
+              Crypto products ranked by SafeScore according to our published methodology.
+              Scores are editorial opinions, updated monthly based on {platformStats.totalNorms} criteria.
             </p>
           </div>
 
           {/* Overall Top 10 */}
           <div className="rounded-xl bg-base-200 border border-base-300 p-6 mb-12">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <span>🏆</span> Top 10 Most Secure Products
+              <span>🏆</span> Top 10 Highest-Rated Products (by SafeScoring)
             </h2>
 
             <div className="overflow-x-auto">

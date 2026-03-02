@@ -61,7 +61,7 @@ export default {
     title: "您的加密货币堆栈存在",
     titleHighlight: "安全盲点",
     subtitle: "硬件钱包。软件钱包。DeFi协议。",
-    subtitleStrong: "全部采用相同严格的方法论评估。",
+    subtitleStrong: "全部采用相同已公开的方法论评估。",
     ctaPrimary: "分析您的堆栈",
     ctaSecondary: "探索产品",
     trustIndicator: "免费 · 2分钟 · 无需注册",
@@ -109,7 +109,7 @@ export default {
       subtitle: "指导每个分数的原则",
       independence: {
         title: "独立性",
-        desc: "联盟永不影响分数。只有方法论才算数。",
+        desc: "联盟关系已披露，不会影响分数。",
       },
       transparency: {
         title: "透明性",
@@ -117,7 +117,7 @@ export default {
       },
       rigor: {
         title: "严谨性",
-        desc: "4 大支柱共 {totalNorms} 条规范。没有捷径，没有主观意见。",
+        desc: "4 大支柱共 {totalNorms} 条规范。基于我们已公开的方法论。",
       },
       accessibility: {
         title: "可及性",

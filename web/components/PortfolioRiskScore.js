@@ -262,7 +262,7 @@ export default function PortfolioRiskScore({
                 <Link href={`/products/${analysis.weakestLink.slug}`} className="font-semibold hover:text-primary">
                   {analysis.weakestLink.name}
                 </Link>
-                {" "}has the lowest score ({analysis.weakestLink.score}). Consider upgrading to a more secure alternative.
+                {" "}has the lowest score in your stack ({analysis.weakestLink.score} according to our methodology). You may want to review alternatives.
               </p>
             </div>
           )}

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/libs/supabase";
+import { API_DISCLAIMER } from "@/libs/api-disclaimer";
 
 /**
  * Product Score API
@@ -91,8 +92,14 @@ export async function GET(request, { params }) {
         },
         lastUpdated: latestScore.calculated_at,
         detailsUrl: `https://safescoring.io/products/${product.slug}`,
+        _legal: API_DISCLAIMER,
       },
-      { headers }
+      {
+        headers: {
+          ...headers,
+          "X-Legal-Notice": "Scores are editorial opinions, not statements of fact. See https://safescoring.io/legal",
+        },
+      }
     );
 
   } catch (error) {

@@ -102,6 +102,7 @@ export async function sendIncidentNotificationEmail(user, setup, incident) {
     <div class="footer">
       <p>You received this because you have incident alerts enabled for your stacks.</p>
       <p><a href="https://safescoring.io/dashboard/settings" style="color: #3b82f6;">Manage notification preferences</a></p>
+      <p style="margin-top: 16px; font-size: 11px; color: #475569;">This email contains SafeScoring's editorial opinions based on our published methodology. Scores are not guarantees of security. See <a href="https://safescoring.io/legal" style="color: #3b82f6;">https://safescoring.io/legal</a></p>
     </div>
   </div>
 </body>
@@ -169,6 +170,7 @@ export async function sendScoreChangeNotificationEmail(user, setup, oldScore, ne
     <div class="footer">
       <p>You received this because you have score change alerts enabled.</p>
       <p><a href="https://safescoring.io/dashboard/settings" style="color: #3b82f6;">Manage notification preferences</a></p>
+      <p style="margin-top: 16px; font-size: 11px; color: #475569;">This email contains SafeScoring's editorial opinions based on our published methodology. Scores are not guarantees of security. See <a href="https://safescoring.io/legal" style="color: #3b82f6;">https://safescoring.io/legal</a></p>
     </div>
   </div>
 </body>

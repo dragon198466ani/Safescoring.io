@@ -45,12 +45,12 @@ const CATEGORIES = [
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Best Crypto Products - Security Rankings | SafeScoring",
-  description: "Find the safest crypto products. Compare security scores for hardware wallets, exchanges, DeFi protocols, and more.",
-  keywords: ["best crypto", "safest wallet", "secure exchange", "crypto security ranking"],
+  title: "Highest-Rated Crypto Products - Security Rankings | SafeScoring",
+  description: "Compare crypto product security scores according to SafeScoring's published methodology. Editorial opinions for wallets, exchanges, DeFi protocols, and more.",
+  keywords: ["crypto security ranking", "wallet security score", "exchange security rating", "crypto security opinion"],
   openGraph: {
-    title: "Best Crypto Products - Security Rankings",
-    description: "Find the safest crypto products based on 1100+ security criteria.",
+    title: "Highest-Rated Crypto Products by SafeScoring",
+    description: "Compare crypto product security scores according to SafeScoring's published SAFE methodology.",
     url: "https://safescoring.io/best",
   },
   alternates: {
@@ -70,11 +70,11 @@ export default async function BestIndexPage() {
           {/* Hero */}
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Best Crypto Products {currentYear}
+              Highest-Rated Crypto Products {currentYear}
             </h1>
             <p className="text-xl text-base-content/60 max-w-2xl mx-auto">
-              Independent security rankings based on {stats.totalNorms}+ criteria.
-              Find the safest wallets, exchanges, and DeFi protocols.
+              Independent security opinions based on {stats.totalNorms}+ criteria.
+              Compare wallets, exchanges, and DeFi protocols according to our SAFE methodology.
             </p>
           </div>
 
@@ -124,8 +124,15 @@ export default async function BestIndexPage() {
             ))}
           </div>
 
+          {/* Editorial Disclaimer */}
+          <div className="mt-12 p-4 bg-base-200/50 rounded-lg border border-base-300">
+            <p className="text-xs text-base-content/50 text-center">
+              Rankings reflect SafeScoring&apos;s editorial opinions based on our published SAFE methodology. They are not statements of fact, guarantees of security, or recommendations to buy or sell any product. Always do your own research (DYOR).
+            </p>
+          </div>
+
           {/* Trust Section */}
-          <div className="mt-16 text-center">
+          <div className="mt-8 text-center">
             <p className="text-base-content/50 mb-4">How we evaluate</p>
             <div className="flex flex-wrap justify-center gap-8">
               <div className="flex items-center gap-2">

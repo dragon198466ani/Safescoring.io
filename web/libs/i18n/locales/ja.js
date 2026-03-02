@@ -174,21 +174,21 @@ export default {
 
   // Hero
   hero: {
-    tagline: "{totalNorms}の基準。{totalProducts}+製品評価済み。",
-    title: "初の統一された",
+    tagline: "{totalNorms}の基準。1つの方法論。独立した評価。",
+    title: "独立した",
     titleHighlight: "暗号資産セキュリティ評価",
     subtitle: "ハードウェアウォレット。ソフトウェアウォレット。DeFiプロトコル。",
-    subtitleStrong: "すべて同じ厳格な方法論で評価。",
-    antiAudit: "2024年にハッキングされたプロジェクトの87%は監査済みでした。",
-    antiAuditHighlight: "私たちは実際のセキュリティを測定します。",
+    subtitleStrong: "すべて同じ公開された方法論で評価。",
+    antiAudit: "業界報告によると、2024年にハッキングされたプロジェクトの87%は監査済みでした。",
+    antiAuditHighlight: "私たちの方法論はコードレビューを超えます。",
     ctaPrimary: "スタックを分析",
     ctaSecondary: "製品を探す",
     freeBadge: "無料",
     noCreditCard: "クレジットカード不要",
     trustIndicators: {
-      independent: "100%独立したスコア",
+      independent: "編集上独立したスコア",
       productTypes: "製品タイプ",
-      aiPowered: "AI駆動、再現可能",
+      aiPowered: "AI支援、再現可能",
       openMethodology: "オープンな方法論",
     },
   },
@@ -386,7 +386,7 @@ export default {
     securityComparison: "{count}の基準に基づくセキュリティ比較（セキュリティ、逆境耐性、信頼性、効率性の4つのピラー）",
     winsIn: "{name}が{count}ピラーで勝利",
     verdict: "結論",
-    verdictTie: "両製品のSAFEスコアは同じです。個別のピラースコアを確認して、ニーズに合った製品を選んでください。",
+    verdictTie: "両製品のSAFEスコアは同じです。詳細な比較のために個別のピラースコアをご確認ください。",
     verdictWinner: "{winner}が総合セキュリティスコアで{winnerScore}/100を獲得し、{loser}の{loserScore}/100を上回りました。",
     wantCompareOther: "他の製品を比較しますか？",
     browseAll: "すべての製品を見る",
@@ -394,7 +394,7 @@ export default {
     faqWhichSafer: "どちらがより安全ですか：{productA}と{productB}？",
     faqWhichSaferAnswer: "{count}の基準によるセキュリティ評価に基づき、{result}",
     faqWhatIsSafe: "SAFEスコアとは？",
-    faqWhatIsSafeAnswer: "SAFEスコアは4つのピラー（セキュリティ、逆境耐性、信頼性、効率性）で暗号資産製品を評価します。AIと人間の専門家が{count}のセキュリティ基準を評価しています。",
+    faqWhatIsSafeAnswer: "SAFEスコアは4つのピラー（セキュリティ、逆境耐性、信頼性、効率性）で暗号資産製品を評価します。AI支援と人間の専門家が{count}のセキュリティ基準を評価しています。",
     faqHowOften: "スコアはどのくらいの頻度で更新されますか？",
     faqHowOftenAnswer: "セキュリティスコアは毎月更新され、セキュリティインシデントや主要な製品アップデートがあった場合は即座に更新されます。",
   },
@@ -668,7 +668,7 @@ export default {
       subtitle: "すべてのスコアを導く原則",
       independence: {
         title: "独立性",
-        desc: "アフィリエイトはスコアに影響しません。方法論のみが基準です。",
+        desc: "アフィリエイト関係は開示されており、スコアに影響しません。",
       },
       transparency: {
         title: "透明性",
@@ -676,7 +676,7 @@ export default {
       },
       rigor: {
         title: "厳格さ",
-        desc: "4本柱で{totalNorms}基準。近道も主観もありません。",
+        desc: "4本柱で{totalNorms}基準。公開された方法論に基づいています。",
       },
       accessibility: {
         title: "アクセシビリティ",

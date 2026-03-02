@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import { authenticateAgent, debitAgentCredits, AGENT_CORS_HEADERS } from "@/libs/agent-auth";
 import { API_TIERS } from "@/libs/config-constants";
+import { API_DISCLAIMER } from "@/libs/api-disclaimer";
 
 /**
  * Agent Score API - Pay-per-query
@@ -148,6 +149,7 @@ export async function GET(request) {
     return NextResponse.json(
       {
         success: true,
+        _legal: API_DISCLAIMER,
         data: {
           slug: product.slug,
           name: product.name,

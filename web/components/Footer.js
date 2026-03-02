@@ -40,8 +40,8 @@ const Footer = () => {
               <span className="font-bold text-xl">SafeScoring</span>
             </Link>
             <p className="text-base-content/60 mb-6 max-w-sm">
-              The transparent database of verified crypto product security scores.
-              Independent, unbiased, and updated monthly.
+              Independent security opinions for crypto products, based on our published SAFE methodology.
+              All scores are editorial assessments, not guarantees. Updated monthly.
             </p>
             {/* Social links */}
             <div className="flex items-center gap-4">
@@ -137,10 +137,10 @@ const Footer = () => {
         <div className="mt-12 space-y-3">
           <div className="p-4 bg-base-300/30 rounded-lg border border-base-300">
             <p className="text-xs text-base-content/50 text-center">
-              <strong>Disclaimer:</strong> This website does not provide investment advice, financial advice, or any form of professional advice.
-              The scores, ratings, and information presented are for educational and informational purposes only and do not constitute
-              a recommendation to buy, sell, or hold any cryptocurrency or digital asset.
-              Cryptocurrency investments are highly volatile and involve substantial risk of loss. Always do your own research (DYOR).
+              <strong>Editorial Opinion Notice:</strong> All scores and ratings on this website represent SafeScoring&apos;s editorial opinions derived from our published SAFE methodology.
+              They are not statements of fact, guarantees of security, or professional advice of any kind (investment, financial, or otherwise).
+              Scores do not constitute a recommendation to buy, sell, or hold any cryptocurrency or digital asset.
+              Always do your own research (DYOR). Rated entities may <Link href="/legal#dispute" className="underline hover:text-base-content/60">dispute factual errors</Link>.
             </p>
           </div>
           <div className="p-3 bg-base-300/20 rounded-lg border border-base-300">

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import fs from "fs";
+import path from "path";
 
 /**
  * GET /api/products/[slug]/chart-data
@@ -53,13 +55,17 @@ export async function GET(request, { params }) {
         break;
 
       case "dual_score":
-        // Fetch both AI and Community scores for dual chart
-        history = await fetchDualScoreHistory(productId, days, pillar);
+        // Fetch score history from DB + incidents from static JSON (zero DB cost)
+        const [dualHistory, incidentsForChart] = await Promise.all([
+          fetchDualScoreHistory(productId, days, pillar),
+          fetchIncidentsFromStatic(slug, days),
+        ]);
         return NextResponse.json({
           metric,
           range,
-          history,
-          count: history.length,
+          history: dualHistory,
+          incidents: incidentsForChart,
+          count: dualHistory.length,
         });
 
       case "tvl":
@@ -278,4 +284,33 @@ async function fetchChartData(productId, metricType, days) {
     recorded_at: d.recorded_at,
     metadata: d.metadata,
   }));
+}
+
+/**
+ * Fetch incidents from static JSON files (zero DB cost, served by CDN)
+ */
+function fetchIncidentsFromStatic(slug, days) {
+  try {
+    const filePath = path.join(process.cwd(), "public", "data", "incidents", `${slug}.json`);
+    if (!fs.existsSync(filePath)) return [];
+
+    const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    return (data.incidents || [])
+      .filter((inc) => new Date(inc.date) >= startDate)
+      .map((inc) => ({
+        date: inc.date,
+        severity: inc.severity,
+        title: inc.title,
+        fundsLost: inc.fundsLost || 0,
+        type: inc.type,
+        chain: inc.chain,
+      }))
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+  } catch (err) {
+    console.error("[API] Static incident read error:", err.message);
+    return [];
+  }
 }

@@ -26,6 +26,10 @@ const COLORS = {
     fill: "rgba(34, 197, 94, 0.1)",
     dot: "#16a34a", // green-600
   },
+  incident: {
+    line: "#ef4444", // red-500
+    marker: "#dc2626", // red-600
+  },
   grid: "rgba(255, 255, 255, 0.1)",
   axis: "rgba(255, 255, 255, 0.3)",
 };
@@ -40,6 +44,7 @@ export default function DualScoreChart({
   pillar = null, // null = global SAFE, or S/A/F/E
 }) {
   const [hoveredPoint, setHoveredPoint] = useState(null);
+  const [hoveredIncident, setHoveredIncident] = useState(null);
   const [activeRange, setActiveRange] = useState(timeRange);
 
   // Build API URL with dynamic params
@@ -85,6 +90,35 @@ export default function DualScoreChart({
       votesCount: point.votes_count ?? 0,
     }));
   }, [data, isDemo]);
+
+  // Process incident data for chart overlay markers
+  const incidentMarkers = useMemo(() => {
+    if (!data?.incidents || data.incidents.length === 0 || chartData.length === 0) {
+      return [];
+    }
+
+    const chartStart = chartData[0].date.getTime();
+    const chartEnd = chartData[chartData.length - 1].date.getTime();
+    const totalRange = chartEnd - chartStart;
+
+    if (totalRange <= 0) return [];
+
+    return data.incidents
+      .map((incident) => {
+        const incidentDate = new Date(incident.date);
+        const xPos = ((incidentDate.getTime() - chartStart) / totalRange) * 100;
+
+        if (xPos < 0 || xPos > 100) return null;
+
+        return {
+          ...incident,
+          dateObj: incidentDate,
+          xPos,
+          dateLabel: formatDate(incident.date),
+        };
+      })
+      .filter(Boolean);
+  }, [data, chartData]);
 
   // Calculate chart dimensions
   const padding = { top: 20, right: 20, bottom: 30, left: 40 };
@@ -212,6 +246,14 @@ export default function DualScoreChart({
             />
             <span className="text-base-content/70">Community Score</span>
           </div>
+          {incidentMarkers.length > 0 && (
+            <div className="flex items-center gap-1.5">
+              <svg width="8" height="8" viewBox="0 0 8 8" className="flex-shrink-0">
+                <polygon points="4,0 8,4 4,8 0,4" fill={COLORS.incident.marker} />
+              </svg>
+              <span className="text-base-content/70">Incidents</span>
+            </div>
+          )}
         </div>
       )}
 
@@ -317,6 +359,41 @@ export default function DualScoreChart({
                 )}
               </g>
             ))}
+
+            {/* Incident markers */}
+            {incidentMarkers.map((incident, i) => (
+              <g key={`incident-${i}`}>
+                {/* Vertical dashed line */}
+                <line
+                  x1={incident.xPos}
+                  x2={incident.xPos}
+                  y1={0}
+                  y2={chartHeight}
+                  stroke={COLORS.incident.line}
+                  strokeWidth="0.3"
+                  strokeDasharray="1.5,1"
+                  vectorEffect="non-scaling-stroke"
+                  opacity={0.5}
+                />
+                {/* Diamond marker at bottom */}
+                <polygon
+                  points={`
+                    ${incident.xPos},${chartHeight - 4}
+                    ${incident.xPos + 1.2},${chartHeight - 2}
+                    ${incident.xPos},${chartHeight}
+                    ${incident.xPos - 1.2},${chartHeight - 2}
+                  `}
+                  fill={
+                    incident.severity === "critical" ? "#ef4444" :
+                    incident.severity === "high" ? "#f97316" : "#eab308"
+                  }
+                  stroke="none"
+                  onMouseEnter={() => setHoveredIncident({ ...incident, index: i })}
+                  onMouseLeave={() => setHoveredIncident(null)}
+                  style={{ cursor: "pointer" }}
+                />
+              </g>
+            ))}
           </g>
 
           {/* X-axis labels */}
@@ -339,7 +416,7 @@ export default function DualScoreChart({
           </g>
         </svg>
 
-        {/* Tooltip */}
+        {/* Score tooltip */}
         {showTooltip && hoveredPoint && (
           <div
             className="absolute z-10 bg-base-300 border border-base-content/20 rounded-lg shadow-lg p-2 text-xs pointer-events-none"
@@ -369,6 +446,47 @@ export default function DualScoreChart({
                 {hoveredPoint.votesCount} votes
               </div>
             )}
+          </div>
+        )}
+
+        {/* Incident tooltip */}
+        {showTooltip && hoveredIncident && (
+          <div
+            className="absolute z-20 bg-red-950 border border-red-500/30 rounded-lg shadow-lg p-3 text-xs pointer-events-none max-w-[200px]"
+            style={{
+              left: `${hoveredIncident.xPos}%`,
+              bottom: 40,
+              transform: "translateX(-50%)",
+            }}
+          >
+            <div className="font-medium text-red-300 mb-1 line-clamp-2">
+              {hoveredIncident.title}
+            </div>
+            <div className="text-red-400/70 text-[10px] mb-1">
+              {hoveredIncident.dateLabel}
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className={`px-1.5 py-0.5 rounded text-[10px] ${
+                hoveredIncident.severity === "critical" ? "bg-red-500/20 text-red-400" :
+                hoveredIncident.severity === "high" ? "bg-orange-500/20 text-orange-400" :
+                "bg-amber-500/20 text-amber-400"
+              }`}>
+                {hoveredIncident.severity}
+              </span>
+              <span className="text-red-400/60 text-[10px]">
+                {(hoveredIncident.type || "").replace(/_/g, " ")}
+              </span>
+              {hoveredIncident.fundsLost > 0 && (
+                <span className="text-red-400/80">
+                  ${hoveredIncident.fundsLost >= 1000000
+                    ? `${(hoveredIncident.fundsLost / 1000000).toFixed(1)}M`
+                    : hoveredIncident.fundsLost >= 1000
+                    ? `${(hoveredIncident.fundsLost / 1000).toFixed(0)}K`
+                    : hoveredIncident.fundsLost.toFixed(0)
+                  }
+                </span>
+              )}
+            </div>
           </div>
         )}
       </div>

@@ -56,7 +56,7 @@ const QUIZ_QUESTIONS = [
     question: "What's most important to you?",
     icon: "⭐",
     options: [
-      { id: "security", label: "Maximum Security", description: "I want the safest setup", tags: ["security-first"] },
+      { id: "security", label: "Maximum Security", description: "I prioritize security features", tags: ["security-first"] },
       { id: "ease", label: "Ease of Use", description: "Simple and intuitive", tags: ["user-friendly"] },
       { id: "features", label: "Features", description: "Advanced capabilities", tags: ["feature-rich"] },
       { id: "cost", label: "Low Cost", description: "Budget-friendly options", tags: ["affordable"] },
@@ -142,7 +142,7 @@ export default function SetupQuiz({ products, onComplete, onSkip }) {
           <div className="text-4xl mb-3">🎯</div>
           <h3 className="text-xl font-bold">Recommended for You</h3>
           <p className="text-base-content/60 text-sm mt-1">
-            Based on your answers, here are the best products for your stack
+            Based on your answers, here are the highest-rated products for your stack according to our methodology
           </p>
         </div>
 

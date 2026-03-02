@@ -10,41 +10,41 @@ import config from "@/config";
 // Category definitions for SEO pages
 const CATEGORIES = {
   "hardware-wallets": {
-    title: "Best Hardware Wallets",
-    h1: "Top 10 Most Secure Hardware Wallets",
-    description: "Compare the safest hardware wallets for cryptocurrency storage. Independent security ratings based on 1100+ criteria.",
+    title: "Highest-Rated Hardware Wallets",
+    h1: "Top 10 Highest-Rated Hardware Wallets (by SafeScoring)",
+    description: "Compare hardware wallet security scores according to SafeScoring's SAFE methodology. Independent editorial opinions based on our published criteria.",
     typeFilter: ["hardware_wallet"],
     icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
     keywords: ["hardware wallet", "cold wallet", "ledger", "trezor", "coldcard", "crypto storage", "meilleur hardware wallet", "portefeuille crypto physique", "comparatif ledger trezor"],
   },
   "software-wallets": {
-    title: "Best Software Wallets",
-    h1: "Top 10 Most Secure Software Wallets",
-    description: "Compare the safest hot wallets and browser extensions for crypto. Security scores for MetaMask, Trust Wallet, and more.",
+    title: "Highest-Rated Software Wallets",
+    h1: "Top 10 Highest-Rated Software Wallets (by SafeScoring)",
+    description: "Compare software wallet security scores according to SafeScoring's methodology. Editorial opinions for MetaMask, Trust Wallet, and more.",
     typeFilter: ["software_wallet", "browser_extension", "mobile_wallet"],
     icon: "M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3",
     keywords: ["software wallet", "hot wallet", "metamask", "trust wallet", "phantom", "mobile wallet", "meilleur wallet crypto", "portefeuille crypto mobile", "comparatif wallet crypto"],
   },
   "exchanges": {
-    title: "Best Crypto Exchanges",
-    h1: "Top 10 Most Secure Crypto Exchanges",
-    description: "Compare exchange security scores. Find the safest centralized exchanges for trading cryptocurrency.",
+    title: "Highest-Rated Crypto Exchanges",
+    h1: "Top 10 Highest-Rated Crypto Exchanges (by SafeScoring)",
+    description: "Compare exchange security scores according to SafeScoring's methodology. Independent editorial assessments for cryptocurrency exchanges.",
     typeFilter: ["cex", "exchange"],
     icon: "M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z",
     keywords: ["crypto exchange", "cex", "binance", "coinbase", "kraken", "trading platform", "meilleur exchange crypto", "comparatif exchange crypto", "plateforme crypto sécurisée"],
   },
   "defi-protocols": {
-    title: "Best DeFi Protocols",
-    h1: "Top 10 Safest DeFi Protocols",
-    description: "Compare DeFi protocol security scores. Find the safest lending, DEX, and yield platforms.",
+    title: "Highest-Rated DeFi Protocols",
+    h1: "Top 10 Highest-Rated DeFi Protocols (by SafeScoring)",
+    description: "Compare DeFi protocol security scores according to SafeScoring's methodology. Editorial opinions on lending, DEX, and yield platforms.",
     typeFilter: ["defi", "dex", "lending", "yield"],
     icon: "M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125",
     keywords: ["defi", "decentralized finance", "dex", "uniswap", "aave", "lending protocol", "meilleur protocole defi", "sécurité defi", "comparatif defi"],
   },
   "staking": {
-    title: "Best Staking Platforms",
-    h1: "Top 10 Safest Staking Platforms",
-    description: "Compare staking platform security. Find the safest places to stake your crypto assets.",
+    title: "Highest-Rated Staking Platforms",
+    h1: "Top 10 Highest-Rated Staking Platforms (by SafeScoring)",
+    description: "Compare staking platform security scores according to SafeScoring's methodology. Editorial opinions on crypto staking security.",
     typeFilter: ["staking", "liquid_staking"],
     icon: "M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
     keywords: ["staking", "liquid staking", "lido", "rocket pool", "ethereum staking", "meilleur staking crypto", "staking sécurisé"],
@@ -220,11 +220,11 @@ function BestOfStructuredData({ category, categoryData, products, stats }) {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": `What is the best ${category.replace(/-/g, " ")} in ${currentYear}?`,
+        "name": `What is the highest-rated ${category.replace(/-/g, " ")} according to SafeScoring in ${currentYear}?`,
         "acceptedAnswer": {
           "@type": "Answer",
           "text": products.length > 0
-            ? `Based on our ${stats.totalNorms}-criteria security evaluation, ${products[0].name} ranks #1 with a SAFE Score of ${products[0].scores.total}/100.`
+            ? `According to SafeScoring's ${stats.totalNorms}-criteria SAFE methodology, ${products[0].name} currently has the highest score at ${products[0].scores.total}/100. Scores represent SafeScoring's editorial opinion and are not guarantees of security.`
             : `Check our ranking for the latest security scores.`,
         },
       },
@@ -343,6 +343,13 @@ export default async function BestOfPage({ params }) {
             </div>
           )}
 
+          {/* Editorial Disclaimer */}
+          <div className="mb-6 p-4 bg-base-200/50 rounded-lg border border-base-300">
+            <p className="text-xs text-base-content/50 text-center">
+              Rankings reflect SafeScoring&apos;s editorial opinions based on our published SAFE methodology. They are not statements of fact, guarantees of security, or recommendations to buy or sell any product. Always do your own research (DYOR).
+            </p>
+          </div>
+
           {/* Full Ranking Table */}
           <div className="rounded-2xl bg-base-200 border border-base-300 overflow-hidden">
             <div className="px-6 py-4 border-b border-base-300 bg-base-300/30">
@@ -361,11 +368,11 @@ export default async function BestOfPage({ params }) {
             <div className="space-y-6">
               <div>
                 <h3 className="font-semibold mb-2">
-                  What is the best {category.replace(/-/g, " ")} in {currentYear}?
+                  What is the highest-rated {category.replace(/-/g, " ")} according to SafeScoring in {currentYear}?
                 </h3>
                 <p className="text-base-content/70">
                   {products.length > 0
-                    ? `Based on our ${stats.totalNorms}-criteria security evaluation, ${products[0].name} ranks #1 with a SAFE Score of ${products[0].scores.total}/100. This ranking considers Security, Adversity resistance, Fidelity, and Efficiency.`
+                    ? `According to SafeScoring's ${stats.totalNorms}-criteria SAFE methodology, ${products[0].name} currently has the highest score at ${products[0].scores.total}/100. This ranking reflects our editorial opinion based on Security, Adversity resistance, Fidelity, and Efficiency criteria. Scores are not guarantees of security.`
                     : "Check back soon for updated rankings."}
                 </p>
               </div>

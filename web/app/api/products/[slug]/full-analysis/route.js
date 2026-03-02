@@ -1,5 +1,6 @@
 import { getSupabaseServer } from "@/libs/supabase";
 import { NextResponse } from "next/server";
+import { API_DISCLAIMER } from "@/libs/api-disclaimer";
 
 export const dynamic = "force-dynamic";
 
@@ -317,6 +318,7 @@ export async function GET(request, { params }) {
 
     // 11. Build final response
     return NextResponse.json({
+      _legal: API_DISCLAIMER,
       product: {
         id: product.id,
         name: product.name,

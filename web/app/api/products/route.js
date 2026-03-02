@@ -9,6 +9,7 @@ import {
   calculatePublicDelay,
 } from "@/libs/user-protection";
 import { productsQuerySchema, validateSearchParams } from "@/libs/validations";
+import { API_DISCLAIMER } from "@/libs/api-disclaimer";
 
 // Cache pendant 60 secondes, revalide en arrière-plan
 export const revalidate = 60;
@@ -344,6 +345,7 @@ export async function GET(request) {
 
     // Build response metadata
     const responseData = {
+      _legal: API_DISCLAIMER,
       products: paginatedProducts,
       total,
       _limited: paginatedProducts.length >= limit,

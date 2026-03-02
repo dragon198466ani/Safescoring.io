@@ -23,23 +23,23 @@ const Hero = () => {
 
         {/* Tagline badge */}
         <div className="badge badge-lg badge-outline gap-2 py-4 px-6">
-          <span className="text-primary font-bold">{stats.totalNorms}</span> norms
+          <span className="text-primary font-bold">{stats.totalNorms}</span> criteria
           <span className="opacity-50">•</span>
-          <span>0 opinion</span>
+          <span>1 methodology</span>
           <span className="opacity-50">•</span>
-          <span className="font-semibold">1 score</span>
+          <span className="font-semibold">Independent scores</span>
         </div>
 
         <h1 className="font-extrabold text-4xl lg:text-6xl tracking-tight">
-          The first unified security rating
+          Independent security opinions
           <br />
           <span className="text-primary">for all crypto products</span>
         </h1>
 
         <p className="text-lg lg:text-xl opacity-80 leading-relaxed max-w-2xl">
           Hardware wallets, software wallets, exchanges, and DeFi protocols — all evaluated
-          with the same rigorous <span className="font-semibold">SAFE methodology</span>.
-          No opinions. No sponsors. Just data.
+          with the same published <span className="font-semibold">SAFE methodology</span>.
+          Editorial assessments based on transparent criteria.
         </p>
 
         {/* SAFE pillars mini preview */}

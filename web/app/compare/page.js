@@ -200,7 +200,7 @@ export default async function CompareLandingPage() {
               <strong>Is Ledger or Trezor more secure?</strong> Both are industry leaders, but they have different strengths. Use our <Link href="/compare/ledger-nano-x/trezor-model-t">Ledger vs Trezor comparison</Link> to see the detailed breakdown.
             </p>
             <p>
-              <strong>Which software wallet is safest?</strong> Security varies significantly between hot wallets. Compare MetaMask, Trust Wallet, and others to find the best fit for your needs.
+              <strong>Which software wallet scores highest?</strong> Security scores vary significantly between hot wallets. Compare MetaMask, Trust Wallet, and others to find the highest-rated option based on our methodology.
             </p>
           </div>
         </div>

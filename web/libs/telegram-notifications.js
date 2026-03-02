@@ -93,6 +93,8 @@ ${emoji} <b>Security Incident Alert</b>
 ${incident.description ? `<i>${incident.description.substring(0, 200)}${incident.description.length > 200 ? "..." : ""}</i>` : ""}
 
 <a href="https://safescoring.io/dashboard/setups/${setup.id}">View Stack Details</a>
+
+<i>SafeScoring's editorial opinions based on our published methodology. Scores are not guarantees of security. https://safescoring.io/legal</i>
 `;
 
   return sendTelegramMessage(chatId, message.trim());
@@ -120,6 +122,8 @@ ${direction} <b>Score Update</b>
 <b>Change:</b> ${changeText} points
 
 <a href="https://safescoring.io/dashboard/setups/${setup.id}">View Details</a>
+
+<i>SafeScoring's editorial opinions based on our published methodology. Scores are not guarantees of security. https://safescoring.io/legal</i>
 `;
 
   return sendTelegramMessage(chatId, message.trim());
@@ -144,6 +148,8 @@ ${emoji} <b>Stack Updated</b>
 <b>Product:</b> ${product.name || "Unknown"}
 
 <a href="https://safescoring.io/dashboard/setups/${setup.id}">View Stack</a>
+
+<i>SafeScoring's editorial opinions based on our published methodology. Scores are not guarantees of security. https://safescoring.io/legal</i>
 `;
 
   return sendTelegramMessage(chatId, message.trim());

@@ -41,37 +41,37 @@ const GLOSSARY = [
   {
     term: "SAFE Score",
     definition:
-      "SafeScoring's 0-100 rating for crypto products. Combines 4 pillars: Security, Adversity, Fidelity, and Efficiency. Higher = more secure.",
+      "SafeScoring's 0-100 editorial rating for crypto products. Combines 4 pillars: Security, Adversity, Fidelity, and Efficiency. Higher = higher-rated by our methodology.",
     category: "scoring",
   },
   {
     term: "Security (S)",
     definition:
-      "The S in SAFE. Measures encryption strength, key management, and cryptographic standards. Can your wallet survive a sophisticated attack?",
+      "The S in SAFE. Evaluates encryption strength, key management, and cryptographic standards based on our methodology.",
     category: "scoring",
   },
   {
     term: "Adversity (A)",
     definition:
-      "The A in SAFE. Measures resistance to physical threats and coercion. What happens if someone forces you to unlock your wallet?",
+      "The A in SAFE. Evaluates resistance to physical threats and coercion based on our methodology.",
     category: "scoring",
   },
   {
     term: "Fidelity (F)",
     definition:
-      "The F in SAFE. Measures reliability and track record over time. Does the team fix bugs quickly? Have they been hacked before?",
+      "The F in SAFE. Evaluates reliability and track record over time based on our methodology.",
     category: "scoring",
   },
   {
     term: "Efficiency (E)",
     definition:
-      "The E in SAFE. Measures usability and error prevention. Can you use this product safely without making costly mistakes?",
+      "The E in SAFE. Evaluates usability and error prevention based on our methodology.",
     category: "scoring",
   },
   {
     term: "Stack",
     definition:
-      "Your personal combination of crypto products (wallets, exchanges, DeFi apps). SafeScoring rates your stack's overall security.",
+      "Your personal combination of crypto products (wallets, exchanges, DeFi apps). SafeScoring evaluates your stack's security posture based on our methodology.",
     category: "safescoring",
   },
   {
@@ -89,7 +89,7 @@ const GLOSSARY = [
   {
     term: "Cold Storage",
     definition:
-      "Keeping your crypto keys completely offline (on a hardware wallet or paper). The safest way to store large amounts long-term.",
+      "Keeping your crypto keys completely offline (on a hardware wallet or paper). Generally considered one of the more secure approaches for storing large amounts long-term.",
     category: "fundamentals",
   },
   {
@@ -107,7 +107,7 @@ const GLOSSARY = [
   {
     term: "Audit",
     definition:
-      "A third-party security review of a product's code. Important, but just a snapshot in time. SafeScoring goes beyond audits with continuous evaluation.",
+      "A third-party security review of a product's code. Important, but represents a point-in-time assessment. SafeScoring complements audits with ongoing evaluation based on our methodology.",
     category: "fundamentals",
   },
 ];

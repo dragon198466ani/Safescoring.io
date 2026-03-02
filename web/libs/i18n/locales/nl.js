@@ -61,7 +61,7 @@ export default {
     title: "Je crypto stack heeft een",
     titleHighlight: "beveiligingsblinde vlek",
     subtitle: "Hardware wallets. Software wallets. DeFi protocollen.",
-    subtitleStrong: "Allemaal beoordeeld met dezelfde strenge methodologie.",
+    subtitleStrong: "Allemaal beoordeeld met dezelfde gepubliceerde methodologie.",
     ctaPrimary: "Analyseer Je Stack",
     ctaSecondary: "Bekijk Producten",
     trustIndicator: "Gratis · 2 min · Geen registratie nodig",
@@ -110,7 +110,7 @@ export default {
       subtitle: "Principes die elke score sturen",
       independence: {
         title: "Onafhankelijkheid",
-        desc: "Affiliates beïnvloeden de scores niet. Alleen de methodologie telt.",
+        desc: "Affiliaterelaties worden bekendgemaakt en beïnvloeden de scores niet.",
       },
       transparency: {
         title: "Transparantie",
@@ -118,7 +118,7 @@ export default {
       },
       rigor: {
         title: "Strengheid",
-        desc: "{totalNorms} normen over 4 pijlers. Geen shortcuts, geen subjectieve meningen.",
+        desc: "{totalNorms} normen over 4 pijlers. Gebaseerd op onze gepubliceerde methodologie.",
       },
       accessibility: {
         title: "Toegankelijkheid",

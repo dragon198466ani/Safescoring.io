@@ -14,12 +14,22 @@ export default function SecurityIncidents({ slug }) {
   useEffect(() => {
     async function fetchIncidents() {
       try {
+        // Static JSON first (CDN, zero cost) → fallback to API
+        const staticRes = await fetch(`/data/incidents/${slug}.json`);
+        if (staticRes.ok) {
+          const result = await staticRes.json();
+          setData(result);
+          return;
+        }
+
+        // Fallback: API route (Supabase query)
         const response = await fetch(`/api/products/${slug}/incidents`);
         if (!response.ok) throw new Error("Failed to fetch incidents");
         const result = await response.json();
         setData(result);
-      } catch (err) {
-        setError(err.message);
+      } catch (_err) {
+        // No incidents file and API failed = product has no incidents
+        setData({ incidents: [], stats: {} });
       } finally {
         setLoading(false);
       }
@@ -98,6 +108,18 @@ export default function SecurityIncidents({ slug }) {
 
   // Format type
   const formatType = (type) => (type || "other").replace(/_/g, " ");
+
+  // Chain display name
+  const getChainLabel = (chain) => {
+    if (!chain) return null;
+    const names = {
+      ethereum: "Ethereum", bsc: "BSC", solana: "Solana",
+      polygon: "Polygon", arbitrum: "Arbitrum", base: "Base",
+      avalanche: "Avalanche", optimism: "Optimism", fantom: "Fantom",
+      multichain: "Multi-chain", bitcoin: "Bitcoin", cronos: "Cronos",
+    };
+    return names[chain.toLowerCase()] || chain;
+  };
 
   return (
     <div className="bg-base-200 rounded-lg p-6">
@@ -184,6 +206,11 @@ export default function SecurityIncidents({ slug }) {
                     <span className="px-2 py-0.5 rounded text-xs bg-base-200 text-base-content/60">
                       {formatType(incident.type)}
                     </span>
+                    {incident.chain && (
+                      <span className="px-2 py-0.5 rounded text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                        {getChainLabel(incident.chain)}
+                      </span>
+                    )}
                   </div>
 
                   {/* Date - avec indication si estimée */}
@@ -217,7 +244,7 @@ export default function SecurityIncidents({ slug }) {
                   <div className="flex flex-wrap items-center gap-4 mt-3 text-sm">
                     {incident.fundsLost > 0 && (
                       <span className="text-orange-400">
-                        {formatUSD(incident.fundsLost)} affected
+                        {formatUSD(incident.fundsLost)} lost
                       </span>
                     )}
                     {incident.fundsRecovered > 0 && (
@@ -228,12 +255,51 @@ export default function SecurityIncidents({ slug }) {
                     <span className={incident.status === "resolved" ? "text-emerald-400" : "text-amber-400"}>
                       {incident.status === "resolved" ? "Resolved" : "Active"}
                     </span>
+                    {incident.resolvedDate && incident.status === "resolved" && (
+                      <span className="text-base-content/50 text-xs">
+                        {new Date(incident.resolvedDate).toLocaleDateString("en-US", {
+                          year: "numeric", month: "short", day: "numeric",
+                        })}
+                      </span>
+                    )}
                   </div>
 
                   {/* Resolution */}
                   {incident.resolutionDetails && (
                     <div className="mt-3 text-xs text-base-content/60 bg-base-200 rounded px-3 py-2">
                       {incident.resolutionDetails}
+                    </div>
+                  )}
+
+                  {/* Links: post-mortem & source */}
+                  {(incident.postmortemUrl || incident.sourceUrl) && (
+                    <div className="flex items-center gap-3 mt-2">
+                      {incident.postmortemUrl && (
+                        <a
+                          href={incident.postmortemUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          Post-mortem
+                        </a>
+                      )}
+                      {incident.sourceUrl && (
+                        <a
+                          href={incident.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-base-content/50 hover:text-base-content/70"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.102 1.101" />
+                          </svg>
+                          Source
+                        </a>
+                      )}
                     </div>
                   )}
                 </div>

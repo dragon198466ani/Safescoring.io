@@ -61,7 +61,7 @@ export default {
     title: "Twój stos krypto ma",
     titleHighlight: "martwy punkt bezpieczeństwa",
     subtitle: "Portfele sprzętowe. Portfele programowe. Protokoły DeFi.",
-    subtitleStrong: "Wszystkie ocenione tą samą rygorystyczną metodologią.",
+    subtitleStrong: "Wszystkie ocenione tą samą opublikowaną metodologią.",
     ctaPrimary: "Analizuj Swój Stos",
     ctaSecondary: "Przeglądaj Produkty",
     trustIndicator: "Bezpłatnie · 2 min · Bez rejestracji",
@@ -110,7 +110,7 @@ export default {
       subtitle: "Zasady kierujące każdą publikowaną oceną",
       independence: {
         title: "Niezależność",
-        desc: "Partnerzy nie wpływają na wyniki. Liczy się tylko metodologia.",
+        desc: "Relacje partnerskie są ujawniane i nie wpływają na wyniki.",
       },
       transparency: {
         title: "Transparentność",
@@ -118,7 +118,7 @@ export default {
       },
       rigor: {
         title: "Rygor",
-        desc: "{totalNorms} norm w 4 filarach. Bez skrótów, bez subiektywnych opinii.",
+        desc: "{totalNorms} norm w 4 filarach. Oparte na naszej opublikowanej metodologii.",
       },
       accessibility: {
         title: "Dostępność",

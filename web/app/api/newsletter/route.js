@@ -79,7 +79,9 @@ export async function POST(request) {
           subject: "Welcome to SafeScoring!",
           html: `<h2>Welcome to SafeScoring!</h2>
             <p>Thank you for subscribing to our newsletter. You'll receive security insights and product updates.</p>
-            <p>— The SafeScoring Team</p>`,
+            <p>&mdash; The SafeScoring Team</p>
+            <hr style="margin-top: 24px; border-color: #334155;" />
+            <p style="font-size: 11px; color: #64748b; margin-top: 12px;">This email contains SafeScoring's editorial opinions based on our published methodology. Scores are not guarantees of security. See <a href="https://safescoring.io/legal" style="color: #3b82f6;">https://safescoring.io/legal</a></p>`,
         });
       } catch (emailError) {
         console.error("Failed to send welcome email:", emailError);

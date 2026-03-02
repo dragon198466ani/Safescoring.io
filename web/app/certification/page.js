@@ -26,13 +26,13 @@ const certificationTiers = [
   },
   {
     id: "verified",
-    name: "Verified",
+    name: "Reviewed",
     price: 2990,
     priceYearly: 2490,
-    description: "For established projects ready to prove security",
+    description: "For established projects ready to showcase their evaluation",
     features: [
       "Everything in Starter",
-      "Verified Badge (animated)",
+      "Reviewed Badge (animated)",
       "Monthly re-evaluation",
       "Priority listing in directory",
       "Detailed improvement roadmap",
@@ -40,7 +40,7 @@ const certificationTiers = [
       "Press release template",
     ],
     badge: "verified",
-    cta: "Get Verified",
+    cta: "Get Reviewed",
     popular: true,
   },
   {
@@ -50,7 +50,7 @@ const certificationTiers = [
     priceYearly: 7990,
     description: "For protocols and institutions requiring the highest standard",
     features: [
-      "Everything in Verified",
+      "Everything in Reviewed",
       "Enterprise Badge (premium)",
       "Weekly monitoring & alerts",
       "Custom scoring criteria",
@@ -86,7 +86,7 @@ const BadgePreview = ({ type }) => {
           </svg>
         </div>
         <div>
-          <span className="text-sm font-bold text-green-400">SAFE Verified</span>
+          <span className="text-sm font-bold text-green-400">SAFE Reviewed</span>
           <span className="text-xs text-base-content/50 ml-2">Score: 78%</span>
         </div>
       </div>
@@ -109,15 +109,15 @@ const BadgePreview = ({ type }) => {
 };
 
 const stats = [
-  { value: "~50%", label: "of hacked projects had audits" },
+  { value: "~50%", label: "of compromised projects had audits, according to industry reports" },
   { value: "{totalNorms}", label: "security norms evaluated" },
   { value: "100+", label: "products already scored" },
-  { value: "0", label: "bias in our methodology" },
+  { value: "Published", label: "evaluation criteria" },
 ];
 
 const testimonials = [
   {
-    quote: "The SAFE certification gave our users confidence. Our TVL increased 40% after displaying the badge.",
+    quote: "The SAFE evaluation gave our users confidence. Our TVL increased 40% after displaying the badge.",
     author: "DeFi Protocol Founder",
     role: "Series A, $50M TVL",
   },
@@ -128,7 +128,7 @@ const testimonials = [
   },
 ];
 
-// Claim tiers - Care Economy pricing for "SafeScoring Approved" certification
+// Claim tiers - Care Economy pricing for "SafeScoring Evaluated" badge
 const claimTiers = [
   {
     id: "standard",
@@ -148,49 +148,49 @@ const claimTiers = [
   },
   {
     id: "verified",
-    name: "Verified",
+    name: "Reviewed",
     price: 199,
     period: "year",
-    description: "For projects ready to prove their security commitment",
+    description: "For projects ready to showcase their evaluation results",
     features: [
       "Everything in Standard",
-      "Verified mark on profile",
+      "Reviewed mark on profile",
       "Priority re-evaluation (quarterly)",
       "Improvement roadmap",
       "Email support",
     ],
-    cta: "Claim Verified",
+    cta: "Claim Reviewed",
     popular: true,
     color: "primary",
   },
   {
     id: "premium",
-    name: "Premium",
+    name: "Comprehensive",
     price: 499,
     period: "year",
-    description: "Maximum credibility with physical and on-chain proof",
+    description: "Comprehensive review with physical and on-chain documentation",
     features: [
-      "Everything in Verified",
-      "Physical certificate shipped worldwide",
-      "On-chain NFT certification badge",
+      "Everything in Reviewed",
+      "Physical evaluation report shipped worldwide",
+      "On-chain NFT evaluation badge",
       "Custom detailed security report",
       "Dedicated account manager",
       "Monthly re-evaluation",
     ],
-    cta: "Claim Premium",
+    cta: "Claim Comprehensive",
     popular: false,
     color: "amber",
   },
 ];
 
-// Example certified products
+// Example evaluated products
 const certifiedExamples = [
   {
     name: "Ledger Nano X",
     category: "Hardware Wallet",
     score: 82,
     tier: "verified",
-    badge: "SAFE Verified",
+    badge: "SAFE Reviewed",
   },
   {
     name: "Aave V3",
@@ -204,42 +204,42 @@ const certifiedExamples = [
     category: "Hardware Wallet",
     score: 79,
     tier: "premium",
-    badge: "SAFE Premium",
+    badge: "SAFE Comprehensive",
   },
   {
     name: "Uniswap V3",
     category: "DEX",
     score: 71,
     tier: "verified",
-    badge: "SAFE Verified",
+    badge: "SAFE Reviewed",
   },
 ];
 
 // FAQ items
 const certFaqItems = [
   {
-    q: "What is the minimum score required to claim certification?",
-    a: "Your product needs a minimum SAFE score of 50 to be eligible for certification. If your score is below 50, we provide a detailed improvement roadmap to help you reach eligibility.",
+    q: "What is the minimum score required to claim an evaluation badge?",
+    a: "Your product needs a minimum SAFE score of 50 to be eligible for an evaluation badge. If your score is below 50, we provide a detailed improvement roadmap to help you reach eligibility.",
   },
   {
-    q: "What is the difference between Certification Plans and Claim tiers?",
-    a: "Certification Plans (Starter/Verified/Enterprise) are comprehensive evaluation packages for projects wanting full SAFE analysis. Claim tiers (Standard/Verified/Premium) allow already-scored projects to officially claim and display their 'SafeScoring Approved' badge on their website and materials.",
+    q: "What is the difference between Evaluation Plans and Claim tiers?",
+    a: "Evaluation Plans (Starter/Reviewed/Enterprise) are comprehensive evaluation packages for projects wanting full SAFE analysis. Claim tiers (Standard/Reviewed/Premium) allow already-scored projects to officially claim and display their 'SafeScoring Evaluated' badge on their website and materials.",
   },
   {
     q: "How long does the claim review process take?",
-    a: "Our team reviews claims within 48 hours. Once approved, you'll receive your digital badge immediately. Physical certificates (Premium tier) ship within 5-7 business days.",
+    a: "Our team reviews claims within 48 hours. Once approved, you'll receive your digital badge immediately. Physical evaluation reports (Comprehensive tier) ship within 5-7 business days.",
   },
   {
     q: "Can I upgrade my claim tier later?",
     a: "Yes, you can upgrade at any time. You'll only pay the difference for the remaining period. Downgrades take effect at the next renewal date.",
   },
   {
-    q: "What happens when my certification expires?",
-    a: "Certifications are valid for one year. We send renewal reminders 30 days before expiration. If not renewed, your badge and listing are deactivated but your score history remains.",
+    q: "What happens when my evaluation badge expires?",
+    a: "Evaluation badges are valid for one year. We send renewal reminders 30 days before expiration. If not renewed, your badge and listing are deactivated but your score history remains.",
   },
   {
     q: "Do I get an NFT with the Premium tier?",
-    a: "Yes, Premium tier includes an on-chain NFT certification badge minted on Ethereum. This provides immutable proof of your security certification that can be verified by anyone.",
+    a: "Yes, Premium tier includes an on-chain NFT evaluation badge minted on Ethereum. This provides immutable documentation of your security evaluation that can be referenced by anyone.",
   },
 ];
 
@@ -261,10 +261,10 @@ export default function CertificationPage() {
               For Crypto Projects & Protocols
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Get <span className="text-primary">SAFE Certified</span>
+              Get <span className="text-primary">SAFE Evaluated</span>
             </h1>
             <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-8">
-              Prove your security. Build user trust. Stand out from the many projects that got hacked despite having audits.
+              Showcase your evaluation. Display your evaluation results. According to industry reports, many compromised projects had existing audits -- a comprehensive evaluation covers more ground.
             </p>
 
             {/* Stats */}
@@ -279,10 +279,10 @@ export default function CertificationPage() {
           </div>
         </section>
 
-        {/* Why Certification Section */}
+        {/* Why Evaluation Section */}
         <section className="bg-base-200 py-16 mb-20">
           <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-2xl font-bold text-center mb-12">Why SAFE Certification?</h2>
+            <h2 className="text-2xl font-bold text-center mb-12">Why a SAFE Evaluation?</h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="bg-base-100 rounded-xl p-6 border border-base-300">
                 <div className="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center mb-4">
@@ -292,7 +292,7 @@ export default function CertificationPage() {
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Audits Are Not Enough</h3>
                 <p className="text-base-content/70">
-                  Nearly half of hacked DeFi projects in 2024 had been audited. Audits check code, not operational security, backup procedures, or real-world resilience.
+                  According to industry reports, a significant portion of compromised DeFi projects had been audited. Audits check code, but may not cover operational security, backup procedures, or broader resilience factors.
                 </p>
               </div>
               <div className="bg-base-100 rounded-xl p-6 border border-base-300">
@@ -303,7 +303,7 @@ export default function CertificationPage() {
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{globalStats.totalNorms} Security Norms</h3>
                 <p className="text-base-content/70">
-                  We evaluate cryptography, adversity resistance, reliability, AND usability. The most comprehensive security assessment in crypto.
+                  We evaluate cryptography, adversity resistance, reliability, AND usability. One of the most comprehensive security assessments in crypto.
                 </p>
               </div>
               <div className="bg-base-100 rounded-xl p-6 border border-base-300">
@@ -312,9 +312,9 @@ export default function CertificationPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">Build User Trust</h3>
+                <h3 className="text-lg font-semibold mb-2">Display Your Evaluation Results</h3>
                 <p className="text-base-content/70">
-                  Display your SAFE score and badge on your website. Users check scores before depositing. Certified projects see higher TVL and user retention.
+                  Display your SAFE score and badge on your website. Users can review scores before depositing. Evaluated projects may see increased user confidence.
                 </p>
               </div>
             </div>
@@ -324,7 +324,7 @@ export default function CertificationPage() {
         {/* Pricing Section */}
         <section className="max-w-6xl mx-auto px-6 mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Certification Plans</h2>
+            <h2 className="text-3xl font-bold mb-4">Evaluation Plans</h2>
             <p className="text-base-content/70 mb-6">Choose the level that fits your project</p>
 
             {/* Annual/Monthly Toggle */}
@@ -406,13 +406,13 @@ export default function CertificationPage() {
         {/* How It Works */}
         <section className="bg-base-200 py-16 mb-20">
           <div className="max-w-4xl mx-auto px-6">
-            <h2 className="text-2xl font-bold text-center mb-12">How Certification Works</h2>
+            <h2 className="text-2xl font-bold text-center mb-12">How the Evaluation Works</h2>
             <div className="space-y-8">
               {[
                 { step: 1, title: "Apply", desc: "Submit your project details and choose your plan" },
                 { step: 2, title: "Evaluation", desc: `Our AI evaluates your product against ${globalStats.totalNorms} security norms` },
                 { step: 3, title: "Review", desc: "Our team verifies results and prepares your improvement roadmap" },
-                { step: 4, title: "Certification", desc: "Receive your badge, score, and public listing within 7 days" },
+                { step: 4, title: "Results", desc: "Receive your badge, score, and public listing within 7 days" },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-6">
                   <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-primary-content font-bold shrink-0">
@@ -456,9 +456,9 @@ export default function CertificationPage() {
               </svg>
               Already Scored? Claim Your Badge
             </div>
-            <h2 className="text-3xl font-bold mb-4">Claim &ldquo;SafeScoring Approved&rdquo;</h2>
+            <h2 className="text-3xl font-bold mb-4">Claim &ldquo;SafeScoring Evaluated&rdquo;</h2>
             <p className="text-base-content/70 max-w-2xl mx-auto">
-              If your product is already scored on SafeScoring, claim your official certification badge to display on your website and marketing materials.
+              If your product is already scored on SafeScoring, claim your official evaluation badge to display on your website and marketing materials.
             </p>
           </div>
 
@@ -511,12 +511,12 @@ export default function CertificationPage() {
           </div>
         </section>
 
-        {/* Example Certified Products */}
+        {/* Example Evaluated Products */}
         <section className="bg-base-200 py-16 mb-20">
           <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-2xl font-bold text-center mb-4">Certified Products</h2>
+            <h2 className="text-2xl font-bold text-center mb-4">Evaluated Products</h2>
             <p className="text-base-content/70 text-center mb-12 max-w-xl mx-auto">
-              These projects have claimed their SafeScoring certification and display their badges with confidence.
+              These projects have claimed their SafeScoring evaluation badge and display their results publicly.
             </p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {certifiedExamples.map((product, i) => (
@@ -572,13 +572,13 @@ export default function CertificationPage() {
         {/* CTA */}
         <section className="max-w-4xl mx-auto px-6">
           <div className="bg-gradient-to-r from-primary/20 to-base-200 rounded-2xl p-8 md:p-12 text-center border border-primary/20">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to Prove Your Security?</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to Showcase Your Evaluation?</h2>
             <p className="text-base-content/70 mb-8 max-w-xl mx-auto">
-              Join 100+ projects that display their SAFE score. Start your certification today.
+              Join 100+ projects that display their SAFE score. Start your evaluation today.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/claim" className="btn btn-primary btn-lg">
-                Start Certification
+                Start Evaluation
               </Link>
               <Link href="/contact" className="btn btn-outline btn-lg">
                 Talk to Sales

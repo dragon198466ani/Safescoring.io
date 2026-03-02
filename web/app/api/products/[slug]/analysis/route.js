@@ -11,6 +11,7 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import { auth } from "@/libs/auth";
+import { API_DISCLAIMER } from "@/libs/api-disclaimer";
 
 // Revalidate every 5 minutes
 export const revalidate = 300;
@@ -136,6 +137,7 @@ export async function GET(request, { params }) {
     // Format response
     const response = {
       success: true,
+      _legal: API_DISCLAIMER,
       product: {
         id: product.id,
         name: product.name,

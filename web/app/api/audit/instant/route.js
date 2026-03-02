@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/libs/auth";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { API_DISCLAIMER } from "@/libs/api-disclaimer";
 
 /**
  * One-Click Audit API — Instant security audit from URL or product name
@@ -141,13 +142,14 @@ export async function POST(request) {
     const recommendation = overallScore == null
       ? "PENDING"
       : overallScore >= 70
-      ? "SAFE"
+      ? "HIGH_SCORE"
       : overallScore >= 50
-      ? "CAUTION"
-      : "HIGH_RISK";
+      ? "MODERATE_SCORE"
+      : "LOW_SCORE";
 
     // Step 5: Build response
     const result = {
+      _legal: API_DISCLAIMER,
       found: true,
       matchMethod,
       product: {

@@ -61,7 +61,7 @@ export default {
     title: "Il tuo stack crypto ha un",
     titleHighlight: "punto cieco di sicurezza",
     subtitle: "Hardware wallet. Software wallet. Protocolli DeFi.",
-    subtitleStrong: "Tutti valutati con la stessa metodologia rigorosa.",
+    subtitleStrong: "Tutti valutati con la stessa metodologia pubblicata.",
     ctaPrimary: "Analizza il Tuo Stack",
     ctaSecondary: "Esplora i Prodotti",
     trustIndicator: "Gratis · 2 min · Senza registrazione",
@@ -110,7 +110,7 @@ export default {
       subtitle: "Principi che guidano ogni punteggio pubblicato",
       independence: {
         title: "Indipendenza",
-        desc: "Gli affiliati non influenzano i punteggi. Conta solo la metodologia.",
+        desc: "Le relazioni di affiliazione sono divulgate e non influenzano i punteggi.",
       },
       transparency: {
         title: "Trasparenza",
@@ -118,7 +118,7 @@ export default {
       },
       rigor: {
         title: "Rigore",
-        desc: "{totalNorms} norme in 4 pilastri. Niente scorciatoie, niente opinioni soggettive.",
+        desc: "{totalNorms} norme in 4 pilastri. Basato sulla nostra metodologia pubblicata.",
       },
       accessibility: {
         title: "Accessibilità",

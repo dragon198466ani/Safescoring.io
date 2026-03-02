@@ -25,9 +25,9 @@ const getScoreColorHex = (score) => {
 };
 
 const getScoreLabel = (score) => {
-  if (score >= 80) return { label: "Excellent", color: "text-green-400" };
-  if (score >= 60) return { label: "Good", color: "text-amber-400" };
-  return { label: "At Risk", color: "text-red-400" };
+  if (score >= 80) return { label: "High Score", color: "text-green-400" };
+  if (score >= 60) return { label: "Moderate Score", color: "text-amber-400" };
+  return { label: "Low Score", color: "text-red-400" };
 };
 
 /**
@@ -154,9 +154,9 @@ export default function ProductScoreTierView({
           )}
           {/* Score scale legend — helps beginners understand the scoring */}
           <div className="flex items-center justify-center gap-3 mt-2 text-xs text-base-content/50">
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400" />80+ Excellent</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400" />60-79 Good</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400" />&lt;60 At Risk</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400" />80+ High</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400" />60-79 Moderate</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400" />&lt;60 Low</span>
           </div>
         </div>
         {lastUpdate && (

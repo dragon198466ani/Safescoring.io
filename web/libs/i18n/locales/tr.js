@@ -61,7 +61,7 @@ export default {
     title: "Kripto yığınınızda bir",
     titleHighlight: "güvenlik kör noktası var",
     subtitle: "Donanım cüzdanları. Yazılım cüzdanları. DeFi protokolleri.",
-    subtitleStrong: "Hepsi aynı titiz metodoloji ile değerlendirildi.",
+    subtitleStrong: "Hepsi aynı yayımlanmış metodoloji ile değerlendirildi.",
     ctaPrimary: "Yığınınızı Analiz Edin",
     ctaSecondary: "Ürünleri Keşfedin",
     trustIndicator: "Ücretsiz · 2 dk · Kayıt gerektirmez",
@@ -110,7 +110,7 @@ export default {
       subtitle: "Yayımladığımız her skoru yönlendiren ilkeler",
       independence: {
         title: "Bağımsızlık",
-        desc: "Ortaklar puanları etkilemez. Yöntem tek etkendir.",
+        desc: "Ortaklık ilişkileri açıklanır ve puanları etkilemez.",
       },
       transparency: {
         title: "Şeffaflık",
@@ -118,7 +118,7 @@ export default {
       },
       rigor: {
         title: "Titizlik",
-        desc: "4 sütunda {totalNorms} norm. Kestirme yok, öznel görüş yok.",
+        desc: "4 sütunda {totalNorms} norm. Yayımlanmış metodolojimize dayalıdır.",
       },
       accessibility: {
         title: "Erişilebilirlik",

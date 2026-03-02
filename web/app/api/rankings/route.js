@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { API_DISCLAIMER } from "@/libs/api-disclaimer";
 
 /**
  * Product Rankings API
@@ -125,6 +126,7 @@ export async function GET(request) {
 
     return NextResponse.json(
       {
+        _legal: API_DISCLAIMER,
         category: categoryName,
         categorySlug: category || null,
         products: rankings,

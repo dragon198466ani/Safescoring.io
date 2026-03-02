@@ -3,6 +3,7 @@ import { supabase, isSupabaseConfigured } from "@/libs/supabase";
 import { getClientId } from "@/libs/rate-limit";
 import { checkUnifiedAccess, getPlanLimits } from "@/libs/access";
 import { PLAN_CODES } from "@/libs/config-constants";
+import { API_DISCLAIMER } from "@/libs/api-disclaimer";
 import crypto from "crypto";
 
 /**
@@ -415,6 +416,7 @@ export async function GET(request) {
           timestamp: new Date().toISOString(),
           plan: isValidKey ? keyValidation.plan : "public",
         },
+        _legal: API_DISCLAIMER,
       },
       { headers: responseHeaders }
     );

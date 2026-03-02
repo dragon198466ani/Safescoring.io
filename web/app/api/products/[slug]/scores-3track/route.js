@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/libs/supabase";
+import { API_DISCLAIMER } from "@/libs/api-disclaimer";
 
 /**
  * 3-Track Scores API
@@ -219,7 +220,7 @@ export async function GET(request, { params }) {
       };
     }
 
-    return NextResponse.json(response, { headers });
+    return NextResponse.json({ ...response, _legal: API_DISCLAIMER }, { headers });
   } catch (error) {
     console.error("Error fetching 3-track scores:", error);
     return NextResponse.json(

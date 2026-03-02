@@ -7,6 +7,7 @@ import {
   sleep,
   calculatePublicDelay,
 } from "@/libs/user-protection";
+import { API_DISCLAIMER } from "@/libs/api-disclaimer";
 
 export const dynamic = "force-dynamic";
 
@@ -226,7 +227,7 @@ export async function GET(request, { params }) {
     };
 
     return NextResponse.json(
-      { ...transformedProduct, ...watermark },
+      { ...transformedProduct, ...watermark, _legal: API_DISCLAIMER },
       {
         headers: {
           "Cache-Control": isAuthenticated

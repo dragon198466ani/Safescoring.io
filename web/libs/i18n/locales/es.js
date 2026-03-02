@@ -52,14 +52,14 @@ export default {
 
   // Hero
   hero: {
-    tagline: "{totalNorms} normas. {totalProducts}+ productos. 4 pilares.",
-    taglineAlt: "Más allá de la auditoría.",
-    title: "El primer rating de seguridad",
-    titleHighlight: "cripto unificado",
+    tagline: "{totalNorms} normas. 1 metodología. Puntuaciones independientes.",
+    taglineAlt: "Un marco de seguridad integral.",
+    title: "Un rating de seguridad",
+    titleHighlight: "cripto independiente",
     subtitle: "Hardware wallets. Software wallets. Protocolos DeFi.",
-    subtitleStrong: "Todos evaluados con la misma metodología rigurosa.",
-    antiAudit: "El 87% de los proyectos hackeados en 2024 habían sido auditados.",
-    antiAuditHighlight: "Medimos la seguridad real.",
+    subtitleStrong: "Todos evaluados con la misma metodología publicada.",
+    antiAudit: "Según informes del sector, el 87% de los proyectos hackeados en 2024 habían sido auditados.",
+    antiAuditHighlight: "Nuestra metodología va más allá de la revisión de código.",
     ctaPrimary: "Analizar Tu Stack",
     ctaCompare: "Comparar Productos",
     ctaSecondary: "Explorar Productos",
@@ -71,9 +71,9 @@ export default {
     statsProducts: "Productos",
     statsTypes: "Tipos",
     trustIndicators: {
-      independent: "Puntuaciones 100% independientes",
+      independent: "Puntuaciones editorialmente independientes",
       productTypes: "tipos de productos",
-      aiPowered: "IA, reproducible",
+      aiPowered: "Asistida por IA, reproducible",
       openMethodology: "Metodología abierta",
     },
   },
@@ -106,7 +106,7 @@ export default {
       subtitle: "Principios que guían cada puntuación",
       independence: {
         title: "Independencia",
-        desc: "Los afiliados nunca influyen en los puntajes. Solo importa la metodología.",
+        desc: "Las relaciones de afiliación se divulgan y no influyen en los puntajes.",
       },
       transparency: {
         title: "Transparencia",
@@ -114,7 +114,7 @@ export default {
       },
       rigor: {
         title: "Rigor",
-        desc: "{totalNorms} normas en 4 pilares. Sin atajos ni opiniones subjetivas.",
+        desc: "{totalNorms} normas en 4 pilares. Basado en nuestra metodología publicada.",
       },
       accessibility: {
         title: "Accesibilidad",
@@ -133,16 +133,16 @@ export default {
   pillars: {
     security: "Seguridad",
     securityDesc: "Fundamentos criptográficos",
-    securityLong: "¿Están tus criptos realmente protegidos? Verificamos estándares criptográficos, gestión de claves y cifrado.",
+    securityLong: "¿Están tus criptos realmente protegidos? Nuestra metodología verifica estándares criptográficos, gestión de claves y cifrado.",
     adversity: "Adversidad",
     adversityDesc: "Resistencia a amenazas",
-    adversityLong: "¿Qué pasa bajo coacción? Evaluamos protección ante amenazas y seguridad física.",
+    adversityLong: "¿Qué pasa bajo coacción? Nuestra metodología evalúa protección ante amenazas y seguridad física.",
     fidelity: "Fidelidad",
     fidelityDesc: "Fiabilidad y confianza",
-    fidelityLong: "¿Puedes confiar a largo plazo? Verificamos auditorías, tiempo de actividad e historial.",
+    fidelityLong: "¿Puedes confiar a largo plazo? Nuestra metodología verifica auditorías, tiempo de actividad e historial.",
     efficiency: "Eficiencia",
     efficiencyDesc: "Usabilidad y rendimiento",
-    efficiencyLong: "¿Es usable Y seguro? Evaluamos UX, soporte multi-cadena y accesibilidad.",
+    efficiencyLong: "¿Es usable Y seguro? Nuestra metodología evalúa UX, soporte multi-cadena y accesibilidad.",
     strongest: "Más fuerte",
     needsWork: "Necesita mejora",
     methodology: "Metodología",
@@ -293,7 +293,7 @@ export default {
     securityComparison: "Comparación de seguridad basada en {count} criterios a través de los pilares Seguridad, Adversidad, Fidelidad y Eficiencia.",
     winsIn: "{name} gana en {count} pilares",
     verdict: "Veredicto",
-    verdictTie: "Ambos productos tienen la misma puntuación SAFE general. Consulta las puntuaciones individuales de pilares para ver cuál se adapta mejor a tus necesidades.",
+    verdictTie: "Ambos productos tienen la misma puntuación SAFE general. Consulta las puntuaciones individuales de pilares para una comparación detallada.",
     verdictWinner: "{winner} tiene una puntuación de seguridad general más alta con {winnerScore}/100 comparado con {loserScore}/100.",
     wantCompareOther: "¿Quieres comparar otros productos?",
     browseAll: "Ver Todos los Productos",
@@ -301,9 +301,9 @@ export default {
     faqWhichSafer: "¿Cuál es más seguro: {productA} o {productB}?",
     faqWhichSaferAnswer: "Basado en nuestra evaluación de seguridad de {count} criterios, {result}",
     faqWhatIsSafe: "¿Qué es la Puntuación SAFE?",
-    faqWhatIsSafeAnswer: "La Puntuación SAFE evalúa productos cripto en 4 pilares: Seguridad, Adversidad, Fidelidad y Eficiencia. Se basa en {count} normas de seguridad evaluadas por IA y expertos humanos.",
+    faqWhatIsSafeAnswer: "La Puntuación SAFE evalúa productos cripto en 4 pilares: Seguridad, Adversidad, Fidelidad y Eficiencia. Se basa en {count} normas de seguridad evaluadas con asistencia de IA y expertos humanos.",
     faqHowOften: "¿Con qué frecuencia se actualizan las puntuaciones?",
-    faqHowOftenAnswer: "Actualizamos las puntuaciones de seguridad mensualmente e inmediatamente después de cualquier incidente de seguridad o actualización importante del producto.",
+    faqHowOftenAnswer: "Las puntuaciones de seguridad se actualizan mensualmente e inmediatamente después de cualquier incidente de seguridad o actualización importante del producto.",
   },
 
   // Share
@@ -326,7 +326,7 @@ export default {
     productShareText: "Mira la puntuación de seguridad de {product}: {score}/100 en SafeScoring",
     comparisonShareText: "{productA} vs {productB} - ¿Quién gana en seguridad? Ve la comparación en SafeScoring",
     setupShareText: "Mi puntuación de seguridad crypto: {score}/100 - Analizado por SafeScoring",
-    sharePrompt: "Comparte para ayudar a otros a tomar decisiones más seguras",
+    sharePrompt: "Comparte para ayudar a otros a comparar productos",
     shareReward: "Comparte y desbloquea análisis detallados",
   },
 
@@ -417,7 +417,7 @@ export default {
     productsScored: "Productos Evaluados",
     productsScoredDesc: "Wallets, DEXs, exchanges, bridges y más",
     paidRankings: "Rankings Pagados",
-    paidRankingsDesc: "Los afiliados nunca influyen en las puntuaciones",
+    paidRankingsDesc: "Las relaciones de afiliación se divulgan y no influyen en las puntuaciones",
   },
 
   // FAQ
@@ -442,15 +442,15 @@ export default {
       },
       whatIsSafeScoring: {
         q: "¿Qué es SAFE Scoring?",
-        a: "SAFE Scoring es el primer sistema de calificación de seguridad unificado para todos los productos cripto. Evaluamos hardware wallets, software wallets y protocolos DeFi con la misma metodología rigurosa: {count} normas de seguridad en 4 pilares.",
+        a: "SAFE Scoring es un sistema independiente de opiniones de seguridad para productos cripto. Nuestra metodología evalúa hardware wallets, software wallets y protocolos DeFi con la misma metodología publicada: {count} normas de seguridad en 4 pilares.",
       },
       vsCertik: {
         q: "¿En qué se diferencia SafeScoring de CertiK u otros auditores?",
-        a: "Las auditorías verifican el código en un momento dado. SafeScoring mide la seguridad real continuamente. Diferencias clave: (1) Cubrimos TODOS los productos - hardware, software Y DeFi. (2) Actualizamos mensualmente. (3) El 87% de los proyectos hackeados en 2024 fueron auditados.",
+        a: "Los auditores de smart contracts como CertiK se especializan en revisión de código en un momento dado. SafeScoring ofrece una evaluación de seguridad continua. Diferencias clave: (1) Nuestra metodología cubre hardware, software Y DeFi. (2) Actualizaciones mensuales. (3) Según informes del sector, el 87% de los proyectos hackeados en 2024 fueron auditados.",
       },
       howEvaluated: {
         q: "¿Cómo se evalúan los productos?",
-        a: "Nuestro sistema impulsado por IA evalúa productos según {count} normas de seguridad usando documentación oficial, auditorías de seguridad, especificaciones técnicas y datos on-chain. El proceso es automatizado y reproducible.",
+        a: "Nuestro sistema asistido por IA evalúa productos según {count} normas de seguridad usando documentación oficial, auditorías de seguridad, especificaciones técnicas y datos on-chain. El proceso es automatizado y reproducible.",
       },
       updateFrequency: {
         q: "¿Con qué frecuencia se actualizan las puntuaciones?",
@@ -458,7 +458,7 @@ export default {
       },
       independence: {
         q: "¿Es SafeScoring realmente independiente?",
-        a: "100%. Aunque podemos recibir comisiones de afiliados de enlaces de productos, esto nunca influye en nuestras puntuaciones. Las puntuaciones se calculan puramente a partir de nuestra metodología de {count} normas - sin excepciones.",
+        a: "Sí. Aunque podemos recibir comisiones de afiliados de enlaces de productos, estas relaciones se divulgan y no influyen en las puntuaciones. Las puntuaciones se calculan a partir de nuestra metodología publicada de {count} normas.",
       },
       fourPillars: {
         q: "¿Cuáles son los 4 pilares SAFE?",
@@ -632,7 +632,7 @@ export default {
     allRightsReserved: "Todos los derechos reservados",
     madeWith: "Hecho con",
     forCryptoSecurity: "para seguridad cripto",
-    description: "La base de datos transparente de puntuaciones de seguridad cripto verificadas. Independiente, imparcial y actualizada mensualmente.",
+    description: "Opiniones de seguridad independientes para productos cripto. Todas las puntuaciones son evaluaciones editoriales. Actualizada mensualmente.",
     products: "Productos",
     scoreTransparency: "Transparencia de Puntuaciones",
     methodology: "Metodología",
