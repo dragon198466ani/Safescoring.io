@@ -355,6 +355,25 @@ The SAFE methodology, including its criteria, weightings, and scoring framework,
 Any reproduction, distribution, or commercial exploitation of this content without prior written authorization is prohibited under applicable intellectual property law (Code de la propriété intellectuelle in France, Directive 2001/29/EC in the EU, U.S. Copyright Act).
 
 
+17A. PATENTS AND DEFENSIVE PATENT PLEDGE / BREVETS ET ENGAGEMENT DÉFENSIF
+
+17A.1 SafeScoring LLC holds patent rights and documented prior art relating to its core technologies, including but not limited to: the SAFE scoring methodology, anti-copy protection systems, and portfolio security assessment algorithms.
+
+17A.2 Defensive Patent Pledge: SafeScoring LLC pledges that all patents and patent applications it holds will be used only defensively — that is, only as a counterclaim or defense in response to a patent infringement action first brought against SafeScoring, its users, or its contributors. This pledge is irrevocable and binding on any successor entity, assignee, or acquirer of SafeScoring's patent portfolio.
+
+17A.3 Patent Grant to Users: All users of SafeScoring software (whether under the AGPL-3.0 open source license or a commercial license) receive a perpetual, worldwide, non-exclusive, royalty-free patent license covering SafeScoring's patented technologies as implemented in the software. This grant terminates only if the recipient initiates patent litigation against SafeScoring. Full terms are available in the PATENTS.md file in our source code repository.
+
+17A.4 Prior Art Publications: SafeScoring proactively publishes its innovations as defensive prior art to prevent third parties from patenting similar methods. Our published methodology (https://safescoring.com/methodology), open source code (licensed under AGPL-3.0), and technical documentation collectively establish verifiable prior art dating from December 31, 2025.
+
+17A.5 Patent Trolling Notice: SafeScoring vigorously defends against frivolous patent assertions. Any party asserting patents against SafeScoring should be aware that:
+(a) SafeScoring maintains extensive prior art documentation with verifiable publication dates
+(b) SafeScoring will challenge the validity of any patent that conflicts with its published prior art
+(c) SafeScoring will seek recovery of legal fees and costs under applicable fee-shifting statutes
+(d) SafeScoring's defensive patent pledge ensures mutual non-aggression with its user and contributor community
+
+17A.6 For patent-related inquiries, contact: patents@safescoring.io
+
+
 ===========================================
 AFFILIATE DISCLOSURE AND CONFLICTS OF INTEREST
 Divulgation des affiliations et conflits d'intérêts

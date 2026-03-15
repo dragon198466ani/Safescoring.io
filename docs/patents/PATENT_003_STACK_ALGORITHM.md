@@ -4,7 +4,7 @@
 **Version:** 1.0
 **Date:** 2026-01-23
 **Classification:** PROPRIETARY - TRADE SECRET
-**Prior Art Establishment Date:** 2024
+**Prior Art Establishment Date:** December 31, 2025 (git commit d21ab31)
 
 ---
 
@@ -524,7 +524,7 @@ def calculate_final_stack_score(stack: Stack) -> StackScoreResult:
 
 ## PRIORITY CLAIM
 
-This documentation establishes prior art and invention date for the Stack Scoring Algorithm as of **2024**, with continuous development through **2026**.
+This documentation establishes prior art and invention date for the Stack Scoring Algorithm as of **December 31, 2025** (git commit d21ab31), with continuous development through **2026**.
 
 ---
 

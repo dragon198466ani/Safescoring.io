@@ -246,9 +246,22 @@ Norms should be:
 - Join our Discord community
 - Email: contributors@safescoring.com
 
+## Contributor License Agreement (CLA)
+
+By submitting a pull request or other contribution to SafeScoring, you agree to the terms of our [Contributor License Agreement (CLA)](CLA.md). Key points:
+
+- You grant SafeScoring a non-exclusive copyright and **patent license** for your contributions
+- You retain all rights to your contributions (non-exclusive grant)
+- You represent that your contributions are your original work
+- You represent that you are not aware of any patent claims that would be infringed
+
+The patent license in the CLA protects SafeScoring and the entire user community from patent trolls who might attempt to claim rights over contributed code. Your first pull request constitutes your electronic signature of the CLA.
+
+For contributions on behalf of an organization, please have an authorized representative email contributors@safescoring.io.
+
 ## License
 
-By contributing, you agree that your contributions will be licensed under the project's [dual license](LICENSE).
+By contributing, you agree that your contributions will be licensed under the project's [dual license](LICENSE), which includes an [Additional Patent Grant](PATENTS.md).
 
 ---
 
