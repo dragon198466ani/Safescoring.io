@@ -78,6 +78,18 @@ See package.json and requirements.txt for complete dependency lists.
 
 ---
 
+## Additional Patent Grant
+
+Subject to the terms and conditions of this license, SafeScoring LLC hereby grants to you a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable (except as stated below) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by SafeScoring LLC that are necessarily infringed by SafeScoring's contribution(s) alone or by combination of SafeScoring's contribution(s) with the Work.
+
+**Termination:** This patent grant terminates automatically with respect to any entity that files a patent infringement lawsuit (including cross-claims and counterclaims) alleging that SafeScoring software or any contribution incorporated within it constitutes direct or contributory patent infringement.
+
+**Defensive Pledge:** SafeScoring LLC pledges that all patents it holds will be used only defensively. This pledge is binding on successors and assignees. See [PATENTS.md](PATENTS.md) for full details.
+
+This patent grant is supplemental to (and does not replace) the implicit patent license in the AGPL-3.0 license.
+
+---
+
 ## Questions?
 
 If you're unsure which license applies to your use case, please contact us at license@safescoring.com.
